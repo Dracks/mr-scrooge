@@ -8,6 +8,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('format', choices=FORMAT_LIST.keys())
         parser.add_argument('file', help="file to import")
+        parser.add_argument('-k', '--key', default=None, dest='key', help="By default should use the same as format value")
 
     def handle(self, *args, **options):
-        FORMAT_LIST[options.get('format')](options.get('file')).run()
+        FORMAT_LIST[options.get('format')](options.get('file'), options.get('key')).run()

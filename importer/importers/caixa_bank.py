@@ -26,9 +26,11 @@ class CaixaBank():
     _mapping = {}
     _discard = 0
 
-    def __init__(self, filename):
+    def __init__(self, filename, key=None):
         workbook = xlrd.open_workbook(filename)
         self.sheet = workbook.sheet_by_index(0)
+        if key is not None:
+            self.key = key
 
     def insert(self, data):
         newSource = RawDataSource()
