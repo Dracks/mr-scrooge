@@ -79,7 +79,7 @@ class CaixaBankCard(CaixaBankAccount):
         data[1] = datetime.strptime(data[1], '%d/%m/%Y')
         value = data[2]
         m = self.exp.match(value).groups()
-        data[2] = float(m[1].replace(',','.'))
+        data[2] = - float(m[1].replace(',','.'))
         data.append(m[0])
         super(CaixaBankCard, self).insert(data)
 
