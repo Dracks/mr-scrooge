@@ -1,6 +1,16 @@
 from django.db import models
 
 # Create your models here.
+class IMPORT_STATUS:
+    OK = "o"
+    WARNING = "w"
+    ERROR = "e"
+
+IMPORT_STATUS.CHOICES = (
+    ( IMPORT_STATUS.OK, "Ok"),
+    ( IMPORT_STATUS.WARNING, "Warnings"),
+    ( IMPORT_STATUS.ERROR, "Error")
+)
 
 class RawDataSource(models.Model):
     kind=models.CharField(max_length=255)
@@ -17,4 +27,22 @@ class RawDataSource(models.Model):
         return "k:{} m:{} d:{} v:{}".format(self.kind, self.movement_name, self.date, self.value)
 
     class Meta:
-        unique_together= ('kind', 'movement_name', 'date', 'value')
+        indexes = [
+            models.Index(fields=['kind', 'movement_name', 'date', 'value'])
+        ]
+        ordering = ('date', 'date_value')
+
+class StatusReport(models.Model):
+    date=models.DateTimeField(auto_now=True)
+    file_name = models.CharField(max_length=255)
+    status = models.CharField(max_length=1, choices=IMPORT_STATUS.CHOICES)
+    description = models.TextField()
+
+    def setWarning(self):
+        if self.status == IMPORT_STATUS.OK:
+            self.status =IMPORT_STATUS.WARNING
+            self.save()
+
+class StatusReportRow(RawDataSource):
+    report = models.ForeignKey(StatusReport,on_delete=models.CASCADE)
+    message = models.TextField()
