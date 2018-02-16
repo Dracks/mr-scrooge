@@ -12,7 +12,7 @@ IMPORT_STATUS.CHOICES = (
     ( IMPORT_STATUS.ERROR, "Error")
 )
 
-class RawDataSource(models.Model):
+class AbstractRawDataSource(models.Model):
     kind=models.CharField(max_length=255)
     movement_name=models.CharField(max_length=255)
     date=models.DateField()
@@ -25,6 +25,10 @@ class RawDataSource(models.Model):
 
     def __unicode__(self):
         return "k:{} m:{} d:{} v:{}".format(self.kind, self.movement_name, self.date, self.value)
+    class Meta:
+        abstract = True
+
+class RawDataSource(AbstractRawDataSource):
 
     class Meta:
         indexes = [
@@ -43,6 +47,6 @@ class StatusReport(models.Model):
             self.status =IMPORT_STATUS.WARNING
             self.save()
 
-class StatusReportRow(RawDataSource):
+class StatusReportRow(AbstractRawDataSource):
     report = models.ForeignKey(StatusReport,on_delete=models.CASCADE)
     message = models.TextField()
