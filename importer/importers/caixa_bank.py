@@ -1,5 +1,5 @@
 import xlrd
-from django.db.utils import IntegrityError
+import traceback
 import re
 
 from datetime import datetime
@@ -92,7 +92,7 @@ class CaixaBank():
                             previous = None
                         self.addError(source, text)
         except Exception as e:
-            self.status.description = e.args
+            self.status.description = traceback.format_exc()
             self.status.status = IMPORT_STATUS.ERROR
             self.status.save()
 
@@ -121,7 +121,7 @@ class CaixaBankCard(CaixaBankAccount):
         'details':6
     }
 
-    exp = re.compile('^(.* )?(\d*\,\d*) (.*)$')
+    exp = re.compile('^(.* )?(\d*.\d*\,\d*) (.*)$')
 
     def build(self, data):
         if "Operaciones" in data[0]:
@@ -129,7 +129,7 @@ class CaixaBankCard(CaixaBankAccount):
         data[1] = datetime.strptime(data[1], '%d/%m/%Y')
         value = data[2]
         m = self.exp.match(value).groups()
-        data[2] = - float(m[1].replace(',','.'))
+        data[2] = - float(m[1].replace('.','').replace(',','.'))
         data.append(m[0])
-        super(CaixaBankCard, self).build(data)
+        return super(CaixaBankCard, self).build(data)
 
