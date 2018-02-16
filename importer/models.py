@@ -34,7 +34,7 @@ class RawDataSource(AbstractRawDataSource):
         indexes = [
             models.Index(fields=['kind', 'movement_name', 'date', 'value'])
         ]
-        ordering = ('date', 'date_value')
+        ordering = ('-date', '-date_value')
 
 class StatusReport(models.Model):
     date=models.DateTimeField(auto_now=True)
