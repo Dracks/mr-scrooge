@@ -18,9 +18,11 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from importer import urls as importer_urls
+from management import urls as management_urls
 router = DefaultRouter()
 
 importer_urls.api_views(router)
+management_urls.api_views(router)
 
 
 urlpatterns = [
