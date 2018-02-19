@@ -1,7 +1,6 @@
 import React from 'react'
 
-//import TableView from '../components/TableView'
-import RawTableView from './RawData/RawTableView'
+import RawTableView from '../RawData/RawTableView'
 
 const Content = () =>{
     return (

@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { Route, Switch } from 'react-router-dom';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import Content from './Content';
+import RawDataPage from './Pages/RawDataPage';
+import GraphReportPage from './Pages/GraphReportPage';
 
 
 class App extends Component {
@@ -10,7 +12,15 @@ class App extends Component {
     return (
       <div>
         <Header />
-        <Content />
+        <Switch>
+            <Route
+                path="/"
+                exact
+                component={GraphReportPage} />
+            <Route
+                path="/raw-data"
+                component={RawDataPage}/>
+        </Switch>
         <Footer />
       </div>
     );
