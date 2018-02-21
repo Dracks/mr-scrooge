@@ -5,6 +5,7 @@ import WithLoading from '../../network/LoadingHoc';
 
 import Compare from '../Graphs/Compare';
 import Loading from '../../components/Loading';
+import { fetchRawData } from "../RawData/Actions";
 
 
 const GraphReport = (props)=>{
@@ -19,5 +20,5 @@ const mapStateToProps = state=>{
     }
 }
 
-//const LoadingTableView = WithLoading(GraphReport, Loading, 'data', 'fetchRawData')
-export default connect(mapStateToProps, {})(WithLoading(GraphReport, Loading, 'data'))
+const LoadingGraphReport = WithLoading(GraphReport, Loading, 'data', 'fetchRawData')
+export default connect(mapStateToProps, {fetchRawData})(LoadingGraphReport)

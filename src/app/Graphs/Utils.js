@@ -99,6 +99,16 @@ const Utils = {
             return obj;
         });
         return {labels: labels, datasets:datasets}
+    },
+    acumChartJs2Axis: (data)=>{
+        data.datasets.forEach(e=>{
+            var acum = 0;
+            e.data = e.data.map(e=>{
+                acum += e;
+                return acum;
+            })
+        });
+        return data;
     }
 }
 
