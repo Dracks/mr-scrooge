@@ -41,6 +41,16 @@ class FilterModelTests(TestCase):
         self.assertFalse(f.isValid(data1))
         self.assertTrue(f.isValid(data2))
 
+    def test_filter_not_contains(self):
+        f = Filter(
+            type_conditional=FilterConditionals.CONTAINS, 
+            conditional="daleks",
+            negate_conditional=1)
+        data1 = RawDataSource(movement_name="Dr Who is the greatest hero ever")
+        data2 = RawDataSource(movement_name="Dr Who is the daleks enemy")
+        self.assertTrue(f.isValid(data1))
+        self.assertFalse(f.isValid(data2))
+
     def test_filter_prefix(self):
         f = Filter(type_conditional=FilterConditionals.PREFIX, conditional="Dr Who")
         data1 = RawDataSource(movement_name="Dr Strange is the best magician")

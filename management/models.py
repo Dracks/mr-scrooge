@@ -105,7 +105,11 @@ class Filter(models.Model):
     def isValid(self, data):
         if not self.__cached_func:
             self.__cached_func = FILTER_FUNCTIONS.get(self.type_conditional, lambda e, y: False)
-        return self.__cached_func(self.conditional, data)
+        result = self.__cached_func(self.conditional, data)
+        if self.negate_conditional == 0:
+            return result
+        else:
+            return not result
 
 
     def __str__(self):
