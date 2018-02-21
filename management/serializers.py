@@ -4,7 +4,7 @@ from .models import Tag, Filter
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('id', 'name', 'values')
+        fields = ('id', 'name', 'values', 'filters')
 
 
 class FilterSerializer(serializers.ModelSerializer):

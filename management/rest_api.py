@@ -1,7 +1,8 @@
 from rest_framework import viewsets
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import detail_route, list_route
+from rest_framework.response import Response
 
-from .models import Tag, Filter
+from .models import Tag, Filter, FILTER_CONDITIONALS
 from .serializers import TagSerializer, FilterSerializer
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -16,3 +17,7 @@ class TagViewSet(viewsets.ModelViewSet):
 class FilterViewSet(viewsets.ModelViewSet):
     queryset = Filter.objects.all()
     serializer_class = FilterSerializer
+
+    @list_route(methods=['get'])
+    def types(self, request):
+        return Response(dict(FILTER_CONDITIONALS))
