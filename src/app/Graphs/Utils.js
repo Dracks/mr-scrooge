@@ -1,4 +1,4 @@
-import * as moment from 'moment'
+import moment from 'moment'
 
 var OPTIONS_BEGIN_AT_ZERO = { scales: { yAxes: [{ ticks: { beginAtZero: true } }] } };
 var OPTIONS_LEGEND_BOTTOM = { legend: {position: 'bottom'} };
@@ -37,19 +37,68 @@ const Utils = {
         });
         return datasets;
     },
-    getGrouppedValues:(data)=>{
-        data.forEach(element => {
-            var date = new moment(element);
-            var year = date.getYear()
-            var month = date.getMonth()
-            var day = date.getDay();
-            let key = year+'-'+month
-            var group = datasets[key]
+    getGrouppedByLambda:(data, lambda)=>{
+        var r = {}
+        console.log(data);
+        data.forEach(e=>{
+            let key = lambda(e);
+            var group = r[key];
             if (!group){
-                group = {}
+                group = r[key] = [];
+            }
+            group.push(e);
+        })
+        return r;
+    },
+    getGrouppedByMonthAndDay:(data)=>{
+        var FirstGroup = Utils.getGrouppedByLambda(data, (e)=>new moment(e.date).format("YYYY-MM"));
+        Object.keys(FirstGroup).forEach((key)=>{
+            let values = FirstGroup[key];
+            FirstGroup[key] = Utils.getGrouppedByLambda(values, (e)=>e.date.getDate());
+        });
+        return FirstGroup
+    },
+    sumGroups:(data)=>{
+        var ret = {}
+        Object.keys(data).forEach(key_first => {
+            var subGroup = data[key_first];
+            if (subGroup instanceof Array){
+                ret[key_first] = subGroup.reduce((ac,e)=>ac+e.value, 0);
+            } else {
+                ret[key_first] = Utils.sumGroups(subGroup);
             }
         });
-        return {datasets: datasets, labels: labels}
+        return ret;
+    },
+    toChartJs2Axis:(data)=>{
+        var labels = []
+        Object.keys(data).forEach((key_first)=>{
+            Object.keys(data[key_first]).forEach(key=>{
+                if (labels.indexOf(key)==-1){
+                    labels.push(key);
+                }
+            });
+        });
+        labels = labels.sort((a,b)=>{
+            return parseInt(a)-parseInt(b)
+        });
+        var datasets = Object.keys(data).map((key)=>{
+            var singleData = data[key]
+            var obj = {
+                label: key,
+                data: labels.map(k=>{
+                    let v = singleData[k];
+                    if (v){
+                        return v;
+                    } else {
+                        return 0;
+                    }
+                })
+                    
+            }
+            return obj;
+        });
+        return {labels: labels, datasets:datasets}
     }
 }
 

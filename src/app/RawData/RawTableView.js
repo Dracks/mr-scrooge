@@ -8,7 +8,7 @@ import { fetchRawData } from "./Actions";
 
 const mapStateToProps = state=>{
     return {
-        data:  state.showData
+        data:  state.allData
     }
 }
 const LoadingTableView = WithLoading(TableView, Loading, 'data', 'fetchRawData')
