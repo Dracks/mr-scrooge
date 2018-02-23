@@ -39,7 +39,6 @@ const Utils = {
     },
     getGrouppedByLambda:(data, lambda)=>{
         var r = {}
-        console.log(data);
         data.forEach(e=>{
             let key = lambda(e);
             var group = r[key];
