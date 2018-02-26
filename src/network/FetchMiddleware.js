@@ -1,4 +1,5 @@
 import Actions, { fetchError } from "./Actions";
+import Rest from './Rest';
 
 
 export default store => next => action => {
@@ -9,7 +10,7 @@ export default store => next => action => {
                 isLoading: true
             }
         })
-        fetch(action.payload.url)
+        Rest.get(action.payload.url, action.payload.request)
             .then((r)=>r.json())
             .then((data)=>{
                 store.dispatch({
