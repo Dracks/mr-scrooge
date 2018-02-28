@@ -1,15 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, Route, Switch } from 'react-router-dom';
+
+import NewTag from '../Tags/New';
+import EditTag from '../Tags/Edit';
 
 const TagPage = (props) => {
     const basepath=props.match.url
-    const tagsListLinks=props.tags.map((e)=>{
-        return <Link to={basepath+'/'+e.id} className="collection-item">{e.name}</Link>;
+    const tagsListLinks=props.tags.map((e, index)=>{
+        return <Link key={index} to={basepath+'/'+e.id} className="collection-item">{e.name}</Link>;
     })
     return (<div className="row">
         <div className="col s3">
-            <div className="input-field">
+            <div className="input-field inline">
                 <i className="material-icons prefix">search</i>
                 <input id="icon_prefix" type="text" />
             </div>
@@ -22,7 +25,15 @@ const TagPage = (props) => {
             </div>
         </div>
         <div className="col s9">
-            contents
+            <Switch>
+                <Route
+                    path={basepath + "/new"}
+                    component={NewTag}/>
+
+                <Route
+                    path={basepath + "/:id"}
+                    component={EditTag}/>
+            </Switch>
         </div>
 
     </div>)
