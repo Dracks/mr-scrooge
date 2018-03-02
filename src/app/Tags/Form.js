@@ -41,6 +41,8 @@ const Form = ({value}) => {
         )
     }
 
+    console.log(value)
+
     return (
         <div className="row">
             <div className="input-field col s6">
@@ -53,7 +55,9 @@ const Form = ({value}) => {
             <div className="col s12">
                 <MessageComponent register={(c)=>{showMessage=c}}/>
             </div>
-            <TagsFilterTable />
+            <div className="col s12">
+                <TagsFilterTable tag={value}/>
+            </div>
         </div>
     )
 }
