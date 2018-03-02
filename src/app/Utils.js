@@ -6,6 +6,15 @@ const eventHandler=(callback) => {
     }
 }
 
+const manageFetch = (response)=>{
+    if (response.ok){
+        return response.json()
+    } else {
+        //console.log(response);
+        return Promise.reject({code: response.status, description: response.statusText})
+    }
+}
+
 const saveElement = (url, obj) => {
     var method = "POST"
     if (obj.id){
@@ -18,14 +27,7 @@ const saveElement = (url, obj) => {
         headers: new Headers({
             'Content-Type': 'application/json'
           })
-    }).then((response)=>{
-        if (response.ok){
-            return response.json()
-        } else {
-            //console.log(response);
-            return Promise.reject({code: response.status, description: response.statusText})
-        }
-    })
+    }).then(manageFetch)
 }
 
-export { eventHandler, saveElement };
+export { eventHandler, saveElement, manageFetch };

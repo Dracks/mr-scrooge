@@ -35,7 +35,7 @@ class MessageComponent extends Component{
             return (
             <div className={className}>
                 <span className="card-title">{title}</span>
-                <span className="body">{JSON.stringify(body)}</span>
+                <span className="body">{body}</span>
             </div>
             )
         } else {
