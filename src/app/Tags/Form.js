@@ -1,7 +1,8 @@
 import React from 'react';
 
 import ConstantsCss from '../Constants-CSS';
-import {saveElement, eventHandler} from '../Utils';
+import Rest from '../../network/Rest';
+import {eventHandler} from '../Utils';
 import MessageComponent from '../../components/Message';
 import Input from '../../components/Input';
 
@@ -13,7 +14,7 @@ const Form = ({value}) => {
 
     let save = (newValue) => {
         value.name = newValue;
-        saveElement('/api/tag/:id/', value).then(
+        Rest.save('/api/tag/:id/', value).then(
             (data)=>{
                 if (showMessage){
                     showMessage(ConstantsCss.Message.Ok, "Saved correctly", JSON.stringify(data));
@@ -27,7 +28,7 @@ const Form = ({value}) => {
     }
 
     let apply = ()=>{
-        saveElement('/api/tag/'+value.id+'/apply_filters/', {}).then(
+        Rest.save('/api/tag/'+value.id+'/apply_filters/', {}).then(
             (data)=>{
                 if (showMessage){
                     showMessage(ConstantsCss.Message.Ok, "Applied correctly", JSON.stringify(data));
