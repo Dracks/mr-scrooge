@@ -75,7 +75,9 @@ class Tag(models.Model):
     values = models.ManyToManyField(RawDataSource,through='ValuesToTag')
 
     def apply_filters(self):
+        deleted_relations = ValuesToTag.objects.filter(tag=self, automatic=1).delete()
         filter_list = self.filters.all()
+        count = 0
         for rds in RawDataSource.objects.all():
             isFilter = False
             for filter in filter_list:
@@ -83,7 +85,12 @@ class Tag(models.Model):
                     isFilter = True
                     break
             if isFilter:
+                count += 1
                 ValuesToTag.objects.create(tag=self, raw_data_source=rds, automatic=1)
+        return {
+            'deleted': deleted_relations[0],
+            'inserted': count
+        }
 
     def __str__(self):
         return self.name
@@ -93,6 +100,7 @@ class ValuesToTag(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     enable = models.IntegerField(default=1) # By default we enable it, only to disable manually. 
     automatic = models.IntegerField()
+
 
 class Filter(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name="filters")

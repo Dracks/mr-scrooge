@@ -12,7 +12,8 @@ class TagViewSet(viewsets.ModelViewSet):
     @detail_route(methods=['post'])
     def apply_filters(self, request, pk=None):
         tag = self.get_object()
-        tag.apply_filters()
+        data = tag.apply_filters()
+        return Response(data)
 
 class FilterViewSet(viewsets.ModelViewSet):
     queryset = Filter.objects.all()

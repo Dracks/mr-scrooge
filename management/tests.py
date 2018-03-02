@@ -1,7 +1,7 @@
 from django.test import TestCase
 from datetime import date
 
-from .models import Tag, Filter, FilterConditionals, RawDataSource
+from .models import Tag, Filter, FilterConditionals, RawDataSource, ValuesToTag
 # Create your tests here.
 class TagModelTest(TestCase):
     def setUp(self):
@@ -27,9 +27,19 @@ class TagModelTest(TestCase):
             type_conditional=FilterConditionals.CONTAINS, 
             conditional="movement")
         f.save()
-        self.subject.apply_filters()
+        report = self.subject.apply_filters()
         l=self.subject.values.count()
         self.assertEqual(l, 10)
+        self.assertEqual(report['inserted'], 10)
+
+    def test_apply_filters_cleaning(self):
+        ValuesToTag.objects.create(tag=self.subject, raw_data_source = self.rds_list[0], automatic=1).save()
+        ValuesToTag.objects.create(tag=self.subject, raw_data_source = self.rds_list[1], automatic=0).save()
+        report = self.subject.apply_filters()
+        self.assertEqual(self.subject.values.count(), 1)
+        self.assertEqual(self.subject.values.first(), self.rds_list[1])
+        self.assertEqual(report['deleted'], 1)
+        self.assertEqual(report['inserted'], 0)
 
 
 class FilterModelTests(TestCase):
