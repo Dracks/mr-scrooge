@@ -5,6 +5,7 @@ const Header = () => {
         <div className="nav-wrapper">
             <a href="/" className="brand-logo">Finances</a>
             <ul id="nav-mobile" className="right hide-on-med-and-down">
+                <li><Link to='/import'>Import</Link></li>
                 <li><Link to='/raw-data'>RawData</Link></li>
                 <li><Link to='/'>Report</Link></li>
             </ul>

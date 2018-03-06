@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import RawDataPage from './Pages/RawDataPage';
 import GraphReportPage from './Pages/GraphReportPage';
+import ImportPage from './Pages/ImportPage';
 
 
 class App extends Component {
@@ -20,6 +21,9 @@ class App extends Component {
             <Route
                 path="/raw-data"
                 component={RawDataPage}/>
+            <Route
+                path="/import"
+                component={ImportPage} />
         </Switch>
         <Footer />
       </div>
