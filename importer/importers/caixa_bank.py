@@ -30,13 +30,15 @@ class CaixaBank():
         status = StatusReport()
         status.file_name = filename
         status.status = IMPORT_STATUS.OK
-        status.save()
-
+        
         self.status = status
         workbook = xlrd.open_workbook(filename)
         self.sheet = workbook.sheet_by_index(0)
         if key is not None:
             self.key = key
+        
+        status.kind = self.key
+        status.save()
 
     def build(self, data):
         newSource = RawDataSource()
@@ -48,11 +50,10 @@ class CaixaBank():
 
     def addError(self, source, message):
         status = StatusReportRow(
-            kind=source.kind,
             movement_name = source.movement_name,
             date = source.date,
             date_value = source.date_value,
-            details = source.delete,
+            details = source.details,
             value = source.value 
             )
         status.message = message

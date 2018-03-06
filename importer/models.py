@@ -13,7 +13,6 @@ IMPORT_STATUS.CHOICES = (
 )
 
 class AbstractRawDataSource(models.Model):
-    kind=models.CharField(max_length=255)
     movement_name=models.CharField(max_length=255)
     date=models.DateField()
     date_value=models.DateField(null=True)
@@ -29,6 +28,7 @@ class AbstractRawDataSource(models.Model):
         abstract = True
 
 class RawDataSource(AbstractRawDataSource):
+    kind=models.CharField(max_length=255)
 
     class Meta:
         indexes = [
@@ -37,7 +37,8 @@ class RawDataSource(AbstractRawDataSource):
         ordering = ('-date', '-date_value')
 
 class StatusReport(models.Model):
-    date=models.DateTimeField(auto_now=True)
+    kind = models.CharField(max_length=255)
+    date = models.DateTimeField(auto_now=True)
     file_name = models.CharField(max_length=255)
     status = models.CharField(max_length=1, choices=IMPORT_STATUS.CHOICES)
     description = models.TextField()
@@ -47,6 +48,9 @@ class StatusReport(models.Model):
             self.status =IMPORT_STATUS.WARNING
             self.save()
 
+    class Meta:
+        ordering = ('-date', )
+
 class StatusReportRow(AbstractRawDataSource):
-    report = models.ForeignKey(StatusReport,on_delete=models.CASCADE)
+    report = models.ForeignKey(StatusReport,on_delete=models.CASCADE, related_name="rows")
     message = models.TextField()
