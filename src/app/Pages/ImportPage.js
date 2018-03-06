@@ -22,10 +22,6 @@ const ImportPage = (props)=>{
     })
     return (<div className="row">
         <div className="col s3">
-            <div className="input-field inline">
-                <i className="material-icons prefix">search</i>
-                <input id="icon_prefix" type="text" />
-            </div>
             <div className="collection">
                 <Link to={basepath+'/wizard'} className="collection-item"> 
                     <i className="material-icons">add</i> 
