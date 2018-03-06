@@ -32,6 +32,47 @@ class TagModelTest(TestCase):
         self.assertEqual(l, 10)
         self.assertEqual(report['inserted'], 10)
 
+    def test_apply_some_filters(self):
+        f1 = Filter(
+            tag = self.subject,
+            type_conditional = FilterConditionals.SUFFIX,
+            conditional = "2"
+        )
+        f1.save()
+        f1 = Filter(
+            tag = self.subject,
+            type_conditional = FilterConditionals.SUFFIX,
+            conditional = "4"
+        )
+        f1.save()
+
+        report = self.subject.apply_filters()
+        l=self.subject.values.count()
+        self.assertEqual(l, 2)
+        self.assertEqual(report['inserted'], 2)
+
+    def test_apply_negate_filters(self):
+        f1 = Filter(
+            tag = self.subject,
+            type_conditional = FilterConditionals.SUFFIX,
+            conditional = "2"
+        )
+        f1.save()
+        f2 = Filter(
+            tag = self.subject,
+            type_conditional = FilterConditionals.SUFFIX,
+            conditional = "4"
+        )
+        f2.save()
+        self.subject.negate_conditional = 1
+        self.subject.save()
+        report = self.subject.apply_filters()
+        l=self.subject.values.count()
+        self.assertTrue(self.rds_list[1] in self.subject.values.all())
+        self.assertFalse(self.rds_list[2] in self.subject.values.all())
+        self.assertEqual(l, 8)
+        self.assertEqual(report['inserted'], 8)
+
     def test_apply_filters_cleaning(self):
         ValuesToTag.objects.create(tag=self.subject, raw_data_source = self.rds_list[0], automatic=1).save()
         ValuesToTag.objects.create(tag=self.subject, raw_data_source = self.rds_list[1], automatic=0).save()
@@ -50,16 +91,6 @@ class FilterModelTests(TestCase):
         data2 = RawDataSource(movement_name="Dr Who is the daleks enemy")
         self.assertFalse(f.isValid(data1))
         self.assertTrue(f.isValid(data2))
-
-    def test_filter_not_contains(self):
-        f = Filter(
-            type_conditional=FilterConditionals.CONTAINS, 
-            conditional="daleks",
-            negate_conditional=1)
-        data1 = RawDataSource(movement_name="Dr Who is the greatest hero ever")
-        data2 = RawDataSource(movement_name="Dr Who is the daleks enemy")
-        self.assertTrue(f.isValid(data1))
-        self.assertFalse(f.isValid(data2))
 
     def test_filter_prefix(self):
         f = Filter(type_conditional=FilterConditionals.PREFIX, conditional="Dr Who")

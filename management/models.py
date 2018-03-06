@@ -1,3 +1,5 @@
+from functools import reduce
+
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 
@@ -73,20 +75,26 @@ FILTER_CONDITIONALS = (
 class Tag(models.Model):
     name = models.CharField(max_length=200)
     values = models.ManyToManyField(RawDataSource,through='ValuesToTag')
+    negate_conditional = models.IntegerField(default=0)
 
     def apply_filters(self):
-        deleted_relations = ValuesToTag.objects.filter(tag=self, automatic=1).delete()
         filter_list = self.filters.all()
+        deleted_relations = ValuesToTag.objects.filter(tag=self, automatic=1).delete()
         count = 0
-        for rds in RawDataSource.objects.all():
-            isFilter = False
-            for filter in filter_list:
-                if filter.isValid(rds):
-                    isFilter = True
-                    break
-            if isFilter:
-                count += 1
-                ValuesToTag.objects.create(tag=self, raw_data_source=rds, automatic=1)
+        if len(filter_list):
+            if not self.negate_conditional:
+                reducer = lambda ac, v: ac or v
+                initial = False
+            else:
+                reducer = lambda ac, v: ac and not v
+                initial = True
+            
+            for rds in RawDataSource.objects.all():
+                l=map(lambda e: e.isValid(rds), filter_list)
+                isFilter = reduce(reducer, l, initial)
+                if isFilter:
+                    count += 1
+                    ValuesToTag.objects.create(tag=self, raw_data_source=rds, automatic=1)
         return {
             'deleted': deleted_relations[0],
             'inserted': count
@@ -106,7 +114,6 @@ class Filter(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name="filters")
     type_conditional = models.CharField(max_length=1, choices=FILTER_CONDITIONALS)
     conditional = models.CharField(max_length=200)
-    negate_conditional = models.IntegerField(default=0)
 
     __cached_func = None
 
@@ -114,10 +121,7 @@ class Filter(models.Model):
         if not self.__cached_func:
             self.__cached_func = FILTER_FUNCTIONS.get(self.type_conditional, lambda e, y: False)
         result = self.__cached_func(self.conditional, data)
-        if self.negate_conditional == 0:
-            return result
-        else:
-            return not result
+        return result
 
 
     def __str__(self):
