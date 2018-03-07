@@ -50,7 +50,7 @@ const Form = ({value}) => {
             </div>
             <div className="input-field col s2 ">
                 <Checkbox id='negate_conditional'/>
-                <label htmlFor='negate_conditional'>Negate conditional</label>
+                <label htmlFor='negate_conditional'>Negate conditional </label>
             </div>
             <div className="input-field col s5">
                 <a className={ConstantsCss.Button.Normal} onClick={eventHandler(apply)}>Apply</a>

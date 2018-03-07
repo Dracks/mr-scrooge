@@ -35,10 +35,10 @@ class Checkbox extends Component {
 
     render(){
         return <input
-            id={this.props.id}
-            type="checkbox"
-            defaultChecked={this.value}
-            onChange={this.onChange} />
+                id={this.props.id}
+                type="checkbox"
+                checked={this.value}
+                onChange={(e)=>{e.preventDefault(); alert("Surprise me!");}} />
     }
 }
 export default Checkbox;
