@@ -5,6 +5,7 @@ import Rest from '../../network/Rest';
 import {eventHandler} from '../Utils';
 import MessageComponent from '../../components/Message';
 import Input from '../../components/Input';
+import Checkbox from '../../components/Checkbox';
 
 
 import TagsFilterTable from './TagsFilterTable';
@@ -12,8 +13,7 @@ import TagsFilterTable from './TagsFilterTable';
 const Form = ({value}) => {
     var showMessage;
 
-    let save = (newValue) => {
-        value.name = newValue;
+    let save = () => {
         Rest.save('/api/tag/:id/', value).then(
             (data)=>{
                 if (showMessage){
@@ -45,10 +45,14 @@ const Form = ({value}) => {
 
     return (
         <div className="row">
-            <div className="input-field col s6">
-                <Input placeholder="Name" type="text" value={value.name} onBlur={save}/>
+            <div className="input-field col s5">
+                <Input placeholder="Name" type="text" value={value.name} onBlur={e=>{value.name=e; save()}}/>
             </div>
-            <div className="input-field col s6">
+            <div className="input-field col s2 ">
+                <Checkbox id='negate_conditional'/>
+                <label htmlFor='negate_conditional'>Negate conditional</label>
+            </div>
+            <div className="input-field col s5">
                 <a className={ConstantsCss.Button.Normal} onClick={eventHandler(apply)}>Apply</a>
                 <a className={ConstantsCss.Button.Delete}>Delete</a>
             </div>

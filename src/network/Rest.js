@@ -17,6 +17,8 @@ class Rest {
         if (obj.id){
             url = url.replace(":id", obj.id);
             method = "PUT"
+        } else {
+            url = url.replace(':id/','');
         }
         return fetch(url, {
             body: JSON.stringify(obj),

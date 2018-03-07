@@ -6,49 +6,20 @@ import ConstantsCss from '../../app/Constants-CSS';
 import Loading from '../../components/Loading';
 import Input from '../../components/Input';
 
-class FilterRow extends Component{
-    constructor(props){
-        super(props)
-        console.log(props);
-        this.state = {
-            filter: props.filter,
-            status: props.initialEdit ? 'edit' : 'read'
-        }
-
-        this.edit = this.edit.bind(this);
-    }
-    edit(){
-        this.setState({status: 'edit'})
-    }
-    render(){
-        let { filter, status } = this.state
-        if (status === 'read'){
-            return (
-                <tr onClick={eventHandler(this.edit)}>
-                    <td>{filter.type_conditional}</td>
-                    <td>{filter.conditional}</td>
-                    <td>{filter.negate_conditional}</td>
-                    <td><a className={ConstantsCss.Button.Delete}> Delete </a></td>
-                </tr>
-                )
-        } else {
-            return (
-                <tr>
-                    <td>{filter.type_conditional}</td>
-                    <td><Input value={filter.conditional} /></td>
-                    <td>{filter.negate_conditional}</td>
-                    <td><a className={ConstantsCss.Button.Delete}> Delete </a></td>
-                </tr>
-                )
-        }
-    }
+const FilterRow = ({filter}) => {
+    return (
+        <tr>
+            <td>{filter.type_conditional}</td>
+            <td><Input value={filter.conditional} /></td>
+            <td>{filter.negate_conditional}</td>
+            <td><a className={ConstantsCss.Button.Delete}> Delete </a></td>
+        </tr>
+    )
 }
 
 class TagsFilterTable extends Component {
     constructor(props){
         super();
-
-
         this.create = this.create.bind(this);
         var ids_list = props.tag.filters.map(e=>'ids[]='+e)
         this.state = {isLoading:true}

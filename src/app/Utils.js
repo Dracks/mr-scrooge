@@ -6,4 +6,8 @@ const eventHandler=(callback) => {
     }
 }
 
+const manageFedback=(promise, showMessage) => {
+    
+}
+
 export { eventHandler };
