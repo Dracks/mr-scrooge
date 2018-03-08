@@ -11,7 +11,6 @@ export default store => next => action => {
             }
         })
         Rest.get(action.payload.url, action.payload.request)
-            .then((r)=>r.json())
             .then((data)=>{
                 store.dispatch({
                     type: action.payload.action,
