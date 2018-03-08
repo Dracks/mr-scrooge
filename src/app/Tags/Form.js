@@ -10,12 +10,13 @@ import Checkbox from '../../components/Checkbox';
 
 import TagsFilterTable from './TagsFilterTable';
 
-const Form = ({value}) => {
+const Form = ({value, updateTags}) => {
     var showMessage;
 
     let save = () => {
         Rest.save('/api/tag/:id/', value).then(
             (data)=>{
+                updateTags();
                 if (showMessage){
                     showMessage(ConstantsCss.Message.Ok, "Saved correctly", JSON.stringify(data));
                 }

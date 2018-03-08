@@ -1,9 +1,11 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 import Form from './Form';
+import {updateTags} from './Actions';
 
-const New = (props) => {
-    return <Form value={{filters: []}} />
+const New = ({updateTags}) => {
+    return <Form value={{filters: []}} updateTags={updateTags} />
 }
 
-export default New
+export default connect(()=>{return {}}, {updateTags})(New)

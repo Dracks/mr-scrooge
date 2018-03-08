@@ -7,12 +7,13 @@ export default ACTIONS
 
 
 
-export const fetchAction = (url, action)=>{
+export const fetchAction = (url, action, reload)=>{
     return {
         type: ACTIONS.FETCH,
         payload: {
             url: url,
-            action: action
+            action: action,
+            reload: reload || false
         }
     }
 }
