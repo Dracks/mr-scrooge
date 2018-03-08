@@ -41,8 +41,6 @@ const Form = ({value}) => {
         )
     }
 
-    console.log(value)
-
     return (
         <div className="row">
             <div className="input-field col s5">

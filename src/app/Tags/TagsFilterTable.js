@@ -5,7 +5,7 @@ import { eventHandler } from '../Utils'
 import Rest from '../../network/Rest'
 import WithLoading from "../../network/LoadingHoc";
 import ConstantsCss from '../../app/Constants-CSS';
-import Loading from '../../components/Loading';
+import Loading, {TableLoading }from '../../components/Loading';
 import Input from '../../components/Input';
 import Select from '../../components/Select';
 
@@ -14,7 +14,6 @@ import { fetchFiltersTypes } from "./Actions";
 const FilterRowEmpty = ({filter, types}) => {
     const options = [{"key":"", "value":"Select"}].concat(Object.keys(types).map((e)=>{ return {"key":e, "value":types[e]}}))
     const save=()=>{
-        console.log(filter)
         Rest.save('/api/tag-filter/:id/',filter).then(data=>{
             filter = data;
         })
@@ -34,7 +33,7 @@ const filterRowMapStateToProps = state =>{
 }
 
 const FilterRow = connect(filterRowMapStateToProps, {fetchFiltersTypes})(
-    WithLoading(FilterRowEmpty,Loading,'types', 'fetchFiltersTypes')
+    WithLoading(FilterRowEmpty,TableLoading(3),'types', 'fetchFiltersTypes')
 )
 
 
@@ -61,11 +60,9 @@ class TagsFilterTable extends Component {
     }
     create(){
         var newData = this.state.data.concat([{tag: this.props.tag.id}])
-        console.log(newData)
         this.setState({data: newData})
     }
     render() {
-        console.log(this.state);
         if (this.state.isLoading){
             return <Loading />
         } else if (this.state.isOk) {

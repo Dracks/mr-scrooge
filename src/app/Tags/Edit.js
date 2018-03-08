@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import Form from './Form';
 
 const Edit = ({tags, match}) => {
-    var id=match.params.id
-    var l=tags.filter((e)=> e.id==id)
+    var id=parseInt(match.params.id, 10)
+    var l=tags.filter((e)=> e.id===id)
     var tag = l[0]
     
     return (
