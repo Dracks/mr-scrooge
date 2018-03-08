@@ -35,7 +35,6 @@ const ImportPage = (props)=>{
                 <Route
                     path={basepath + "/wizard"}
                     component={WizardImport}/>
-
                 <Route
                     path={basepath + "/:id"}
                     component={StatusImport}/>

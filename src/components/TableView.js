@@ -3,8 +3,6 @@ import React from 'react';
 import ConstantsCss from '../app/Constants-CSS'
 
 const TableView = ({data, header}) =>{
-    console.log(data);
-    console.log(header);
     var order = []
     var headerHtml = []
     for (var key in header){
