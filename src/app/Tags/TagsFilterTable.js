@@ -41,10 +41,19 @@ class TagsFilterTable extends Component {
     constructor(props){
         super();
         this.create = this.create.bind(this);
-        const filters = props.tag.filters;
+        this.state = this.getState(props.tag.filters)
+    }
+
+    componentWillReceiveProps(newProps){
+        if (this.props !== newProps ){
+            this.setState(this.getState(newProps.tag.filters));
+        }
+    }
+
+    getState(filters){
         if (filters.length>0){
             var ids_list = filters.map(e=>'ids[]='+e)
-            this.state = {isLoading:true}
+            
             Rest.get('/api/tag-filter/?'+ids_list.join('&')).then((list)=>{
                 this.setState({
                     isLoading: false,
@@ -54,8 +63,9 @@ class TagsFilterTable extends Component {
             }, (error)=>{
 
             })
+            return {isLoading:true};
         } else {
-            this.state = {isLoading: false, isOk: true, data: []}
+            return {isLoading: false, isOk: true, data: []};
         }
     }
     create(){

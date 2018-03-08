@@ -3,7 +3,6 @@ class Rest {
         if (response.ok){
             return response.json()
         } else {
-            //console.log(response);
             return Promise.reject({code: response.status, description: response.statusText})
         }
     }
@@ -26,6 +25,15 @@ class Rest {
             headers: new Headers({
                 'Content-Type': 'application/json'
               })
+        }).then(this.manageFetch)
+    }
+
+    destroy(url, obj) {
+        if (obj.id){
+            url = url.replace(':id', obj.id);
+        }
+        return fetch(url, {
+            method: "DELETE",
         }).then(this.manageFetch)
     }
 }
