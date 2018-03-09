@@ -5,7 +5,7 @@ from .models import RawDataSource, StatusReport, StatusReportRow
 class RawDataSerializer(serializers.ModelSerializer):
      class Meta:
         model = RawDataSource
-        fields = ('kind', 'movement_name', 'date', 'date_value', 'details', 'value')
+        fields = ('kind', 'movement_name', 'date', 'date_value', 'details', 'value', 'tags')
 
 class StatusReportSerializer(serializers.ModelSerializer):
     class Meta:
