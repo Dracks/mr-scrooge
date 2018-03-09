@@ -7,6 +7,10 @@ export const fetchTags = ()=>{
     return fetchAction('/api/tag/', FETCH_TAGS);
 }
 
+export const updateTags = ()=>{
+    return fetchAction('/api/tag/', FETCH_TAGS, true);
+}
+
 export const fetchFiltersTypes = () =>{
     return fetchAction('/api/tag-filter/types', FETCH_FILTER_TYPES)
 }

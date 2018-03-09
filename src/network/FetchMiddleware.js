@@ -7,7 +7,8 @@ export default store => next => action => {
         store.dispatch({
             type: action.payload.action, 
             payload: {
-                isLoading: true
+                isLoading: true,
+                reload: action.payload.reload
             }
         })
         Rest.get(action.payload.url, action.payload.request)

@@ -9,14 +9,14 @@ export default function withLoading(WrappedComponent, Loading, dataName, initial
                 newValue[dataName]= data.data;
                 var newProps = Object.assign({}, props, newValue);
                 return <WrappedComponent {...newProps} />
-            } else {
-                return <Loading className={props.className} />
             }
         } else {
             if (initialize){
                 props[initialize](props)
+            } else {
+                return <div></div>;
             }
-            return <div></div>;
         }
+        return <Loading className={props.className} />
     }
 }

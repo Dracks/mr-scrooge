@@ -1,15 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { WithNotFound } from '../../components/NotFound';
 import Form from './Form';
+import {updateTags} from './Actions';
 
-const Edit = ({tags, match}) => {
-    var id=match.params.id
-    var l=tags.filter((e)=> e.id==id)
+const NotFoundForm = WithNotFound(Form, 'value');
+
+const Edit = ({tags, match, updateTags}) => {
+    var id=parseInt(match.params.id, 10)
+    var l=tags.filter((e)=> e.id===id)
     var tag = l[0]
-    
     return (
-        <Form value={tag} />
+        <NotFoundForm value={tag} updateTags={updateTags}/>
     )
 }
 
@@ -18,4 +21,5 @@ const mapStateToProps = state => {
         tags: state.tags.data
     }
 }
-export default connect(mapStateToProps)(Edit)
+
+export default connect(mapStateToProps, {updateTags})(Edit)

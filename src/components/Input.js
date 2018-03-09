@@ -18,6 +18,13 @@ class Input extends Component {
         this.getState = this.getState.bind(this)
     }
 
+    componentWillReceiveProps(newProps) {
+        if (newProps !== this.props){
+            this.value = newProps.value;
+            this.setState(this.getState);
+        }
+    }
+
     getState(){
         var state = {
             onChange: eventHandler((e)=>{this.onChange(e)}),
