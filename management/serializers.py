@@ -4,11 +4,10 @@ from .models import Tag, Filter
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('id', 'name', 'values', 'filters')
+        fields = ('id', 'name', 'values', 'filters', 'negate_conditional')
 
 
 class FilterSerializer(serializers.ModelSerializer):
-    negate_conditional = serializers.BooleanField()
     class Meta:
         model = Filter
-        fields = ('tag', 'type_conditional', 'conditional', 'negate_conditional')
+        fields = ('id', 'tag', 'type_conditional', 'conditional')

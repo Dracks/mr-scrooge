@@ -18,6 +18,7 @@ class TagViewSet(viewsets.ModelViewSet):
 class FilterViewSet(viewsets.ModelViewSet):
     queryset = Filter.objects.all()
     serializer_class = FilterSerializer
+    filter_fields = ('tag', )
 
     @list_route(methods=['get'])
     def types(self, request):

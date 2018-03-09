@@ -75,7 +75,7 @@ FILTER_CONDITIONALS = (
 class Tag(models.Model):
     name = models.CharField(max_length=200)
     values = models.ManyToManyField(RawDataSource,through='ValuesToTag')
-    negate_conditional = models.IntegerField(default=0)
+    negate_conditional = models.BooleanField(default=False)
 
     def apply_filters(self):
         filter_list = self.filters.all()
