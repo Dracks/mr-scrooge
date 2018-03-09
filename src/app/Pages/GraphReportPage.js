@@ -10,7 +10,14 @@ import { fetchRawData } from "../RawData/Actions";
 
 const GraphReport = (props)=>{
     return (
-        <Compare data={props.data} />
+        <div className="row">
+            <div className="col s6">
+                <Compare data={props.data} />
+            </div>
+            <div className="col s6">
+                Segona comparativa
+            </div>
+        </div>
     )
 }
 

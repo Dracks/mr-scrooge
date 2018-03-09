@@ -7,8 +7,9 @@ let CompareByMonth = (props)=>{
     const start = new Date();
     const end = new Date();
     start.setMonth(start.getMonth()-3);
+    start.setDate(1);
     var data = props.data.filter((e)=>{
-        return e.date>start && e.date < end && e.value <0;
+        return e.tags.indexOf(1)!== -1 && e.date>start && e.date < end && e.value <0;
     }).map(e=>{
         return {date: e.date, value: -e.value};
     });
