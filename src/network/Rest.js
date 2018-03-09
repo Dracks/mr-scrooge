@@ -34,7 +34,9 @@ class Rest {
         }
         return fetch(url, {
             method: "DELETE",
-        }).then(this.manageFetch)
+        }).then((response)=>{
+            return response.text()
+        })
     }
 }
 

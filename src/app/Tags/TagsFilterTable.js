@@ -11,18 +11,24 @@ import Select from '../../components/Select';
 
 import { fetchFiltersTypes } from "./Actions";
 
-const FilterRowEmpty = ({filter, types}) => {
+const FilterRowEmpty = ({filter, types, onDelete}) => {
     const options = [{"key":"", "value":"Select"}].concat(Object.keys(types).map((e)=>{ return {"key":e, "value":types[e]}}))
     const save=()=>{
         Rest.save('/api/tag-filter/:id/',filter).then(data=>{
             filter = data;
         })
     }
+    const deleteRow=()=>{
+        Rest.destroy('/api/tag-filter/:id/', filter).then((data)=>{
+            console.log(data);
+            onDelete(filter);
+        })
+    }
     return (
         <tr>
             <td><Select options={options} value={filter.type_conditional} onChange={(e)=>{filter.type_conditional=e; save()}}/></td>
             <td><Input value={filter.conditional} onBlur={(e)=>{filter.conditional=e; save()}}/></td>
-            <td><a className={ConstantsCss.Button.Delete}> Delete </a></td>
+            <td><a className={ConstantsCss.Button.Delete} onClick={eventHandler(deleteRow)}> Delete </a></td>
         </tr>
     )
 }
@@ -41,33 +47,29 @@ class TagsFilterTable extends Component {
     constructor(props){
         super();
         this.create = this.create.bind(this);
-        this.state = this.getState(props.tag.filters)
+        this.state = this.getState(props.tag)
     }
 
     componentWillReceiveProps(newProps){
         if (this.props !== newProps ){
-            this.setState(this.getState(newProps.tag.filters));
+            this.setState(this.getState(newProps.tag));
         }
     }
 
-    getState(filters){
-        if (filters.length>0){
-            var ids_list = filters.map(e=>'ids[]='+e)
-            
-            Rest.get('/api/tag-filter/?'+ids_list.join('&')).then((list)=>{
-                this.setState({
-                    isLoading: false,
-                    isOk: true,
-                    data: list
-                })
-            }, (error)=>{
-
+    getState(tag){
+        this.tag = tag;
+        Rest.get('/api/tag-filter/?tag='+tag.id).then((list)=>{
+            this.setState({
+                isLoading: false,
+                isOk: true,
+                data: list
             })
-            return {isLoading:true};
-        } else {
-            return {isLoading: false, isOk: true, data: []};
-        }
+        }, (error)=>{
+
+        })
+        return {isLoading:true};
     }
+
     create(){
         var newData = this.state.data.concat([{tag: this.props.tag.id}])
         this.setState({data: newData})
@@ -76,7 +78,7 @@ class TagsFilterTable extends Component {
         if (this.state.isLoading){
             return <Loading />
         } else if (this.state.isOk) {
-            let rowsList = this.state.data.map((e)=><FilterRow key={e.id} filter={e}/>)
+            let rowsList = this.state.data.map((e)=><FilterRow key={e.id} filter={e} onDelete={e=>this.getState(this.tag)}/>)
             return (
                 <table className={ConstantsCss.Table.Striped}>
                     <thead>
