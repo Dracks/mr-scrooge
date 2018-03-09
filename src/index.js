@@ -17,7 +17,7 @@ let store=createStore(reducers, middlewares)
 ReactDOM.render(
     <Provider store={store}>
         <Router>
-            <App />
+            <App dataStatus={{isLoading: false, data:{}}}/>
         </Router>
     </Provider>
     , document.getElementById('root'));

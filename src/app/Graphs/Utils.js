@@ -73,13 +73,13 @@ const Utils = {
         var labels = []
         Object.keys(data).forEach((key_first)=>{
             Object.keys(data[key_first]).forEach(key=>{
-                if (labels.indexOf(key)==-1){
+                if (labels.indexOf(key)===-1){
                     labels.push(key);
                 }
             });
         });
         labels = labels.sort((a,b)=>{
-            return parseInt(a)-parseInt(b)
+            return parseInt(a, 10)-parseInt(b, 10)
         });
         var datasets = Object.keys(data).map((key)=>{
             var singleData = data[key]

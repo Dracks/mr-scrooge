@@ -1,5 +1,7 @@
 import React from 'react';
 
+import ConstantsCss from '../app/Constants-CSS'
+
 const TableView = ({data, header}) =>{
     var order = []
     var headerHtml = []
@@ -13,7 +15,7 @@ const TableView = ({data, header}) =>{
     })
 
     return (
-        <table className="striped">
+        <table className={ConstantsCss.Table.Striped}>
             <thead>
                 <tr>
                     {headerHtml}

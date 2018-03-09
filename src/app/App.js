@@ -1,30 +1,66 @@
-import React, { Component } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import React from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
+import { fetchRawData } from './RawData/Actions'
+import { fetchTags } from './Tags/Actions'
+import WithLoading from '../network/LoadingHoc';
+
+import Loading from '../components/Loading';
 import Header from '../components/Header';
+import Contents from './Contents';
 import Footer from '../components/Footer';
-import RawDataPage from './Pages/RawDataPage';
-import GraphReportPage from './Pages/GraphReportPage';
+
+const PREFETCH_DATA = [
+    'allData',
+    'tags'
+]
 
 
-class App extends Component {
-  render() {
-    return (
-      <div>
-        <Header />
-        <Switch>
-            <Route
-                path="/"
-                exact
-                component={GraphReportPage} />
-            <Route
-                path="/raw-data"
-                component={RawDataPage}/>
-        </Switch>
-        <Footer />
-      </div>
-    );
-  }
+const mapStateToProps = state=>{
+    var status = null
+    var totalKeys = PREFETCH_DATA.length;
+    var count = PREFETCH_DATA.filter((e)=>{
+        return state[e] && state[e].isLoading === false
+    });
+    if (count.length === totalKeys){
+        status = {isLoading: false, data: {}};
+    } else {
+        count = PREFETCH_DATA.filter((e)=>{
+            return state[e] && state[e].isLoading === true
+        })
+        if (count.length >0 ){
+            status = {isLoading: true};
+        }
+    }
+    return {
+        dataStatus: status
+    }
 }
 
-export default App;
+const mapActionsToProps = (dispatch) => {
+    return {
+        load: ()=>{
+            dispatch(fetchRawData())
+            dispatch(fetchTags())
+        }
+    }
+}
+
+const ContentsWithLoading = WithLoading(Contents, Loading, 'dataStatus', 'load');
+const ContentsWithData = connect(mapStateToProps, mapActionsToProps)(ContentsWithLoading)
+
+const ContentsWithRouter = withRouter(ContentsWithData)
+
+const App = (props) => {
+    return (
+        <div>
+            <Header />
+            <ContentsWithRouter />
+            <Footer />
+        </div>
+    );
+}
+
+
+export default App

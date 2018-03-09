@@ -16,4 +16,12 @@ const Loading = (props) => {
     </div>)
 }
 
+const TableLoading = columns =>{
+    return props =>{
+        return <tr><td colSpan={columns}><Loading {...props}/></td></tr>;
+    }  
+}
+
 export default Loading;
+
+export { TableLoading, Loading }
