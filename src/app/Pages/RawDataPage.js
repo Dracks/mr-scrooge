@@ -5,7 +5,7 @@ import RawTableView from '../RawData/RawTableView'
 const Content = () =>{
     return (
         <div >
-            <RawTableView header={ {"kind":"kind", "movement_name": "movement name", "value":"import"} } />
+            <RawTableView header={ {"kind":"kind", "tags": "tags", "movement_name": "movement name", "value":"import", "date":"date"} } />
         </div>
     )
 }
