@@ -9,10 +9,15 @@ import { fetchRawData } from "../RawData/Actions";
 
 
 const GraphReport = (props)=>{
+    const start = new Date();
+    const end = new Date();
+    start.setMonth(start.getMonth()-3);
+    start.setDate(1);
+    let data = props.data.filter((e)=> e.date > start && e.date < end)
     return (
         <div className="row">
             <div className="col s6">
-                <Compare data={props.data} />
+                <Compare data={data} />
             </div>
             <div className="col s6">
                 Segona comparativa
