@@ -45,18 +45,18 @@ class ExcelSourceFile(AbstractSourceFile):
         return list(map(mapping_excel, irow))
 
 class CsvSourceFile(AbstractSourceFile):
-    def __init__(self, filename, discard):
+    def __init__(self, filename, discard, **kargs):
         super(CsvSourceFile, self).__init__(discard)
         self.__file = open(filename, 'r')
-        self.reader = csv.reader(self.__file)
+        self.reader = csv.reader(self.__file, **kargs)
         for _ in range(0, self._discard):
-            self.reader.next()
+            self.reader.__next__()
 
     def reset(self):
         raise Exception("Not implemented")
 
-    def next(self):
-        return self.reader.next()
+    def __next__(self):
+        return self.reader.__next__()
 
 
 class HtmlSourceFile(AbstractSourceFile):
