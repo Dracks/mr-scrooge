@@ -71,8 +71,6 @@ class HtmlSourceFile(AbstractSourceFile):
         if self.location == self.__length:
             raise StopIteration
         children = pq(self.__rows[self.location]).children()
-        print(children)
-
         return list(map(lambda e: e.text, children))
 
 
