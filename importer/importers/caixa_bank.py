@@ -33,7 +33,7 @@ class CaixaBankCardOld(CaixaBankAccount):
         'details':6
     }
 
-    exp = re.compile('^(.* )?(\d*.\d*\,\d*) (.*)$')
+    exp = re.compile(r'^(.* )?(\d*.\d*\,\d*) (.*)$')
 
     def build(self, data):
         if "Operaciones" in data[0]:
