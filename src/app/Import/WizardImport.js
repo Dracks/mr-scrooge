@@ -1,17 +1,20 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import ConstantsCss from '../Constants-CSS';
 import withLoading from '../../network/LoadingHoc';
 import Select from '../../components/Select';
 import Loading from '../../components/Loading';
 import InputFile from '../../components/InputFile';
+import Message from '../../components/Message';
 
 import { eventHandler } from '../Utils';
 
-import { fetchImportKinds } from "./Actions";
+import { fetchImportKinds, updateStatus } from "./Actions";
 
-const WizardImport = ({acceptedKinds})=>{
+const WizardImport = ({acceptedKinds, updateStatus})=>{
     const listKinds = [{key:'', value:'Select'}].concat(acceptedKinds.map((e)=>{return {key:e, value:e}}))
+    var showMessage;
     var obj = {}
     const selectedFile = (e)=>{
         obj.kind = e;
@@ -27,14 +30,26 @@ const WizardImport = ({acceptedKinds})=>{
             method: 'POST',
             body: formData
         }).then(response=>{
-            console.log(response);
+            if (showMessage){
+                showMessage(ConstantsCss.Message.Ok, "Saved correctly", JSON.stringify(response));
+            }
+            updateStatus();
         })
     }
     return (
         <div className="row">
-            <Select options={listKinds} onChange={selectedFile}/>
-            <InputFile onChange={changeFile}/>
-            <button onClick={eventHandler(sent)} className="btn">Submit</button>
+            <div className="col s4">
+                <Select options={listKinds} onChange={selectedFile}/>
+            </div>
+            <div className="col s6">
+                <InputFile onChange={changeFile}/>
+            </div>
+            <div className="col s2">
+                <button onClick={eventHandler(sent)} className="btn">Submit</button>
+            </div>
+            <div className="col s12">
+                <Message register={(c)=>{showMessage=c}}/>
+            </div>
         </div>
         )
 }
@@ -42,4 +57,4 @@ const mapStateToProps = ({acceptedKinds}) => {
     return { acceptedKinds }
 }
 const WizardImportLoading = withLoading(WizardImport, Loading, 'acceptedKinds', 'fetchImportKinds')
-export default connect( mapStateToProps, { fetchImportKinds })(WizardImportLoading);
+export default connect( mapStateToProps, { fetchImportKinds, updateStatus })(WizardImportLoading);
