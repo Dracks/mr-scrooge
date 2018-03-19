@@ -16,11 +16,7 @@ const ConnectionHoc = (Component, url, property) => {
 
         fetchData(){
             this.setState({[property] : {isLoading: true}} );
-
             Rest.get(url)
-            .then((response)=>{
-                return response.json();
-            })
             .then((data)=>{
                 var newState = {}
                 newState[property] = {

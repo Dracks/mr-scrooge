@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import withLoading from '../../network/LoadingHoc';
 import Select from '../../components/Select';
 import Loading from '../../components/Loading';
-import Input from '../../components/Input';
 import InputFile from '../../components/InputFile';
 
 import { eventHandler } from '../Utils';
