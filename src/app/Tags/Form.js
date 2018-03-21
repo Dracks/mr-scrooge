@@ -5,10 +5,15 @@ import Rest from '../../network/Rest';
 import {eventHandler} from '../Utils';
 import MessageComponent from '../../components/Message';
 import Input from '../../components/Input';
-import Checkbox from '../../components/Checkbox';
+import Select from '../../components/Select';
 
 
 import TagsFilterTable from './TagsFilterTable';
+
+const negate_options = [
+    {key: true, value: "not ($cond1 and $cond2 ...)"},
+    {key: false, value: "cond1 or cond2 ..."}
+]
 
 const Form = ({value, updateTags}) => {
     var showMessage;
@@ -62,9 +67,8 @@ const Form = ({value, updateTags}) => {
             <div className="input-field col s5">
                 <Input placeholder="Name" type="text" value={tag.name} onBlur={e=>{tag.name=e; save()}}/>
             </div>
-            <div className="input-field col s2 ">
-                <Checkbox id='negate_conditional'/>
-                <label htmlFor='negate_conditional'>Negate conditional </label>
+            <div className="col s2 ">
+                <Select options={negate_options} value={tag.negate_conditional} onChange={(e)=>{tag.negate_conditional=e; save()}}/>
             </div>
             <div className="input-field col s5">
                 <a className={ConstantsCss.Button.Normal} onClick={eventHandler(apply)}>Apply</a>

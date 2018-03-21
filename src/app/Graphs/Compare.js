@@ -21,7 +21,7 @@ let CompareByMonth = (props)=>{
     return (
         <div>
             <div className="col s12">
-                <Line data={chartData} options={chartOptions} width="600" height="250"/>
+                <Line data={chartData} options={chartOptions} width={600} height={250}/>
             </div>
         </div>
     )

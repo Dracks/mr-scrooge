@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import StatusRowTableView from './StatusRowsTableView';
 
 const StatusImport = ({match, status}) => {
-    const id = match.params.id
-    const data = status.filter(e=>e.id==id)[0];
+    const id = parseInt(match.params.id, 10)
+    const data = status.filter(e=>e.id===id)[0];
 
     
     return (
