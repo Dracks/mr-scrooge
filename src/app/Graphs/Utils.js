@@ -25,6 +25,8 @@ const LIST_COLORS_LINE = LIST_COLORS.map((color) => {
     }
 });
 
+const monthGroupLambda = (e) => new moment(e.date).format("YYYY-MM");
+
 const Utils = {
     applyColors: (datasets)=>{
         var colorsKeys = Object.keys(LIST_COLORS_LINE[0]);
@@ -50,12 +52,20 @@ const Utils = {
         return r;
     },
     getGrouppedByMonthAndDay:(data)=>{
-        var FirstGroup = Utils.getGrouppedByLambda(data, (e)=>new moment(e.date).format("YYYY-MM"));
+        var FirstGroup = Utils.getGrouppedByLambda(data, monthGroupLambda);
         Object.keys(FirstGroup).forEach((key)=>{
             let values = FirstGroup[key];
             FirstGroup[key] = Utils.getGrouppedByLambda(values, (e)=>e.date.getDate());
         });
         return FirstGroup
+    },
+    getGrouppedByMonthAndSign: (data)=>{
+        var FirstGroup = Utils.getGrouppedByLambda(data, (e)=> e.value<0? "out":"in");
+        Object.keys(FirstGroup).forEach((key)=>{
+            let values = FirstGroup[key];
+            FirstGroup[key] = Utils.getGrouppedByLambda(values, monthGroupLambda)
+        })
+        return FirstGroup;
     },
     sumGroups:(data)=>{
         var ret = {}
@@ -69,7 +79,12 @@ const Utils = {
         });
         return ret;
     },
-    toChartJs2Axis:(data)=>{
+    toChartJs2Axis:(data, sort_lambda)=>{
+        if (!sort_lambda){
+            sort_lambda = (a,b)=>{
+                return parseInt(a, 10)-parseInt(b, 10)
+            }
+        }
         var labels = []
         Object.keys(data).forEach((key_first)=>{
             Object.keys(data[key_first]).forEach(key=>{
@@ -78,9 +93,8 @@ const Utils = {
                 }
             });
         });
-        labels = labels.sort((a,b)=>{
-            return parseInt(a, 10)-parseInt(b, 10)
-        });
+        
+        labels = labels.sort(sort_lambda);
         var datasets = Object.keys(data).map((key)=>{
             var singleData = data[key]
             var obj = {

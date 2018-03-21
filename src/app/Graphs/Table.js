@@ -3,19 +3,22 @@ import { Line } from "react-chartjs-2";
 
 import Utils from './Utils';
 
-let CompareByMonth = (props)=>{
+const TableWithData = (props)=>{
     var data = props.data.filter((e)=>{
-        return e.tags.indexOf(1)!== -1 && e.value <0;
+        return e.tags.indexOf(1)!== -1;
     }).map(e=>{
-        return {date: e.date, value: -e.value};
+        return {date: e.date, value: e.value};
     });
     var chartOptions = {}
     var chartData = 
         Utils.toChartJs2Axis(
-            Utils.sumGroups(Utils.getGrouppedByMonthAndDay(data))
+            Utils.sumGroups(Utils.getGrouppedByMonthAndSign(data)),
+            (a,b) => {
+                return a.localeCompare(b);
+            }
         )
     chartData.datasets = Utils.applyColors(chartData.datasets);
-    Utils.acumChartJs2Axis(chartData);
+    //Utils.acumChartJs2Axis(chartData);
 
     return (
         <div>
@@ -26,4 +29,4 @@ let CompareByMonth = (props)=>{
     )
 }
 
-export default CompareByMonth;
+export default TableWithData

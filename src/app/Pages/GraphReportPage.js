@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import WithLoading from '../../network/LoadingHoc';
 
 import Compare from '../Graphs/Compare';
+import Table from '../Graphs/Table';
 import Loading from '../../components/Loading';
 import { fetchRawData } from "../RawData/Actions";
 
@@ -20,7 +21,7 @@ const GraphReport = (props)=>{
                 <Compare data={data} />
             </div>
             <div className="col s6">
-                Segona comparativa
+                <Table data={data} />
             </div>
         </div>
     )
