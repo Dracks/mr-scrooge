@@ -125,6 +125,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# File uploads
+# https://docs.djangoproject.com/en/2.0/topics/http/file-uploads/#upload-handlers
+
+FILE_UPLOAD_HANDLERS = ["django.core.files.uploadhandler.TemporaryFileUploadHandler"]
+
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend', 'finances.filters.CoalesceFilterBackend',)
 }

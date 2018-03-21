@@ -10,4 +10,9 @@ class RawDataSerializer(serializers.ModelSerializer):
 class StatusReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = StatusReport
-        fields = ('date', 'file_name', 'status', 'description')
+        fields = ('kind', 'id', 'date', 'file_name', 'status', 'description', 'rows')
+
+class StatusReportRowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StatusReportRow
+        fields = ('movement_name', 'date', 'date_value', 'details', 'value', 'message')
