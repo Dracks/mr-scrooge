@@ -5,8 +5,6 @@ const ACTIONS = {
 
 export default ACTIONS
 
-
-
 export const fetchAction = (url, action, reload)=>{
     return {
         type: ACTIONS.FETCH,
