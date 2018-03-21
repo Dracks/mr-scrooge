@@ -59,10 +59,16 @@ class CsvSourceFile(AbstractSourceFile):
         return self.reader.__next__()
 
 
+def get_text_stripped(e):
+    t = e.text
+    if t is not None:
+        t = t.strip()
+    return t
+
 class HtmlSourceFile(AbstractSourceFile):
     def __init__(self,filename, discard):
         super(HtmlSourceFile, self).__init__(discard)
-        data = pq(open('tests/lista_movimientos.xls', encoding = "ISO-8859-1").read())
+        data = pq(open(filename, encoding = "ISO-8859-1").read())
         self.__rows = data('tr')
         self.__length = len(self.__rows)
 
@@ -71,6 +77,7 @@ class HtmlSourceFile(AbstractSourceFile):
         if self.location == self.__length:
             raise StopIteration
         children = pq(self.__rows[self.location]).children()
-        return list(map(lambda e: e.text, children))
+        #row = map(lambda e: e.text.strip(), children)
+        return list(map(get_text_stripped, children))
 
 
