@@ -49,13 +49,6 @@ class CaixaBankCardOld(CaixaBankAccount):
 class CaixaBankCard(CaixaBankCardOld):
     key="caixa-bank/card"
 
-    _mapping = {
-        'movement_name':0,
-        'date': 1,
-        'value': 2,
-        'details':4
-    }
-
 
     def _creator(self, file_name):
         return HtmlSourceFile(file_name, 1)

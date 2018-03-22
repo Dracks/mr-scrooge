@@ -20,10 +20,8 @@ class AbstractRawDataSource(models.Model):
     value=models.FloatField()
 
     def __str__(self):
-        return "k:{} m:{} d:{} v:{}".format(self.kind, self.movement_name, self.date, self.value)
+        return "k:{} m:{} d:{} v:{} dd:{}$".format(self.kind, self.movement_name, self.date, self.value, self.details)
 
-    def __unicode__(self):
-        return "k:{} m:{} d:{} v:{}".format(self.kind, self.movement_name, self.date, self.value)
     class Meta:
         abstract = True
 
@@ -34,7 +32,7 @@ class RawDataSource(AbstractRawDataSource):
         indexes = [
             models.Index(fields=['kind', 'movement_name', 'date', 'value'])
         ]
-        ordering = ('-date', '-date_value')
+        ordering = ('-date', '-date_value', 'movement_name')
 
 class StatusReport(models.Model):
     kind = models.CharField(max_length=255)

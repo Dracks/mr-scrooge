@@ -62,13 +62,13 @@ class CsvSourceFile(AbstractSourceFile):
 def get_text_stripped(e):
     t = e.text
     if t is not None:
-        t = t.strip()
+        t = t.replace("\xa0"," ").strip()
     return t
 
 class HtmlSourceFile(AbstractSourceFile):
     def __init__(self,filename, discard):
         super(HtmlSourceFile, self).__init__(discard)
-        data = pq(open(filename, encoding = "ISO-8859-1").read())
+        data = pq(open(filename, encoding = "cp1252").read())
         self.__rows = data('tr')
         self.__length = len(self.__rows)
 
