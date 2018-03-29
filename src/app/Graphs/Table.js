@@ -1,7 +1,7 @@
 import React from 'react';
 import { Line } from "react-chartjs-2";
 
-import Utils from './Utils';
+import Utils, {monthGroupLambda, signGroupLambda} from './Utils';
 
 const TableWithData = (props)=>{
     var data = props.data.filter((e)=>{
@@ -12,7 +12,14 @@ const TableWithData = (props)=>{
     var chartOptions = {}
     var chartData = 
         Utils.toChartJs2Axis(
-            Utils.sumGroups(Utils.getGrouppedByMonthAndSign(data)),
+            Utils.joinGroups(
+                Utils.getGrouppedForGraph(data, signGroupLambda, monthGroupLambda),
+                (data)=>{
+                    var d= Math.abs(data.map((e)=>e.value)
+                        .reduce((ac, e)=>ac+e));
+                    return d;
+                }
+            ),
             (a,b) => {
                 return a.localeCompare(b);
             }

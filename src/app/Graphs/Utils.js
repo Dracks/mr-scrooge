@@ -25,7 +25,9 @@ const LIST_COLORS_LINE = LIST_COLORS.map((color) => {
     }
 });
 
-const monthGroupLambda = (e) => new moment(e.date).format("YYYY-MM");
+export const monthGroupLambda = (e) => new moment(e.date).format("YYYY-MM");
+export const dayGroupLambda = (e)=>e.date.getDate();
+export const signGroupLambda = (e)=> e.value<0? "out":"in";
 
 const Utils = {
     applyColors: (datasets)=>{
@@ -51,34 +53,29 @@ const Utils = {
         })
         return r;
     },
-    getGrouppedByMonthAndDay:(data)=>{
-        var FirstGroup = Utils.getGrouppedByLambda(data, monthGroupLambda);
+    getGrouppedForGraph:(data, groupLambda, valueLambda)=>{
+        var FirstGroup = Utils.getGrouppedByLambda(data, groupLambda);
         Object.keys(FirstGroup).forEach((key)=>{
             let values = FirstGroup[key];
-            FirstGroup[key] = Utils.getGrouppedByLambda(values, (e)=>e.date.getDate());
+            FirstGroup[key] = Utils.getGrouppedByLambda(values, valueLambda);
         });
         return FirstGroup
     },
-    getGrouppedByMonthAndSign: (data)=>{
-        var FirstGroup = Utils.getGrouppedByLambda(data, (e)=> e.value<0? "out":"in");
-        Object.keys(FirstGroup).forEach((key)=>{
-            let values = FirstGroup[key];
-            FirstGroup[key] = Utils.getGrouppedByLambda(values, monthGroupLambda)
-        })
-        return FirstGroup;
-    },
-    sumGroups:(data)=>{
+    getGrouppedByMonthAndDay:(data)=>Utils.getGrouppedForGraph(data, monthGroupLambda, dayGroupLambda),
+    getGrouppedByMonthAndSign: (data)=>Utils.getGrouppedForGraph(data, signGroupLambda, monthGroupLambda),
+    joinGroups:(data, callback)=>{
         var ret = {}
         Object.keys(data).forEach(key_first => {
             var subGroup = data[key_first];
             if (subGroup instanceof Array){
-                ret[key_first] = subGroup.reduce((ac,e)=>ac+e.value, 0);
+                ret[key_first] = callback(subGroup);
             } else {
-                ret[key_first] = Utils.sumGroups(subGroup);
+                ret[key_first] = Utils.joinGroups(subGroup, callback);
             }
         });
         return ret;
     },
+    sumGroups:(data)=>Utils.joinGroups(data, (data)=>data.reduce((ac,e)=>ac+e.value, 0)),
     toChartJs2Axis:(data, sort_lambda)=>{
         if (!sort_lambda){
             sort_lambda = (a,b)=>{
