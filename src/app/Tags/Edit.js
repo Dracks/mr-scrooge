@@ -7,18 +7,19 @@ import {updateTags} from './Actions';
 
 const NotFoundForm = WithNotFound(Form, 'value');
 
-const Edit = ({tags, match, updateTags}) => {
+const Edit = ({tags, match, updateTags, hashTags}) => {
     var id=parseInt(match.params.id, 10)
     var l=tags.filter((e)=> e.id===id)
     var tag = l[0]
     return (
-        <NotFoundForm value={tag} updateTags={updateTags}/>
+        <NotFoundForm value={tag} {...{updateTags, hashTags, tags}}/>
     )
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = ({tags, hashTags}) => {
     return {
-        tags: state.tags.data
+        tags: tags.data,
+        hashTags
     }
 }
 

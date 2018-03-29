@@ -11,13 +11,29 @@ import Select from '../../components/Select';
 import TagsFilterTable from './TagsFilterTable';
 
 const negate_options = [
-    {key: true, value: "not cond1 and not cond2 ...)"},
-    {key: false, value: "cond1 or cond2 ..."}
+    {key: false, value: "cond1 or cond2 ..."},
+    {key: true, value: "not cond1 and not cond2 ..."}
 ]
 
-const Form = ({value, updateTags}) => {
+const Form = ({value, updateTags, hashTags, tags}) => {
     var showMessage;
     var tag = value;
+
+    var notShownListTags = [];
+    if (value.id){
+        var listChildren = [value.id];
+        while(listChildren.length){
+            var first = listChildren.shift()
+            notShownListTags.push(first);
+            hashTags[first].children.forEach(e=>{
+                listChildren.push(e);
+            });
+        }
+    }
+
+    let parent_list = [{key:'', value:'No parent'}].concat(tags
+        .filter(({id})=>notShownListTags.indexOf(id)==-1)
+        .map(({id, name})=>{return {key:id, value:name}}));
 
     let save = () => {
         Rest.save('/api/tag/:id/', tag).then(
@@ -64,11 +80,16 @@ const Form = ({value, updateTags}) => {
 
     return (
         <div className="row">
+            <div className="col s6 ">
+                <label>Parent:</label>
+                <Select options={parent_list} value={tag.parent} onChange={(e)=>{tag.parent = e; save()}}/>
+            </div>
+            <div className="col s6 ">
+                <label>Management of conditions</label>
+                <Select options={negate_options} value={tag.negate_conditional} onChange={(e)=>{tag.negate_conditional=e; save()}}/>
+            </div>
             <div className="input-field col s5">
                 <Input placeholder="Name" type="text" value={tag.name} onBlur={e=>{tag.name=e; save()}}/>
-            </div>
-            <div className="col s2 ">
-                <Select options={negate_options} value={tag.negate_conditional} onChange={(e)=>{tag.negate_conditional=e; save()}}/>
             </div>
             <div className="input-field col s5">
                 <a className={ConstantsCss.Button.Normal} onClick={eventHandler(apply)}>Apply</a>
