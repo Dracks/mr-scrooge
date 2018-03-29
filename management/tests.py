@@ -81,6 +81,28 @@ class TagModelTest(TestCase):
         self.assertEqual(self.subject.values.first(), self.rds_list[1])
         self.assertEqual(report['deleted'], 1)
         self.assertEqual(report['inserted'], 0)
+    
+    def test_apply_filters_parent(self):
+        subject = self.subject
+        parent = Tag(name="parent")
+        parent.save()
+        subject.parent = parent
+        subject.save()
+
+        f = Filter(
+            tag = subject,
+            type_conditional = FilterConditionals.PREFIX,
+            conditional = "movement"
+        )
+        f.save()
+        ValuesToTag.objects.create(tag=parent, raw_data_source = self.rds_list[5], automatic=1).save()
+        subject.apply_filters()
+        self.assertEqual(self.subject.values.count(), 1)
+        self.assertEqual(self.subject.values.first(), self.rds_list[5])
+        subject.parent = None
+        subject.save()
+        parent.delete()
+
 
 
 class FilterModelTests(TestCase):

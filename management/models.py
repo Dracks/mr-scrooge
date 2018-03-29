@@ -73,14 +73,13 @@ FILTER_CONDITIONALS = (
 )
 
 class Tag(models.Model):
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True, on_delete=models.PROTECT)
     name = models.CharField(max_length=200)
     values = models.ManyToManyField(RawDataSource, through='ValuesToTag', related_name='tags')
     negate_conditional = models.BooleanField(default=False)
 
-    def apply_filters(self):
+    def apply_filters_source(self, rds):
         filter_list = self.filters.all()
-        deleted_relations = ValuesToTag.objects.filter(tag=self, automatic=1).delete()
-        count = 0
         if len(filter_list):
             if not self.negate_conditional:
                 reducer = lambda ac, v: ac or v
@@ -89,12 +88,26 @@ class Tag(models.Model):
                 reducer = lambda ac, v: ac and not v
                 initial = True
             
-            for rds in RawDataSource.objects.all():
-                l=map(lambda e: e.isValid(rds), filter_list)
-                isFilter = reduce(reducer, l, initial)
-                if isFilter:
-                    count += 1
-                    ValuesToTag.objects.create(tag=self, raw_data_source=rds, automatic=1)
+            l=map(lambda e: e.isValid(rds), filter_list)
+            isFilter = reduce(reducer, l, initial)
+            if isFilter:
+                ValuesToTag.objects.create(tag=self, raw_data_source=rds, automatic=1)
+
+            return isFilter
+
+    def apply_filters(self):
+        deleted_relations = ValuesToTag.objects.filter(tag=self, automatic=1).delete()
+        count = 0
+
+        if not self.parent:
+            source_list = RawDataSource.objects.all()
+        else:
+            source_list = self.parent.values.all()
+        
+        for rds in source_list:
+            if self.apply_filters_source(rds):
+                count += 1
+
         return {
             'deleted': deleted_relations[0],
             'inserted': count
@@ -104,7 +117,7 @@ class Tag(models.Model):
         return self.name
 
 class ValuesToTag(models.Model):
-    raw_data_source = models.ForeignKey(RawDataSource, on_delete=None)
+    raw_data_source = models.ForeignKey(RawDataSource, on_delete=models.PROTECT)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     enable = models.IntegerField(default=1) # By default we enable it, only to disable manually. 
     automatic = models.IntegerField()

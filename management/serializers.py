@@ -2,9 +2,10 @@ from rest_framework import serializers
 from .models import Tag, Filter
 
 class TagSerializer(serializers.ModelSerializer):
+    children = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
     class Meta:
         model = Tag
-        fields = ('id', 'name', 'values', 'filters', 'negate_conditional')
+        fields = ('id', 'parent', 'children', 'name', 'values', 'filters', 'negate_conditional')
 
 
 class FilterSerializer(serializers.ModelSerializer):
