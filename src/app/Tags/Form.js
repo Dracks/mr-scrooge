@@ -11,7 +11,7 @@ import Select from '../../components/Select';
 import TagsFilterTable from './TagsFilterTable';
 
 const negate_options = [
-    {key: true, value: "not ($cond1 and $cond2 ...)"},
+    {key: true, value: "not cond1 and not cond2 ...)"},
     {key: false, value: "cond1 or cond2 ..."}
 ]
 
