@@ -20,7 +20,8 @@ class ImportViewSet(viewsets.ViewSet):
         kind = data.get('kind')
         key = data.get('key')
         fileName = data.get('file').temporary_file_path()
-        FORMAT_LIST[kind](fileName, key).run()
+        importer = FORMAT_LIST[kind](fileName, key)
+        importer.run()
         return Response({})
 
 class StatusReportViewSet(viewsets.ReadOnlyModelViewSet):

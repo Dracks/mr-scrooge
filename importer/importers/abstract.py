@@ -1,6 +1,7 @@
 import traceback
 
 from ..models import RawDataSource, StatusReport, StatusReportRow, IMPORT_STATUS
+from management.models import Tag
 
 class AbstractImporter():
     key='abstract'
@@ -41,8 +42,18 @@ class AbstractImporter():
         status.report = self.status
         status.save()
 
+    def apply_filters(self):
+        root_list = list(Tag.objects.filter(parent=None))
+        for movement in self.movements:
+            tags_to_filter = root_list[:]
+            while len(tags_to_filter)>0:
+                tag = tags_to_filter.pop()
+                if tag.apply_filters_source(movement):
+                    tags_to_filter.extend(tag.children.all())
+
     def run(self):
         status = self.status
+        self.movements = []
         try: 
             previous = None
             discarting = True
@@ -59,9 +70,11 @@ class AbstractImporter():
                         if previous is not None:
                             self.addError(previous, "Repeated row, but inserted")
                             previous.save()
+                            self.movements.append(source)
                             previous = None
                         discarting = False
                         source.save()
+                        self.movements.append(source)
                     else:
                         if not discarting:
                             previous = source

@@ -3,7 +3,73 @@ import os
 
 from ..models import RawDataSource, StatusReport, StatusReportRow, IMPORT_STATUS
 from ..importers import caixa_bank
+
+from management.models import Tag, Filter, FilterConditionals
+
+from .classes.importer import TestAccount, SAMPLE_DATA
+
 PATH = os.path.dirname(__file__)
+
+
+
+
+class AbstractImportTest(TestCase):
+    def setUp(self):
+        self.subject = TestAccount(SAMPLE_DATA)
+
+    def tearDown(self):
+        Tag.objects.all().delete()
+        RawDataSource.objects.all().delete()
+        StatusReportRow.objects.all().delete()
+        StatusReport.objects.all().delete()
+
+    def test_insert(self):
+        self.subject.run()
+        self.assertEquals(RawDataSource.objects.all().count(), 4)
+
+    def test_insert_with_tag(self):
+        tag = Tag(name="Parent")
+        tag.save()
+        f1 = Filter(
+            tag=tag, 
+            type_conditional=FilterConditionals.PREFIX,
+            conditional="first")
+        f1.save()
+
+        self.subject.run()
+        self.subject.apply_filters()
+        
+        self.assertEqual(tag.values.count(), 2)
+
+        tag.delete()
+
+    def test_insert_with_tag_inheritance(self):
+        tag = Tag(name="Parent")
+        tag.save()
+        f1 = Filter(
+            tag=tag, 
+            type_conditional=FilterConditionals.PREFIX,
+            conditional="first")
+        f1.save()
+
+        child = Tag(name="Child", parent=tag)
+        child.save()
+        f2 = Filter(
+            tag=child,
+            type_conditional=FilterConditionals.SUFFIX,
+            conditional="second"
+        )
+        f2.save()
+
+
+        self.subject.run()
+        self.subject.apply_filters()
+        
+        self.assertEqual(tag.values.count(), 2)
+        self.assertEqual(child.values.count(), 1)
+        
+        child.delete()
+
 
 class CaixaBankCardTests(TransactionTestCase):
     def setUp(self):
@@ -17,7 +83,7 @@ class CaixaBankCardTests(TransactionTestCase):
             self.assertTrue(False)
 
 
-    def __test_insert(self):
+    def test_insert(self):
         self.subject.run()
         self.assertEquals(RawDataSource.objects.all().count(), 4)
         self.check_errors(IMPORT_STATUS.ERROR)
