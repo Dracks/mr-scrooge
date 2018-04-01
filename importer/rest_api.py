@@ -22,7 +22,8 @@ class ImportViewSet(viewsets.ViewSet):
         fileName = data.get('file').temporary_file_path()
         importer = FORMAT_LIST[kind](fileName, key)
         importer.run()
-        return Response({})
+        importer.apply_filters()
+        return Response(StatusReportSerializer(importer.status).data)
 
 class StatusReportViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = StatusReport.objects.all()

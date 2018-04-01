@@ -42,6 +42,8 @@ class CaixaBankCardOld(CaixaBankAccount):
         value = data[2]
         m = self.exp.match(value).groups()
         data[2] = - float(m[1].replace('.','').replace(',','.'))
+        while len(data)<6:
+            data.append(None)
         data.append(m[0])
         return super(CaixaBankCardOld, self).build(data)
 
