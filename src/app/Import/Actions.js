@@ -8,7 +8,7 @@ export const fetchStatus = ()=>{
 }
 
 export const updateStatus = ()=>{
-    return fetchAction('/api/status/', FETCH_IMPORT_STATUS);
+    return fetchAction('/api/status/', FETCH_IMPORT_STATUS, true);
 }
 
 export const fetchImportKinds = ()=>{

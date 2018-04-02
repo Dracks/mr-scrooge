@@ -1,13 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { WithNotFound } from '../../components/NotFound';
 import StatusRowTableView from './StatusRowsTableView';
 
-const StatusImport = ({match, status}) => {
-    const id = parseInt(match.params.id, 10)
-    const data = status.filter(e=>e.id===id)[0];
-
-    
+const StatusImportView = WithNotFound(({data})=>{
     return (
         <div className="row">
             <div className="card blue-grey">
@@ -21,6 +18,13 @@ const StatusImport = ({match, status}) => {
             <StatusRowTableView status={data} />
         </div>
     )
+}, 'data');
+
+const StatusImport = ({match, status}) => {
+    const id = parseInt(match.params.id, 10)
+    const data = status.filter(e=>e.id===id)[0];
+    
+    return <StatusImportView data={data} />
 }
 
 const mapStateToProps = state => {
