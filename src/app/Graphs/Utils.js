@@ -27,7 +27,7 @@ const LIST_COLORS_LINE = LIST_COLORS.map((color) => {
 
 export const monthGroupLambda = (e) => new moment(e.date).format("YYYY-MM");
 export const dayGroupLambda = (e)=>e.date.getDate();
-export const signGroupLambda = (e)=> e.value<0? "out":"in";
+export const signGroupLambda = (e)=> e.value<0? "expenses":"income";
 
 const Utils = {
     applyColors: (datasets)=>{

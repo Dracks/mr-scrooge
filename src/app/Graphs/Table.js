@@ -24,7 +24,7 @@ const TableWithData = (props)=>{
                 return a.localeCompare(b);
             }
         )
-    chartData.datasets = Utils.applyColors(chartData.datasets);
+    chartData.datasets = Utils.applyColors([chartData.datasets[1], chartData.datasets[0]]);
     //Utils.acumChartJs2Axis(chartData);
 
     return (
