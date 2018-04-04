@@ -2,6 +2,7 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework import viewsets
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from .models import StatusReport, StatusReportRow , RawDataSource
 from .serializers import RawDataSerializer, StatusReportSerializer, StatusReportRowSerializer
@@ -11,8 +12,12 @@ class RawDataSourceViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = RawDataSource.objects.all()
     serializer_class = RawDataSerializer
 
+    permission_classes = (IsAuthenticated,)
+
 class ImportViewSet(viewsets.ViewSet):
     parser_classes = (MultiPartParser, FormParser,)
+    
+    permission_classes = (IsAuthenticated,)
 
     @list_route(methods=['post'])
     def upload(self, request):
@@ -29,6 +34,8 @@ class StatusReportViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = StatusReport.objects.all()
     serializer_class = StatusReportSerializer
 
+    permission_classes = (IsAuthenticated,)
+
     @list_route(methods=['get'])
     def kinds(self, request):
         return Response(FORMAT_LIST.keys())
@@ -36,3 +43,5 @@ class StatusReportViewSet(viewsets.ReadOnlyModelViewSet):
 class StatusReportRowViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = StatusReportRow.objects.all()
     serializer_class = StatusReportRowSerializer
+
+    permission_classes = (IsAuthenticated,)
