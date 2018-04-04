@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 
 import ConstantsCss from '../Constants-CSS';
 import withLoading from '../../network/LoadingHoc';
+import Rest from '../../network/Rest';
 import Select from '../../components/Select';
 import Loading from '../../components/Loading';
 import InputFile from '../../components/InputFile';
@@ -27,13 +28,13 @@ const WizardImport = ({history, acceptedKinds, updateStatus, updateRawData})=>{
         var formData = new FormData();
         formData.append('kind', obj.kind);
         formData.append('file', obj.data, obj.data.name);
-        fetch('/api/import/upload/', {
+        Rest.send('/api/import/upload/', {
             method: 'POST',
             body: formData
-        }).then(response=>{
-            updateStatus();
-            return response.json()
-        }).then((data)=>{
+        })
+        .then(Rest.manageFetch)
+        .then((data)=>{
+        updateStatus();
             updateRawData();
             history.push('/import/'+data.id);
         })

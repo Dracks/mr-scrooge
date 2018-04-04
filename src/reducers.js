@@ -2,6 +2,7 @@ import { combineReducers } from "redux";
 import moment from 'moment';
 
 import fetchReducer from "./network/FetchReducer";
+import { FETCH_SESSION_DATA } from './app/Session/Actions';
 import { FETCH_RAW_DATA } from './app/RawData/Actions';
 import { FETCH_IMPORT_STATUS, FETCH_IMPORT_KINDS } from './app/Import/Actions';
 import { FETCH_TAGS, FETCH_FILTER_TYPES } from './app/Tags/Actions';
@@ -21,5 +22,6 @@ export default combineReducers({
     acceptedKinds: fetchReducer(FETCH_IMPORT_KINDS),
     tags: fetchReducer(FETCH_TAGS),
     hashTags: fetchTagsReducer,
-    filterTypes: fetchReducer(FETCH_FILTER_TYPES)
+    filterTypes: fetchReducer(FETCH_FILTER_TYPES),
+    session: fetchReducer(FETCH_SESSION_DATA),
 });

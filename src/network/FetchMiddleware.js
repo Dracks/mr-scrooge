@@ -11,7 +11,8 @@ export default store => next => action => {
                 reload: action.payload.reload
             }
         })
-        Rest.get(action.payload.url, action.payload.request)
+        Rest.send(action.payload.url, action.payload.request)
+            .then(Rest.manageFetch)
             .then((data)=>{
                 store.dispatch({
                     type: action.payload.action,

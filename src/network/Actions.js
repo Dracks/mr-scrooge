@@ -5,13 +5,14 @@ const ACTIONS = {
 
 export default ACTIONS
 
-export const fetchAction = (url, action, reload)=>{
+export const fetchAction = (url, action, reload=false, request=null)=>{
     return {
         type: ACTIONS.FETCH,
         payload: {
             url: url,
             action: action,
-            reload: reload || false
+            reload: reload,
+            request: request
         }
     }
 }

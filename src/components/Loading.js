@@ -16,6 +16,10 @@ const Loading = (props) => {
     </div>)
 }
 
+const CenteredLoading = ()=>{
+    return <Loading className="valign-wrapper center-align" />
+}
+
 const TableLoading = columns =>{
     return props =>{
         return <tr><td colSpan={columns}><Loading {...props}/></td></tr>;
@@ -24,4 +28,4 @@ const TableLoading = columns =>{
 
 export default Loading;
 
-export { TableLoading, Loading }
+export { TableLoading, Loading, CenteredLoading }

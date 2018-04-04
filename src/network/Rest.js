@@ -7,8 +7,24 @@ class Rest {
         }
     }
 
-    get(url, data){
-        return fetch(url, data).then(this.manageFetch)
+    send(url, data){
+        if (!data){
+            data={};
+        }
+        data.credentials = 'same-origin';
+        return fetch(url, data)
+    }
+
+    sendJson(url, data){
+        if (!data.headers){
+            data.headers = new Headers();
+        }
+        data.headers.append('Content-Type', 'application/json')
+        return this.send(url, data).then(this.manageFetch)
+    }
+
+    get(url){
+        return this.send(url, {method:"GET"}).then(this.manageFetch)
     }
 
     save(url, obj) {
@@ -19,24 +35,21 @@ class Rest {
         } else {
             url = url.replace(':id/','');
         }
-        return fetch(url, {
+        return this.sendJson(url, {
             body: JSON.stringify(obj),
             method: method,
-            headers: new Headers({
-                'Content-Type': 'application/json'
-              })
-        }).then(this.manageFetch)
+        }).then(this.manageFetch);
     }
 
     destroy(url, obj) {
         if (obj.id){
             url = url.replace(':id', obj.id);
         }
-        return fetch(url, {
+        return this.send(url, {
             method: "DELETE",
         }).then((response)=>{
             return response.text()
-        })
+        });
     }
 }
 

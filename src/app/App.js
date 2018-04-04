@@ -2,65 +2,40 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import { fetchRawData } from './RawData/Actions'
-import { fetchTags } from './Tags/Actions'
 import WithLoading from '../network/LoadingHoc';
 
-import Loading from '../components/Loading';
-import Header from '../components/Header';
-import Contents from './Contents';
-import Footer from '../components/Footer';
+import CenteredLoading from '../components/Loading';
+import LoginPage from './Session/LoginPage';
+import ProtectedPage from './ProtectedPage';
+import { fetchSession, login } from './Session/Actions';
 
-const PREFETCH_DATA = [
-    'allData',
-    'tags'
-]
+const mapStateToPropsLogin = ()=>{
+    return {}
+}
+
+const actions = {
+    login: (data)=>{
+        return login(data)
+    }
+}
+
+const LoginPageWithRouter = withRouter(connect(mapStateToPropsLogin, actions)(LoginPage));
 
 
-const mapStateToProps = state=>{
-    var status = null
-    var totalKeys = PREFETCH_DATA.length;
-    var count = PREFETCH_DATA.filter((e)=>{
-        return state[e] && state[e].isLoading === false
-    });
-    if (count.length === totalKeys){
-        status = {isLoading: false, data: {}};
+const App = ({session}) => {
+    console.log(session);
+    if (session && session.is_authenticated){
+        return <ProtectedPage />
     } else {
-        count = PREFETCH_DATA.filter((e)=>{
-            return state[e] && state[e].isLoading === true
-        })
-        if (count.length >0 ){
-            status = {isLoading: true};
-        }
-    }
-    return {
-        dataStatus: status
+        return <LoginPageWithRouter />
     }
 }
 
-const mapActionsToProps = (dispatch) => {
-    return {
-        load: ()=>{
-            dispatch(fetchRawData())
-            dispatch(fetchTags())
-        }
-    }
+const mapStateToProps = ({session})=>{
+    return {session};
 }
 
-const ContentsWithLoading = WithLoading(Contents, Loading, 'dataStatus', 'load');
-const ContentsWithData = connect(mapStateToProps, mapActionsToProps)(ContentsWithLoading)
-
-const ContentsWithRouter = withRouter(ContentsWithData)
-
-const App = (props) => {
-    return (
-        <div>
-            <Header />
-            <ContentsWithRouter />
-            <Footer />
-        </div>
-    );
-}
+const AppLoading = WithLoading(App, CenteredLoading, 'session', 'fetchSession')
 
 
-export default App
+export default withRouter(connect(mapStateToProps, {fetchSession})(AppLoading));
