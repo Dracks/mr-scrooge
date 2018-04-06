@@ -8,7 +8,7 @@ let LineGraph = ({data, tag,  horizontal_group, line_group, join, acumulative=fa
     var helper = new DataManager(data.filter((e)=>{
         return e.tags.indexOf(tag)!== -1;
     }).map(e=>{
-        return {date: e.date, value: -e.value, tags: e.tags};
+        return {date: e.date, value: e.value, tags: e.tags};
     }));
 
     var chartOptions = {}

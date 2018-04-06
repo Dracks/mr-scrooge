@@ -27,7 +27,7 @@ const GraphReport = ({allData, hashTags})=>{
                     tag={2}
                     horizontal_group={groupLambdas.day} 
                     line_group={groupLambdas.month} 
-                    join={reduceLambdas.sum}
+                    join={reduceLambdas.absSum}
                     sort={sortLambdas.numbers}
                     acumulative={true} />
             </div>
