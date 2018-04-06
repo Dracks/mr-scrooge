@@ -2,27 +2,19 @@ export const OPTIONS_BEGIN_AT_ZERO = { scales: { yAxes: [{ ticks: { beginAtZero:
 export const OPTIONS_LEGEND_BOTTOM = { legend: {position: 'bottom'} };
 export const SCALE_LOG = { scales: { yAxes: [{ type: 'myLogarithmic' }] } };
 
-const LIST_COLORS = [
+const COLORS_LIST = [
     '#3366CC', '#DC3912', '#FF9900', '#109618', '#990099', '#3B3EAC',
     '#0099C6', '#DD4477', '#66AA00', '#B82E2E', '#316395', '#994499',
     '#22AA99', '#AAAA11', '#6633CC', '#E67300', '#8B0707', '#329262',
     '#5574A6', '#3B3EAC'
-]
-const LIST_COLORS_LINE = LIST_COLORS.map((color) => {
+];
+
+const PREPROCESSED_COLORS_LIST = COLORS_LIST.map((color) => {
     var red = parseInt(color.substr(1, 2), 16);
     var green = parseInt(color.substr(3, 2), 16);
     var blue = parseInt(color.substr(5, 2), 16);
-    var c = "rgba(" + red + "," + green + "," + blue + ",";
-    return {
-        backgroundColor: c + "0)",
-        borderColor: c + "1)",
-        pointBorderColor: c + "1)",
-        pointBackgroundColor: "#fff",
-        pointHoverBackgroundColor: "#fff",
-        pointHighlightStroke: c + "0.8)"
-    }
+    return "rgba(" + red + "," + green + "," + blue + ",";
 });
-
 
 class ChartJsHelper {
     constructor(datasets, labels){
@@ -41,13 +33,14 @@ class ChartJsHelper {
         return this;
     }
 
-    applyColors(){
-        var colorsKeys = Object.keys(LIST_COLORS_LINE[0]);
+    applyColors(colorize){
+        var colorsKeys = Object.keys(colorize(""));
         if (this.datasets.length<20){
             this.datasets.forEach(function (e, k) {
+                var colors = colorize(PREPROCESSED_COLORS_LIST[k])
                 colorsKeys.forEach(function (field) {
                     if (!e[field]) {
-                        e[field] = LIST_COLORS_LINE[k][field]
+                        e[field] = colors[field]
                     }
                 });
             });

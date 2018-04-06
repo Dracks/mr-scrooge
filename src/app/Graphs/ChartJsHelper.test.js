@@ -21,7 +21,9 @@ describe("[ChartJsHelper]", ()=>{
     });
 
     it('Apply colors', ()=>{
-        var ret = subject.applyColors().get();
+        var ret = subject.applyColors((e)=>{
+            return {borderColor:e}
+        }).get();
         expect(ret.datasets[0].borderColor).not.toBeNull();
     });
 })
