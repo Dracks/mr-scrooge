@@ -1,28 +1,26 @@
 import React from 'react';
 import { Line } from "react-chartjs-2";
 
-import Utils, {monthGroupLambda, dayGroupLambda, sumGroupsLambda} from './Utils';
+import DataManager from './DataManage';
 
 let LineGraph = ({data, tag,  horizontal_group, line_group, join, acumulative=false, sort})=>{
-    var data = data.filter((e)=>{
+    var helper = new DataManager(data.filter((e)=>{
         return e.tags.indexOf(tag)!== -1;
     }).map(e=>{
         return {date: e.date, value: -e.value};
-    });
+    }));
+
     var chartOptions = {}
-    var chartData = 
-        Utils.toChartJs2Axis(
-            Utils.joinGroups(
-                Utils.getGrouppedForGraph(data, line_group, horizontal_group),
-                join
-            ),
-            sort
-        )
-    chartData.datasets = Utils.applyColors(chartData.datasets);
+    helper = helper.groupForGraph(line_group, horizontal_group)
+        .reduceGroups(join)
+        .toChartJs2Axis(sort)
+        .applyColors();
 
     if (acumulative){
-        Utils.acumChartJs2Axis(chartData);
+        helper = helper.acumulate();
     }
+
+    var chartData = helper.get()
 
     return (
         <div>
