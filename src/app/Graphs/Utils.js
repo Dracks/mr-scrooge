@@ -29,16 +29,27 @@ export const monthGroupLambda = (e) => new moment(e.date).format("YYYY-MM");
 export const dayGroupLambda = (e)=>e.date.getDate();
 export const signGroupLambda = (e)=> e.value<0? "expenses":"income";
 
+export const sumGroupsLambda = (data)=>data.reduce((ac,e)=>ac+e.value, 0);
+export const absSumGroupsLambda = (data)=>{
+    var d= Math.abs(data.map((e)=>e.value)
+        .reduce((ac, e)=>ac+e));
+    return d;
+}
+
 const Utils = {
     applyColors: (datasets)=>{
         var colorsKeys = Object.keys(LIST_COLORS_LINE[0]);
-        datasets.forEach(function (e, k) {
-            colorsKeys.forEach(function (field) {
-                if (!e[field]) {
-                    e[field] = LIST_COLORS_LINE[k][field]
-                }
+        if (datasets.length<20){
+            datasets.forEach(function (e, k) {
+                colorsKeys.forEach(function (field) {
+                    if (!e[field]) {
+                        e[field] = LIST_COLORS_LINE[k][field]
+                    }
+                });
             });
-        });
+        } else {
+            console.error("List of groups bigger than number of colors")
+        }
         return datasets;
     },
     getGrouppedByLambda:(data, lambda)=>{
@@ -61,8 +72,6 @@ const Utils = {
         });
         return FirstGroup
     },
-    getGrouppedByMonthAndDay:(data)=>Utils.getGrouppedForGraph(data, monthGroupLambda, dayGroupLambda),
-    getGrouppedByMonthAndSign: (data)=>Utils.getGrouppedForGraph(data, signGroupLambda, monthGroupLambda),
     joinGroups:(data, callback)=>{
         var ret = {}
         Object.keys(data).forEach(key_first => {
@@ -77,11 +86,6 @@ const Utils = {
     },
     sumGroups:(data)=>Utils.joinGroups(data, (data)=>data.reduce((ac,e)=>ac+e.value, 0)),
     toChartJs2Axis:(data, sort_lambda)=>{
-        if (!sort_lambda){
-            sort_lambda = (a,b)=>{
-                return parseInt(a, 10)-parseInt(b, 10)
-            }
-        }
         var labels = []
         Object.keys(data).forEach((key_first)=>{
             Object.keys(data[key_first]).forEach(key=>{

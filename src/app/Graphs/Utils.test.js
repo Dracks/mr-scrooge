@@ -1,5 +1,6 @@
 import moment from 'moment';
-import Utils from './Utils';
+import Utils, {monthGroupLambda, dayGroupLambda, sumGroupsLambda} from './Utils';
+import { sortLambdas } from './Lambdas';
 
 describe("[Utils]", ()=>{
     var data;
@@ -18,25 +19,29 @@ describe("[Utils]", ()=>{
     });
 
     it("test group Month And Days", ()=>{
-        var ret = Utils.getGrouppedByMonthAndDay(data);
+        var ret = Utils.getGrouppedForGraph(data, monthGroupLambda, dayGroupLambda);
         expect(Object.keys(ret)).toEqual(["2017-07", "2017-02", "2018-01"])
         expect(Object.keys(ret["2017-07"])).toEqual(["3", "4"])
     })
 
     it("test Sum groups", ()=>{
-        var ret = Utils.sumGroups({
+        var ret = Utils.joinGroups({
             "pepe": [{value: 1}, {value: 10}],
             "hello":{
                 "world":[{value: 3}, {value: 60}]
             }
-        })
+        }, sumGroupsLambda)
         expect(ret).toEqual({"pepe":11, "hello":{"world": 63}});
     })
 
     it("test Mount data for chartjs", ()=>{
-        var ret = Utils.toChartJs2Axis(Utils.sumGroups(Utils.getGrouppedByMonthAndDay(data)));
+        var ret = Utils.toChartJs2Axis(
+            Utils.joinGroups(
+                Utils.getGrouppedForGraph(data, monthGroupLambda, dayGroupLambda),
+                sumGroupsLambda),
+                sortLambdas.numbers
+            );
         expect(ret.labels).toEqual(["1","3","4","21"]);
         expect(ret.datasets).toEqual([{"data": [0, 10, 14, 0], "label": "2017-07"}, {"data": [0, 0, 0, 12], "label": "2017-02"}, {"data": [1, 0, 0, 0], "label": "2018-01"}]);
     })
-
 })
