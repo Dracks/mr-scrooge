@@ -25,4 +25,39 @@ export const reduceLambdas = {
 export const sortLambdas = {
     date: (a,b) => a.localeCompare(b),
     numbers: (a,b)=> parseInt(a, 10)-parseInt(b, 10),
+    sortCustom: (data)=>{
+        var hash = {};
+        data.forEach((value, k)=>{hash[value]=k+1});
+        return (a,b)=>{
+            var v1= hash[a];
+            var v2= hash[b];
+            if (!v1){
+                return 1;
+            } else if (!v2){
+                return -1
+            } else {
+                return v1-v2;
+            }
+        }
+    }
+}
+
+export const colorizeLambdas = {
+    line: (c)=>{
+        return {
+            backgroundColor: c + "0.0)",
+            borderColor: c + "1)",
+            pointBorderColor: c + "1)",
+            pointBackgroundColor: "#fff",
+            pointHoverBackgroundColor: "#fff",
+            pointHighlightStroke: c + "0.8)"
+        };
+    },
+    bar: (c)=>{
+        return {
+            backgroundColor: c +"0.5)",
+            borderColor: c+"1)",
+            borderWidth: "1"
+        }
+    }
 }

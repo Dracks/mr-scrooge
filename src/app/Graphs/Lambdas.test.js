@@ -1,4 +1,4 @@
-import { groupLambdas } from './Lambdas';
+import { groupLambdas, sortLambdas } from './Lambdas';
 
 describe("[Lambdas]", ()=>{
 
@@ -26,6 +26,21 @@ describe("[Lambdas]", ()=>{
             var result = data.map(subject.tags(tags))
 
             expect(result).toEqual(['Dr Who', 'Farscape', 'Others', 'Dr Who', 'Firefly']);
-        })
+        });
+    });
+
+    describe("Sort Lambdas", ()=>{
+        var subject = sortLambdas;
+
+        it("sort customized with all the same", ()=>{
+            var data = ["ping", "pam", "pum"]
+            var result = data.sort(subject.sortCustom(["pum", "ping", "pam"]))
+            expect(result).toEqual(["pum", "ping", "pam"])
+        });
+        it("sort customized with others", ()=>{
+            var data = ["ping", "others", "pam", "pum"]
+            var result = data.sort(subject.sortCustom(["pum", "ping", "pam"]))
+            expect(result).toEqual(["pum", "ping", "pam", "others"])
+        });
     })
 })
