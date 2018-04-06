@@ -1,5 +1,3 @@
-import moment from 'moment'
-
 var OPTIONS_BEGIN_AT_ZERO = { scales: { yAxes: [{ ticks: { beginAtZero: true } }] } };
 var OPTIONS_LEGEND_BOTTOM = { legend: {position: 'bottom'} };
 var SCALE_LOG = { scales: { yAxes: [{ type: 'myLogarithmic' }] } };
@@ -24,17 +22,6 @@ const LIST_COLORS_LINE = LIST_COLORS.map((color) => {
         pointHighlightStroke: c + "0.8)"
     }
 });
-
-export const monthGroupLambda = (e) => new moment(e.date).format("YYYY-MM");
-export const dayGroupLambda = (e)=>e.date.getDate();
-export const signGroupLambda = (e)=> e.value<0? "expenses":"income";
-
-export const sumGroupsLambda = (data)=>data.reduce((ac,e)=>ac+e.value, 0);
-export const absSumGroupsLambda = (data)=>{
-    var d= Math.abs(data.map((e)=>e.value)
-        .reduce((ac, e)=>ac+e));
-    return d;
-}
 
 const Utils = {
     applyColors: (datasets)=>{
