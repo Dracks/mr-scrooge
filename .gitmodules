@@ -1,0 +1,6 @@
+[submodule "server"]
+	path = server
+	url = git@github.com:Dracks/finances-server.git
+[submodule "view"]
+	path = view
+	url = git@github.com:Dracks/finances-react-view.git
