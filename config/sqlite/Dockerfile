@@ -37,7 +37,7 @@ RUN pip3 install -r /home/django/requirements.txt
 RUN cd /home/django && python3 manage.py migrate
 
 # copy uswgi config
-COPY config/sqlite/uwsgi* /home/django/
+COPY config/uwsgi* /home/django/
 
 
 EXPOSE 80
