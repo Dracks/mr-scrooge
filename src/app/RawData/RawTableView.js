@@ -2,27 +2,37 @@ import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
+import { removeTag } from './Actions';
 import Chip from '../../components/Chip';
 import TableView from '../../components/TableView';
 
-const mapStateToProps = state=>{
-    let hashTags = {}
-    state.tags.data.forEach(element => {
-        hashTags[element.id] = element.name;
-    });
+const RawTableView = ({header, allData, hashTags, removeTag, addTag}) =>{
+    let data =  allData.map(({id, kind, movement_name, tags, value, date})=>{
+        return {
+            kind, 
+            movement_name,  
+            value,
+            tags: tags.map((tId)=>hashTags[tId] || null )
+                .filter(e=>e!==null)
+                .map(e=><Chip name={e.name} onClick={()=>removeTag(id, e.id)}/>),
+            date: moment(date).format("DD-MM-YYYY hh:mm:ss")
+        }
+    })
+    return <TableView header={header} data={data} />
+}
+
+const mapStateToProps = ({allData, hashTags})=>{
     return {
-        data:  state.allData.data.map(({kind, movement_name, tags, value, date})=>{
-            return {
-                kind, 
-                movement_name,  
-                value,
-                tags: tags.map((tId)=>hashTags[tId] || null )
-                    .filter(e=>e!==null)
-                    .map(e=><Chip name={e} />),
-                date: moment(date).format("DD-MM-YYYY hh:mm:ss")
-            }
-        })
+        allData: allData.data,
+        hashTags,
     }
 }
 
-export default connect(mapStateToProps)(TableView)
+const mapDispatchToProps = (dispatch) => {
+    return {
+        addTag: (data, tag)=>{console.log(data); console.log(tag)},
+        removeTag: (data, tag)=>{dispatch(removeTag(data, tag))},
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(RawTableView)

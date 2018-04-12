@@ -1,4 +1,4 @@
-import { fetchAction } from '../../network/Actions'
+import { fetchAction, responseReloadAction } from '../../network/Actions'
 
 export const FETCH_TAGS = "TAGS_FETCH";
 export const FETCH_FILTER_TYPES = "FILTER_TYPES_FETCH";
@@ -8,7 +8,7 @@ export const fetchTags = ()=>{
 }
 
 export const updateTags = ()=>{
-    return fetchAction('/api/tag/', FETCH_TAGS, true);
+    return fetchAction('/api/tag/', responseReloadAction(FETCH_TAGS));
 }
 
 export const fetchFiltersTypes = () =>{
