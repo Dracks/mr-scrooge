@@ -1,10 +1,8 @@
 import React from 'react';
 
-import Rest from '../../network/Rest';
 import Input from '../../components/Input';
 import MessageComponent from '../../components/Message';
 
-import ConstantsCss from '../Constants-CSS';
 import {eventHandler} from '../Utils';
 
 const LoginPage = ({history, login}) => {

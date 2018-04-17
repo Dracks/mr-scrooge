@@ -1,7 +1,7 @@
 export default (actionType, lambda=null) => (state=null, action) => {
     if (action.type === actionType){
-        if (!action.payload.reload){
-            var value = action.payload;
+        var value = action.payload;
+        if (!action.payload.reload || value.data){
             if (lambda){
                 value = lambda(value);
             }
