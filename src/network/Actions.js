@@ -5,6 +5,12 @@ const ACTIONS = {
 
 export default ACTIONS
 
+export const jsonHeaders = ()=>{
+    var headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return headers;
+}
+
 export const responseReloadAction = (action) => {
     return (isLoading, data) => {
         return {
