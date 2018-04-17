@@ -1,11 +1,21 @@
 from rest_framework import serializers
 
 from .models import RawDataSource, StatusReport, StatusReportRow
+from management.models import ValuesToTag
+
+# class TagsField(serializers.RelatedField):
+
 
 class RawDataSerializer(serializers.ModelSerializer):
-     class Meta:
+    tags = serializers.SerializerMethodField()
+
+    def get_tags(self, rds):
+        data = ValuesToTag.objects.filter(raw_data_source=rds, enable=1)
+        return [ e.tag.pk for e in data ]
+
+    class Meta:
         model = RawDataSource
-        fields = ('kind', 'movement_name', 'date', 'date_value', 'details', 'value', 'tags')
+        fields = ('kind', 'id', 'movement_name', 'date', 'date_value', 'details', 'value', 'tags')
 
 class StatusReportSerializer(serializers.ModelSerializer):
     class Meta:

@@ -10,9 +10,6 @@ from .classes.importer import TestAccount, SAMPLE_DATA
 
 PATH = os.path.dirname(__file__)
 
-
-
-
 class AbstractImportTest(TestCase):
     def setUp(self):
         self.subject = TestAccount(SAMPLE_DATA)
