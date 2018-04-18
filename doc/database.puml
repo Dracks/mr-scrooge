@@ -1,0 +1,83 @@
+
+@startuml Database
+
+package import {
+    object import_file {
+        name: varchar
+        import: datetime 
+        status: Enum('ok', 'warning', 'ko')
+    }
+    object row_import_file {
+        title: text
+        value: float
+        date: date
+        description: text
+    }
+}
+
+import_file "1" -down- "*" row_import_file
+
+package core {
+
+    object movement {
+        title: varchar
+        value: float
+        date: date
+        description: text
+        comments: text
+    }
+
+    object filter {
+        name:text
+    }
+    object group_conditions {
+        type: Enum('and','or')
+    }
+    object action_condition {
+        not: boolean
+        type: varchar
+        condition: varchar
+    }
+    object action{
+
+    }
+}
+movement "1" -left- "1" import_file
+filter "1" -down- "*" group_conditions
+filter "1" -down- "*" action
+group_conditions "1" -- "*" group_conditions: parent
+group_conditions "1" -down- "*" action_condition
+
+package reporting {
+    object tag {
+        name: varchar
+    }
+    object graph {
+        title: varchar
+        kind: varchar
+    }
+    object graph_options {
+
+    }
+}
+
+tag "1" -- "*" tag
+graph "1" -down- "*" graph_options
+graph -left- tag
+movement "*" -left- "*" tag
+
+package contable {
+    object account {
+        name: varchar
+    }
+    object contable_movement {
+        comment: text
+        value: float
+    }
+}
+
+account "1" -up- "*" contable_movement
+movement "1" -left- "*" contable_movement
+
+@enduml
+
