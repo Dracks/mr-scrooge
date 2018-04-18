@@ -7,7 +7,7 @@ export const fetchSession = ()=>{
 }
 
 export const login = (data)=>{
-    return fetchAction('/api/session/', FETCH_SESSION_DATA, null, {
+    return fetchAction('/api/session/', FETCH_SESSION_DATA, {
         method: "POST",
         headers: new Headers({
             'Content-Type': 'application/json'
