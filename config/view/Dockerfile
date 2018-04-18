@@ -2,7 +2,7 @@ FROM nginx:1-alpine
 
 COPY view/build /home/view/
 
-COPY config/sqlite/nginx.conf /etc/nginx/nginx.conf
+COPY config/view/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 

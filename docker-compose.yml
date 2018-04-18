@@ -1,16 +1,19 @@
-version: '2'
+version: '3'
 services:
   django:
     restart: always
-    build: ./config/postgres/Doxyfile
-    ports:
-      -8001:8001
+    build: 
+      context: .
+      dockerfile: config/postgres/Dockerfile
 
   view:
     restart: always
-    build: ./config/view/Doxyfile
     ports:
       - 80:80
+      - 8000:8000
+    build: 
+      context: .
+      dockerfile: config/view/Dockerfile
   
   postgres:
     image: postgres
