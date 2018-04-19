@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 
 import WithLoading from '../../network/LoadingHoc';
 
-import LineGraph from '../Graphs/LineGraph';
 import BarGraph from '../Graphs/BarGraph';
+import Graph from '../Graphs/Graph';
 import Loading from '../../components/Loading';
 import { fetchRawData } from "../RawData/Actions";
 import { groupLambdas, reduceLambdas, sortLambdas } from '../Graphs/Lambdas';
@@ -21,25 +21,20 @@ const GraphReport = ({allData, hashTags})=>{
             <div className="col s12 center-align">
                 {start.toDateString()} > {end.toDateString()}
             </div>
-            <div className="col s12 l6">
-                <LineGraph 
-                    data={data} 
-                    tag={2}
-                    horizontal_group={groupLambdas.day} 
-                    line_group={groupLambdas.month} 
-                    join={reduceLambdas.absSum}
-                    sort={sortLambdas.day}
-                    acumulative={true} />
-            </div>
-            <div className="col s12 l6">
-                <LineGraph 
-                    data={data} 
-                    tag={1}
-                    horizontal_group={groupLambdas.month} 
-                    line_group={groupLambdas.sign} 
-                    sort={sortLambdas.month}
-                    join={reduceLambdas.absSum} />
-            </div>
+            <Graph className="col s12 l6" data={data} options={{
+                tag: 2,
+                horizontal: 'day',
+                group: 'month',
+                kind: 'line',
+                acumulative: true, 
+            }}/>
+            <Graph className="col s12 l6" data={data} options={{
+                tag:1,
+                horizontal: 'month',
+                group: 'sign',
+                kind: 'line', 
+                acumulative: false
+            }}/>
             <div className="col s12 l6">
                 <BarGraph 
                     data={data} 
