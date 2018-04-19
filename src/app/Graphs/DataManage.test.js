@@ -30,7 +30,7 @@ describe("[DataManage]", ()=>{
         it("test Mount data for chartjs", ()=>{
             var ret = subject.groupForGraph(groupLambdas.month, groupLambdas.day)
                         .reduceGroups(reduceLambdas.sum)
-                        .toChartJs2Axis(sortLambdas.numbers)
+                        .toChartJs2Axis(sortLambdas.day)
                         .get()
             expect(ret.labels).toEqual(["1","3","4","21"]);
             expect(ret.datasets).toEqual([{"data": [0, 10, 14, 0], "label": "2017-07"}, {"data": [0, 0, 0, 12], "label": "2017-02"}, {"data": [1, 0, 0, 0], "label": "2018-01"}]);

@@ -21,32 +21,32 @@ const GraphReport = ({allData, hashTags})=>{
             <div className="col s12 center-align">
                 {start.toDateString()} > {end.toDateString()}
             </div>
-            <div className="col s6">
+            <div className="col s12 l6">
                 <LineGraph 
                     data={data} 
                     tag={2}
                     horizontal_group={groupLambdas.day} 
                     line_group={groupLambdas.month} 
                     join={reduceLambdas.absSum}
-                    sort={sortLambdas.numbers}
+                    sort={sortLambdas.day}
                     acumulative={true} />
             </div>
-            <div className="col s6">
+            <div className="col s12 l6">
                 <LineGraph 
                     data={data} 
                     tag={1}
                     horizontal_group={groupLambdas.month} 
                     line_group={groupLambdas.sign} 
-                    sort={sortLambdas.date}
+                    sort={sortLambdas.month}
                     join={reduceLambdas.absSum} />
             </div>
-            <div className="col s6">
+            <div className="col s12 l6">
                 <BarGraph 
                     data={data} 
                     tag={2}
                     line_group={groupLambdas.month} 
                     horizontal_group={groupLambdas.tags(tagsToGroup.map(e=>hashTags[e]))} 
-                    sort={sortLambdas.sortCustom(tagsToGroup.map(e=>hashTags[e].name))}
+                    sort={sortLambdas.tags(tagsToGroup.map(e=>hashTags[e].name))}
                     join={reduceLambdas.absSum} />
             </div>
         </div>

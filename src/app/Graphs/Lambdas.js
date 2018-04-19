@@ -22,24 +22,27 @@ export const reduceLambdas = {
                 .reduce((ac, e)=>ac+e)),
 }
 
-export const sortLambdas = {
-    date: (a,b) => a.localeCompare(b),
-    numbers: (a,b)=> parseInt(a, 10)-parseInt(b, 10),
-    sortCustom: (data)=>{
-        var hash = {};
-        data.forEach((value, k)=>{hash[value]=k+1});
-        return (a,b)=>{
-            var v1= hash[a];
-            var v2= hash[b];
-            if (!v1){
-                return 1;
-            } else if (!v2){
-                return -1
-            } else {
-                return v1-v2;
-            }
+const customSort = (data)=>{
+    var hash = {};
+    data.forEach((value, k)=>{hash[value]=k+1});
+    return (a,b)=>{
+        var v1= hash[a];
+        var v2= hash[b];
+        if (!v1){
+            return 1;
+        } else if (!v2){
+            return -1
+        } else {
+            return v1-v2;
         }
     }
+}
+
+export const sortLambdas = {
+    month: (a,b) => a.localeCompare(b),
+    day: (a,b)=> parseInt(a, 10)-parseInt(b, 10),
+    sign: customSort(["expenses", "income"]),
+    tags: customSort,
 }
 
 export const colorizeLambdas = {

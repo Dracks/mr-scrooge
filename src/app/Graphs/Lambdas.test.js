@@ -34,12 +34,12 @@ describe("[Lambdas]", ()=>{
 
         it("sort customized with all the same", ()=>{
             var data = ["ping", "pam", "pum"]
-            var result = data.sort(subject.sortCustom(["pum", "ping", "pam"]))
+            var result = data.sort(subject.tags(["pum", "ping", "pam"]))
             expect(result).toEqual(["pum", "ping", "pam"])
         });
         it("sort customized with others", ()=>{
             var data = ["ping", "others", "pam", "pum"]
-            var result = data.sort(subject.sortCustom(["pum", "ping", "pam"]))
+            var result = data.sort(subject.tags(["pum", "ping", "pam"]))
             expect(result).toEqual(["pum", "ping", "pam", "others"])
         });
     })
