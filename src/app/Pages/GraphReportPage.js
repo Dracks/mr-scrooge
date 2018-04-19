@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import WithLoading from '../../network/LoadingHoc';
 
-import BarGraph from '../Graphs/BarGraph';
 import Graph from '../Graphs/Graph';
 import Loading from '../../components/Loading';
 import { fetchRawData } from "../RawData/Actions";
@@ -23,27 +22,26 @@ const GraphReport = ({allData, hashTags})=>{
             </div>
             <Graph className="col s12 l6" data={data} options={{
                 tag: 2,
-                horizontal: 'day',
-                group: 'month',
+                horizontal: {name:'day'},
+                group: {name: 'month'},
                 kind: 'line',
                 acumulative: true, 
             }}/>
             <Graph className="col s12 l6" data={data} options={{
                 tag:1,
-                horizontal: 'month',
-                group: 'sign',
+                horizontal: {name:'month'},
+                group: {name:'sign'},
                 kind: 'line', 
                 acumulative: false
             }}/>
-            <div className="col s12 l6">
-                <BarGraph 
+            <Graph className="col s12 l6"
                     data={data} 
-                    tag={2}
-                    line_group={groupLambdas.month} 
-                    horizontal_group={groupLambdas.tags(tagsToGroup.map(e=>hashTags[e]))} 
-                    sort={sortLambdas.tags(tagsToGroup.map(e=>hashTags[e].name))}
-                    join={reduceLambdas.absSum} />
-            </div>
+                    options={{
+                        tag:2,
+                        group:{name:'month'},
+                        horizontal:{name: 'tags', value: tagsToGroup.map(e=>hashTags[e])},
+                        kind: 'bar'
+                    }} />
         </div>
     )
 }

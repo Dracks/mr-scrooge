@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Line } from "react-chartjs-2";
+import { Line, Bar } from "react-chartjs-2";
 
 import { groupLambdas, reduceLambdas, sortLambdas, colorizeLambdas } from './Lambdas';
 
@@ -7,6 +7,7 @@ import DataManager from './DataManage';
 
 const GraphComponent={
     'line': Line,
+    'bar': Bar
 }
 
 class Graph extends Component {
@@ -23,9 +24,9 @@ class Graph extends Component {
             return e.tags.indexOf(tag)!== -1;
         }).map(e=>{
             return {date: e.date, value: e.value, tags: e.tags};
-        })).groupForGraph(groupLambdas[group], groupLambdas[horizontal])
+        })).groupForGraph(groupLambdas[group.name](group.value), groupLambdas[horizontal.name](horizontal.value))
             .reduceGroups(reduceLambdas.absSum)
-            .toChartJs2Axis(sortLambdas[horizontal])
+            .toChartJs2Axis(sortLambdas[horizontal.name](horizontal.value))
             .applyColors(colorizeLambdas[kind])
         if (acumulative){
             helper = helper.acumulate();

@@ -22,15 +22,15 @@ describe("[DataManage]", ()=>{
         });
     
         it("test group Month And Days", ()=>{
-            var ret = subject.groupForGraph(groupLambdas.month, groupLambdas.day).get();
+            var ret = subject.groupForGraph(groupLambdas.month(), groupLambdas.day()).get();
             expect(Object.keys(ret)).toEqual(["2017-07", "2017-02", "2018-01"])
             expect(Object.keys(ret["2017-07"])).toEqual(["3", "4"])
         });
 
         it("test Mount data for chartjs", ()=>{
-            var ret = subject.groupForGraph(groupLambdas.month, groupLambdas.day)
+            var ret = subject.groupForGraph(groupLambdas.month(), groupLambdas.day())
                         .reduceGroups(reduceLambdas.sum)
-                        .toChartJs2Axis(sortLambdas.day)
+                        .toChartJs2Axis(sortLambdas.day())
                         .get()
             expect(ret.labels).toEqual(["1","3","4","21"]);
             expect(ret.datasets).toEqual([{"data": [0, 10, 14, 0], "label": "2017-07"}, {"data": [0, 0, 0, 12], "label": "2017-02"}, {"data": [1, 0, 0, 0], "label": "2018-01"}]);

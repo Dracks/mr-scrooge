@@ -1,9 +1,9 @@
 import moment from 'moment'
 
 export const groupLambdas = {
-    month:(e) => new moment(e.date).format("YYYY-MM"),
-    day:(e)=>e.date.getDate(),
-    sign:(e)=> e.value<0? "expenses":"income",
+    month:()=>(e) => new moment(e.date).format("YYYY-MM"),
+    day:()=>(e)=>e.date.getDate(),
+    sign:()=>(e)=> e.value<0? "expenses":"income",
     tags: (tagsList)=>(e)=>{
         var tags = e.tags;
         return tagsList.reduce((ac, {id, name})=>{
@@ -39,9 +39,9 @@ const customSort = (data)=>{
 }
 
 export const sortLambdas = {
-    month: (a,b) => a.localeCompare(b),
-    day: (a,b)=> parseInt(a, 10)-parseInt(b, 10),
-    sign: customSort(["expenses", "income"]),
+    month: ()=>(a,b) => a.localeCompare(b),
+    day: ()=>(a,b)=> parseInt(a, 10)-parseInt(b, 10),
+    sign: ()=>customSort(["expenses", "income"]),
     tags: customSort,
 }
 
