@@ -7,13 +7,16 @@ const getActions = (actionsList, isLoading, data) => {
             return e(isLoading, data);
         }
         return e;
-    })
+    }).filter(e=>e)
 }
 
 export default store => next => action => {
     if (action.type === Actions.FETCH){
         getActions(action.payload.actions_list, true)
-            .forEach(store.dispatch)
+            .forEach((e)=>{
+                console.log(e);
+                store.dispatch(e)
+            })
 
         Rest.send(action.payload.url, action.payload.request)
             .then(Rest.manageFetch)
