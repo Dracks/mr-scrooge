@@ -17,7 +17,7 @@ package import {
 
 import_file "1" -down- "*" row_import_file
 
-package core {
+package core #DDDDDD {
 
     object movement {
         title: varchar
@@ -72,8 +72,30 @@ package contable {
     }
     object contable_movement {
         comment: text
+        value: float 
+    }
+
+    object virtual_movement {
+        periodicity: Interval
+        name: varchar
         value: float
     }
+
+    note "Interval time, aprox date of charge" as vm_note
+    virtual_movement .. vm_note
+
+
+    object action_set_contable {
+        source: 
+        account: ForeignKey
+        value: float
+    }
+
+    note as asc_note
+        percentage of original value, 
+        sum of all should be 1.
+    end note
+    action_set_contable .. asc_note
 }
 
 account "1" -up- "*" contable_movement
