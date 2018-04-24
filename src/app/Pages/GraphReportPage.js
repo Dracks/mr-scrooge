@@ -6,7 +6,6 @@ import WithLoading from '../../network/LoadingHoc';
 import Graph from '../Graphs/Graph';
 import Loading from '../../components/Loading';
 import { fetchRawData } from "../RawData/Actions";
-import { groupLambdas, reduceLambdas, sortLambdas } from '../Graphs/Lambdas';
 
 const GraphReport = ({allData, hashTags})=>{
     const start = new Date();
