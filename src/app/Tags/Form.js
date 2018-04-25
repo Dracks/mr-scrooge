@@ -32,7 +32,7 @@ const Form = ({value, updateTags, hashTags, tags}) => {
     }
 
     let parent_list = [{key:'', value:'No parent'}].concat(tags
-        .filter(({id})=>notShownListTags.indexOf(id)==-1)
+        .filter(({id})=>notShownListTags.indexOf(id)===-1)
         .map(({id, name})=>{return {key:id, value:name}}));
 
     let save = () => {

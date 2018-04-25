@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import WithLoading from '../../network/LoadingHoc';
 
-import Graph from '../Graphs/Graph';
+import Graph from '../Graphs/WrapGraph';
 import Loading from '../../components/Loading';
 import { fetchRawData } from "../RawData/Actions";
 

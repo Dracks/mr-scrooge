@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import { groupLambdas, reduceLambdas, sortLambdas, colorizeLambdas } from './Lambdas';
 import { GraphComponent } from './Configs';

@@ -12,17 +12,17 @@ describe('[Graphs/Form]', ()=>{
     beforeEach(()=>{
         initial = {
            component: {
-               config: {
+               options: {
                    line: {
                        name: 'L',
                        config: {
                            xaxis: {
                                name: 'x',
-                               config: {},
+                               options: {},
                            },
                            yaxis: {
                                name: '',
-                               config: {}
+                               options: {}
                            }
                        }
                    }

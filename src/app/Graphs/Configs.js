@@ -14,12 +14,14 @@ const Groups={
 };
 
 const twoAxisConf = {
-    xaxis: {
+    group: {
         name: 'X-Axis',
+        placeholder: 'Select how to group',
         config: Groups
     },
-    yaxis: {
+    horizontal: {
         name: 'Y-Axis',
+        placeholder: 'Select how to group',
         config: Groups
     }
 };
@@ -30,8 +32,9 @@ export const GraphComponent={
 };
 
 export const graphConfig = {
-    component: {
+    kind: {
         config: GraphComponent,
+        name: 'kind',
         placeholder: 'Select a graph kind',
     }
 }

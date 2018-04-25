@@ -1,27 +1,27 @@
 import React, {Component} from 'react';
 
-import Input from '../components/Input';
+//import Input from '../components/Input';
 import Select from '../components/Select';
 
 const getConfigView=(struct, state, callback)=>{
     return Object.keys(struct).filter((e)=>{
-        return struct[e].config;
+        return struct[e].options;
     }).map((property, index)=>{
         var c=struct[property];
-        var options = Object.keys(c.config).map((e)=>{ return { value: c.config[e].name, key: e}});
+        var options = Object.keys(c.options).map((e)=>{ return { value: c.options[e].name, key: e}});
         var value = state[property];
         var children = [];
         if (value){
-            if (c.config[value]){
-                children = getConfigView(c.config[value].config, state, callback)
+            if (c.options[value]){
+                children = getConfigView(c.options[value].config, state, callback)
             } else {
-                console.error(value + ' value not found in '+JSON.stringify(c.config));
+                console.error(value + ' value not found in '+JSON.stringify(c.options));
             }
         }
         return (
                 <div key={index} >
-                    <label>{c.placeholder}</label>
-                    <Select placeholder={{key:'', value:c.placeholder}} options={options} value={value} />
+                    <label>{c.name}</label>
+                    <Select placeholder={{key:'', value:c.placeholder}} options={options} value={value} onChange={callback} />
                     {children}
                 </div>
             )
