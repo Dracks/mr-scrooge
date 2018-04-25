@@ -42,7 +42,7 @@ package core #DDDDDD {
 
     }
 }
-movement "1" -left- "1" import_file
+movement "1" -left- "1" row_import_file
 filter "1" -down- "*" group_conditions
 filter "1" -down- "*" action
 group_conditions "1" -- "*" group_conditions: parent
