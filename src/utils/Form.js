@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 
-import Input from '../../components/Input';
-import Select from '../../components/Select';
-
-import { graphConfig } from './Configs';
+import Input from '../components/Input';
+import Select from '../components/Select';
 
 const getConfigView=(struct, state, callback)=>{
     return Object.keys(struct).filter((e)=>{
@@ -14,7 +12,11 @@ const getConfigView=(struct, state, callback)=>{
         var value = state[property];
         var children = [];
         if (value){
-            children = getConfigView(c.config[value].config, state, callback)
+            if (c.config[value]){
+                children = getConfigView(c.config[value].config, state, callback)
+            } else {
+                console.error(value + ' value not found in '+JSON.stringify(c.config));
+            }
         }
         return (
                 <div key={index} >
@@ -45,7 +47,7 @@ class Form extends Component{
     render(){
         return (
             <div className="row">
-                {getConfigView(graphConfig, this.state, this.changeProperty)}
+                {getConfigView(this.props.config, this.state, this.changeProperty)}
             </div>
         )
     }
