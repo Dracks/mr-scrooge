@@ -25,7 +25,6 @@ const Contents = () => {
                 path="/import"
                 component={ImportPage} />
         </Switch>
-        
       </div>
     );
 }
