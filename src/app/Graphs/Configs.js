@@ -17,12 +17,17 @@ const twoAxisConf = {
     group: {
         name: 'X-Axis',
         placeholder: 'Select how to group',
-        config: Groups
+        options: Groups
     },
     horizontal: {
         name: 'Y-Axis',
         placeholder: 'Select how to group',
-        config: Groups
+        options: Groups
+    },
+    tag: {
+        name: 'Tag',
+        placeholder: 'Select a tag to use',
+        options: ({hashTags})=>{hashTags}
     }
 };
 
@@ -33,7 +38,7 @@ export const GraphComponent={
 
 export const graphConfig = {
     kind: {
-        config: GraphComponent,
+        options: GraphComponent,
         name: 'kind',
         placeholder: 'Select a graph kind',
     }

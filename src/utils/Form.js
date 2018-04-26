@@ -12,8 +12,11 @@ const getConfigView=(struct, state, callback)=>{
         var value = state[property];
         var children = [];
         if (value){
-            if (c.options[value]){
-                children = getConfigView(c.options[value].config, state, callback)
+            var select = c.options[value];
+            if (select){
+                if (select.config){
+                    children = getConfigView(select.config, state, callback)
+                }
             } else {
                 console.error(value + ' value not found in '+JSON.stringify(c.options));
             }
