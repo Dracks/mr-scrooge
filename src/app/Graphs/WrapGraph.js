@@ -4,7 +4,6 @@ import Form from '../../utils/Form';
 import ConstantsCss from '../Constants-CSS';
 import { eventHandler } from '../Utils';
 
-import { graphConfig } from './Configs';
 import Graph from './Graph';
 
 const pack = ({kind, group, horizontal}) => {
@@ -41,7 +40,7 @@ class WrapGraph extends Component {
         if (this.state.isEdit){
             return (
                 <div className={this.props.className}>
-                    <Form config={graphConfig} onChange={this.changeOptions} options={unpack(this.state.options)} />
+                    <Form config={this.props.graphConfig} onChange={this.changeOptions} options={unpack(this.state.options)} />
                     <a className={ConstantsCss.Button.Floating} onClick={eventHandler(()=>{this.setState({isEdit: false})})}><i className="material-icons">save</i></a>
                     {g}
                 </div>

@@ -1,4 +1,5 @@
 import { Line, Bar } from "react-chartjs-2";
+import { getOption, getSelectOptions } from '../../utils/FormHelper';
 
 const Groups={
     month: {name: 'Month'},
@@ -31,15 +32,16 @@ const twoAxisConf = {
     }
 };
 
-export const GraphComponent={
-    'line': {component: Line, config: twoAxisConf, name: 'Line'},
-    'bar': {component: Bar, config: twoAxisConf, name: 'Bar'}
+export const GraphComponentHash={
+    line: {component: Line},
+    bar: {component: Bar},
 };
 
-export const graphConfig = {
-    kind: {
-        options: GraphComponent,
-        name: 'kind',
-        placeholder: 'Select a graph kind',
+export const getGraphConfig=(tags) => {
+    return {
+        kind: getSelectOptions( 'kind', 'Select a graph kind', {
+            line: getOption('Line', {}),
+            bar: getOption('Bar', {}),
+        })
     }
 }

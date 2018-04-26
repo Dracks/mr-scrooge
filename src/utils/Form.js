@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 
-//import Input from '../components/Input';
-import Select from '../components/Select';
 
 const getConfigView=(struct, state, callback)=>{
     return Object.keys(struct).filter((e)=>{
@@ -11,6 +9,7 @@ const getConfigView=(struct, state, callback)=>{
         var options = Object.keys(c.options).map((e)=>{ return { value: c.options[e].name, key: e}});
         var value = state[property];
         var children = [];
+        const Input = c.input;
         if (value){
             var select = c.options[value];
             if (select){
@@ -21,13 +20,7 @@ const getConfigView=(struct, state, callback)=>{
                 console.error(value + ' value not found in '+JSON.stringify(c.options));
             }
         }
-        return (
-                <div key={index} >
-                    <label>{c.name}</label>
-                    <Select placeholder={{key:'', value:c.placeholder}} options={options} value={value} onChange={callback} />
-                    {children}
-                </div>
-            )
+        return <Input key={index} name={c.name} placeholder={c.placeholder} options={options} value={value} callback={(value)=>callback(property, value)} children={children}/>
     })
 }
 

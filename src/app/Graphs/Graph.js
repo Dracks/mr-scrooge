@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { groupLambdas, reduceLambdas, sortLambdas, colorizeLambdas } from './Lambdas';
-import { GraphComponent } from './Configs';
+import { GraphComponentHash } from './Configs';
 
 import DataManager from './DataManage';
 
@@ -26,7 +26,7 @@ const Graph = (props)=> {
     }
     this.chartData = helper.get();
 
-    const G = GraphComponent[props.options.kind].component;
+    const G = GraphComponentHash[props.options.kind].component;
     return (
         <div className={props.className}>
             <G data={this.chartData} />

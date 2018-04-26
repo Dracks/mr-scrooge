@@ -3,32 +3,21 @@ import Enzyme, { shallow, mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
 import Form from './Form';
+import { getSelectOptions, getOption } from './FormHelper';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('[Graphs/Form]', ()=>{
+describe('[Utils/Form]', ()=>{
     let wrapper;
     let initial
     beforeEach(()=>{
         initial = {
-           component: {
-               options: {
-                   line: {
-                       name: 'L',
-                       config: {
-                           xaxis: {
-                               name: 'x',
-                               options: {},
-                           },
-                           yaxis: {
-                               name: '',
-                               options: {}
-                           }
-                       }
-                   }
-               },
-               placeholder: ''
-           }
+           component: getSelectOptions('', '', {
+                line: getOption('Line', {
+                    xaxis: getSelectOptions('x', 'x', {}),
+                    yaxis: getSelectOptions('y', 'y', {})
+                }),
+            })
        }
     })
 
