@@ -8,7 +8,7 @@ from .source_file import ExcelSourceFile, HtmlSourceFile
 class CaixaBankAccount(AbstractImporter):
     key="caixa-bank/account"
 
-    _discard = 3
+    _discard = 2
 
     _mapping = {
         'movement_name': 0,
