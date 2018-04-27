@@ -1,47 +1,40 @@
 import { Line, Bar } from "react-chartjs-2";
-import { getOption, getSelectOptions } from '../../utils/FormHelper';
-
-const Groups={
-    month: {name: 'Month'},
-    day: {name: 'Day'},
-    sign: {name: 'Sign'},
-    /*tags: {
-        name: 'Tags',
-        tags: {
-            type: 'array',
-            value: 'tag'
-        }
-    }*/
-};
-
-const twoAxisConf = {
-    group: {
-        name: 'X-Axis',
-        placeholder: 'Select how to group',
-        options: Groups
-    },
-    horizontal: {
-        name: 'Y-Axis',
-        placeholder: 'Select how to group',
-        options: Groups
-    },
-    tag: {
-        name: 'Tag',
-        placeholder: 'Select a tag to use',
-        options: ({hashTags})=>{hashTags}
-    }
-};
+import { getOption, getSelectOptions, getMultiSelectOptions } from '../../utils/FormHelper';
 
 export const GraphComponentHash={
     line: {component: Line},
     bar: {component: Bar},
 };
 
+const getGroupFunctions = (prefix, tags)=>{
+    return {
+        month: getOption('Month'),
+        day: getOption('Day'),
+        sign: getOption('Sign'),
+        tags: getOption('Tags', {
+                [prefix+'_value']: getMultiSelectOptions('['+prefix+'] Tags', 'Select tags', tags)
+            }
+        )
+    };
+}
+
+const getBasicGroups = (tags)=> {
+    return {
+        group: getSelectOptions('Group', 'Select some group function', 
+            getGroupFunctions('group', tags)
+        ),
+        horizontal: getSelectOptions('X-Axis', 'Select some group function', 
+            getGroupFunctions('horizontal', tags)
+        ),
+        tag: getSelectOptions('Tag', 'Select a tag', tags)
+    }
+}
+
 export const getGraphConfig=(tags) => {
     return {
         kind: getSelectOptions( 'kind', 'Select a graph kind', {
-            line: getOption('Line', {}),
-            bar: getOption('Bar', {}),
+            line: getOption('Line', getBasicGroups(tags)),
+            bar: getOption('Bar', getBasicGroups(tags)),
         })
     }
 }

@@ -6,19 +6,22 @@ import { eventHandler } from '../Utils';
 
 import Graph from './Graph';
 
-const pack = ({kind, group, horizontal}) => {
+const pack = ({tag, kind, group, horizontal, horizontal_value}) => {
     return {
         kind,
+        tag,
         group: {name: group},
-        horizontal: {name: horizontal}
+        horizontal: {name: horizontal, value: horizontal_value}
     }
 }
 
-const unpack = ({kind, group, horizontal}) => {
+const unpack = ({tag, kind, group, horizontal}) => {
     return {
         kind, 
+        tag,
         group: group.name,
-        horizontal: horizontal.name
+        horizontal: horizontal.name,
+        horizontal_value: horizontal.value.map((e)=>e.id)
     }
 }
 
@@ -35,7 +38,6 @@ class WrapGraph extends Component {
         this.setState({options: pack(options)})
     }
     render(){
-        console.log(this.state.options);
         let g = <Graph data={this.props.data} options={this.state.options} />
         if (this.state.isEdit){
             return (

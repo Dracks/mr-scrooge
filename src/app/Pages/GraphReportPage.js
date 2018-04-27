@@ -15,7 +15,7 @@ const GraphReport = ({allData, hashTags, tags})=>{
     start.setDate(1);
     let data = allData.filter((e)=> e.date > start && e.date < end);
     let tagsToGroup = [4,5,10,8];
-    let graphConfig = getGraphConfig(tags)
+    let graphConfig = getGraphConfig(hashTags);
     return (
         <div className="row">
             <div className="col s12 center-align">

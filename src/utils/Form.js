@@ -11,13 +11,17 @@ const getConfigView=(struct, state, callback)=>{
         var children = [];
         const Input = c.input;
         if (value){
-            var select = c.options[value];
-            if (select){
-                if (select.config){
-                    children = getConfigView(select.config, state, callback)
+            if (typeof value === "string"){
+                var select = c.options[value];
+                if (select){
+                    if (select.config){
+                        children = getConfigView(select.config, state, callback)
+                    }
+                } else {
+                    console.error(value + ' value not found in '+JSON.stringify(c.options));
                 }
             } else {
-                console.error(value + ' value not found in '+JSON.stringify(c.options));
+                console.warn('Type \'' + typeof value + '\' value not implemented')
             }
         }
         return <Input key={index} name={c.name} placeholder={c.placeholder} options={options} value={value} callback={(value)=>callback(property, value)} children={children}/>
