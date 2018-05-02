@@ -20,13 +20,16 @@ const getGroupFunctions = (prefix, tags)=>{
 
 const getBasicGroups = (tags)=> {
     return {
+        tag: getSelectOptions('Tag', 'Select a tag', tags),
+        acumulative: getSelectOptions('Sum', 'False', {
+            [true]: getOption('True'),
+        }),
         group: getSelectOptions('Group', 'Select some group function', 
             getGroupFunctions('group', tags)
         ),
         horizontal: getSelectOptions('X-Axis', 'Select some group function', 
             getGroupFunctions('horizontal', tags)
         ),
-        tag: getSelectOptions('Tag', 'Select a tag', tags)
     }
 }
 
@@ -36,5 +39,15 @@ export const getGraphConfig=(tags) => {
             line: getOption('Line', getBasicGroups(tags)),
             bar: getOption('Bar', getBasicGroups(tags)),
         })
+    }
+}
+
+export const serializerConfig = ({hashTags}) => ({tag, kind, group, horizontal, acumulative, horizontal_value=[]}) => {
+    return {
+        kind,
+        tag,
+        acumulative,
+        group: {name: group},
+        horizontal: {name: horizontal, value: horizontal_value.map((e=>hashTags[e]))}
     }
 }

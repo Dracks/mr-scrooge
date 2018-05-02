@@ -17,6 +17,7 @@ describe('[Utils/Form]', ()=>{
                     xaxis: getSelectOptions('x', 'x', {}),
                     yaxis: getSelectOptions('y', 'y', {})
                 }),
+                bar: getOption('Bar'),
             })
        }
     })
@@ -29,7 +30,16 @@ describe('[Utils/Form]', ()=>{
     
             instance.changeProperty('component', 'line')
             expect(mockCallback).toHaveBeenCalledWith({component:'line', something:'else'})
-        })
+        });
+
+        it('calling the callback and changing a current value', ()=>{
+            const mockCallback = jest.fn();
+            wrapper = shallow(<Form config={initial} onChange={mockCallback} options={{component:'bar'}}/>);
+            const instance = wrapper.instance();
+    
+            instance.changeProperty('component', 'line')
+            expect(mockCallback).toHaveBeenCalledWith({component:'line'})
+        });
     })
 
     describe('Initialize...', ()=>{

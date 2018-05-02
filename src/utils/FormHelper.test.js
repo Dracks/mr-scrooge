@@ -48,7 +48,6 @@ describe('[Utils/FormHelper]', ()=>{
             expect(wrapper.find('.row').last().text()).not.toContain('option:2');
 
             wrapper.find('select').simulate('change', {target: { value : [2]}});
-            console.log(wrapper.find('.row').last());
             expect(mockCallback).toHaveBeenCalledWith([1,2])
             expect(wrapper.find('.row').length).toEqual(2);
             expect(wrapper.find('.row').last().text()).toContain('option:2');

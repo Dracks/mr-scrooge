@@ -37,11 +37,12 @@ class Form extends Component{
 
     changeProperty(property, value){
         let change= {[property]:value};
-        this.setState(change);
         if (this.props.onChange){
-            const state = Object.assign(change, this.state)
+            const state = Object.assign(this.state, change)
             this.props.onChange(state);
         }
+        this.setState(change);
+        
     }
 
     render(){
