@@ -24,7 +24,7 @@ export const reduceLambdas = {
 
 const customSort = (data)=>{
     var hash = {};
-    data.forEach((value, k)=>{hash[value]=k+1});
+    data.forEach(({name}, k)=>{hash[name]=k+1});
     return (a,b)=>{
         var v1= hash[a];
         var v2= hash[b];
