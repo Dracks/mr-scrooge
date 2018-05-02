@@ -43,7 +43,14 @@ class FormMultiSelectOptions extends Component {
         }
     }
     onRemove(key){
-
+        const listValues = this.state.listValues;
+        let atIndex = listValues.indexOf(key);
+        listValues.splice(atIndex, 1);
+        const newList = listValues.map((e)=>e);
+        this.setState({
+            listValues: newList
+        });
+        this.props.callback(newList);
     }
     onAdd(v){
         const newList = this.state.listValues.concat(v);

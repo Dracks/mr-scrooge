@@ -52,5 +52,17 @@ describe('[Utils/FormHelper]', ()=>{
             expect(wrapper.find('.row').length).toEqual(2);
             expect(wrapper.find('.row').last().text()).toContain('option:2');
         });
+
+        it('Remove option', ()=>{
+            const mockCallback = jest.fn();
+            wrapper = mount(<Subject callback={mockCallback} options={options} value={[1,2,3]}/>);
+            const instance = wrapper.instance();
+            expect(wrapper.find('.row').length).toEqual(3);
+            
+            wrapper.find('.row').at(1).find('.close').simulate('click');
+            expect(mockCallback).toHaveBeenCalledWith([1,3])
+            expect(wrapper.find('.row').length).toEqual(2);
+            
+        });
     });
 })
