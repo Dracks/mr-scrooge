@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'importer.apps.ImporterConfig',
     'management.apps.ManagementConfig',
     'session.apps.SessionConfig',
+    'graphs.apps.GraphsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

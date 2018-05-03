@@ -20,11 +20,13 @@ from rest_framework.routers import DefaultRouter
 from importer import urls as importer_urls
 from management import urls as management_urls
 from session import urls as session_urls
+from graphs import urls as graphs_urls
 router = DefaultRouter()
 
 importer_urls.api_views(router)
 management_urls.api_views(router)
 session_urls.api_views(router)
+graphs_urls.api_views(router)
 
 
 urlpatterns = [
