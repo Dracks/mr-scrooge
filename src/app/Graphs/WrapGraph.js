@@ -42,11 +42,11 @@ class WrapGraph extends Component {
                 <div className={this.props.className}>
                     <Form config={this.props.graphConfig} onChange={this.changeOptions} options={this.state.options} />
                     {
-                        [['cancel', 'grey', this.cancel], 
-                         ['save', '', this.save],
-                         ['delete', 'red', this.destroy]
+                        [['cancel', ConstantsCss.Button.Cancel, this.cancel], 
+                         ['save', ConstantsCss.Button.Save, this.save],
+                         ['delete', ConstantsCss.Button.Delete, this.destroy]
                         ].map(([label, color, callback])=>(
-                            <a key='label' className={ConstantsCss.Button.Floating+' '+ color } onClick={eventHandler(callback)}>
+                            <a key={label} className={ConstantsCss.Button.Floating+' '+ color } onClick={eventHandler(callback)}>
                                 <i className="material-icons">{label}</i>
                             </a>
                         ))

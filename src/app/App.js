@@ -23,7 +23,6 @@ const LoginPageWithRouter = withRouter(connect(mapStateToPropsLogin, actions)(Lo
 
 
 const App = ({session}) => {
-    console.log(session);
     if (session && session.is_authenticated){
         return <ProtectedPage />
     } else {

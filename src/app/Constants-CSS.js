@@ -1,10 +1,12 @@
 
 const Constants = {
     Button: {
-        Save: "waves-effect waves-light btn blue",
+        Ok: 'green',
+        Cancel: 'grey',
+        Save: "blue",
         Normal: "waves-effect waves-light btn",
-        Delete: "waves-effect waves-light btn red",
-        Floating: "btn-floating waves-effect waves-light green",
+        Delete: "red",
+        Floating: "btn-floating waves-effect waves-light",
     },
     Table: {
         Striped: "striped"

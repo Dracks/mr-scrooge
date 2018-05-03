@@ -93,7 +93,7 @@ const Form = ({value, updateTags, hashTags, tags}) => {
             </div>
             <div className="input-field col s5">
                 <a className={ConstantsCss.Button.Normal} onClick={eventHandler(apply)}>Apply</a>
-                <a className={ConstantsCss.Button.Delete} onClick={eventHandler(destroy)}>Delete</a>
+                <a className={ConstantsCss.Button.Delete + ' ' + ConstantsCss.Button.Normal} onClick={eventHandler(destroy)}>Delete</a>
             </div>
             <div className="col s12">
                 <MessageComponent register={(c)=>{showMessage=c}}/>

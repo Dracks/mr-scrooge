@@ -28,7 +28,7 @@ const FilterRowEmpty = ({filter, types, onDelete}) => {
         <tr>
             <td><Select options={options} value={filter.type_conditional} onChange={(e)=>{filter.type_conditional=e; save()}}/></td>
             <td><Input value={filter.conditional} onBlur={(e)=>{filter.conditional=e; save()}}/></td>
-            <td><a className={ConstantsCss.Button.Delete} onClick={eventHandler(deleteRow)}> Delete </a></td>
+            <td><a className={ConstantsCss.Button.Delete + ' ' + ConstantsCss.Button.Normal} onClick={eventHandler(deleteRow)}> Delete </a></td>
         </tr>
     )
 }
