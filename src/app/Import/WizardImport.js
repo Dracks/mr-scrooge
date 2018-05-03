@@ -12,10 +12,9 @@ import Message from '../../components/Message';
 
 import { eventHandler } from '../Utils';
 
-import { fetchImportKinds, updateStatus } from "./Actions";
-import { updateRawData } from '../RawData/Actions';
+import { fetchImportKinds, sendFile } from "./Actions";
 
-const WizardImport = ({history, acceptedKinds, updateStatus, updateRawData})=>{
+const WizardImport = ({history, acceptedKinds, sendFile, updateRawData})=>{
     const listKinds = [{key:'', value:'Select'}].concat(acceptedKinds.map((e)=>{return {key:e, value:e}}))
     var obj = {}
     const selectedFile = (e)=>{
@@ -28,16 +27,9 @@ const WizardImport = ({history, acceptedKinds, updateStatus, updateRawData})=>{
         var formData = new FormData();
         formData.append('kind', obj.kind);
         formData.append('file', obj.data, obj.data.name);
-        Rest.send('/api/import/upload/', {
-            method: 'POST',
-            body: formData
-        })
-        .then(Rest.manageFetch)
-        .then((data)=>{
-        updateStatus();
-            updateRawData();
+        sendFile(formData, ( data)=>{
             history.push('/import/'+data.id);
-        })
+        });
     }
     return (
         <div className="row">
@@ -57,5 +49,12 @@ const WizardImport = ({history, acceptedKinds, updateStatus, updateRawData})=>{
 const mapStateToProps = ({acceptedKinds}) => {
     return { acceptedKinds }
 }
+
+const mapDispatchToProps = (dispatch) => {
+    return { 
+        sendFile:(data, callback)=>{dispatch(sendFile(data, callback))},
+        fetchImportKinds: ()=>{dispatch(fetchImportKinds())},
+    }
+}
 const WizardImportLoading = withLoading(withRouter(WizardImport), Loading, 'acceptedKinds', 'fetchImportKinds')
-export default connect( mapStateToProps, { fetchImportKinds, updateStatus, updateRawData })(WizardImportLoading);
+export default connect( mapStateToProps, mapDispatchToProps)(WizardImportLoading);
