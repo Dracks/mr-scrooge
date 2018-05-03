@@ -11,13 +11,29 @@ class WrapGraph extends Component {
         super(props)
         this.changeOptions = this.changeOptions.bind(this);
         this.state={
-            isEdit: false,
+            isEdit: props.edit || false,
             options: props.options,
         }
+        this.cancel = this.cancel.bind(this);
+        this.save = this.save.bind(this);
+        this.destroy = this.destroy.bind(this);
     }
     changeOptions(options){
-        console.log(options);
         this.setState({options: options})
+    }
+    cancel(){
+        this.setState({
+            isEdit: false, 
+            options: this.props.options
+        });
+    }
+    save(){
+        this.setState({isEdit: false});
+        this.props.save(this.state.options);
+    }
+    destroy(){
+        this.cancel();
+        this.props.destroy(this.props.options);
     }
     render(){
         let g = <Graph data={this.props.data} options={this.props.packer(this.state.options)} />
@@ -25,7 +41,16 @@ class WrapGraph extends Component {
             return (
                 <div className={this.props.className}>
                     <Form config={this.props.graphConfig} onChange={this.changeOptions} options={this.state.options} />
-                    <a className={ConstantsCss.Button.Floating} onClick={eventHandler(()=>{this.setState({isEdit: false})})}><i className="material-icons">save</i></a>
+                    {
+                        [['cancel', 'grey', this.cancel], 
+                         ['save', '', this.save],
+                         ['delete', 'red', this.destroy]
+                        ].map(([label, color, callback])=>(
+                            <a key='label' className={ConstantsCss.Button.Floating+' '+ color } onClick={eventHandler(callback)}>
+                                <i className="material-icons">{label}</i>
+                            </a>
+                        ))
+                    }
                     {g}
                 </div>
                 )
