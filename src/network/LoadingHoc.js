@@ -20,3 +20,7 @@ export default function withLoading(WrappedComponent, Loading, dataName, initial
         return <Loading className={props.className} />
     }
 }
+
+export const extractData=(data) =>{
+    return data.data;
+}

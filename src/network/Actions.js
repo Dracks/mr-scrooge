@@ -60,6 +60,21 @@ export const fetchAction = (url, action, request=null)=>{
     }
 }
 
+export const saveAction = (url, action, body)=>{
+    var method = "POST"
+    if (body.id){
+        url = url.replace(":id", body.id);
+        method = "PUT"
+    } else {
+        url = url.replace(':id/','');
+    }
+    return fetchAction(url, action, {
+        body: JSON.stringify(body),
+        method: method,
+        headers: new jsonHeaders()
+    })
+}
+
 export const fetchError = (data) => {
     return {
         type: ACTIONS.FETCH_ERROR,

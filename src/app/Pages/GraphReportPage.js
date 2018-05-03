@@ -1,15 +1,23 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import WithLoading from '../../network/LoadingHoc';
+import WithLoading, { extractData } from '../../network/LoadingHoc';
 
-import Graph from '../Graphs/WrapGraph';
-import { serializerConfig } from '../Graphs/Configs';
+import WrapGraph from '../Graphs/WrapGraph';
 import Loading from '../../components/Loading';
-import { fetchRawData } from "../RawData/Actions";
-import { getGraphConfig } from '../Graphs/Configs';
+//import { fetchRawData } from "../RawData/Actions";
+import { getGraphConfig, serializerConfig } from '../Graphs/Configs';
+import { saveGraphs } from '../Graphs/Actions';
 
-const GraphReport = ({allData, hashTags, tags})=>{
+const mapDispatchToProps = (dispatch)=>{
+    return {
+        save: (body)=>dispatch(saveGraphs(body))
+    }
+}
+
+const ConnectedGraph = connect(null, mapDispatchToProps)(WrapGraph);
+
+const GraphReport = ({allData, hashTags})=>{
     const start = new Date();
     const end = new Date();
     start.setMonth(start.getMonth()-3);
@@ -23,21 +31,21 @@ const GraphReport = ({allData, hashTags, tags})=>{
             <div className="col s12 center-align">
                 {start.toDateString()} > {end.toDateString()}
             </div>
-            <Graph className="col s12 l6" data={data} packer={packer} graphConfig={graphConfig} options={{
+            <ConnectedGraph className="col s12 l6" data={data} packer={packer} graphConfig={graphConfig} options={{
                 tag: 2,
                 horizontal:'day',
                 group:  'month',
                 kind: 'line',
                 acumulative: true, 
             }}/>
-            <Graph className="col s12 l6" data={data} packer={packer} graphConfig={graphConfig} options={{
+            <ConnectedGraph className="col s12 l6" data={data} packer={packer} graphConfig={graphConfig} options={{
                 tag:1,
                 horizontal:'month',
                 group: 'sign',
                 kind: 'line', 
                 acumulative: false
             }}/>
-            <Graph className="col s12 l6"
+            <ConnectedGraph className="col s12 l6"
                     data={data} 
                     packer={packer} 
                     graphConfig={graphConfig} 
@@ -54,11 +62,10 @@ const GraphReport = ({allData, hashTags, tags})=>{
 
 const mapStateToProps = state=>{
     return {
-        allData:  state.allData,
-        hashTags: state.hashTags,
-        tags: state.tags,
+        allData:  extractData(state.allData),
+        hashTags: state.hashTags
     }
 }
 
-const LoadingGraphReport = WithLoading(GraphReport, Loading, 'allData', 'fetchRawData')
-export default connect(mapStateToProps, {fetchRawData})(LoadingGraphReport)
+//const LoadingGraphReport = WithLoading(GraphReport, Loading, 'allData', )
+export default connect(mapStateToProps)(GraphReport)

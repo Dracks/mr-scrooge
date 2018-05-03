@@ -2,9 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom'
 
-import ConstantsCss from '../Constants-CSS';
 import withLoading from '../../network/LoadingHoc';
-import Rest from '../../network/Rest';
 import Select from '../../components/Select';
 import Loading from '../../components/Loading';
 import InputFile from '../../components/InputFile';
