@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -33,8 +35,28 @@ class GraphViewSet(viewsets.ViewSet):
         data = [ graphSerializer(e) for e in Graph.objects.all()]
         return Response(data)
 
+    def retrieve(self, request, pk=None):
+        queryset = Graph.objects.all()
+        g = get_object_or_404(queryset, pk=pk)
+        return Response(graphSerializer(g))
+
     def create(self, request):
         _, name, options = graphUnserializer(request.data)
         g = Graph(name=name, options=options)
         g.save()
         return Response(graphSerializer(g), status=status.HTTP_201_CREATED)
+    
+    def update(self, request, pk=None):
+        queryset = Graph.objects.all()
+        g = get_object_or_404(queryset, pk=pk)
+        _, name, options = graphUnserializer(request.data)
+        g.name = name
+        g.options = options
+        return Response(graphSerializer(g))
+
+
+    def destroy(self, request, pk=None):
+        queryset = Graph.objects.all()
+        g = get_object_or_404(queryset, pk=pk)
+        g.delete()
+        return Response( status=status.HTTP_200_OK)
