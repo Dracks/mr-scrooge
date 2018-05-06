@@ -5,9 +5,8 @@ import WithLoading, { extractData } from '../../network/LoadingHoc';
 
 import WrapGraph from '../Graphs/WrapGraph';
 import Loading from '../../components/Loading';
-//import { fetchRawData } from "../RawData/Actions";
 import { getGraphConfig, serializerConfig } from '../Graphs/Configs';
-import { saveGraphs } from '../Graphs/Actions';
+import { saveGraphs, fetchGraphs } from '../Graphs/Actions';
 
 const mapDispatchToProps = (dispatch)=>{
     return {
@@ -17,7 +16,7 @@ const mapDispatchToProps = (dispatch)=>{
 
 const ConnectedGraph = connect(null, mapDispatchToProps)(WrapGraph);
 
-const GraphReport = ({allData, hashTags})=>{
+const GraphReport = ({allData, hashTags, graphs})=>{
     const start = new Date();
     const end = new Date();
     start.setMonth(start.getMonth()-3);
@@ -31,41 +30,25 @@ const GraphReport = ({allData, hashTags})=>{
             <div className="col s12 center-align">
                 {start.toDateString()} > {end.toDateString()}
             </div>
-            <ConnectedGraph className="col s12 l6" data={data} packer={packer} graphConfig={graphConfig} options={{
-                tag: 2,
-                horizontal:'day',
-                group:  'month',
-                kind: 'line',
-                acumulative: true, 
-            }}/>
-            <ConnectedGraph className="col s12 l6" data={data} packer={packer} graphConfig={graphConfig} options={{
-                tag:1,
-                horizontal:'month',
-                group: 'sign',
-                kind: 'line', 
-                acumulative: false
-            }}/>
-            <ConnectedGraph className="col s12 l6"
+            { graphs.map((element, index) => (
+                <ConnectedGraph className="col s12 l6"
+                    key={index}
                     data={data} 
                     packer={packer} 
                     graphConfig={graphConfig} 
-                    options={{
-                        tag:2,
-                        group: 'month',
-                        horizontal: 'tags', 
-                        horizontal_value: tagsToGroup,
-                        kind: 'bar'
-                    }} />
+                    options={element} />
+            ))}
         </div>
     )
 }
 
 const mapStateToProps = state=>{
     return {
+        graphs: state.graphs,
         allData:  extractData(state.allData),
         hashTags: state.hashTags
     }
 }
 
-//const LoadingGraphReport = WithLoading(GraphReport, Loading, 'allData', )
-export default connect(mapStateToProps)(GraphReport)
+const LoadingGraphReport = WithLoading(GraphReport, Loading, 'graphs', 'fetchGraphs')
+export default connect(mapStateToProps, {fetchGraphs})(LoadingGraphReport)
