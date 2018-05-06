@@ -1,5 +1,5 @@
 import { Line, Bar } from "react-chartjs-2";
-import { getOption, getSelectOptions, getMultiSelectOptions } from '../../utils/FormHelper';
+import { getOption, getInputOptions,  getSelectOptions, getMultiSelectOptions } from '../../utils/FormHelper';
 
 export const GraphComponentHash={
     line: {component: Line},
@@ -35,6 +35,7 @@ const getBasicGroups = (tags)=> {
 
 export const getGraphConfig=(tags) => {
     return {
+        name: getInputOptions('Name', 'Some descriptive name'),
         kind: getSelectOptions( 'kind', 'Select a graph kind', {
             line: getOption('Line', getBasicGroups(tags)),
             bar: getOption('Bar', getBasicGroups(tags)),

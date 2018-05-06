@@ -106,7 +106,8 @@ export const getInputOptions = (name, placeholder)=>{
     return {
         name, 
         placeholder, 
-        input: FormInputOption
+        input: FormInputOption,
+        options: {}
     }
 }
 

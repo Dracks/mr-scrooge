@@ -11,7 +11,7 @@ const getConfigView=(struct, state, callback)=>{
         var children = [];
         const Input = c.input;
         if (value){
-            if (typeof value === "string"){
+            if (typeof value === "string" || typeof value === "number"){
                 var select = c.options[value];
                 if (select){
                     if (select.config){
