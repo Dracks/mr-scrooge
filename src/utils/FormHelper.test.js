@@ -2,12 +2,31 @@ import React from 'react';
 import Enzyme, { shallow, mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
-import { getSelectOptions, getMultiSelectOptions } from './FormHelper';
+import { getInputOptions, getSelectOptions, getMultiSelectOptions } from './FormHelper';
 
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('[Utils/FormHelper]', ()=>{
     let wrapper;
+    describe('Input text', ()=>{
+        let Subject;
+        beforeEach(()=>{
+            Subject = getInputOptions().input;
+        });
+
+        it('Input text file', ()=>{
+            const mockCallback = jest.fn();
+            wrapper = mount(<Subject callback={mockCallback} value={'initial'} />)
+            const instance = wrapper.instance();
+            const input = wrapper.find('input')
+
+            expect(input.instance().value).toBe('initial')
+            input.simulate('change', {target: {value: 'abc'}});
+            input.simulate('blur');
+            expect(mockCallback).toHaveBeenCalledWith('abc');
+        });
+
+    });
     describe('Select Option', ()=>{
         let Subject;
         let options;

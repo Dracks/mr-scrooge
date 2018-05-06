@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { eventHandler } from '../app/Utils';
 
-//import Input from '../components/Input';
+import Input from '../components/Input';
 import Select from '../components/Select';
 
 export const getOption=(name, config)=>{
@@ -11,6 +11,15 @@ export const getOption=(name, config)=>{
     }
 }
 
+const FormInputOption = ({name, placeholder, value, callback, children})=>{
+    return (
+        <div>
+            <label>{name}</label>
+            <Input placeholder={placeholder} value={value} onBlur={callback} />
+            {children}
+        </div>
+    )
+}
 
 const FormSelectOption = ({name, placeholder, options, value, callback, children})=>{
     return (
@@ -92,6 +101,15 @@ const helper = (input)=>{
         }
     }
 }
+
+export const getInputOptions = (name, placeholder)=>{
+    return {
+        name, 
+        placeholder, 
+        input: FormInputOption
+    }
+}
+
 export const getSelectOptions = helper(FormSelectOption);
 
 export const getMultiSelectOptions = helper(FormMultiSelectOptions);
