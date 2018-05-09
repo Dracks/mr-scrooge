@@ -2,11 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import WithLoading, { extractData } from '../../network/LoadingHoc';
+import ConstantsCSS from '../Constants-CSS';
 
 import WrapGraph from '../Graphs/WrapGraph';
 import Loading from '../../components/Loading';
 import { getGraphConfig, serializerConfig } from '../Graphs/Configs';
-import { saveGraphs, fetchGraphs } from '../Graphs/Actions';
+import { saveGraphs, fetchGraphs, addGraph } from '../Graphs/Actions';
 
 const mapDispatchToProps = (dispatch)=>{
     return {
@@ -16,7 +17,7 @@ const mapDispatchToProps = (dispatch)=>{
 
 const ConnectedGraph = connect(null, mapDispatchToProps)(WrapGraph);
 
-const GraphReport = ({allData, hashTags, graphs})=>{
+const GraphReport = ({allData, hashTags, graphs, addGraph})=>{
     const start = new Date();
     const end = new Date();
     start.setMonth(start.getMonth()-3);
@@ -36,8 +37,14 @@ const GraphReport = ({allData, hashTags, graphs})=>{
                     data={data} 
                     packer={packer} 
                     graphConfig={graphConfig} 
-                    options={element} />
+                    options={element} 
+                    edit={!element.id}/>
             ))}
+            <div className="col s12 l6 center-align valign-wrapper">
+                <button className={ConstantsCSS.Button.Floating} onClick={addGraph}>
+                    <i className="material-icons">add</i>
+                </button>
+            </div>
         </div>
     )
 }
@@ -51,4 +58,4 @@ const mapStateToProps = state=>{
 }
 
 const LoadingGraphReport = WithLoading(GraphReport, Loading, 'graphs', 'fetchGraphs')
-export default connect(mapStateToProps, {fetchGraphs})(LoadingGraphReport)
+export default connect(mapStateToProps, {fetchGraphs, addGraph})(LoadingGraphReport)

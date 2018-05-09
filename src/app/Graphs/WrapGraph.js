@@ -36,16 +36,28 @@ class WrapGraph extends Component {
         this.props.destroy(this.props.options);
     }
     render(){
-        let g = <Graph data={this.props.data} options={this.props.packer(this.state.options)} />
+        let graphOptions = this.props.packer(this.state.options)
+        let g= <div />
+        if (graphOptions){
+            g = <Graph data={this.props.data} options={graphOptions} />
+        }
         if (this.state.isEdit){
+            let actions_list = [
+                ['cancel', ConstantsCss.Button.Cancel, this.cancel], 
+                ['save', ConstantsCss.Button.Save, this.save],
+                ['delete', ConstantsCss.Button.Delete, this.destroy]
+            ]
+            if (!this.state.options.id){
+                actions_list = [
+                    ['save', ConstantsCss.Button.Save, this.save],
+                    ['delete', ConstantsCss.Button.Delete, this.destroy]
+                ]
+            } 
             return (
                 <div className={this.props.className}>
                     <Form config={this.props.graphConfig} onChange={this.changeOptions} options={this.state.options} />
                     {
-                        [['cancel', ConstantsCss.Button.Cancel, this.cancel], 
-                         ['save', ConstantsCss.Button.Save, this.save],
-                         ['delete', ConstantsCss.Button.Delete, this.destroy]
-                        ].map(([label, color, callback])=>(
+                        actions_list.map(([label, color, callback])=>(
                             <a key={label} className={ConstantsCss.Button.Floating+' '+ color } onClick={eventHandler(callback)}>
                                 <i className="material-icons">{label}</i>
                             </a>

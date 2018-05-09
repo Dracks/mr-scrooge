@@ -44,11 +44,13 @@ export const getGraphConfig=(tags) => {
 }
 
 export const serializerConfig = ({hashTags}) => ({tag, kind, group, horizontal, acumulative, horizontal_value=[]}) => {
-    return {
-        kind,
-        tag,
-        acumulative,
-        group: {name: group},
-        horizontal: {name: horizontal, value: horizontal_value.map((e=>hashTags[e]))}
+    if (tag && kind && group && horizontal){
+        return {
+            kind,
+            tag,
+            acumulative,
+            group: {name: group},
+            horizontal: {name: horizontal, value: horizontal_value.map((e=>hashTags[e]))}
+        }
     }
 }

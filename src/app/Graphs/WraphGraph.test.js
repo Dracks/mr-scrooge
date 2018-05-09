@@ -7,7 +7,8 @@ import Subject from './WrapGraph';
 Enzyme.configure({ adapter: new Adapter() });
 
 const mockClick = {preventDefault:()=>{}};
-const changedOptions = {"Tv show": "Dr Who"};
+const changedOptions = {id:1, "Tv show": "Dr Who"};
+const defaultOptions = {id: 1}
 
 describe('[Graphs/WrapGraph]', ()=>{
     let wrapper;
@@ -19,7 +20,7 @@ describe('[Graphs/WrapGraph]', ()=>{
         wrapper = shallow(<Subject 
             data={[]} 
             packer={(e)=>e} 
-            options={{}} 
+            options={defaultOptions} 
             save={mockSave}
             destroy={mockDestroy}
             edit={edit}/>);
@@ -29,7 +30,7 @@ describe('[Graphs/WrapGraph]', ()=>{
     const executeAction = (action)=>{
         instantiate(true);
         expect(wrapper.find('a').length).toEqual(3);
-        expect(instance.state.options).toEqual({});
+        expect(instance.state.options).toEqual(defaultOptions);
 
         instance.changeOptions(changedOptions);
 
@@ -54,7 +55,7 @@ describe('[Graphs/WrapGraph]', ()=>{
         it('check editing cancel', ()=>{
             executeAction('cancel');
 
-            expect(instance.state.options).toEqual({});
+            expect(instance.state.options).toEqual(defaultOptions);
             expect(instance.state.isEdit).toEqual(false);
         });
 
@@ -63,15 +64,15 @@ describe('[Graphs/WrapGraph]', ()=>{
             
             expect(instance.state.options).toEqual(changedOptions);
             expect(instance.state.isEdit).toEqual(false);
-            expect(mockSave).toHaveBeenCalledWith({"Tv show": "Dr Who"});
+            expect(mockSave).toHaveBeenCalledWith(changedOptions);
         });
 
         it('check editing save', ()=>{
             executeAction('delete');
             
-            expect(instance.state.options).toEqual({});
+            expect(instance.state.options).toEqual(defaultOptions);
             expect(instance.state.isEdit).toEqual(false);
-            expect(mockDestroy).toHaveBeenCalledWith({});
+            expect(mockDestroy).toHaveBeenCalledWith(defaultOptions);
         });
     });
 });
