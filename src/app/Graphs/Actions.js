@@ -1,7 +1,8 @@
-import { fetchAction, responseReloadAction, saveAction } from '../../network/Actions';
+import { fetchAction, responseReloadAction, saveAction, deleteAction } from '../../network/Actions';
 
 export const FETCH_GRAPHS = "GRAPH_FETCH";
-export const ADD_GRAPHS = "GRAPH_ADD";
+export const ADD_GRAPH = "GRAPH_ADD";
+export const REMOVE_GRAPH = "GRAPH_REMOVE";
 
 export const fetchGraphs = ()=>{
     return fetchAction('/api/graph/', FETCH_GRAPHS);
@@ -17,6 +18,17 @@ export const saveGraphs = (data)=>{
 
 export const addGraph=()=>{
     return {
-        type: ADD_GRAPHS
+        type: ADD_GRAPH
+    }
+}
+
+export const deleteGraph= (data)=>{
+    if (data.id){
+        return deleteAction('/api/graph/:id/', (isLoading)=>!isLoading && updateGraphs(), data)
+    } else {
+        return {
+            type: REMOVE_GRAPH,
+            payload: data
+        }
     }
 }

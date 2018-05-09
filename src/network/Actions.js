@@ -75,6 +75,15 @@ export const saveAction = (url, action, body)=>{
     })
 }
 
+export const deleteAction = (url, action, body)=>{
+    var method = "DELETE"
+    url = url.replace(":id", body.id);
+    return fetchAction(url, action, {
+        method: method,
+        headers: new jsonHeaders()
+    })
+}
+
 export const fetchError = (data) => {
     return {
         type: ACTIONS.FETCH_ERROR,

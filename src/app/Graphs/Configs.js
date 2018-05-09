@@ -47,7 +47,7 @@ export const serializerConfig = ({hashTags}) => ({tag, kind, group, horizontal, 
     if (tag && kind && group && horizontal){
         return {
             kind,
-            tag,
+            tag:parseInt(tag),
             acumulative,
             group: {name: group},
             horizontal: {name: horizontal, value: horizontal_value.map((e=>hashTags[e]))}

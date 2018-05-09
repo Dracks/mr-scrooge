@@ -7,11 +7,12 @@ import ConstantsCSS from '../Constants-CSS';
 import WrapGraph from '../Graphs/WrapGraph';
 import Loading from '../../components/Loading';
 import { getGraphConfig, serializerConfig } from '../Graphs/Configs';
-import { saveGraphs, fetchGraphs, addGraph } from '../Graphs/Actions';
+import { saveGraphs, deleteGraph, fetchGraphs, addGraph } from '../Graphs/Actions';
 
 const mapDispatchToProps = (dispatch)=>{
     return {
-        save: (body)=>dispatch(saveGraphs(body))
+        save: (body)=>dispatch(saveGraphs(body)),
+        destroy: (body)=>dispatch(deleteGraph(body)),
     }
 }
 
