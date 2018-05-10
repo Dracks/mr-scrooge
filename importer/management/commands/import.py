@@ -11,4 +11,6 @@ class Command(BaseCommand):
         parser.add_argument('-k', '--key', default=None, dest='key', help="By default should use the same as format value")
 
     def handle(self, *args, **options):
-        FORMAT_LIST[options.get('format')](options.get('file'), options.get('key')).run()
+        importer = FORMAT_LIST[options.get('format')](options.get('file'), options.get('key'))
+        importer.run()
+        importer.apply_filters()
