@@ -1,12 +1,25 @@
 import React, {Component} from 'react';
 
+const mapValues=(()=>{
+    const hashValues = {
+        int:(e)=>parseInt(e),
+        str:(e)=>e,
+    }
 
+    return (kind, v)=>{
+        let cast = hashValues[kind]
+        if (!cast){
+            return hashValues.str(v)
+        } 
+        return cast(v)
+    }
+})()
 const getConfigView=(struct, state, callback)=>{
     return Object.keys(struct).filter((e)=>{
         return struct[e].options;
     }).map((property, index)=>{
         var c=struct[property];
-        var options = Object.keys(c.options).map((e)=>{ return { value: c.options[e].name, key: e}});
+        var options = Object.keys(c.options).map((e)=>{ return { value: c.options[e].name, key: mapValues(c.kind, e)}});
         var value = state[property];
         var children = [];
         const Input = c.input;

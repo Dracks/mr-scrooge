@@ -92,12 +92,13 @@ class FormMultiSelectOptions extends Component {
 }
 
 const helper = (input)=>{
-    return (name, placeholder, options)=>{
+    return (name, placeholder, options, kind="str")=>{
         return {
             name,
             placeholder,
             options,
-            input
+            input,
+            kind,
         }
     }
 }
@@ -107,7 +108,8 @@ export const getInputOptions = (name, placeholder)=>{
         name, 
         placeholder, 
         input: FormInputOption,
-        options: {}
+        options: {},
+        kind: "str",
     }
 }
 

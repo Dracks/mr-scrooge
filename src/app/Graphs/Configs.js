@@ -12,7 +12,7 @@ const getGroupFunctions = (prefix, tags)=>{
         day: getOption('Day'),
         sign: getOption('Sign'),
         tags: getOption('Tags', {
-                [prefix+'_value']: getMultiSelectOptions('['+prefix+'] Tags', 'Select tags', tags)
+                [prefix+'_value']: getMultiSelectOptions('['+prefix+'] Tags', 'Select tags', tags, "int")
             }
         )
     };
@@ -20,7 +20,7 @@ const getGroupFunctions = (prefix, tags)=>{
 
 const getBasicGroups = (tags)=> {
     return {
-        tag: getSelectOptions('Tag', 'Select a tag', tags),
+        tag: getSelectOptions('Tag', 'Select a tag', tags, "int"),
         acumulative: getSelectOptions('Sum', 'False', {
             [true]: getOption('True'),
         }),
@@ -47,7 +47,7 @@ export const serializerConfig = ({hashTags}) => ({tag, kind, group, horizontal, 
     if (tag && kind && group && horizontal){
         return {
             kind,
-            tag:parseInt(tag),
+            tag:tag,
             acumulative,
             group: {name: group},
             horizontal: {name: horizontal, value: horizontal_value.map((e=>hashTags[e]))}
