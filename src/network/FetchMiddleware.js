@@ -1,28 +1,33 @@
 import Actions, { fetchError } from "./Actions";
+import Rest from './Rest';
 
+const getActions = (actionsList, isLoading, data) => {
+    return actionsList.map(e=>{
+        if (typeof e === "function"){
+            return e(isLoading, data);
+        }
+        return e;
+    }).filter(e=>e)
+}
 
 export default store => next => action => {
     if (action.type === Actions.FETCH){
-        store.dispatch({
-            type: action.payload.action, 
-            payload: {
-                isLoading: true
-            }
-        })
-        fetch(action.payload.url)
-            .then((r)=>r.json())
+        const payload = action.payload;
+        getActions(payload.actions_list, true)
+            .forEach((e)=>{
+                console.log(e);
+                store.dispatch(e)
+            })
+        
+        Rest.send(payload.url, payload.request)
+            .then(payload.manageResponse)
             .then((data)=>{
-                store.dispatch({
-                    type: action.payload.action,
-                    payload: {
-                        isLoading: false, 
-                        data: data
-                    }
-                })
+                getActions(payload.actions_list, false, data)
+                    .forEach(store.dispatch)
             },
             (error) => {
                 store.dispatch(fetchError({
-                    url: action.payload.url,
+                    url: payload.url,
                     error: error
                 }))
             }
