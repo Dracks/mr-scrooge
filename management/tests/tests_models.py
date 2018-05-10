@@ -1,7 +1,7 @@
 from django.test import TestCase
 from datetime import date
 
-from .models import Tag, Filter, FilterConditionals, RawDataSource, ValuesToTag
+from ..models import Tag, Filter, FilterConditionals, RawDataSource, ValuesToTag
 # Create your tests here.
 class TagModelTest(TestCase):
     def setUp(self):

@@ -59,4 +59,4 @@ class GraphViewSet(viewsets.ViewSet):
         queryset = Graph.objects.all()
         g = get_object_or_404(queryset, pk=pk)
         g.delete()
-        return Response( status=status.HTTP_200_OK)
+        return Response( status=status.HTTP_204_NO_CONTENT)

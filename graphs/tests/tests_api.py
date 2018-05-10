@@ -1,18 +1,17 @@
 from django.test import TestCase
-from django.contrib.auth.models import User
 from rest_framework.test import APIClient
 from rest_framework import status
 
 import json
 
-from .models import Graph
+from session.tests import get_user
+from ..models import Graph
 
 class GraphApiTest(TestCase):
     def setUp(self):
         Graph(name='ping', options='{"option1":"value"}').save()
         Graph(name='pong', options='{"o1":true, "o2":"fuck"}').save()
-        self.user = User.objects.create_user(
-            username='jacob', email='jacob@testing.com', password='testing!1234')
+        self.user = get_user()
         self.client = APIClient()
         self.client.force_authenticate(self.user)
 
@@ -51,4 +50,4 @@ class GraphApiTest(TestCase):
 
     def test_update(self):
         response = self.client.delete('/api/graph/1/', {'name':'peperoni', 'option3':'dalek!'})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
