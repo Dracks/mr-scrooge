@@ -2,8 +2,19 @@ import { Line, Bar } from "react-chartjs-2";
 import { getOption, getInputOptions,  getSelectOptions, getMultiSelectOptions } from '../../utils/FormHelper';
 
 export const GraphComponentHash={
-    line: {component: Line},
-    bar: {component: Bar},
+    line: {
+        component: Line,
+        options: {
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+            },
+        }
+    },
+    bar: {
+        component: Bar,
+        options: {}
+    },
 };
 
 const getGroupFunctions = (prefix, tags)=>{

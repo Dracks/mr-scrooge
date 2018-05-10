@@ -27,9 +27,10 @@ const Graph = (props)=> {
     this.chartData = helper.get();
 
     const G = GraphComponentHash[props.options.kind].component;
+    const options = GraphComponentHash[props.options.kind].options;
     return (
         <div className={props.className}>
-            <G data={this.chartData} />
+            <G data={this.chartData} options={options} />
         </div>
     );
 }
