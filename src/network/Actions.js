@@ -11,6 +11,14 @@ export const jsonHeaders = ()=>{
     return headers;
 }
 
+const manageResponse = (response)=> {
+    if (response.ok){
+        return response.json()
+    } else {
+        return Promise.reject({code: response.status, description: response.statusText})
+    }
+}
+
 export const responseReloadAction = (action) => {
     return (isLoading, data) => {
         return {
@@ -18,7 +26,7 @@ export const responseReloadAction = (action) => {
             payload: {
                 isLoading: isLoading,
                 reload: true,
-                data: data
+                data: data,
             }
         }
     }
@@ -31,7 +39,7 @@ export const responseAction = (action)=>{
             payload: {
                 isLoading: isLoading, 
                 data: data,
-                reload: false
+                reload: false,
             }
         }
     }
@@ -55,7 +63,8 @@ export const fetchAction = (url, action, request=null)=>{
         payload: {
             url: url,
             actions_list: actions_list,
-            request: request
+            request,
+            manageResponse,
         }
     }
 }
@@ -78,10 +87,12 @@ export const saveAction = (url, action, body)=>{
 export const deleteAction = (url, action, body)=>{
     var method = "DELETE"
     url = url.replace(":id", body.id);
-    return fetchAction(url, action, {
+    let actionObject =  fetchAction(url, action, {
         method: method,
         headers: new jsonHeaders()
-    })
+    });
+    actionObject.payload.manageResponse = (e)=>e;
+    return actionObject;
 }
 
 export const fetchError = (data) => {

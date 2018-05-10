@@ -12,21 +12,22 @@ const getActions = (actionsList, isLoading, data) => {
 
 export default store => next => action => {
     if (action.type === Actions.FETCH){
-        getActions(action.payload.actions_list, true)
+        const payload = action.payload;
+        getActions(payload.actions_list, true)
             .forEach((e)=>{
                 console.log(e);
                 store.dispatch(e)
             })
-
-        Rest.send(action.payload.url, action.payload.request)
-            .then(Rest.manageFetch)
+        
+        Rest.send(payload.url, payload.request)
+            .then(payload.manageResponse)
             .then((data)=>{
-                getActions(action.payload.actions_list, false, data)
+                getActions(payload.actions_list, false, data)
                     .forEach(store.dispatch)
             },
             (error) => {
                 store.dispatch(fetchError({
-                    url: action.payload.url,
+                    url: payload.url,
                     error: error
                 }))
             }

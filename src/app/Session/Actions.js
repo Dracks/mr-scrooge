@@ -3,7 +3,7 @@ import { fetchAction } from '../../network/Actions'
 export const FETCH_SESSION_DATA = "SESSION_FETCH_DATA";
 
 export const fetchSession = ()=>{
-    return fetchAction('/api/session', FETCH_SESSION_DATA);
+    return fetchAction('/api/session/', FETCH_SESSION_DATA);
 }
 
 export const login = (data)=>{

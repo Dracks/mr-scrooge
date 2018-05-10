@@ -37,7 +37,7 @@ class WrapGraph extends Component {
     }
     render(){
         let graphOptions = this.props.packer(this.state.options)
-        let g= <div />
+        let g= <div className={ConstantsCss.Message.Warning}>Graph not configured well</div>
         if (graphOptions){
             g = <Graph data={this.props.data} options={graphOptions} />
         }
