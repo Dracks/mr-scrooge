@@ -52,6 +52,7 @@ class GraphViewSet(viewsets.ViewSet):
         _, name, options = graphUnserializer(request.data)
         g.name = name
         g.options = options
+        g.save()
         return Response(graphSerializer(g))
 
 

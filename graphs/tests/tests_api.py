@@ -44,10 +44,11 @@ class GraphApiTest(TestCase):
     def test_update(self):
         response = self.client.put('/api/graph/1/', {'name':'peperoni', 'option3':'dalek!'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        data = json.loads(response.content)
-        self.assertEqual(data['name'], 'peperoni')
-        self.assertEqual(data['option3'], 'dalek!')
+        data = Graph.objects.get(id=1)
+        self.assertEqual(data.name, 'peperoni')
+        data_options = json.loads(data.options)
+        self.assertEqual(data_options['option3'], 'dalek!')
 
-    def test_update(self):
+    def test_delete(self):
         response = self.client.delete('/api/graph/1/', {'name':'peperoni', 'option3':'dalek!'})
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
