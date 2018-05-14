@@ -41,5 +41,6 @@ COPY config/uwsgi* /home/django/
 
 
 EXPOSE 80
+COPY config/sqlite/start.sh /usr/bin
 
-CMD ["supervisord", "-n"]
+ENTRYPOINT [ "start.sh" ]

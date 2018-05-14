@@ -1,4 +1,4 @@
-version: '3'
+version: '2'
 services:
   django:
     depends_on: 
@@ -20,7 +20,7 @@ services:
       dockerfile: config/view/Dockerfile
   
   postgres:
-    image: postgres
+    image: postgres:10-alpine
     restart: always
     environment:
       POSTGRES_PASSWORD: postgres
