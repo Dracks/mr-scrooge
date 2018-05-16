@@ -1,5 +1,12 @@
 import moment from 'moment'
 
+export const getRangeFilter=(months, reference)=>{
+    const start = moment(reference).subtract(months-1, 'months').startOf('month').toDate();
+    const end = moment(reference).endOf('month').toDate();
+
+    return e=>e.date >= start && e.date <= end
+}
+
 export const groupLambdas = {
     month:()=>(e) => new moment(e.date).format("YYYY-MM"),
     day:()=>(e)=>e.date.getDate(),

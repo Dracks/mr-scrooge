@@ -31,7 +31,13 @@ const getGroupFunctions = (prefix, tags)=>{
 
 const getBasicGroups = (tags)=> {
     return {
-        tag: getSelectOptions('Tag', 'Select a tag', tags, "int"),
+        date_range: getSelectOptions('Range dates', 'Select a period of time', {
+            month: getOption('one month'),
+            three: getOption('Three months'),
+            six: getOption('Half a year'),
+            year: getOption('One year'),
+        }),
+        tag: getSelectOptions('Tag', 'All', tags, "int"),
         acumulative: getSelectOptions('Sum', 'False', {
             [true]: getOption('True'),
         }),
@@ -54,10 +60,11 @@ export const getGraphConfig=(tags) => {
     }
 }
 
-export const serializerConfig = ({hashTags}) => ({tag, kind, group, horizontal, acumulative, horizontal_value=[]}) => {
-    if (tag && kind && group && horizontal){
+export const serializerConfig = ({hashTags}) => ({tag, date_range, kind, group, horizontal, acumulative, horizontal_value=[]}) => {
+    if ( kind && group && horizontal && date_range){
         return {
             kind,
+            date_range,
             tag:tag,
             acumulative,
             group: {name: group},

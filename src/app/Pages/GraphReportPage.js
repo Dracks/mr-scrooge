@@ -19,23 +19,14 @@ const mapDispatchToProps = (dispatch)=>{
 const ConnectedGraph = connect(null, mapDispatchToProps)(WrapGraph);
 
 const GraphReport = ({allData, hashTags, graphs, addGraph})=>{
-    const start = new Date();
-    const end = new Date();
-    start.setMonth(start.getMonth()-3);
-    start.setDate(1);
-    let data = allData.filter((e)=> e.date > start && e.date < end);
-    let tagsToGroup = [4,5,10,8];
     let graphConfig = getGraphConfig(hashTags);
     let packer = serializerConfig({hashTags});
     return (
         <div className="row">
-            <div className="col s12 center-align">
-                {start.toDateString()} > {end.toDateString()}
-            </div>
             { graphs.map((element, index) => (
                 <ConnectedGraph className="col s12 l6"
                     key={index}
-                    data={data} 
+                    data={allData} 
                     packer={packer} 
                     graphConfig={graphConfig} 
                     options={element} 

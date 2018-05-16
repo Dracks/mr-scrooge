@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 const mapValues=(()=>{
     const hashValues = {
-        int:(e)=>parseInt(e),
+        int:(e)=>parseInt(e, 10),
         str:(e)=>e,
     }
 
