@@ -26,6 +26,8 @@ class SessionViewSet(viewsets.ViewSet):
         if user and user.is_active:
             auth_login(request, user)
             return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(NOT_AUTHENTICATED_RESPONSE)
     
     @list_route(methods=["DELETE"])
     def logout(self, request, pk=None):
