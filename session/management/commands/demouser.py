@@ -1,17 +1,26 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
 
-username = 'demo'
-password = 'demo'
 class Command(BaseCommand):
-    help = "Clear all movements from the database"
+    help = "Check sure there is a user like the requested on the database"
+
+    def add_arguments(self, parser):
+        parser.add_argument('-u', '--user', default='demo', help='Username')
+        parser.add_argument('-p', '--password', default='demo', help='Password to be used if it is created')
+        parser.add_argument('-a', '--admin', default=False, dest='admin', action='store_true', help='If set, the user should be admin')
+
 
     def handle(self, *args, **options):
-        exist = User.objects.filter(username='demo').count()
+        username = options.get('user')
+        password = options.get('password')
+        admin = options.get('admin')
+        exist = User.objects.filter(username=username).count()
         if exist == 0:
             user = User.objects.create_user(
                 username=username,
-                password=password
+                password=password,
+                is_superuser=admin,
+                is_staff=admin
             )
             user.save()
-            print('User "{}" created with password "{}"'.format(username, password))
+            self.stdout.write('User "{}" created with password "{}"'.format(username, password))
