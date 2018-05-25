@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import list_route
 
@@ -25,7 +25,7 @@ class SessionViewSet(viewsets.ViewSet):
         user = authenticate(request, username=request.data.get('user'), password=request.data.get('password'))
         if user and user.is_active:
             auth_login(request, user)
-            return Response(UserSerializer(user).data)
+            return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
     
     @list_route(methods=["DELETE"])
     def logout(self, request, pk=None):
