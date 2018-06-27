@@ -10,7 +10,7 @@ from .serializers import RawDataSerializer, StatusReportSerializer, StatusReport
 from management.serializers import ValuesToTagSerializer
 from .importers import FORMAT_LIST
 
-class RawDataSourceViewSet(viewsets.ReadOnlyModelViewSet):
+class RawDataSourceViewSet(viewsets.ReadOnlyModelViewSet, viewsets.mixins.CreateModelMixin):
     queryset = RawDataSource.objects.all()
     serializer_class = RawDataSerializer
 
