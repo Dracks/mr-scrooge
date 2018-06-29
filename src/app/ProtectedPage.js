@@ -21,7 +21,7 @@ const mapStateToPropsHead = ({session}) => {
     return {session}
 }
 
-const HeaderWithSession = connect(mapStateToPropsHead, {logout})(Header)
+const HeaderWithSession = withRouter(connect(mapStateToPropsHead, {logout})(Header))
 
 const mapStateToProps = state=>{
     var status = null
