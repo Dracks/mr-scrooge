@@ -2,6 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
+import { Layout } from 'antd';
+
+
 import { logout } from './Session/Actions';
 import { fetchRawData } from './RawData/Actions'
 import { fetchTags } from './Tags/Actions'
@@ -60,11 +63,17 @@ const ContentsWithRouter = withRouter(ContentsWithData)
 
 const App = (props) => {
     return (
-        <div>
-            <HeaderWithSession />
-            <ContentsWithRouter />
-            <Footer />
-        </div>
+        <Layout>
+            <Layout.Header>
+                <HeaderWithSession />
+            </Layout.Header>
+            <Layout.Content>
+                <ContentsWithRouter />
+            </Layout.Content>
+            <Layout.Footer>
+                <Footer />
+            </Layout.Footer>
+        </Layout>
     );
 }
 
