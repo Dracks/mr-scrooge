@@ -1,19 +1,13 @@
 import React from 'react';
+import { Spin, Icon } from 'antd';
 
 const Loading = (props) => {
-    return (<div className={props.className}>
-        <div className="preloader-wrapper small active">
-            <div className="spinner-layer spinner-green-only">
-                <div className="circle-clipper left">
-                    <div className="circle"></div>
-                </div><div className="gap-patch">
-                    <div className="circle"></div>
-                </div><div className="circle-clipper right">
-                    <div className="circle"></div>
-                </div>
-            </div>
+    const antIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
+    return (
+        <div className={props.className}>
+            <Spin indicator={antIcon} />
         </div>
-    </div>)
+    )
 }
 
 const CenteredLoading = ()=>{

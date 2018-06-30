@@ -33,6 +33,7 @@ const custom = (l, data, logout)=>()=>{
           mode={'horizontal'}
           selectedKeys={[l]}
         >
+        <Menu.Item>Mr Scrooge</Menu.Item>
         {data(logout)}
     </Menu>
     );

@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Row, Col } from 'antd';
 
 import WithLoading, { extractData } from '../../network/LoadingHoc';
 import ConstantsCSS from '../Constants-CSS';
@@ -21,23 +22,34 @@ const ConnectedGraph = connect(null, mapDispatchToProps)(WrapGraph);
 const GraphReport = ({allData, hashTags, graphs, addGraph})=>{
     let graphConfig = getGraphConfig(hashTags);
     let packer = serializerConfig({hashTags});
+    let columns = {
+        xl: 24,
+        sm: 24, 
+        md: 12, 
+        lg: 12, 
+        xl: 8
+    }
     return (
-        <div className="row">
+        <Row type="flex">
             { graphs.map((element, index) => (
-                <ConnectedGraph className="col s12 l6"
-                    key={index}
-                    data={allData} 
-                    packer={packer} 
-                    graphConfig={graphConfig} 
-                    options={element} 
-                    edit={!element.id}/>
+                <Col {...columns}>
+                    <ConnectedGraph className="col s12 l6"
+                        key={index}
+                        data={allData} 
+                        packer={packer} 
+                        graphConfig={graphConfig} 
+                        options={element} 
+                        edit={!element.id}/>
+                </Col>
             ))}
+            <Col {...columns}>
             <div className="col s12 l6 center-align valign-wrapper">
                 <button className={ConstantsCSS.Button.Floating} onClick={addGraph}>
                     <i className="material-icons">add</i>
                 </button>
             </div>
-        </div>
+            </Col>
+        </Row>
     )
 }
 
