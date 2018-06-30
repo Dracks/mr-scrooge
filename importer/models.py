@@ -16,7 +16,7 @@ class AbstractRawDataSource(models.Model):
     movement_name=models.CharField(max_length=255)
     date=models.DateField()
     date_value=models.DateField(null=True)
-    details=models.TextField(null=True)
+    details=models.TextField(null=True, blank=True)
     value=models.FloatField()
 
     def __str__(self):
