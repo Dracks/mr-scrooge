@@ -1,36 +1,67 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { Menu, Icon } from 'antd';
+import { Menu } from 'antd';
+import ResponsiveNav from '../components/ResponsiveNav';
 
-const Header = ({logout, location}) =>{
+//{ mobileVersion, activeLinkKey, onLinkClick, className }
+const contents = ({logout}) => ()=>{
+    return [
+            (
+            <Menu.Item key="/">
+                <Link to='/'>Report</Link>
+            </Menu.Item>
+            ),(
+            <Menu.Item key="/import">
+                <Link to='/import'>Import</Link>
+            </Menu.Item>
+            ),(
+            <Menu.Item key="/tag">
+                <Link to='/tag'>Tags</Link>
+            </Menu.Item>
+            ),(
+            <Menu.Item key="/raw-data">
+                <Link to='/raw-data'>RawData</Link>
+            </Menu.Item>
+            ),(
+            <Menu.Item key='logout'>
+                <a onClick={logout}>Logout</a>
+            </Menu.Item>
+            )]
+}
+const custom = (l, data, logout)=>()=>{
+    return (<Menu
+          mode={'horizontal'}
+          selectedKeys={[l]}
+        >
+        {data(logout)}
+    </Menu>
+    );
+}
+
+const mobile = (l, data) => ()=>{
+    return (
+        <Menu
+            mode={'horizontal'}
+            selectedKeys={[l]}
+            >
+            <Menu.SubMenu 
+                title={<span>Menu</span>}>
+                {data()}
+            </Menu.SubMenu>
+        </Menu>
+    )
+}
+export default ({location, logout})=>{
     var l = location.pathname
     var last_path = l.indexOf("/",2)
     if (last_path) {
         l = l.substr(0, last_path)
     }
-    return (
-        <Menu
-          onClick={this.handleClick}
-          selectedKeys={[l]}
-          mode="horizontal"
-        >
-            <Menu.Item key="/">
-                <Link to='/'>Report</Link>
-            </Menu.Item>
-            <Menu.Item key="/import">
-                <Link to='/import'>Import</Link>
-            </Menu.Item>
-            <Menu.Item key="/tag">
-                <Link to='/tag'>Tags</Link>
-            </Menu.Item>
-            <Menu.Item key="/raw-data">
-                <Link to='/raw-data'>RawData</Link>
-            </Menu.Item>
-            <Menu.Item>
-                <a onClick={logout}>Logout</a>
-            </Menu.Item>
-        </Menu>
-    );
-}
-
-export default Header;
+    var c = contents(logout)
+    return (<ResponsiveNav
+        menuMarkup={custom(l, c)}
+        menuMarkupMobile={mobile(l, c)}
+        mobileBreakPoint={767}
+     />
+     )
+};

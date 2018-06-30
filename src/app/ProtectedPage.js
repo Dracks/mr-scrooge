@@ -64,9 +64,7 @@ const ContentsWithRouter = withRouter(ContentsWithData)
 const App = (props) => {
     return (
         <Layout>
-            <Layout.Header>
-                <HeaderWithSession />
-            </Layout.Header>
+            <HeaderWithSession />
             <Layout.Content>
                 <ContentsWithRouter />
             </Layout.Content>
