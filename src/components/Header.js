@@ -4,7 +4,8 @@ import { Menu } from 'antd';
 import ResponsiveNav from '../components/ResponsiveNav';
 
 //{ mobileVersion, activeLinkKey, onLinkClick, className }
-const contents = ({logout}) => ()=>{
+const contents = (logout) => ()=>{
+    console.log(logout);
     return [
             (
             <Menu.Item key="/">
@@ -28,13 +29,13 @@ const contents = ({logout}) => ()=>{
             </Menu.Item>
             )]
 }
-const custom = (l, data, logout)=>()=>{
+const custom = (l, data)=>()=>{
     return (<Menu
           mode={'horizontal'}
           selectedKeys={[l]}
         >
         <Menu.Item>Mr Scrooge</Menu.Item>
-        {data(logout)}
+        {data()}
     </Menu>
     );
 }
