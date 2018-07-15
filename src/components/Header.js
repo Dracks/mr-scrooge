@@ -29,7 +29,7 @@ const contents = ({logout}) => ()=>{
             )]
 }
 const custom = (l, data, logout)=>()=>{
-    return (<Menu
+    return (<Menu theme="dark"
           mode={'horizontal'}
           selectedKeys={[l]}
         >
@@ -41,7 +41,7 @@ const custom = (l, data, logout)=>()=>{
 
 const mobile = (l, data) => ()=>{
     return (
-        <Menu
+        <Menu theme="dark"
             mode={'horizontal'}
             selectedKeys={[l]}
             >
