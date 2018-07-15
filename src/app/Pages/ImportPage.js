@@ -41,13 +41,13 @@ const ImportPage = ({match, status, location}) => {
                 </Menu>
                 </Layout.Sider>
             <Layout.Content>
-            <Switch>
-                <Route
-                    path={basepath + "/wizard"}
-                    component={WizardImport}/>
-                <Route
-                    path={basepath + "/:id"}
-                    component={StatusImport}/>
+                <Switch>
+                    <Route
+                        path={basepath + "/wizard"}
+                        component={WizardImport}/>
+                    <Route
+                        path={basepath + "/:id"}
+                        component={StatusImport}/>
                 </Switch>
             </Layout.Content>
         </Layout>
