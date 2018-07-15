@@ -15,16 +15,20 @@ import WizardImport from '../Import/WizardImport';
 import StatusImport from '../Import/StatusImport';
 
 const CLASS_NAME={
-    'o': "btn btn-floating green",
-    'w': "btn btn-floating yellow",
-    'e': "btn btn-floating red"
+    'o': "check-circle",
+    'w': "exclamation-circle",
+    'e': "cross-circle"
 }
 
 const ImportPage = ({match, status, location}) => {
     const basepath=match.url
     const statusListLinks=status.map((e, index)=>{
         return (<Menu.Item key={e.id}>
-                    <Link to={basepath+'/'+e.id} className="collection-item"><span className={CLASS_NAME[e.status]}>&nbsp;</span>{e.kind}<br/>{e.date}</Link>
+                    <Link to={basepath+'/'+e.id} className="collection-item">
+                    <Icon type={CLASS_NAME[e.status]}/>
+                    {e.kind}
+                    <i>{e.date}</i>
+                    </Link>
                 </Menu.Item>
         )
     })
