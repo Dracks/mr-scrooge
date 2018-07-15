@@ -2,12 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link, Route, Switch } from 'react-router-dom';
 
-import { Layout, Menu, Icon } from 'antd';
+import { Menu, Icon } from 'antd';
 
 import WithLoading from '../../network/LoadingHoc';
 import { fetchStatus } from '../Import/Actions';
 import Loading from '../../components/Loading';
+import SiderPage from '../../components/SiderPage';
 import { getPathElementName } from '../Utils';
+
 
 import WizardImport from '../Import/WizardImport';
 import StatusImport from '../Import/StatusImport';
@@ -27,30 +29,29 @@ const ImportPage = ({match, status, location}) => {
         )
     })
     var l = getPathElementName(location, match);
-    return (
-        <Layout>
-            <Layout.Sider  theme="light">
-                <Menu selectedKeys={[l]}>
-                    <Menu.Item key='/wizard'>
-                        <Link to={basepath+'/wizard'} className="collection-item"> 
-                            <Icon type="plus-circle-o" />
-                            Wizard new 
-                        </Link>
-                    </Menu.Item>
-                    {statusListLinks}
-                </Menu>
-                </Layout.Sider>
-            <Layout.Content>
-                <Switch>
-                    <Route
-                        path={basepath + "/wizard"}
-                        component={WizardImport}/>
-                    <Route
-                        path={basepath + "/:id"}
-                        component={StatusImport}/>
-                </Switch>
-            </Layout.Content>
-        </Layout>
+    return (<SiderPage
+                side={(
+                    <Menu selectedKeys={[l]}>
+                        <Menu.Item key='/wizard'>
+                            <Link to={basepath+'/wizard'} className="collection-item"> 
+                                <Icon type="plus-circle-o" />
+                                Wizard new 
+                            </Link>
+                        </Menu.Item>
+                        {statusListLinks}
+                    </Menu>
+                )}
+                content={(
+                    <Switch>
+                        <Route
+                            path={basepath + "/wizard"}
+                            component={WizardImport}/>
+                        <Route
+                            path={basepath + "/:id"}
+                            component={StatusImport}/>
+                    </Switch>
+                )} />
+ 
     )
 }
 
