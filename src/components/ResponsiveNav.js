@@ -7,63 +7,20 @@ import PropTypes from 'prop-types';
 // https://ant.design/docs/react/getting-started#Import-on-Demand
 
 
-const throttle = (callback, time) => {
-    var timeout;
-    return () => {
-        if (timeout) {
-            clearTimeout(timeout)
-        }
-        setTimeout(callback,
-            time)
+const ResponsiveNav =({mobileBreakPoint, menuMarkup, menuMarkupMobile, viewportWidth, children}) => {
+    let MenuComponent = menuMarkupMobile;
+    
+    if (viewportWidth > mobileBreakPoint) {
+        MenuComponent = menuMarkup; // get the Menu markup, passed as prop
     }
-}
-
-class ResponsiveNav extends Component {
-    state = {
-        viewportWidth: 0,
-        menuVisible: false,
-    };
-
-    componentDidMount() {
-        // update viewportWidth on initial load
-        this.saveViewportDimensions();
-        // update viewportWidth whenever the viewport is resized
-        window.addEventListener('resize', this.saveViewportDimensions);
-    }
-
-    componentWillUnmount() {
-        // clean up - remove the listener before unmounting the component
-        window.removeEventListener('resize', this.saveViewportDimensions);
-    }
-
-    handleMenuVisibility = (menuVisible) => {
-        this.setState({ menuVisible });
-    };
-
-    // first of all notice lodash.throttle() helper
-    // we do not want to run the saveViewportDimensions() hundreads of times
-    // from start to finish whenever the viewport is being resized
-    saveViewportDimensions = throttle(() => {
-        this.setState({
-            viewportWidth: window.innerWidth,
-        })
-    }, this.props.applyViewportChange); // default 250ms
-
-    render() {
-        let MenuComponent = this.props.menuMarkupMobile;
-        
-        if (this.state.viewportWidth > this.props.mobileBreakPoint) {
-            MenuComponent = this.props.menuMarkup; // get the Menu markup, passed as prop
-        }
-        return (<MenuComponent>
-            {this.props.children}
-        </MenuComponent>);
-    }
+    return (<MenuComponent>
+        {children}
+    </MenuComponent>);
 }
 
 ResponsiveNav.propTypes = {
-    mobileBreakPoint: PropTypes.number,
-    applyViewportChange: PropTypes.number,
+    mobileBreakPoint: PropTypes.number.isRequired,
+    viewportWidth: PropTypes.number.isRequired,
     menuMarkup: PropTypes.oneOfType([
         PropTypes.func,
         PropTypes.object,
@@ -76,7 +33,6 @@ ResponsiveNav.propTypes = {
 
 ResponsiveNav.defaultProps = {
     mobileBreakPoint: 575,
-    applyViewportChange: 250,
 };
 
 

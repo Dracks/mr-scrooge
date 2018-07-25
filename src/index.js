@@ -6,6 +6,7 @@ import { BrowserRouter as Router} from 'react-router-dom';
 import './index.css';
 
 import App from './app/App';
+import ResponsiveProvider from "./utils/responsive/Provider";
 
 import reducers from './reducers';
 import middlewares from './middleware'
@@ -17,7 +18,9 @@ let store=createStore(reducers, middlewares)
 ReactDOM.render(
     <Provider store={store}>
         <Router>
-            <App dataStatus={{isLoading: false, data:{}}}/>
+            <ResponsiveProvider >
+                <App dataStatus={{isLoading: false, data:{}}}/>
+            </ResponsiveProvider>
         </Router>
     </Provider>
     , document.getElementById('root'));
