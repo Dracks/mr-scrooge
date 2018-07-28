@@ -23,7 +23,7 @@ const GraphReport = ({allData, hashTags, graphs, addGraph})=>{
     let graphConfig = getGraphConfig(hashTags);
     let packer = serializerConfig({hashTags});
     let columns = {
-        xl: 24,
+        xs: 24,
         sm: 24, 
         md: 12, 
         lg: 12, 

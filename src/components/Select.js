@@ -1,12 +1,12 @@
 import React from 'react'
+import { Select } from 'antd'
 
-
-const renderOption= (key, value, selected)=>{
+const renderOption= (key, value)=>{
     return (<option value={key} key={key}>{value}</option>);
 }
 
 
-export default function SelectComponent(props) {
+const SelectComponent = (props) => {
     var options = [];
     if (props.placeholder){
         options.push(renderOption(props.placeholder.key, props.placeholder.value, props.value))
@@ -17,11 +17,26 @@ export default function SelectComponent(props) {
     props.options.forEach(element => {
         hash[element.key]= element.key
     });
+    
     return (
         <select className="browser-default"
             onChange={(e)=> {e.preventDefault(); props.onChange(hash[e.target.value]) }}
             value={props.value}>
             {options}
         </select>
-        )
+    )/*/
+    let newProps = props;
+    if (props.onChangeFn){
+        newProps.onChange=(e)=> {e.preventDefault(); props.onChangeFn(hash[e.target.value]) }
+    }
+    return (
+        <Select {...newProps}
+            >
+            {options}
+        </Select>
+    )*/
 }
+
+
+
+export default SelectComponent;

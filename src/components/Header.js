@@ -1,10 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import { Menu } from 'antd';
-import ResponsiveNav from '../components/ResponsiveNav';
+import ResponsiveNavDefault from '../components/ResponsiveNav';
+
+import ResizableHOC from '../utils/responsive/HOC';
+
+const ResponsiveNav = ResizableHOC(ResponsiveNavDefault);
 
 //{ mobileVersion, activeLinkKey, onLinkClick, className }
-const contents = ({logout}) => ()=>{
+const contents = (logout) => ()=>{
     return [
             (
             <Menu.Item key="/">
@@ -34,7 +38,7 @@ const custom = (l, data, logout)=>()=>{
           selectedKeys={[l]}
         >
         <Menu.Item>Mr Scrooge</Menu.Item>
-        {data(logout)}
+        {data()}
     </Menu>
     );
 }
