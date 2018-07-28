@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Row, Col } from 'antd';
+import { Row, Col, Card } from 'antd';
 
 import WithLoading, { extractData } from '../../network/LoadingHoc';
 import ConstantsCSS from '../Constants-CSS';
@@ -33,21 +33,23 @@ const GraphReport = ({allData, hashTags, graphs, addGraph})=>{
         <Row type="flex" gutter={8}>
             { graphs.map((element, index) => (
                 <Col {...columns}>
-                    <ConnectedGraph className="col s12 l6"
-                        key={index}
-                        data={allData} 
-                        packer={packer} 
-                        graphConfig={graphConfig} 
-                        options={element} 
-                        edit={!element.id}/>
+                    <Card title={element.name}>
+                        <ConnectedGraph
+                            key={index}
+                            data={allData} 
+                            packer={packer} 
+                            graphConfig={graphConfig} 
+                            options={element} 
+                            edit={!element.id}/>
+                    </Card>
                 </Col>
             ))}
             <Col {...columns}>
-            <div className="col s12 l6 center-align valign-wrapper">
-                <button className={ConstantsCSS.Button.Floating} onClick={addGraph}>
-                    <i className="material-icons">add</i>
-                </button>
-            </div>
+                <Card >
+                    <button className={ConstantsCSS.Button.Floating} onClick={addGraph}>
+                        <i className="material-icons">add</i>
+                    </button>
+                </Card>
             </Col>
         </Row>
     )
