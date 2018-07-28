@@ -1,8 +1,8 @@
 import React from 'react';
-import { Spin, Icon } from 'antd';
+import { Row, Col, Spin, Icon } from 'antd';
 
 const Loading = (props) => {
-    const antIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
+    const antIcon = <Icon type="loading" style={{ fontSize: 64 }} spin />;
     return (
         <div className={props.className}>
             <Spin indicator={antIcon} />
@@ -11,7 +11,13 @@ const Loading = (props) => {
 }
 
 const CenteredLoading = ()=>{
-    return <Loading className="valign-wrapper center-align" />
+    return (
+        <Row type="flex" justify="center" align="middle" >
+            <Col span={4}>
+                <Loading className="valign-wrapper center-align" />
+            </Col>
+        </Row>
+    )
 }
 
 const TableLoading = columns =>{
@@ -20,6 +26,6 @@ const TableLoading = columns =>{
     }  
 }
 
-export default Loading;
+export default CenteredLoading;
 
 export { TableLoading, Loading, CenteredLoading }
