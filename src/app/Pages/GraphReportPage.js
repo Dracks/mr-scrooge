@@ -27,10 +27,10 @@ const GraphReport = ({allData, hashTags, graphs, addGraph})=>{
         sm: 24, 
         md: 12, 
         lg: 12, 
-        xl: 8
+        xl: 12
     }
     return (
-        <Row type="flex">
+        <Row type="flex" gutter={8}>
             { graphs.map((element, index) => (
                 <Col {...columns}>
                     <ConnectedGraph className="col s12 l6"
