@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { Row, Col, Card } from 'antd';
 
 import WithLoading, { extractData } from '../../network/LoadingHoc';
-import ConstantsCSS from '../Constants-CSS';
+import { Add } from '../../components/dessign/icons';
+import { Normal, Primary } from '../../components/dessign/buttons';
 
 import WrapGraph from '../Graphs/WrapGraph';
 import Loading from '../../components/Loading';
@@ -32,7 +33,7 @@ const GraphReport = ({allData, hashTags, graphs, addGraph})=>{
     return (
         <Row type="flex" gutter={8}>
             { graphs.map((element, index) => (
-                <Col {...columns}>
+                <Col {...columns} key={index}>
                     <Card title={element.name}>
                         <ConnectedGraph
                             key={index}
@@ -46,9 +47,9 @@ const GraphReport = ({allData, hashTags, graphs, addGraph})=>{
             ))}
             <Col {...columns}>
                 <Card >
-                    <button className={ConstantsCSS.Button.Floating} onClick={addGraph}>
-                        <i className="material-icons">add</i>
-                    </button>
+                    <Primary shape="circle" onClick={addGraph}>
+                        <Add />
+                    </Primary>
                 </Card>
             </Col>
         </Row>

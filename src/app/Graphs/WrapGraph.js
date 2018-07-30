@@ -3,6 +3,8 @@ import React, {Component} from 'react';
 import Form from '../../utils/Form';
 import ConstantsCss from '../Constants-CSS';
 import { eventHandler } from '../Utils';
+import { Save, Delete, Edit, Cancel } from '../../components/dessign/icons';
+import { Normal, Primary, Danger } from '../../components/dessign/buttons';
 
 import Graph from './Graph';
 
@@ -14,9 +16,9 @@ class WrapGraph extends Component {
             isEdit: props.edit || false,
             options: props.options,
         }
-        this.cancel = this.cancel.bind(this);
-        this.save = this.save.bind(this);
-        this.destroy = this.destroy.bind(this);
+        this.cancel = eventHandler(this.cancel.bind(this));
+        this.save = eventHandler(this.save.bind(this));
+        this.destroy = eventHandler(this.destroy.bind(this));
     }
     changeOptions(options){
         this.setState({options: options})
@@ -42,35 +44,37 @@ class WrapGraph extends Component {
             g = <Graph data={this.props.data} options={graphOptions} />
         }
         if (this.state.isEdit){
-            let actions_list = [
-                ['cancel', ConstantsCss.Button.Cancel, this.cancel], 
-                ['save', ConstantsCss.Button.Save, this.save],
-                ['delete', ConstantsCss.Button.Delete, this.destroy]
+            let actionsList = [
+                <Primary shape="circle" key="save" onClick={this.save}>
+                    <Save />
+                </Primary>,
+                <Danger shape="circle" key="delete" onClick={this.destroy}>
+                    <Delete />
+                </Danger>,
             ]
-            if (!this.state.options.id){
-                actions_list = [
-                    ['save', ConstantsCss.Button.Save, this.save],
-                    ['delete', ConstantsCss.Button.Delete, this.destroy]
+            if (this.state.options.id) {
+                actionsList = [
+                    actionsList[0],
+                    <Normal shape="circle" key="cancel" onClick={this.cancel}>
+                        <Cancel />
+                    </Normal>,
+                    actionsList[1]
                 ]
-            } 
+            }
             return (
                 <div className={this.props.className}>
                     <Form config={this.props.graphConfig} onChange={this.changeOptions} options={this.state.options} />
-                    {
-                        actions_list.map(([label, color, callback])=>(
-                            <a key={label} className={ConstantsCss.Button.Floating+' '+ color } onClick={eventHandler(callback)}>
-                                <i className="material-icons">{label}</i>
-                            </a>
-                        ))
-                    }
                     {g}
+                    {actionsList}
                 </div>
                 )
         } else {
             return (
                 <div className={this.props.className}>
                     {g}
-                    <a className={ConstantsCss.Button.Floating} onClick={eventHandler(()=>{this.setState({isEdit: true})})}><i className="material-icons">edit</i></a>
+                    <Normal shape="circle" onClick={eventHandler(()=>{this.setState({isEdit: true})})}>
+                        <Edit />
+                    </Normal>
                 </div>
                 )
         }
