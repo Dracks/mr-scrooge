@@ -5,6 +5,7 @@ import ConstantsCss from '../Constants-CSS';
 import { eventHandler } from '../Utils';
 import { Save, Delete, Edit, Cancel } from '../../components/dessign/icons';
 import { Normal, Primary, Danger } from '../../components/dessign/buttons';
+import { Warning } from '../../components/dessign/messages';
 
 import Graph from './Graph';
 
@@ -39,7 +40,7 @@ class WrapGraph extends Component {
     }
     render(){
         let graphOptions = this.props.packer(this.state.options)
-        let g= <div className={ConstantsCss.Message.Warning}>Graph not configured well</div>
+        let g= <Warning message="Graph not configured well" />
         if (graphOptions){
             g = <Graph data={this.props.data} options={graphOptions} />
         }
