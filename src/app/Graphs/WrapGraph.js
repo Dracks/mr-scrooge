@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 
 import Form from '../../utils/Form';
-import ConstantsCss from '../Constants-CSS';
 import { eventHandler } from '../Utils';
 import { Save, Delete, Edit, Cancel } from '../../components/dessign/icons';
 import { Normal, Primary, Danger } from '../../components/dessign/buttons';

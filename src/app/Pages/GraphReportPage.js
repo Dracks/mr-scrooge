@@ -4,7 +4,7 @@ import { Row, Col, Card } from 'antd';
 
 import WithLoading, { extractData } from '../../network/LoadingHoc';
 import { Add } from '../../components/dessign/icons';
-import { Normal, Primary } from '../../components/dessign/buttons';
+import { Primary } from '../../components/dessign/buttons';
 
 import WrapGraph from '../Graphs/WrapGraph';
 import Loading from '../../components/Loading';

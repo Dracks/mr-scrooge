@@ -6,7 +6,7 @@ import { Form, Button, Upload, Icon, Select} from 'antd';
 import withLoading from '../../network/LoadingHoc';
 //import Select from '../../components/Select';
 import Loading from '../../components/Loading';
-import InputFile from '../../components/InputFile';
+//import InputFile from '../../components/InputFile';
 //import Message from '../../components/Message';
 
 import { eventHandler } from '../Utils';
@@ -69,9 +69,7 @@ class WizardImportForm extends React.Component {
         var formData = new FormData();
         formData.append('kind', kind);
         formData.append('file', file, file.name);
-        console.log(file);
-        console.log(kind);
-        sendFile(formData, ( data)=>{
+        this.props.sendFile(formData, ( data)=>{
             this.props.history.push('/import/'+data.id);
         });
     }
@@ -145,39 +143,6 @@ class WizardImportForm extends React.Component {
                 </Form>
         )
     }
-}
-const WizardImport = ({history, acceptedKinds, sendFile, updateRawData})=>{
-    const listKinds = [{key:'', value:'Select'}].concat(acceptedKinds.map((e)=>{return {key:e, value:e}}))
-    var obj = {}
-    const selectedFile = (e)=>{
-        obj.kind = e;
-    }
-    const changeFile = (file) => {
-        obj.data = file;
-    }
-    const sent = (e) => {
-        var formData = new FormData();
-        formData.append('kind', obj.kind);
-        formData.append('file', obj.data, obj.data.name);
-        sendFile(formData, ( data)=>{
-            history.push('/import/'+data.id);
-        });
-    }
-    return (
-
-        <div className="row">
-            <div className="col s4">
-                <label>Select the kind of file to import</label>
-                <Select options={listKinds} onChange={selectedFile}/>
-            </div>
-            <div className="col s6">
-                <InputFile onChange={changeFile}/>
-            </div>
-            <div className="col s2">
-                <button onClick={eventHandler(sent)} className="btn">Submit</button>
-            </div>
-        </div>
-        )
 }
 
 const f = Form.create()(WizardImportForm)

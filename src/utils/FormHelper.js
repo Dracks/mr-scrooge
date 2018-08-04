@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { eventHandler } from '../app/Utils';
+import { Input } from 'antd';
 
-import Input from '../components/Input';
+//import Input from '../components/Input';
 import Select from '../components/Select';
 
 export const getOption=(name, config)=>{
@@ -15,8 +16,17 @@ const FormInputOption = ({name, placeholder, value, callback, children})=>{
     return (
         <div>
             <label>{name}</label>
-            <Input placeholder={placeholder} value={value} onBlur={callback} />
+            <Input placeholder={placeholder} value={value} onChange={callback} />
             {children}
+        </div>
+    )
+}
+
+const FormBooleanOption = ({name, value, callback}) => {
+    return (
+        <div>
+            <label>{name}</label>
+            <Input type="checkbox" onChange={callback}/>
         </div>
     )
 }
@@ -25,7 +35,7 @@ const FormSelectOption = ({name, placeholder, options, value, callback, children
     return (
             <div>
                 <label>{name}</label>
-                <Select placeholder={{key:'', value:placeholder}} options={options} value={value} onChange={callback} />
+                <Select placeholder={{key:'', value:placeholder}} options={options} value={value} style={{ width: '100%' }} onChangeFn={callback} />
                 {children}
             </div>
     )
@@ -84,7 +94,7 @@ class FormMultiSelectOptions extends Component {
             <div>
                 <label>{name}</label>
                 {listValues}
-                <Select placeholder={{key:'', value:placeholder}} options={options} onChange={this.onAdd} />
+                <Select placeholder={{key:'', value:placeholder}} options={options} style={{ width: '100%' }} onChangeFn={this.onAdd} />
                 {children}
             </div>
         )
@@ -110,6 +120,15 @@ export const getInputOptions = (name, placeholder)=>{
         input: FormInputOption,
         options: {},
         kind: "str",
+    }
+}
+
+export const getBooleanOptions = (name, options) =>{
+    return {
+        name,
+        input: FormBooleanOption,
+        options,
+        kind: "bool"
     }
 }
 

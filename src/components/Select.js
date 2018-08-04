@@ -1,42 +1,41 @@
 import React from 'react'
 import { Select } from 'antd'
 
-const renderOption= (key, value)=>{
-    return (<option value={key} key={key}>{value}</option>);
+import { eventHandler } from '../app/Utils';
+
+const Option = Select.Option;
+const renderAntdOption = (key, value)=>{
+    return (<Option value={key} key={key}>
+        {value}
+    </Option>)
 }
 
-
 const SelectComponent = (props) => {
-    var options = [];
-    if (props.placeholder){
-        options.push(renderOption(props.placeholder.key, props.placeholder.value, props.value))
-    }
-    options = options.concat(props.options.map((e)=>renderOption(e.key, e.value, props.value)))
+    const options = props.options.map((e)=>renderAntdOption(e.key, e.value, props.value))
     // to share the value with the same type, we create a hash to transform the value
     const hash = {} 
     props.options.forEach(element => {
         hash[element.key]= element.key
     });
-    
-    return (
-        <select className="browser-default"
-            onChange={(e)=> {e.preventDefault(); props.onChange(hash[e.target.value]) }}
-            value={props.value}>
-            {options}
-        </select>
-    )/*/
-    let newProps = props;
+    console.log(props.value);
+
+    let newProps = {
+        value: props.value,
+        style: props.style,
+        placeholder: props.placeholder.value
+    };
     if (props.onChangeFn){
-        newProps.onChange=(e)=> {e.preventDefault(); props.onChangeFn(hash[e.target.value]) }
+        newProps.onChange=(e)=> {
+            eventHandler(props.onChangeFn(hash[e]))
+        }
     }
+    console.log(props);
     return (
-        <Select {...newProps}
-            >
+        <Select {...newProps}>
             {options}
         </Select>
-    )*/
+    )
 }
-
 
 
 export default SelectComponent;

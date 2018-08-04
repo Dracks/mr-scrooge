@@ -56,6 +56,11 @@ export const getGraphConfig=(tags) => {
         kind: getSelectOptions( 'kind', 'Select a graph kind', {
             line: getOption('Line', getBasicGroups(tags)),
             bar: getOption('Bar', getBasicGroups(tags)),
+            debug: getOption('debug', {
+                acumulative: getSelectOptions('sum', 'False', {
+                    [true]: getOption('True')
+                }, "bool")
+            })
         })
     }
 }
