@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { eventHandler } from '../app/Utils';
-import { Input } from 'antd';
+import { Input, Checkbox } from 'antd';
 
 //import Input from '../components/Input';
 import Select from '../components/Select';
@@ -26,7 +26,7 @@ const FormBooleanOption = ({name, value, callback}) => {
     return (
         <div>
             <label>{name}</label>
-            <Input type="checkbox" onChange={callback}/>
+            <Checkbox onChange={()=>callback(!value)} checked={value}/>
         </div>
     )
 }
