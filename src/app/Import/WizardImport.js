@@ -4,16 +4,13 @@ import { withRouter } from 'react-router-dom'
 import { Form, Button, Upload, Icon, Select} from 'antd';
 
 import withLoading from '../../network/LoadingHoc';
-//import Select from '../../components/Select';
+import { getOptions } from '../../components/Select';
 import Loading from '../../components/Loading';
-//import InputFile from '../../components/InputFile';
-//import Message from '../../components/Message';
+import { Primary } from '../../components/dessign/buttons';
 
 import { eventHandler } from '../Utils';
 
 import { fetchImportKinds, sendFile } from "./Actions";
-
-const Option = Select.Option
 
 const formItemLayout = {
     labelCol: {
@@ -105,42 +102,40 @@ class WizardImportForm extends React.Component {
                     label="Select"
                     hasFeedback
                     >
-                        {getFieldDecorator('kind', {
-                            rules: [
-                            { required: true, message: 'Format file is mandatory' },
-                            ],
-                        })(
-                            <Select>
-                                {listKinds.map((e)=>(
-                                    <Option value={e.key} key={e.key}>{e.value}</Option>
-                                ))}
-                            </Select>
-                        )}
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
-                        label="file"
-                        >
-                        {getFieldDecorator('file', {
-                            rules: [ {
-                            required: true, message: 'You need a file to import',
-                            }],
-                        })(
-                            <Upload name="logo" 
-                                listType="picture"
-                                {...sfUploaProps}>
-                                <Button>
-                                    <Icon type="upload" /> Click to upload
-                                </Button>
-                            </Upload>
-                        )}
-                    </FormItem>
-                    <FormItem {...tailFormItemLayout}>
-                        <Button type="primary" htmlType="submit" className="login-form-button">
-                            send
-                        </Button>
-                    </FormItem>
-                </Form>
+                    {getFieldDecorator('kind', {
+                        rules: [
+                        { required: true, message: 'Format file is mandatory' },
+                        ],
+                    })(
+                        <Select>
+                            {getOptions(listKinds)}
+                        </Select>
+                    )}
+                </FormItem>
+                <FormItem
+                    {...formItemLayout}
+                    label="file"
+                    >
+                    {getFieldDecorator('file', {
+                        rules: [ {
+                        required: true, message: 'You need a file to import',
+                        }],
+                    })(
+                        <Upload name="logo" 
+                            listType="picture"
+                            {...sfUploaProps}>
+                            <Button>
+                                <Icon type="upload" /> Click to upload
+                            </Button>
+                        </Upload>
+                    )}
+                </FormItem>
+                <FormItem {...tailFormItemLayout}>
+                    <Primary htmlType="submit">
+                        Send
+                    </Primary>
+                </FormItem>
+            </Form>
         )
     }
 }

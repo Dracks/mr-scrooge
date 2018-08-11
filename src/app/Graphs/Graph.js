@@ -22,7 +22,7 @@ const Graph = (props)=> {
         kind,
     } = props.options;
     let data = props.data.filter(getRangeFilter(hashDateRange[date_range], new Date()));
-    if (tag != undefined){
+    if (tag !== undefined){
         data = data.filter((e)=>{
             return e.tags.indexOf(tag)!== -1;
         })

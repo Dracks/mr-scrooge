@@ -4,8 +4,19 @@ import { connect } from 'react-redux';
 import { WithNotFound } from '../../components/NotFound';
 import Form from './Form';
 import {updateTags} from './Actions';
+import TagsFilterTable from './TagsFilterTable';
 
-const NotFoundForm = WithNotFound(Form, 'value');
+const CompleteForm = (props) => {
+    return (
+        <div>
+            <h2>Edit {props.value.name}</h2>
+            <Form {...props} />
+            <TagsFilterTable tag={props.value} />
+        </div>
+    )
+}
+
+const NotFoundForm = WithNotFound(CompleteForm, 'value');
 
 const Edit = ({tags, match, updateTags, hashTags}) => {
     var id=parseInt(match.params.id, 10)
