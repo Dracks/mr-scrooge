@@ -5,7 +5,12 @@ import Form from './Form';
 import {updateTags} from './Actions';
 
 const New = (props) => {
-    return <Form value={{filters: [], children:[]}} {...props} />
+    return (
+        <div>
+            <h2> New tag </h2>
+            <Form value={{filters: [], children:[]}} {...props} />
+        </div>
+    )
 }
 
 const mapStateToProps = ({hashTags, tags})=>{

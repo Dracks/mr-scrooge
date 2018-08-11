@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Card } from 'antd';
+import { Row,  Card } from 'antd';
 
 import WithLoading, { extractData } from '../../network/LoadingHoc';
 import { Add } from '../../components/dessign/icons';
 import { Primary } from '../../components/dessign/buttons';
+import { half } from '../../components/dessign/grid';
 
 import WrapGraph from '../Graphs/WrapGraph';
 import Loading from '../../components/Loading';
@@ -23,17 +24,10 @@ const ConnectedGraph = connect(null, mapDispatchToProps)(WrapGraph);
 const GraphReport = ({allData, hashTags, graphs, addGraph})=>{
     let graphConfig = getGraphConfig(hashTags);
     let packer = serializerConfig({hashTags});
-    let columns = {
-        xs: 24,
-        sm: 24, 
-        md: 12, 
-        lg: 12, 
-        xl: 12
-    }
     return (
         <Row type="flex" gutter={8}>
             { graphs.map((element, index) => (
-                <Col {...columns} key={index}>
+                half(
                     <Card title={element.name}>
                         <ConnectedGraph
                             key={index}
@@ -42,16 +36,17 @@ const GraphReport = ({allData, hashTags, graphs, addGraph})=>{
                             graphConfig={graphConfig} 
                             options={element} 
                             edit={!element.id}/>
-                    </Card>
-                </Col>
+                    </Card>,
+                    {key:index}
+                )
             ))}
-            <Col {...columns}>
+            {half(
                 <Card >
                     <Primary shape="circle" onClick={addGraph}>
                         <Add />
                     </Primary>
                 </Card>
-            </Col>
+            )}
         </Row>
     )
 }

@@ -1,32 +1,34 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link, Route, Switch } from 'react-router-dom';
+import { Menu } from 'antd';
 
 import SiderPage from '../../components/SiderPage';
+import { AddCircle } from '../../components/dessign/icons';
 
 import NewTag from '../Tags/New';
 import EditTag from '../Tags/Edit';
+import { getPathElementName } from '../Utils';
 
-const TagPage = (props) => {
-    const basepath=props.match.url
-    const tagsListLinks=props.tags.map((e, index)=>{
-        return <Link key={index} to={basepath+'/'+e.id} className="collection-item">{e.name}</Link>;
+const TagPage = ({location, match, tags}) => {
+    const basepath=match.url
+    console.log(match.url, basepath);
+    const tagsListLinks=tags.map((e)=>{
+        return <Menu.Item key={e.id}><Link to={basepath+'/'+e.id}>{e.name}</Link ></Menu.Item>;
     })
+    var l = getPathElementName(location, match);
+    console.log(l)
     return (<SiderPage 
         side={(
-            <div>
-                <div className="input-field inline">
-                    <i className="material-icons prefix">search</i>
-                    <input id="icon_prefix" type="text" />
-                </div>
-                <div className="collection">
-                    <Link to={basepath+'/new'} className="collection-item"> 
-                        <i className="material-icons">add</i> 
-                        Create 
+            <Menu selectedKeys={[l]}>
+                <Menu.Item key='/new'>
+                    <Link to={basepath+'/new'}> 
+                        <AddCircle />
+                        Create
                     </Link>
-                    {tagsListLinks}
-                </div>
-            </div>
+                </Menu.Item>
+                {tagsListLinks}
+            </Menu>
         )} 
         content={(
             <Switch>
