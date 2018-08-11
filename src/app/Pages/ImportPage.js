@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link, Route, Switch } from 'react-router-dom';
 
-import { Menu, Icon } from 'antd';
+import { Menu } from 'antd';
 
 import WithLoading from '../../network/LoadingHoc';
 import { fetchStatus } from '../Import/Actions';
@@ -13,19 +13,21 @@ import { getPathElementName } from '../Utils';
 
 import WizardImport from '../Import/WizardImport';
 import StatusImport from '../Import/StatusImport';
+import { Warning, Ok, Err, AddCircle } from '../../components/dessign/icons';
 
 const CLASS_NAME={
-    'o': "check-circle",
-    'w': "exclamation-circle",
-    'e': "cross-circle"
+    'o': Ok,
+    'w': Warning,
+    'e': Err
 }
 
 const ImportPage = ({match, status, location}) => {
     const basepath=match.url
     const statusListLinks=status.map((e, index)=>{
+        const Ic = CLASS_NAME[e.status]
         return (<Menu.Item key={e.id}>
                     <Link to={basepath+'/'+e.id} className="collection-item">
-                    <Icon type={CLASS_NAME[e.status]}/>
+                    <Ic />
                     {e.kind}
                     <i>{e.date}</i>
                     </Link>
@@ -38,7 +40,7 @@ const ImportPage = ({match, status, location}) => {
                     <Menu selectedKeys={[l]}>
                         <Menu.Item key='/wizard'>
                             <Link to={basepath+'/wizard'} className="collection-item"> 
-                                <Icon type="plus-circle-o" />
+                                <AddCircle />
                                 Wizard new 
                             </Link>
                         </Menu.Item>

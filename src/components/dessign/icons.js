@@ -1,24 +1,26 @@
 import React from 'react';
 import { Icon } from 'antd'
 
-const Add = ()=> (
-    <Icon type="plus" />
-);
+const getIcon = (icon) => ()=> <Icon type={icon} />
+// Actions
+const Add = getIcon("plus");
 
-const Edit = () => ( 
-    <Icon type="edit" />
-);
+const AddCircle = getIcon("plus-circle-o")
 
-const Cancel = () => (
-    <Icon type="cross" />
-);
+const Edit = getIcon("edit");
 
-const Save = () => (
-    <Icon type="save" />
-);
+const Cancel = getIcon("cross");
 
-const Delete = () => (
-    <Icon type="delete" />
-);
+const Save = getIcon("save");
 
-export { Add, Edit, Save, Delete, Cancel }
+const Delete = getIcon("delete");
+
+
+// Status
+const Ok = getIcon("check-circle");
+
+const Warning = getIcon("exclamation-circle");
+
+const Err = getIcon("cross-circle");
+
+export { Add, AddCircle, Edit, Save, Delete, Cancel, Ok, Warning, Err }
