@@ -17,7 +17,6 @@ const SelectComponent = (props) => {
     props.options.forEach(element => {
         hash[element.key]= element.key
     });
-    console.log(props.value);
 
     let newProps = {
         value: props.value,
@@ -29,7 +28,6 @@ const SelectComponent = (props) => {
             eventHandler(props.onChangeFn(hash[e]))
         }
     }
-    console.log(props);
     return (
         <Select {...newProps}>
             {options}

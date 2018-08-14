@@ -29,12 +29,14 @@ describe('[Graphs/WrapGraph]', ()=>{
 
     const executeAction = (action)=>{
         instantiate(true);
-        expect(wrapper.find('a').length).toEqual(3);
+        expect(wrapper.find('Save').length).toEqual(1);
+        expect(wrapper.find('Cancel').length).toEqual(1);
+        expect(wrapper.find('Delete').length).toEqual(1);
         expect(instance.state.options).toEqual(defaultOptions);
 
         instance.changeOptions(changedOptions);
 
-        wrapper.find('a').filterWhere((a)=>a.contains(action)).simulate('click', mockClick )
+        wrapper.find(action).parent().simulate('click', mockClick )
     }
 
     beforeEach(()=>{
@@ -43,32 +45,35 @@ describe('[Graphs/WrapGraph]', ()=>{
     });
 
     describe('Actions', ()=>{
-        
 
         it('check edit button', ()=>{
             instantiate(false);
-            expect(wrapper.find('a').length).toEqual(1);
-            wrapper.find('a').simulate('click', mockClick);
-            expect(wrapper.find('a').length).toEqual(3);
+
+            expect(wrapper.find('Edit').length).toEqual(1);
+            wrapper.find('Edit').parent().simulate('click', mockClick);
+            
+            expect(wrapper.find('Save').length).toEqual(1);
+            expect(wrapper.find('Cancel').length).toEqual(1);
+            expect(wrapper.find('Delete').length).toEqual(1);
         });
 
         it('check editing cancel', ()=>{
-            executeAction('cancel');
+            executeAction('Cancel');
 
             expect(instance.state.options).toEqual(defaultOptions);
             expect(instance.state.isEdit).toEqual(false);
         });
 
         it('check editing save', ()=>{
-            executeAction('save');
+            executeAction('Save');
             
             expect(instance.state.options).toEqual(changedOptions);
             expect(instance.state.isEdit).toEqual(false);
             expect(mockSave).toHaveBeenCalledWith(changedOptions);
         });
 
-        it('check editing save', ()=>{
-            executeAction('delete');
+        it('check editing delete', ()=>{
+            executeAction('Delete');
             
             expect(instance.state.options).toEqual(defaultOptions);
             expect(instance.state.isEdit).toEqual(false);

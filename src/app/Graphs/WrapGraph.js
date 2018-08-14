@@ -16,14 +16,14 @@ class WrapGraph extends Component {
             isEdit: props.edit || false,
             options: props.options,
         }
-        this.cancel = eventHandler(this.cancel.bind(this));
+        this.cancel = eventHandler(this._cancel.bind(this));
         this.save = eventHandler(this.save.bind(this));
         this.destroy = eventHandler(this.destroy.bind(this));
     }
     changeOptions(options){
         this.setState({options: options})
     }
-    cancel(){
+    _cancel(){
         this.setState({
             isEdit: false, 
             options: this.props.options
@@ -34,7 +34,7 @@ class WrapGraph extends Component {
         this.props.save(this.state.options);
     }
     destroy(){
-        this.cancel();
+        this._cancel();
         this.props.destroy(this.props.options);
     }
     render(){
