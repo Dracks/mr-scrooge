@@ -10,8 +10,12 @@ const renderAntdOption = (key, value)=>{
     </Option>)
 }
 
+export const getOptions = (listOptions) => 
+    listOptions.map((e)=>renderAntdOption(e.key, e.value))
+
+
 const SelectComponent = (props) => {
-    const options = props.options.map((e)=>renderAntdOption(e.key, e.value, props.value))
+    const options = getOptions(props.options);
     // to share the value with the same type, we create a hash to transform the value
     const hash = {} 
     props.options.forEach(element => {
@@ -21,7 +25,7 @@ const SelectComponent = (props) => {
     let newProps = {
         value: props.value,
         style: props.style,
-        placeholder: props.placeholder.value
+        placeholder: props.placeholder ? props.placeholder.value : undefined
     };
     if (props.onChangeFn){
         newProps.onChange=(e)=> {

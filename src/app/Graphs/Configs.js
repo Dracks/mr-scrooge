@@ -1,5 +1,5 @@
 import { Line, Bar } from "react-chartjs-2";
-import { getOption, getInputOptions,  getSelectOptions, getMultiSelectOptions } from '../../utils/FormHelper';
+import { getOption, getInputOptions,  getSelectOptions, getMultiSelectOptions, getBooleanOptions } from '../../utils/FormHelper';
 
 export const GraphComponentHash={
     line: {
@@ -38,9 +38,7 @@ const getBasicGroups = (tags)=> {
             year: getOption('One year'),
         }),
         tag: getSelectOptions('Tag', 'All', tags, "int"),
-        acumulative: getSelectOptions('Sum', 'False', {
-            [true]: getOption('True'),
-        }),
+        acumulative: getBooleanOptions('Sum Values:', {}),
         group: getSelectOptions('Group', 'Select some group function', 
             getGroupFunctions('group', tags)
         ),
@@ -57,9 +55,7 @@ export const getGraphConfig=(tags) => {
             line: getOption('Line', getBasicGroups(tags)),
             bar: getOption('Bar', getBasicGroups(tags)),
             debug: getOption('debug', {
-                acumulative: getSelectOptions('sum', 'False', {
-                    [true]: getOption('True')
-                }, "bool")
+                acumulative: getBooleanOptions('Acumulative:', {})
             })
         })
     }

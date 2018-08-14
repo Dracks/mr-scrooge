@@ -8,9 +8,11 @@ const SiderPage = ({side, content}) => {
             <Layout.Sider  theme="light">
                 {side}
             </Layout.Sider>
-            <Layout.Content>
-                {content}
-            </Layout.Content>
+            <Layout style={{ padding: '0px 24px' }}>
+                <Layout.Content  style={{ background: '#fff', padding: 24, margin: 0, minHeight: 600 }}>
+                    {content}
+                </Layout.Content>
+            </Layout>
         </Layout>
         )
 }
