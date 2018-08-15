@@ -20,13 +20,16 @@ class AbstractRawDataSource(models.Model):
     value=models.FloatField()
 
     def __str__(self):
-        return "k:{} m:{} d:{} v:{} dd:{}$".format(self.kind, self.movement_name, self.date, self.value, self.details)
+        return "m:{} d:{} v:{} dd:{}$".format(self.movement_name, self.date, self.value, self.details)
 
     class Meta:
         abstract = True
 
 class RawDataSource(AbstractRawDataSource):
     kind=models.CharField(max_length=255)
+
+    def __str__(self):
+        return "k:{} {}".format(self.kind,super(AbstractRawDataSource, self).__str__())
 
     class Meta:
         indexes = [
