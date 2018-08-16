@@ -22,6 +22,12 @@ def graphUnserializer(data):
     }
     return (pk, name, json.dumps(options))
 
+def save_new_graph(data):
+    _, name, options = graphUnserializer(data)
+    g = Graph(name=name, options=options)
+    g.save()
+    return g
+
 class GraphViewSet(viewsets.ViewSet):
     """
     It's a custom api to parse all the information of the graph to the database.
@@ -41,9 +47,7 @@ class GraphViewSet(viewsets.ViewSet):
         return Response(graphSerializer(g))
 
     def create(self, request):
-        _, name, options = graphUnserializer(request.data)
-        g = Graph(name=name, options=options)
-        g.save()
+        g= save_new_graph(request.data)
         return Response(graphSerializer(g), status=status.HTTP_201_CREATED)
     
     def update(self, request, pk=None):
