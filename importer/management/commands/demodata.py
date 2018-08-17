@@ -95,12 +95,12 @@ class Command(BaseCommand):
             })
             #revenues = Tag.objects.filter(name="Revenues").first()
 
-        now = date.today()
+        now = datetime.now()
         fromDate = now - timedelta(weeks=MONTHS_PERIOD*4)
         if RawDataSource.objects.count()>0:
             latest = RawDataSource.objects.order_by('-id').first()
-            if latest.date > fromDate:
-                fromDate = latest.date
+            if latest.date > fromDate.date():
+                fromDate = datetime.combine(latest.date, datetime.min.time())
 
         current_month = fromDate.month
         fromDate += getRandomInterval()
@@ -115,7 +115,7 @@ class Command(BaseCommand):
                 movement_name=random.choice(SAMPLE_MOVEMENTS),
                 kind="demo",
                 date= fromDate,
-                value=random.randint(10, 200)
+                value=-random.randint(10, 200)
                 ).save()
             fromDate += getRandomInterval()
         
