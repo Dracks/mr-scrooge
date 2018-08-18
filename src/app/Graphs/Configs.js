@@ -37,7 +37,7 @@ const getBasicGroups = (tags)=> {
             six: getOption('Half a year'),
             year: getOption('One year'),
         }),
-        tag: getSelectOptions('Tag', 'All', tags, "int"),
+        tag: getSelectOptions('Tag', 'Select tag', {0:{name:'--'}, ...tags}, "int"),
         acumulative: getBooleanOptions('Sum Values:', {}),
         group: getSelectOptions('Group', 'Select some group function', 
             getGroupFunctions('group', tags)
