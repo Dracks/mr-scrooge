@@ -76,7 +76,7 @@ class Command(BaseCommand):
         if graphs_enabled and Graph.objects.count()==0:
             expenses = Tag.objects.filter(name="Expenses").first()
             save_new_graph({
-                "tag":None,
+                "tag":'0',
                 "horizontal":"month",
                 "group":"sign",
                 "kind":"line",
