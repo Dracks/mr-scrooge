@@ -130,7 +130,7 @@ const FormTag = ({value, updateTags, hashTags, tags, form}) => {
                             ],
                             initialValue: tag.name,
                         })(
-                            <Input placeholder="Name" type="text" onChange={submit}/>
+                            <Input placeholder="Name" type="text" value={tag.name} onChange={submit}/>
                         )}
                     </FormItem>
                 )}

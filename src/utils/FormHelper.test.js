@@ -1,6 +1,7 @@
 import React from 'react';
 import Enzyme, { shallow, mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { Select } from 'antd';
 
 import { getInputOptions, getSelectOptions, getMultiSelectOptions } from './FormHelper';
 
@@ -16,7 +17,7 @@ describe('[Utils/FormHelper]', ()=>{
 
         it('Input text file', ()=>{
             const mockCallback = jest.fn();
-            wrapper = mount(<Subject callback={mockCallback} value={'initial'} />)
+            wrapper = shallow(<Subject callback={mockCallback} value={'initial'} />)
             const instance = wrapper.instance();
             const input = wrapper.find('input')
 
@@ -35,14 +36,19 @@ describe('[Utils/FormHelper]', ()=>{
             options = [1,2,3].map((e)=>{return {key:e, value:e}})
         });
 
-        it('Change Selection', ()=>{
+        fit('Change Selection', ()=>{
             const mockCallback = jest.fn();
-            wrapper = mount(<Subject callback={mockCallback} options={options}/>);
+            console.log(Subject);
+            wrapper = shallow(<Subject 
+                callback={mockCallback} 
+                options={options}
+                />);
             const instance = wrapper.instance();
 
             expect(wrapper.find('label').length).toEqual(1);
-            expect(wrapper.find('select').length).toEqual(1);
-            wrapper.find('select').simulate('change', {target: { value : 2}});
+            console.log(wrapper.find('Select'));
+            expect(wrapper.find(Select).length).toEqual(1);
+            wrapper.find(Select).simulate('change', {target: { value : 2}})
             expect(mockCallback).toHaveBeenCalledWith(2)
         });
     });

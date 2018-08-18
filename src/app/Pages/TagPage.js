@@ -14,8 +14,7 @@ const TagPage = ({location, match, tags}) => {
     const basepath=match.url
     console.log(match.url, basepath);
     const tagsListLinks=tags.map((e)=>{
-        const key = '/'+e.id;
-        return <Menu.Item key={key}><Link to={basepath+key}>{e.name}</Link ></Menu.Item>;
+        return <Menu.Item key={e.id}><Link to={basepath+'/'+e.id}>{e.name}</Link ></Menu.Item>;
     })
     var l = getPathElementName(location, match);
     console.log(l)
