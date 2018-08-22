@@ -1,0 +1,27 @@
+language: python
+sudo: true
+
+addons:
+  apt:
+    packages:
+    - docker
+
+before_install:
+  - curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+  - sudo apt-get install -y nodejs
+
+stages: 
+  - test
+  - build
+  - deploy
+
+
+jobs:
+  include:
+    - stage: build docker image
+      script:
+      - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+      - docker build -t travis-ci-build-stages-demo .
+      - docker images
+      - docker tag travis-ci-build-stages-demo $DOCKER_USERNAME/travis-ci-build-stages-demo
+      - docker push $DOCKER_USERNAME/travis-ci-build-stages-demo
