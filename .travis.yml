@@ -1,6 +1,11 @@
 language: python
 sudo: true
 
+python:
+    - "3.6"
+node:
+    - "8"
+
 addons:
   apt:
     packages:
