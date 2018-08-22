@@ -32,4 +32,4 @@ before_deploy:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 deploy:
-  - docker push dracks/mrscrooge:test
+  script: docker push dracks/mrscrooge:test
