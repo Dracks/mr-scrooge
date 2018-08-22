@@ -26,7 +26,7 @@ before_script:
 script:
   - echo "$DOCKER_LOGIN vs $DOCKER_PASSWORD"
   - cd view; npm build; cd ..
-  - docker build -t dracks/mrscrooge:test -f config/sqlite/Dockerfile
+  - docker build -t dracks/mrscrooge:test -f config/sqlite/Dockerfile .
 
 before_deploy:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
