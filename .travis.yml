@@ -6,6 +6,10 @@ python:
 node:
     - "8"
 
+cache:
+  directories:
+    - "view/node_modules"
+
 addons:
   apt:
     packages:
