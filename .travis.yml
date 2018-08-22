@@ -17,11 +17,11 @@ addons:
 
 install:
   - pip install -r server/requirements.txt
-  - cd view; npm install
+  - cd view; npm install; cd ..
 
 before_script:
-  - cd server; ./manage.py test
-  - cd view; npm test
+  - cd server; ./manage.py test; cd ..
+  - cd view; npm test; cd ..
 
 script:
   - echo "$DOCKER_LOGIN vs $DOCKER_PASSWORD"
