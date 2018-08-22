@@ -17,15 +17,14 @@ addons:
 
 install:
   - pip install -r server/requirements.txt
-  - cd view; npm install; cd ..
+  - (cd view; npm install)
 
 before_script:
-  - cd server; ./manage.py test; cd ..
-  - cd view; npm test; cd ..
+  - (cd server; ./manage.py test)
+  - (cd view; npm test)
 
 script:
-  - echo "$DOCKER_LOGIN vs $DOCKER_PASSWORD"
-  - cd view; npm build; cd ..
+  - (cd view; npm run build)
   - docker build -t dracks/mrscrooge:test -f config/sqlite/Dockerfile .
 
 before_deploy:
