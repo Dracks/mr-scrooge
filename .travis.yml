@@ -6,22 +6,17 @@ addons:
     packages:
     - docker
 
-before_install:
-  - curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-  - sudo apt-get install -y nodejs
+install:
+  - pip install -r server/requirements.txt
+  - cd view; npm install
 
-stages: 
-  - test
-  - build
-  - deploy
+before_script:
+  - cd server; ./manage.py test
+  - cd view; npm test
+
+script:
+  - echo "$DOCKER_LOGIN vs $DOCKER_PASSWORD"
+  - cd view; npm build
+  - docker build -t dracks/mrscrooge:test -f config/sqlite/Dockerfile
 
 
-jobs:
-  include:
-    - stage: build docker image
-      script:
-      - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-      - docker build -t travis-ci-build-stages-demo .
-      - docker images
-      - docker tag travis-ci-build-stages-demo $DOCKER_USERNAME/travis-ci-build-stages-demo
-      - docker push $DOCKER_USERNAME/travis-ci-build-stages-demo
