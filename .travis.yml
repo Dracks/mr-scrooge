@@ -1,0 +1,17 @@
+language: python
+
+node:
+    - "8"
+
+cache:
+  directories:
+    - "node_modules"
+
+install:
+  - npm install
+
+before_script:
+  - npm test
+
+script:
+  - npm run build
