@@ -16,7 +16,7 @@ const FormInputOption = ({name, placeholder, value, callback, children})=>{
     return (
         <div>
             <label>{name}</label>
-            <Input placeholder={placeholder} value={value} onChange={callback} />
+            <Input placeholder={placeholder} value={value} onChange={e=>callback(e.target.value)} />
             {children}
         </div>
     )

@@ -1,7 +1,7 @@
 import React from 'react';
 import Enzyme, { shallow, mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import { Select } from 'antd';
+import { Select, Input } from 'antd';
 
 import { getInputOptions, getSelectOptions, getMultiSelectOptions } from './FormHelper';
 
@@ -17,11 +17,14 @@ describe('[Utils/FormHelper]', ()=>{
 
         it('Input text file', ()=>{
             const mockCallback = jest.fn();
-            wrapper = shallow(<Subject callback={mockCallback} value={'initial'} />)
-            const instance = wrapper.instance();
-            const input = wrapper.find('input')
+            wrapper = mount(<Subject callback={mockCallback} value={'initial'} />)
+            //const instance = wrapper.instance();
+            
+            console.log(wrapper.find(Input));
+            const input = mount(wrapper.find(Input).getElement());
+            console.log(input.instance());
 
-            expect(input.instance().value).toBe('initial')
+            expect(input.instance().input.value).toBe('initial')
             input.simulate('change', {target: {value: 'abc'}});
             input.simulate('blur');
             expect(mockCallback).toHaveBeenCalledWith('abc');
