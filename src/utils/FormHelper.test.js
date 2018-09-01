@@ -20,9 +20,7 @@ describe('[Utils/FormHelper]', ()=>{
             wrapper = mount(<Subject callback={mockCallback} value={'initial'} />)
             //const instance = wrapper.instance();
             
-            console.log(wrapper.find(Input));
             const input = mount(wrapper.find(Input).getElement());
-            console.log(input.instance());
 
             expect(input.instance().input.value).toBe('initial')
             input.simulate('change', {target: {value: 'abc'}});
@@ -39,19 +37,20 @@ describe('[Utils/FormHelper]', ()=>{
             options = [1,2,3].map((e)=>{return {key:e, value:e}})
         });
 
-        fit('Change Selection', ()=>{
+        it('Change Selection', ()=>{
             const mockCallback = jest.fn();
-            console.log(Subject);
-            wrapper = shallow(<Subject 
+            wrapper = mount(<Subject 
                 callback={mockCallback} 
                 options={options}
                 />);
-            const instance = wrapper.instance();
 
             expect(wrapper.find('label').length).toEqual(1);
-            console.log(wrapper.find('Select'));
-            expect(wrapper.find(Select).length).toEqual(1);
-            wrapper.find(Select).simulate('change', {target: { value : 2}})
+            var select = wrapper.find(Select);
+
+            expect(select.length).toEqual(1);
+            wrapper.find(Select).simulate('click')
+            wrapper.find(".ant-select-dropdown-menu-item").at(1).simulate("click")
+
             expect(mockCallback).toHaveBeenCalledWith(2)
         });
     });
@@ -70,12 +69,13 @@ describe('[Utils/FormHelper]', ()=>{
             const instance = wrapper.instance();
 
             expect(wrapper.find('label').length).toEqual(1);
-            expect(wrapper.find('select').length).toEqual(1);
+            expect(wrapper.find(Select).length).toEqual(1);
             expect(wrapper.find('.row').length).toEqual(1);
             expect(wrapper.find('.row').text()).toContain('option:1');
             expect(wrapper.find('.row').last().text()).not.toContain('option:2');
 
-            wrapper.find('select').simulate('change', {target: { value : [2]}});
+            wrapper.find(Select).simulate('click')
+            wrapper.find(".ant-select-dropdown-menu-item").at(1).simulate("click")
             expect(mockCallback).toHaveBeenCalledWith([1,2])
             expect(wrapper.find('.row').length).toEqual(2);
             expect(wrapper.find('.row').last().text()).toContain('option:2');
