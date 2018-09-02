@@ -39,5 +39,19 @@ const SelectComponent = (props) => {
     )
 }
 
+export const MyMultipleSelect = (props)=>{
+    let {options, placeholder, onChangeFn, value, ...newProps } = props
+    options = getOptions(options);
+
+    if (placeholder && typeof(placeholder) === "object"){
+        placeholder = placeholder.value;
+    }
+    return (
+        <Select mode="multiple" onChange={onChangeFn} value={value} placeholder={placeholder} {...newProps}>
+            {options}
+        </Select>
+    )
+}
+
 
 export default SelectComponent;
