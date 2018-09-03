@@ -27,16 +27,20 @@ describe('[Graphs/WrapGraph]', ()=>{
         instance = wrapper.instance();
     }
 
+    const checkIsEditing = ()=>{
+        expect(wrapper.find({id:"save"}).length).toEqual(1);
+        expect(wrapper.find({id:'cancel'}).length).toEqual(1);
+        expect(wrapper.find({id:'delete'}).length).toEqual(1);
+    }
+
     const executeAction = (action)=>{
         instantiate(true);
-        expect(wrapper.find('Save').length).toEqual(1);
-        expect(wrapper.find('Cancel').length).toEqual(1);
-        expect(wrapper.find('Delete').length).toEqual(1);
+        checkIsEditing()
         expect(instance.state.options).toEqual(defaultOptions);
 
         instance.changeOptions(changedOptions);
 
-        wrapper.find(action).parent().simulate('click', mockClick )
+        wrapper.find(action).simulate('click', mockClick )
     }
 
     beforeEach(()=>{
@@ -49,23 +53,21 @@ describe('[Graphs/WrapGraph]', ()=>{
         it('check edit button', ()=>{
             instantiate(false);
 
-            expect(wrapper.find('Edit').length).toEqual(1);
-            wrapper.find('Edit').parent().simulate('click', mockClick);
+            expect(wrapper.find({id:'edit'}).length).toEqual(1);
+            wrapper.find({id:'edit'}).simulate('click', mockClick);
             
-            expect(wrapper.find('Save').length).toEqual(1);
-            expect(wrapper.find('Cancel').length).toEqual(1);
-            expect(wrapper.find('Delete').length).toEqual(1);
+            checkIsEditing()
         });
 
         it('check editing cancel', ()=>{
-            executeAction('Cancel');
+            executeAction({id:'cancel'});
 
             expect(instance.state.options).toEqual(defaultOptions);
             expect(instance.state.isEdit).toEqual(false);
         });
 
         it('check editing save', ()=>{
-            executeAction('Save');
+            executeAction({id:"save"});
             
             expect(instance.state.options).toEqual(changedOptions);
             expect(instance.state.isEdit).toEqual(false);
@@ -73,7 +75,7 @@ describe('[Graphs/WrapGraph]', ()=>{
         });
 
         it('check editing delete', ()=>{
-            executeAction('Delete');
+            executeAction({id: 'delete'});
             
             expect(instance.state.options).toEqual(defaultOptions);
             expect(instance.state.isEdit).toEqual(false);

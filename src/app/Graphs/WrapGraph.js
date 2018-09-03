@@ -45,17 +45,17 @@ class WrapGraph extends Component {
         }
         if (this.state.isEdit){
             let actionsList = [
-                <Primary shape="circle" key="save" onClick={this.save}>
+                <Primary shape="circle" key="save" id="save" onClick={this.save}>
                     <Save />
                 </Primary>,
-                <Danger shape="circle" key="delete" onClick={this.destroy}>
+                <Danger shape="circle" key="delete" id="delete" onClick={this.destroy}>
                     <Delete />
                 </Danger>,
             ]
             if (this.state.options.id) {
                 actionsList = [
                     actionsList[0],
-                    <Normal shape="circle" key="cancel" onClick={this.cancel}>
+                    <Normal shape="circle" key="cancel" id="cancel" onClick={this.cancel}>
                         <Cancel />
                     </Normal>,
                     actionsList[1]
@@ -72,7 +72,7 @@ class WrapGraph extends Component {
             return (
                 <div className={this.props.className}>
                     {g}
-                    <Normal shape="circle" onClick={eventHandler(()=>{this.setState({isEdit: true})})}>
+                    <Normal shape="circle" id="edit" onClick={eventHandler(()=>{this.setState({isEdit: true})})}>
                         <Edit />
                     </Normal>
                 </div>
