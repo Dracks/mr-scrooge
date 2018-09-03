@@ -82,7 +82,7 @@ describe('[Utils/FormHelper]', ()=>{
             //expect(wrapper.find(tagClass).last().text()).toContain('option:2');
         });
 
-        fit('Remove option', ()=>{
+        it('Remove option', ()=>{
             const mockCallback = jest.fn();
             wrapper = mount(<Subject callback={mockCallback} options={options} value={[1,2,3]}/>);
 
