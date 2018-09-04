@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { WithNotFound } from '../../components/NotFound';
 import Form from './Form';
-import {updateTags} from './Actions';
+import {saveTag, applyFilters, destroyTag} from './Actions';
 import TagsFilterTable from './TagsFilterTable';
 
 const CompleteForm = (props) => {
@@ -18,20 +18,19 @@ const CompleteForm = (props) => {
 
 const NotFoundForm = WithNotFound(CompleteForm, 'value');
 
-const Edit = ({tags, match, updateTags, hashTags}) => {
+const mapStateToProps = ({tags, hashTags}, {match}) => {
     var id=parseInt(match.params.id, 10)
-    var l=tags.filter((e)=> e.id===id)
+    var l=tags.data.filter((e)=> e.id===id)
     var tag = l[0]
-    return (
-        <NotFoundForm value={tag} {...{updateTags, hashTags, tags}}/>
-    )
-}
-
-const mapStateToProps = ({tags, hashTags}) => {
     return {
         tags: tags.data,
-        hashTags
+        hashTags,
+        value: tag,
     }
 }
 
-export default connect(mapStateToProps, {updateTags})(Edit)
+export default connect(mapStateToProps, (dispatch)=>({
+    saveTag: (tag)=>dispatch(saveTag(tag)),
+    applyFilters: (tag) => dispatch(applyFilters(tag)),
+    destroyTag: (tag, onDelete)=>dispatch(destroyTag(tag, onDelete)),
+}))(NotFoundForm)
