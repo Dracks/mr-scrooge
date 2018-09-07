@@ -1,11 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import InfiniteScroll from 'react-infinite-scroller';
 
 import { removeTag, addTag } from './Actions';
 import Chip from '../../components/Chip';
 import Select from '../../components/Select';
 import TableView from '../../components/TableView';
+import InfiniteScrollHOC from '../../components/list/InfiniteScrollHOC';
 
 const TagCell = ({tags, rds, hashTags, allTags, removeTag, addTag})=>{
     
@@ -24,7 +26,8 @@ const TagCell = ({tags, rds, hashTags, allTags, removeTag, addTag})=>{
         </div>
         )
 }
-const RawTableView = ({header, allData, hashTags, allTags, removeTag, addTag}) =>{
+const RawTableView = ({header, allData, hashTags, allTags, removeTag, addTag, loadMore, hasMore}) =>{
+    console.log(header, allData, hashTags, allTags);
     let data =  allData.map(({id, kind, movement_name, tags, value, date})=>{
         return {
             kind, 
@@ -34,8 +37,17 @@ const RawTableView = ({header, allData, hashTags, allTags, removeTag, addTag}) =
             date: moment(date).format("DD-MM-YYYY hh:mm:ss")
         }
     })
-    return <TableView header={header} data={data} />
+    return (
+        <InfiniteScroll
+            loadMore={loadMore}
+            pageStart={0}
+            hasMore={hasMore}>
+            <TableView header={header} data={data} />
+        </InfiniteScroll>
+    )
 }
+
+const InfiniteRawTableView = InfiniteScrollHOC(RawTableView, {field: "allData", loadName: "loadMore"}, 10);
 
 const mapStateToProps = ({allData, hashTags, tags})=>{
     return {
@@ -52,4 +64,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RawTableView)
+export default connect(mapStateToProps, mapDispatchToProps)(InfiniteRawTableView)

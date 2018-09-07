@@ -6,18 +6,22 @@ export default (Wrapped, {field, loadName}, size=20)=>{
             super(props)
             this.state={
                 [field]:[],
-                [loadName]:this.loadMore.bind(this)
+                [loadName]:this.loadMore.bind(this),
+                hasMore: true
             }
         }
 
         loadMore(page){
+            let length = page*size;
+            let data = this.props[field]
             this.setState({
-                [field]:this.props[field].slice(0,page*size)
+                [field]:data.slice(0,length),
+                hasMore: data.length>length
             })
         }
 
         render(){
-            let {[field]:_, props} = this.props;
+            let {[field]:_, ...props} = this.props;
             return <Wrapped {...props} {...this.state}/>
         }
     }
