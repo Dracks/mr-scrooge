@@ -1,19 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Input } from 'antd';
 
-import { eventHandler } from '../Utils'
+import { eventHandler, debugLambda } from '../Utils'
 import Rest from '../../network/Rest'
 import WithLoading from "../../network/LoadingHoc";
 import ConstantsCss from '../../app/Constants-CSS';
 import Loading, {TableLoading }from '../../components/Loading';
-import Input from '../../components/Input';
 import Select from '../../components/Select';
 
 import { fetchFiltersTypes } from "./Actions";
+import { Primary, Danger } from '../../components/dessign/buttons';
+import { Add } from '../../components/dessign/icons';
 
 const FilterRowEmpty = ({filter, types, onDelete}) => {
-    const options = [{"key":"", "value":"Select"}].concat(Object.keys(types).map((e)=>{ return {"key":e, "value":types[e]}}))
+    console.log(filter);
+    const options = Object.keys(types).map((e)=>{ return {"key":e, "value":types[e]}})
     const save=()=>{
+        console.log(filter);
         Rest.save('/api/tag-filter/:id/',filter).then(data=>{
             filter = data;
         })
@@ -26,9 +30,9 @@ const FilterRowEmpty = ({filter, types, onDelete}) => {
     }
     return (
         <tr>
-            <td><Select options={options} value={filter.type_conditional} onChange={(e)=>{filter.type_conditional=e; save()}}/></td>
-            <td><Input value={filter.conditional} onBlur={(e)=>{filter.conditional=e; save()}}/></td>
-            <td><a className={ConstantsCss.Button.Delete + ' ' + ConstantsCss.Button.Normal} onClick={eventHandler(deleteRow)}> Delete </a></td>
+            <td><Select options={options} placeholder="Select" value={filter.type_conditional} onChangeFn={debugLambda((e)=>{filter.type_conditional=e; save()})} style={{width:"100%"}}/></td>
+            <td><Input defaultValue={filter.conditional} onBlur={debugLambda((e)=>{filter.conditional=e.target.value; save()})}/></td>
+            <td><Danger onClick={eventHandler(deleteRow)}> Delete </Danger></td>
         </tr>
     )
 }
@@ -80,7 +84,7 @@ class TagsFilterTable extends Component {
         } else if (this.state.isOk) {
             let rowsList = this.state.data.map((e)=><FilterRow key={e.id} filter={e} onDelete={e=>this.getState(this.tag)}/>)
             return (
-                <table className={ConstantsCss.Table.Striped}>
+                <table className={ConstantsCss.Table.Striped} style={{width:"100%"}}>
                     <thead>
                         <tr>
                             <th>type</th>
@@ -93,7 +97,7 @@ class TagsFilterTable extends Component {
                         <tr>
                             <td colSpan={2}></td>
                             <td>
-                                <a className={ConstantsCss.Button.Normal} onClick={eventHandler(this.create)}>Create</a>
+                                <Primary shape="circle" onClick={eventHandler(this.create)}><Add /></Primary>
                             </td>
                         </tr>
                     </tbody>
