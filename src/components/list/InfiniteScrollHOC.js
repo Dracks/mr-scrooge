@@ -18,7 +18,7 @@ export default (Wrapped, field, size=20)=>{
 
         render(){
             let totalSize = this.state.currentPage*size;
-            let {[field]:oldList, props} = this.props;
+            let {[field]:oldList, ...props} = this.props;
             let newProps = {
                 [field]: oldList.slice(0, totalSize),
                 loadMore: this.loadMore,

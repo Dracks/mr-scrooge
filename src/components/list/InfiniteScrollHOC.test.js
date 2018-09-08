@@ -7,11 +7,12 @@ import InfiniteScrollHOC from './InfiniteScrollHOC';
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('[Components/list/InfiniteScrollHOC]', ()=>{
-    let Subject, data, dataRecived, loadFnReceived, hasMoreReceived, wrapper;
-    let Test = ({data, loadMore, hasMore})=>{
+    let Subject, data, dataRecived, loadFnReceived, hasMoreReceived, othersReceived, wrapper;
+    let Test = ({data, loadMore, hasMore, ...others})=>{
         dataRecived = data;
         loadFnReceived = loadMore;
         hasMoreReceived = hasMore;
+        othersReceived = others;
     }
 
     beforeEach(()=>{
@@ -29,11 +30,12 @@ describe('[Components/list/InfiniteScrollHOC]', ()=>{
     }
 
     it('Load with default', ()=>{
-        wrapper = shallow(<Subject data={data} />)
+        wrapper = shallow(<Subject data={data} dalek="Dr Who"/>)
         wrapper.at(0).shallow();
 
         expect(dataRecived).toEqual([]);
         expect(loadFnReceived).toBeTruthy()
+        expect(othersReceived).toEqual({dalek: "Dr Who"});
 
         loadPage(1)
         expect(dataRecived.length).toBe(5);
@@ -48,5 +50,5 @@ describe('[Components/list/InfiniteScrollHOC]', ()=>{
         expect(hasMoreReceived).toBe(true);
         loadPage(6)
         expect(hasMoreReceived).toBe(false);
-    })
+    });
 });
