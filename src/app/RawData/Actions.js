@@ -1,4 +1,9 @@
-import { fetchAction, responseReloadAction, jsonHeaders } from '../../network/Actions'
+import { 
+    fetchAction,
+    responseReloadAction,
+    whenComplete,
+    jsonHeaders
+} from '../../network/Actions'
 
 export const FETCH_RAW_DATA = "RAW_DATA_FETCH";
 
@@ -12,7 +17,7 @@ export const updateRawData = ()=> {
 }
 
 export const addTag = (rds, tag)=>{
-    return fetchAction('/api/raw-data/'+rds+'/link/', updateRawData(), {
+    return fetchAction('/api/raw-data/'+rds+'/link/', [whenComplete(updateRawData), console.log], {
         body: JSON.stringify({tag}),
         headers: jsonHeaders(),
         method: "POST"
@@ -20,7 +25,7 @@ export const addTag = (rds, tag)=>{
 }
 
 export const removeTag = (rds, tag)=>{
-    return fetchAction('/api/raw-data/'+rds+'/link/', updateRawData(), {
+    return fetchAction('/api/raw-data/'+rds+'/link/', whenComplete(updateRawData), {
         body: JSON.stringify({tag}),
         headers: jsonHeaders(),
         method: "DELETE",

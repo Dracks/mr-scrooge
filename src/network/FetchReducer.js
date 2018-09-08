@@ -5,7 +5,8 @@ export default (actionType, lambda=null, extra=null) => (state=null, action) => 
             if (lambda){
                 value = lambda(value);
             }
-            return Object.assign({}, state, value);
+            let r = Object.assign({}, state, value);
+            return r;
         }
     }
     if (extra){
