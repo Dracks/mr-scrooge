@@ -29,7 +29,7 @@ const RawTableView = ({header, allData, allTags, removeTag, addTag, loadMore, ha
     )
 }
 
-const InfiniteRawTableView = InfiniteScrollHOC(RawTableView, {field: "allData", loadName: "loadMore"}, 10);
+const InfiniteRawTableView = InfiniteScrollHOC(RawTableView, "allData", 10);
 
 const mapStateToProps = ({allData, tags})=>{
     return {

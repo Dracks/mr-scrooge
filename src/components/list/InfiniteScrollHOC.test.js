@@ -7,19 +7,26 @@ import InfiniteScrollHOC from './InfiniteScrollHOC';
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('[Components/list/InfiniteScrollHOC]', ()=>{
-    let Subject, data, dataRecived, loadFnReceived, wrapper;
-    let Test = ({data, loadMoreFn})=>{
+    let Subject, data, dataRecived, loadFnReceived, hasMoreReceived, wrapper;
+    let Test = ({data, loadMore, hasMore})=>{
         dataRecived = data;
-        loadFnReceived = loadMoreFn;
+        loadFnReceived = loadMore;
+        hasMoreReceived = hasMore;
     }
 
     beforeEach(()=>{
-        Subject = InfiniteScrollHOC(Test, {field:'data', loadName:'loadMoreFn'}, 5)
+        Subject = InfiniteScrollHOC(Test, 'data', 5)
         data = []
         for (let i=0; i<30; i++){
             data.push(i);
         }
     })
+
+    const loadPage=(page)=>{
+        loadFnReceived(page);
+        wrapper.update()
+        wrapper.at(0).shallow();
+    }
 
     it('Load with default', ()=>{
         wrapper = shallow(<Subject data={data} />)
@@ -28,9 +35,18 @@ describe('[Components/list/InfiniteScrollHOC]', ()=>{
         expect(dataRecived).toEqual([]);
         expect(loadFnReceived).toBeTruthy()
 
-        loadFnReceived(1);
-        wrapper.update()
-        wrapper.at(0).shallow();
+        loadPage(1)
         expect(dataRecived.length).toBe(5);
     });
+
+    it('Has more?', ()=>{
+        wrapper = shallow(<Subject data={data} />)
+        wrapper.at(0).shallow();
+
+        expect(hasMoreReceived).toBe(true);
+        loadPage(5)
+        expect(hasMoreReceived).toBe(true);
+        loadPage(6)
+        expect(hasMoreReceived).toBe(false);
+    })
 });

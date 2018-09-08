@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default (Wrapped, {field, loadName}, size=20)=>{
+export default (Wrapped, field, size=20)=>{
     class HOC extends React.Component{
         constructor(props){
             super(props)
@@ -17,11 +17,11 @@ export default (Wrapped, {field, loadName}, size=20)=>{
         }
 
         render(){
-            let totalSize = this.currentPage*size;
+            let totalSize = this.state.currentPage*size;
             let {[field]:oldList, props} = this.props;
             let newProps = {
                 [field]: oldList.slice(0, totalSize),
-                [loadName]: this.loadMore,
+                loadMore: this.loadMore,
                 hasMore: oldList.length>totalSize
             }
             return <Wrapped {...props} {...newProps}/>
