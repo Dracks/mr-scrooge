@@ -5,20 +5,24 @@ export default (Wrapped, {field, loadName}, size=20)=>{
         constructor(props){
             super(props)
             this.state={
-                [field]:[],
-                [loadName]:this.loadMore.bind(this)
+                currentPage:0
             }
+            this.loadMore = this.loadMore.bind(this);
         }
 
         loadMore(page){
             this.setState({
-                [field]:this.props[field].slice(0,page*size)
+                currentPage:page
             })
         }
 
         render(){
-            let {[field]:_, props} = this.props;
-            return <Wrapped {...props} {...this.state}/>
+            let {[field]:oldList, props} = this.props;
+            let newProps = {
+                [field]: oldList.slice(0, this.currentPage*size),
+                [loadName]: this.loadMore,
+            }
+            return <Wrapped {...props} {...newProps}/>
         }
     }
     return HOC
