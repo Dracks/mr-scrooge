@@ -1,0 +1,37 @@
+language: python
+sudo: true
+
+python:
+    - "3.6"
+node:
+    - "8"
+
+cache:
+  directories:
+    - "view/node_modules"
+
+addons:
+  apt:
+    packages:
+    - docker
+
+install:
+  - pip install -r server/requirements.txt
+  - (cd view; npm install)
+
+before_script:
+  - (cd server; ./manage.py test)
+  - (cd view; npm test)
+
+script:
+  - (cd view; npm run build)
+  - docker build -t dracks/mrscrooge:${TRAVIS_TAG:-snapshot} -f config/sqlite/Dockerfile .
+
+before_deploy:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin
+
+deploy:
+  provider: script
+  script: docker push dracks/mrscrooge:${TRAVIS_TAG:-snapshot}
+  on:
+    tags: true
