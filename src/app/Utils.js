@@ -1,4 +1,9 @@
 
+const debugLambda = (lambda) => (...args)=> {
+    console.log(args)
+    return lambda(...args)
+}
+
 const eventHandler=(callback) => {
     return (e)=>{
         e.preventDefault();
@@ -18,4 +23,4 @@ const getPathElementName = (location, match) => {
     return l
 }
 
-export { eventHandler, getPathElementName };
+export { eventHandler, getPathElementName, debugLambda };

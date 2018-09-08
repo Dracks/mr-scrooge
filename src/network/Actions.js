@@ -19,6 +19,12 @@ const manageResponse = (response)=> {
     }
 }
 
+export const whenComplete = (callback) => (isLoading, data) =>{
+    if (!isLoading && data){
+        return callback()
+    }
+}
+
 export const responseReloadAction = (action) => {
     return (isLoading, data) => {
         return {

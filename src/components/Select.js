@@ -5,9 +5,7 @@ import { eventHandler } from '../app/Utils';
 
 const Option = Select.Option;
 const renderAntdOption = (key, value)=>{
-    return (<Option value={key} key={key}>
-        {value}
-    </Option>)
+    return (<Option key={key} value={key}>{value}</Option>)
 }
 
 export const getOptions = (listOptions) => 

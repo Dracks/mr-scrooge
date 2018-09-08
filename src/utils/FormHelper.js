@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import { eventHandler } from '../app/Utils';
+import React from 'react';
 import { Input, Checkbox } from 'antd';
 
 //import Input from '../components/Input';

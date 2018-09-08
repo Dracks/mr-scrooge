@@ -9,7 +9,6 @@ import {
 import { half, oneThird, twoThird } from '../../components/dessign/grid'
 import { Primary, Danger } from '../../components/dessign/buttons'
 
-import Rest from '../../network/Rest';
 import {eventHandler} from '../Utils';
 //import MessageComponent from '../../components/Message';
 //import Input from '../../components/Input';
@@ -30,7 +29,7 @@ const negate_options = [
 ]
 
 const FormItem = Form.Item;
-const FormTag = ({value, updateTags, hashTags, tags, form}) => {
+const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form}) => {
     const { getFieldDecorator } = form;
     var tag = value;
     const propsButtons = tag.id ? {} : {disabled:true};
@@ -51,38 +50,18 @@ const FormTag = ({value, updateTags, hashTags, tags, form}) => {
         .filter(({id})=>notShownListTags.indexOf(id)===-1)
         .map(({id, name})=>{return {key:id, value:name}});
 
-    let save = (tag) => {
-        Rest.save('/api/tag/:id/', tag).then(
-            (data)=>{
-                updateTags();
-                tag.id=data.id;
-            }, (error)=>{
-            }
-        )
-    }
-
     let apply = ()=>{
-        Rest.save('/api/tag/'+tag.id+'/apply_filters/', {}).then(
-            (data)=>{
-            }, (error)=>{
-            }
-        )
+        applyFilters(tag)
     }
 
     let destroy = ()=>{
-        console.log(tag)
-        Rest.destroy('/api/tag/:id/', tag).then(
-            (data)=>{
-                updateTags()
-            }, (error)=>{
-            }
-        )
+        destroyTag(tag, ()=>{});
     }
 
     const submit = ()=>{
-        form.validateFields((err, values)=>{
+        form.validateFields((err, tag)=>{
             if (!err){
-                save(values)
+                saveTag(Object.assign(value, tag))
             }
         })
     }
@@ -130,7 +109,7 @@ const FormTag = ({value, updateTags, hashTags, tags, form}) => {
                             ],
                             initialValue: tag.name,
                         })(
-                            <Input placeholder="Name" type="text" value={tag.name} onChange={submit}/>
+                            <Input placeholder="Name" type="text" value={tag.name} onBlur={submit}/>
                         )}
                     </FormItem>
                 )}
