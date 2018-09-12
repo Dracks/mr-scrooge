@@ -107,3 +107,11 @@ export const fetchError = (data) => {
         payload: data
     }
 }
+
+export const compose = (action_name, obj, id=null) => {
+    return {
+        type: action_name,
+        payload: obj,
+        id: id
+    }
+}
