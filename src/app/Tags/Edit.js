@@ -5,7 +5,8 @@ import { WithNotFound } from '../../components/NotFound';
 import Form from './Form';
 import {saveTag, applyFilters, destroyTag} from './Actions';
 import TagsFilterTable from './Filters/TagsFilterTable';
-import { fetchFiltersTypes } from "./Filters/Actions";
+import { fetchFiltersTypes, fetchFilters } from "./Filters/Actions";
+import MultiPropsLoadingHOC from '../../network/MultiPropsLoadingHOC';
 
 const CompleteForm = (props) => {
     let tagProps = {
@@ -19,7 +20,9 @@ const CompleteForm = (props) => {
     let filterProps = {
         tag:props.value,
         types:props.types,
-        fetchFiltersTypes: props.fetchFiltersTypes
+        filtersList: props.filtersList,
+        isLoading: props.isLoading,
+        loadFilters: props.loadFilters
     }
     return (
         <div>
@@ -32,15 +35,20 @@ const CompleteForm = (props) => {
 
 const NotFoundForm = WithNotFound(CompleteForm, 'value');
 
-const mapStateToProps = ({tags, hashTags, filterTypes}, {match}) => {
+const isLoadingFilter = MultiPropsLoadingHOC(['filtersList', 'filterTypes']);
+
+const mapStateToProps = ({tags, hashTags, filterTypes, tagsFilters}, {match}) => {
     var id=parseInt(match.params.id, 10)
     var l=tags.data.filter((e)=> e.id===id)
     var tag = l[0]
+    var filtersList = tagsFilters[tag.id]
     return {
         tags: tags.data,
         hashTags,
         value: tag,
-        types: filterTypes
+        types: filterTypes,
+        filtersList: filtersList ? filtersList.data : undefined,
+        isLoading: isLoadingFilter({filtersList, filterTypes})
     }
 }
 
@@ -48,5 +56,10 @@ export default connect(mapStateToProps, (dispatch)=>({
     saveTag: (tag)=>dispatch(saveTag(tag)),
     applyFilters: (tag) => dispatch(applyFilters(tag)),
     destroyTag: (tag, onDelete)=>dispatch(destroyTag(tag, onDelete)),
-    fetchFiltersTypes: ()=>dispatch(fetchFiltersTypes())
+    loadFilters: ({types, tag})=>{
+        if (!types){
+            dispatch(fetchFiltersTypes())
+        }
+        dispatch(fetchFilters(tag))
+    }
 }))(NotFoundForm)

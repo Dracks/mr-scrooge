@@ -108,10 +108,10 @@ export const fetchError = (data) => {
     }
 }
 
-export const compose = (action_name, obj, id=null) => {
+export const compose = (action_name, action, id=null) => (isLoading, data)=>{
     return {
         type: action_name,
-        payload: obj,
+        payload: action(isLoading, data),
         id: id
     }
 }
