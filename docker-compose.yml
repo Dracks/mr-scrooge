@@ -1,0 +1,28 @@
+version: '2'
+services:
+  django:
+    depends_on: 
+      - postgres
+    restart: always
+    build: 
+      context: .
+      dockerfile: config/postgres/Dockerfile
+
+  view:
+    depends_on: 
+      - django
+    restart: always
+    ports:
+      - 80:80
+      - 8000:8000
+    build:
+      context: .
+      dockerfile: config/view/Dockerfile
+  
+  postgres:
+    image: postgres:10-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: finances
+
