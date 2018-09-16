@@ -1,28 +1,52 @@
 import React from 'react';
 
-import Input from '../../components/Input';
-import MessageComponent from '../../components/Message';
+import { Form, Icon, Input, Button, Row, Col } from 'antd';
 
 import {eventHandler} from '../Utils';
 
-const LoginPage = ({history, login}) => {
-    var data = {
-        user: "",
-        password: "",
-    };
-    var showMessage;
-    return (<div className="row">
-                <div className="col s6 offset-s3">
-                    <MessageComponent register={(c)=>{showMessage=c}}/>
-                    <div className="input-field">
-                        <Input placeholder="User" value={data.user} onBlur={e=>data.user=e} /> 
-                        <Input placeholder="Password" type="password" value={data.password} onBlur={e=>data.password=e} /> 
-                    </div>
-                    <button onClick={eventHandler(()=>login(data))} className="btn"> 
-                        Login 
-                    </button>
-                </div>
-            </div>)
+const FormItem = Form.Item;
+
+class NormalLoginForm extends React.Component {
+  handleSubmit = eventHandler((e) => {
+    this.props.form.validateFields((err, values) => {
+        if (!err) {
+            this.props.login(values);
+        }
+    });
+  })
+
+  render() {
+    const { getFieldDecorator } = this.props.form;
+    return (
+        <Row type="flex" justify="center" align="middle">
+            <Col  xs={20} sm={16} md={12} lg={10} xl={8} >
+                <Form onSubmit={this.handleSubmit} className="login-form">
+                    <FormItem>
+                    {getFieldDecorator('user', {
+                        rules: [{ required: true, message: 'Please input your username!' }],
+                    })(
+                        <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" />
+                    )}
+                    </FormItem>
+                    <FormItem>
+                    {getFieldDecorator('password', {
+                        rules: [{ required: true, message: 'Please input your Password!' }],
+                    })(
+                        <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />
+                    )}
+                    </FormItem>
+                    <FormItem>
+                    <Button type="primary" htmlType="submit" className="login-form-button">
+                        Log in
+                    </Button>
+                    </FormItem>
+                </Form>
+            </Col>
+      </Row>
+    );
+  }
 }
+
+const LoginPage = Form.create()(NormalLoginForm);
 
 export default LoginPage

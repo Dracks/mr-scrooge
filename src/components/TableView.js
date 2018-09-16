@@ -1,31 +1,21 @@
 import React from 'react';
+import { Table } from 'antd';
 
-import ConstantsCss from '../app/Constants-CSS'
+//import ConstantsCss from '../app/Constants-CSS'
 
 const TableView = ({data, header}) =>{
-    var order = []
-    var headerHtml = []
-    for (var key in header){
-        var value = header[key]
-        headerHtml.push(<th key={key}>{value}</th>)
-        order.push(key)
-    };
-    var body = data.map((e, id)=>{
-        return <tr key={id}>{order.map((k, id)=><td key={id}>{e[k]}</td>)}</tr>
+    let columns = Object.keys(header).map((e, k)=>{
+        return {
+            title: header[e],
+            dataIndex: e,
+            key: e
+        }
     })
 
-    return (
-        <table className={ConstantsCss.Table.Striped}>
-            <thead>
-                <tr>
-                    {headerHtml}
-                </tr>
-            </thead>
-            <tbody>
-                {body}
-            </tbody>
-        </table>
-    )
+    return <Table 
+        columns={columns} 
+        dataSource={data} 
+        pagination={false}/>
 }
 
 export default TableView

@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 
 import Form from '../../utils/Form';
-import ConstantsCss from '../Constants-CSS';
 import { eventHandler } from '../Utils';
+import { Save, Delete, Edit, Cancel } from '../../components/dessign/icons';
+import { Normal, Primary, Danger } from '../../components/dessign/buttons';
+import { Warning } from '../../components/dessign/messages';
 
 import Graph from './Graph';
 
@@ -14,14 +16,14 @@ class WrapGraph extends Component {
             isEdit: props.edit || false,
             options: props.options,
         }
-        this.cancel = this.cancel.bind(this);
-        this.save = this.save.bind(this);
-        this.destroy = this.destroy.bind(this);
+        this.cancel = eventHandler(this._cancel.bind(this));
+        this.save = eventHandler(this.save.bind(this));
+        this.destroy = eventHandler(this.destroy.bind(this));
     }
     changeOptions(options){
         this.setState({options: options})
     }
-    cancel(){
+    _cancel(){
         this.setState({
             isEdit: false, 
             options: this.props.options
@@ -32,45 +34,47 @@ class WrapGraph extends Component {
         this.props.save(this.state.options);
     }
     destroy(){
-        this.cancel();
+        this._cancel();
         this.props.destroy(this.props.options);
     }
     render(){
         let graphOptions = this.props.packer(this.state.options)
-        let g= <div className={ConstantsCss.Message.Warning}>Graph not configured well</div>
+        let g= <Warning message="Graph not configured well" />
         if (graphOptions){
             g = <Graph data={this.props.data} options={graphOptions} />
         }
         if (this.state.isEdit){
-            let actions_list = [
-                ['cancel', ConstantsCss.Button.Cancel, this.cancel], 
-                ['save', ConstantsCss.Button.Save, this.save],
-                ['delete', ConstantsCss.Button.Delete, this.destroy]
+            let actionsList = [
+                <Primary shape="circle" key="save" id="save" onClick={this.save}>
+                    <Save />
+                </Primary>,
+                <Danger shape="circle" key="delete" id="delete" onClick={this.destroy}>
+                    <Delete />
+                </Danger>,
             ]
-            if (!this.state.options.id){
-                actions_list = [
-                    ['save', ConstantsCss.Button.Save, this.save],
-                    ['delete', ConstantsCss.Button.Delete, this.destroy]
+            if (this.state.options.id) {
+                actionsList = [
+                    actionsList[0],
+                    <Normal shape="circle" key="cancel" id="cancel" onClick={this.cancel}>
+                        <Cancel />
+                    </Normal>,
+                    actionsList[1]
                 ]
-            } 
+            }
             return (
                 <div className={this.props.className}>
                     <Form config={this.props.graphConfig} onChange={this.changeOptions} options={this.state.options} />
-                    {
-                        actions_list.map(([label, color, callback])=>(
-                            <a key={label} className={ConstantsCss.Button.Floating+' '+ color } onClick={eventHandler(callback)}>
-                                <i className="material-icons">{label}</i>
-                            </a>
-                        ))
-                    }
                     {g}
+                    {actionsList}
                 </div>
                 )
         } else {
             return (
                 <div className={this.props.className}>
                     {g}
-                    <a className={ConstantsCss.Button.Floating} onClick={eventHandler(()=>{this.setState({isEdit: true})})}><i className="material-icons">edit</i></a>
+                    <Normal shape="circle" id="edit" onClick={eventHandler(()=>{this.setState({isEdit: true})})}>
+                        <Edit />
+                    </Normal>
                 </div>
                 )
         }

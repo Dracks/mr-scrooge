@@ -8,6 +8,7 @@ import CenteredLoading from '../components/Loading';
 import LoginPage from './Session/LoginPage';
 import ProtectedPage from './ProtectedPage';
 import { fetchSession, login } from './Session/Actions';
+import 'antd/dist/antd.css';
 
 const mapStateToPropsLogin = ()=>{
     return {}

@@ -1,8 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Row,  Card } from 'antd';
 
 import WithLoading, { extractData } from '../../network/LoadingHoc';
-import ConstantsCSS from '../Constants-CSS';
+import { Add } from '../../components/dessign/icons';
+import { Primary } from '../../components/dessign/buttons';
+import { half } from '../../components/dessign/grid';
 
 import WrapGraph from '../Graphs/WrapGraph';
 import Loading from '../../components/Loading';
@@ -22,22 +25,29 @@ const GraphReport = ({allData, hashTags, graphs, addGraph})=>{
     let graphConfig = getGraphConfig(hashTags);
     let packer = serializerConfig({hashTags});
     return (
-        <div className="row">
+        <Row type="flex" gutter={8}>
             { graphs.map((element, index) => (
-                <ConnectedGraph className="col s12 l6"
-                    key={index}
-                    data={allData} 
-                    packer={packer} 
-                    graphConfig={graphConfig} 
-                    options={element} 
-                    edit={!element.id}/>
+                half(
+                    <Card title={element.name}>
+                        <ConnectedGraph
+                            key={index}
+                            data={allData} 
+                            packer={packer} 
+                            graphConfig={graphConfig} 
+                            options={element} 
+                            edit={!element.id}/>
+                    </Card>,
+                    {key:index}
+                )
             ))}
-            <div className="col s12 l6 center-align valign-wrapper">
-                <button className={ConstantsCSS.Button.Floating} onClick={addGraph}>
-                    <i className="material-icons">add</i>
-                </button>
-            </div>
-        </div>
+            {half(
+                <Card >
+                    <Primary shape="circle" onClick={addGraph}>
+                        <Add />
+                    </Primary>
+                </Card>
+            )}
+        </Row>
     )
 }
 

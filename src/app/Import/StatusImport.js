@@ -6,15 +6,8 @@ import StatusRowTableView from './StatusRowsTableView';
 
 const StatusImportView = WithNotFound(({data})=>{
     return (
-        <div className="row">
-            <div className="card blue-grey">
-                <div className="card-content white-text">
-                    <div className="card-title">{data.kind}</div>
-                    <pre className="description">
-                        {data.description}
-                    </pre>
-                </div>
-            </div>
+        <div>
+            <h2 style={{textAlign:"center"}}>{data.kind}</h2>
             <StatusRowTableView status={data} />
         </div>
     )
