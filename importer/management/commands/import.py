@@ -1,4 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
+from importer.models import RawDataSource, StatusReport, StatusReportRow
+from management.models import ValuesToTag
 
 from importer.importers import FORMAT_LIST
 

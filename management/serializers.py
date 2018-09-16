@@ -3,6 +3,7 @@ from .models import Tag, Filter, ValuesToTag
 
 class TagSerializer(serializers.ModelSerializer):
     children = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
+    filters = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
     class Meta:
         model = Tag
         fields = ('id', 'parent', 'children', 'name', 'filters', 'negate_conditional')
