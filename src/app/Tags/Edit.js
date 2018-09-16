@@ -5,8 +5,9 @@ import { WithNotFound } from '../../components/NotFound';
 import Form from './Form';
 import {saveTag, applyFilters, destroyTag} from './Actions';
 import TagsFilterTable from './Filters/TagsFilterTable';
-import { fetchFiltersTypes, fetchFilters } from "./Filters/Actions";
+import { fetchFiltersTypes, fetchFilters, saveFilter, deleteFilter } from "./Filters/Actions";
 import MultiPropsLoadingHOC from '../../network/MultiPropsLoadingHOC';
+import { extractData } from '../../network/LoadingHoc';
 
 const CompleteForm = (props) => {
     let tagProps = {
@@ -15,14 +16,16 @@ const CompleteForm = (props) => {
         destroyTag:props.destroyTag,
         applyFilters:props.applyFilters,
         hashTags:props.hashTags,
-        tags:props.tags
+        tags:props.tags,
     }
     let filterProps = {
         tag:props.value,
         types:props.types,
         filtersList: props.filtersList,
         isLoading: props.isLoading,
-        loadFilters: props.loadFilters
+        loadFilters: props.loadFilters,
+        saveFilter: props.saveFilter,
+        deleteFilter: props.deleteFilter,
     }
     return (
         <div>
@@ -46,8 +49,8 @@ const mapStateToProps = ({tags, hashTags, filterTypes, tagsFilters}, {match}) =>
         tags: tags.data,
         hashTags,
         value: tag,
-        types: filterTypes,
-        filtersList: filtersList ? filtersList.data : undefined,
+        types: extractData(filterTypes),
+        filtersList: extractData(filtersList),
         isLoading: isLoadingFilter({filtersList, filterTypes})
     }
 }
@@ -61,5 +64,7 @@ export default connect(mapStateToProps, (dispatch)=>({
             dispatch(fetchFiltersTypes())
         }
         dispatch(fetchFilters(tag))
-    }
+    },
+    saveFilter: (filter)=>dispatch(saveFilter(filter)),
+    deleteFilter: (filter)=>dispatch(deleteFilter(filter))
 }))(NotFoundForm)

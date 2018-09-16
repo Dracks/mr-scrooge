@@ -22,5 +22,5 @@ export default function withLoading(WrappedComponent, Loading, dataName, initial
 }
 
 export const extractData=(data) =>{
-    return data.data;
+    return data ? data.data: undefined;
 }

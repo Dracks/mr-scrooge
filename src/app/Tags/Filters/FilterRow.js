@@ -1,24 +1,18 @@
 import React from 'react';
 import { Input } from 'antd';
 
-import Rest from '../../../network/Rest'
-
 import { Danger } from '../../../components/dessign/buttons';
 import Select from '../../../components/Select';
 import { eventHandler } from '../../Utils';
 
 
-const FilterRowEmpty = ({filter, types, onDelete}) => {
+const FilterRowEmpty = ({filter, types, saveFilter, deleteFilter}) => {
     const options = Object.keys(types).map((e)=>{ return {"key":e, "value":types[e]}})
     const save=()=>{
-        Rest.save('/api/tag-filter/:id/',filter).then(data=>{
-            filter = data;
-        })
+        saveFilter(filter)
     }
     const deleteRow=()=>{
-        Rest.destroy('/api/tag-filter/:id/', filter).then((data)=>{
-            onDelete(filter);
-        })
+        deleteFilter(filter)
     }
     return (
         <tr>
