@@ -47,14 +47,14 @@ describe('[Utils/Form]', ()=>{
             wrapper = mount(<Form config={initial}/>);
             const instance = wrapper.instance();
             
-            expect(wrapper.find('select').length).toEqual(1)
+            expect(wrapper.find('FormSelectOption').length).toEqual(1)
         });
 
         it('testingconfiguration line selected ', ()=>{
             wrapper = mount(<Form config={initial} options={{component: 'line'}} />);
             const instance = wrapper.instance();
             
-            expect(wrapper.find('select').length).toEqual(3)
+            expect(wrapper.find('FormSelectOption').length).toEqual(3)
         });
     });
 });

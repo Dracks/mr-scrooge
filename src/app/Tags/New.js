@@ -2,10 +2,15 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Form from './Form';
-import {updateTags} from './Actions';
+import {saveTag} from './Actions';
 
 const New = (props) => {
-    return <Form value={{filters: [], children:[]}} {...props} />
+    return (
+        <div>
+            <h2> New tag </h2>
+            <Form value={{filters: [], children:[]}} {...props} />
+        </div>
+    )
 }
 
 const mapStateToProps = ({hashTags, tags})=>{
@@ -15,4 +20,6 @@ const mapStateToProps = ({hashTags, tags})=>{
     }
 }
 
-export default connect(mapStateToProps, {updateTags})(New)
+export default connect(mapStateToProps, (dispatch)=>({
+    saveTag: (tag)=>dispatch(saveTag(tag)),
+}))(New)

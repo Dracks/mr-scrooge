@@ -1,9 +1,20 @@
 import { Line, Bar } from "react-chartjs-2";
-import { getOption, getInputOptions,  getSelectOptions, getMultiSelectOptions } from '../../utils/FormHelper';
+import { getOption, getInputOptions,  getSelectOptions, getMultiSelectOptions, getBooleanOptions } from '../../utils/FormHelper';
 
 export const GraphComponentHash={
-    line: {component: Line},
-    bar: {component: Bar},
+    line: {
+        component: Line,
+        options: {
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+            },
+        }
+    },
+    bar: {
+        component: Bar,
+        options: {}
+    },
 };
 
 const getGroupFunctions = (prefix, tags)=>{
@@ -20,10 +31,14 @@ const getGroupFunctions = (prefix, tags)=>{
 
 const getBasicGroups = (tags)=> {
     return {
-        tag: getSelectOptions('Tag', 'Select a tag', tags, "int"),
-        acumulative: getSelectOptions('Sum', 'False', {
-            [true]: getOption('True'),
+        date_range: getSelectOptions('Range dates', 'Select a period of time', {
+            month: getOption('one month'),
+            three: getOption('Three months'),
+            six: getOption('Half a year'),
+            year: getOption('One year'),
         }),
+        tag: getSelectOptions('Tag', 'Select tag', {0:{name:'--'}, ...tags}, "int"),
+        acumulative: getBooleanOptions('Sum Values:', {}),
         group: getSelectOptions('Group', 'Select some group function', 
             getGroupFunctions('group', tags)
         ),
@@ -39,14 +54,18 @@ export const getGraphConfig=(tags) => {
         kind: getSelectOptions( 'kind', 'Select a graph kind', {
             line: getOption('Line', getBasicGroups(tags)),
             bar: getOption('Bar', getBasicGroups(tags)),
+            debug: getOption('debug', {
+                acumulative: getBooleanOptions('Acumulative:', {})
+            })
         })
     }
 }
 
-export const serializerConfig = ({hashTags}) => ({tag, kind, group, horizontal, acumulative, horizontal_value=[]}) => {
-    if (tag && kind && group && horizontal){
+export const serializerConfig = ({hashTags}) => ({tag, date_range, kind, group, horizontal, acumulative, horizontal_value=[]}) => {
+    if ( kind && group && horizontal && date_range){
         return {
             kind,
+            date_range,
             tag:tag,
             acumulative,
             group: {name: group},

@@ -1,19 +1,72 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import { Menu } from 'antd';
+import ResponsiveNavDefault from '../components/ResponsiveNav';
 
-const Header = ({logout}) => {
-    return (<nav className="green">
-        <div className="nav-wrapper">
-            <Link to="/" className="brand-logo">Finances</Link>
-            <ul id="nav-mobile" className="right hide-on-med-and-down">
-                <li><Link to='/'>Report</Link></li>
-                <li><Link to='/import'>Import</Link></li>
-                <li><Link to='/tag'>Tags</Link></li>
-                <li><Link to='/raw-data'>RawData</Link></li>
-                <li><a onClick={logout}>Logout</a></li>
-            </ul>
-        </div>
-    </nav>);
+import ResizableHOC from '../utils/responsive/HOC';
+
+const ResponsiveNav = ResizableHOC(ResponsiveNavDefault);
+
+//{ mobileVersion, activeLinkKey, onLinkClick, className }
+const contents = (logout) => ()=>{
+    return [
+            (
+            <Menu.Item key="/">
+                <Link to='/'>Report</Link>
+            </Menu.Item>
+            ),(
+            <Menu.Item key="/import">
+                <Link to='/import'>Import</Link>
+            </Menu.Item>
+            ),(
+            <Menu.Item key="/tag">
+                <Link to='/tag'>Tags</Link>
+            </Menu.Item>
+            ),(
+            <Menu.Item key="/raw-data">
+                <Link to='/raw-data'>RawData</Link>
+            </Menu.Item>
+            ),(
+            <Menu.Item key='logout'>
+                <a onClick={logout}>Logout</a>
+            </Menu.Item>
+            )]
+}
+const custom = (l, data, logout)=>()=>{
+    return (<Menu theme="dark"
+          mode={'horizontal'}
+          selectedKeys={[l]}
+        >
+        <Menu.Item>Mr Scrooge</Menu.Item>
+        {data()}
+    </Menu>
+    );
 }
 
-export default Header;
+const mobile = (l, data) => ()=>{
+    return (
+        <Menu theme="dark"
+            mode={'horizontal'}
+            selectedKeys={[l]}
+            >
+            <Menu.SubMenu 
+                title={<span>Menu</span>}>
+                {data()}
+            </Menu.SubMenu>
+        </Menu>
+    )
+}
+export default ({location, logout})=>{
+    var l = location.pathname
+    var last_path = l.indexOf("/",2)
+    if (last_path) {
+        l = l.substr(0, last_path)
+    }
+    var c = contents(logout)
+    return (<ResponsiveNav
+        menuMarkup={custom(l, c)}
+        menuMarkupMobile={mobile(l, c)}
+        mobileBreakPoint={767}
+     />
+     )
+};

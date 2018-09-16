@@ -1,23 +1,23 @@
 import React from 'react';
+import { Row, Col, Spin, Icon } from 'antd';
 
 const Loading = (props) => {
-    return (<div className={props.className}>
-        <div className="preloader-wrapper small active">
-            <div className="spinner-layer spinner-green-only">
-                <div className="circle-clipper left">
-                    <div className="circle"></div>
-                </div><div className="gap-patch">
-                    <div className="circle"></div>
-                </div><div className="circle-clipper right">
-                    <div className="circle"></div>
-                </div>
-            </div>
+    const antIcon = <Icon type="loading" style={{ fontSize: 64 }} spin />;
+    return (
+        <div className={props.className}>
+            <Spin indicator={antIcon} />
         </div>
-    </div>)
+    )
 }
 
 const CenteredLoading = ()=>{
-    return <Loading className="valign-wrapper center-align" />
+    return (
+        <Row type="flex" justify="center" align="middle" >
+            <Col span={4}>
+                <Loading className="valign-wrapper center-align" />
+            </Col>
+        </Row>
+    )
 }
 
 const TableLoading = columns =>{
@@ -26,6 +26,6 @@ const TableLoading = columns =>{
     }  
 }
 
-export default Loading;
+export default CenteredLoading;
 
 export { TableLoading, Loading, CenteredLoading }

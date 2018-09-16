@@ -27,14 +27,20 @@ describe('[Graphs/WrapGraph]', ()=>{
         instance = wrapper.instance();
     }
 
+    const checkIsEditing = ()=>{
+        expect(wrapper.find({id:"save"}).length).toEqual(1);
+        expect(wrapper.find({id:'cancel'}).length).toEqual(1);
+        expect(wrapper.find({id:'delete'}).length).toEqual(1);
+    }
+
     const executeAction = (action)=>{
         instantiate(true);
-        expect(wrapper.find('a').length).toEqual(3);
+        checkIsEditing()
         expect(instance.state.options).toEqual(defaultOptions);
 
         instance.changeOptions(changedOptions);
 
-        wrapper.find('a').filterWhere((a)=>a.contains(action)).simulate('click', mockClick )
+        wrapper.find(action).simulate('click', mockClick )
     }
 
     beforeEach(()=>{
@@ -43,32 +49,33 @@ describe('[Graphs/WrapGraph]', ()=>{
     });
 
     describe('Actions', ()=>{
-        
 
         it('check edit button', ()=>{
             instantiate(false);
-            expect(wrapper.find('a').length).toEqual(1);
-            wrapper.find('a').simulate('click', mockClick);
-            expect(wrapper.find('a').length).toEqual(3);
+
+            expect(wrapper.find({id:'edit'}).length).toEqual(1);
+            wrapper.find({id:'edit'}).simulate('click', mockClick);
+            
+            checkIsEditing()
         });
 
         it('check editing cancel', ()=>{
-            executeAction('cancel');
+            executeAction({id:'cancel'});
 
             expect(instance.state.options).toEqual(defaultOptions);
             expect(instance.state.isEdit).toEqual(false);
         });
 
         it('check editing save', ()=>{
-            executeAction('save');
+            executeAction({id:"save"});
             
             expect(instance.state.options).toEqual(changedOptions);
             expect(instance.state.isEdit).toEqual(false);
             expect(mockSave).toHaveBeenCalledWith(changedOptions);
         });
 
-        it('check editing save', ()=>{
-            executeAction('delete');
+        it('check editing delete', ()=>{
+            executeAction({id: 'delete'});
             
             expect(instance.state.options).toEqual(defaultOptions);
             expect(instance.state.isEdit).toEqual(false);

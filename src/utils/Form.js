@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 
 const mapValues=(()=>{
     const hashValues = {
-        int:(e)=>parseInt(e),
-        str:(e)=>e,
+        int:(e)=>parseInt(e, 10),
+        str:(e)=>e
     }
 
     return (kind, v)=>{
@@ -23,7 +23,7 @@ const getConfigView=(struct, state, callback)=>{
         var value = state[property];
         var children = [];
         const Input = c.input;
-        if (value){
+        if (value && options.length>0){
             if (typeof value === "string" || typeof value === "number"){
                 var select = c.options[value];
                 if (select){
@@ -33,7 +33,7 @@ const getConfigView=(struct, state, callback)=>{
                 } else {
                     console.error(value + ' value not found in '+JSON.stringify(c.options));
                 }
-            } else {
+            } else if (!(value instanceof Array)) {
                 console.warn('Type \'' + typeof value + '\' value not implemented')
             }
         }

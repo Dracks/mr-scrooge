@@ -1,23 +1,38 @@
 import React from 'react';
+import { 
+    Select,
+    Form,
+    Input,
+    Row
+} from 'antd';
 
-import ConstantsCss from '../Constants-CSS';
-import Rest from '../../network/Rest';
+import { half, oneThird, twoThird } from '../../components/dessign/grid'
+import { Primary, Danger } from '../../components/dessign/buttons'
+
 import {eventHandler} from '../Utils';
-import MessageComponent from '../../components/Message';
-import Input from '../../components/Input';
-import Select from '../../components/Select';
+//import MessageComponent from '../../components/Message';
+//import Input from '../../components/Input';
+import { getOptions } from '../../components/Select';
 
-
-import TagsFilterTable from './TagsFilterTable';
+const formLayout = {
+    labelCol: {
+        span: 24
+    },
+    wrapperCol: {
+        span: 24
+    },
+}
 
 const negate_options = [
     {key: false, value: "cond1 or cond2 ..."},
     {key: true, value: "not cond1 and not cond2 ..."}
 ]
 
-const Form = ({value, updateTags, hashTags, tags}) => {
-    var showMessage;
+const FormItem = Form.Item;
+const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form}) => {
+    const { getFieldDecorator } = form;
     var tag = value;
+    const propsButtons = tag.id ? {} : {disabled:true};
 
     var notShownListTags = [];
     if (value.id){
@@ -31,78 +46,84 @@ const Form = ({value, updateTags, hashTags, tags}) => {
         }
     }
 
-    let parent_list = [{key:'', value:'No parent'}].concat(tags
+    let parent_list = tags
         .filter(({id})=>notShownListTags.indexOf(id)===-1)
-        .map(({id, name})=>{return {key:id, value:name}}));
-
-    let save = () => {
-        Rest.save('/api/tag/:id/', tag).then(
-            (data)=>{
-                updateTags();
-                tag.id=data.id;
-                if (showMessage){
-                    showMessage(ConstantsCss.Message.Ok, "Saved correctly", JSON.stringify(data));
-                }
-            }, (error)=>{
-                if (showMessage){
-                    showMessage(ConstantsCss.Message.Error, "Error", JSON.stringify(error));
-                }
-            }
-        )
-    }
+        .map(({id, name})=>{return {key:id, value:name}});
 
     let apply = ()=>{
-        Rest.save('/api/tag/'+tag.id+'/apply_filters/', {}).then(
-            (data)=>{
-                if (showMessage){
-                    showMessage(ConstantsCss.Message.Ok, "Applied correctly", JSON.stringify(data));
-                }
-            }, (error)=>{
-                if (showMessage){
-                    showMessage(ConstantsCss.Message.Error, "Error", JSON.stringify(error));
-                }
-            }
-        )
+        applyFilters(tag)
     }
 
     let destroy = ()=>{
-        console.log(tag)
-        Rest.destroy('/api/tag/:id/', tag).then(
-            (data)=>{
-                updateTags()
-            }, (error)=>{
-                if (showMessage){
-                    showMessage(ConstantsCss.Message.Error, "Error", JSON.stringify(error));
-                }
+        destroyTag(tag, ()=>{});
+    }
+
+    const submit = ()=>{
+        form.validateFields((err, tag)=>{
+            if (!err){
+                saveTag(Object.assign(value, tag))
             }
-        )
+        })
     }
 
     return (
-        <div className="row">
-            <div className="col s6 ">
-                <label>Parent:</label>
-                <Select options={parent_list} value={tag.parent} onChange={(e)=>{tag.parent = e; save()}}/>
-            </div>
-            <div className="col s6 ">
-                <label>Management of conditions</label>
-                <Select options={negate_options} value={tag.negate_conditional} onChange={(e)=>{tag.negate_conditional=e; save()}}/>
-            </div>
-            <div className="input-field col s5">
-                <Input placeholder="Name" type="text" value={tag.name} onBlur={e=>{tag.name=e; save()}}/>
-            </div>
-            <div className="input-field col s5">
-                <a className={ConstantsCss.Button.Normal} onClick={eventHandler(apply)}>Apply</a>
-                <a className={ConstantsCss.Button.Delete + ' ' + ConstantsCss.Button.Normal} onClick={eventHandler(destroy)}>Delete</a>
-            </div>
-            <div className="col s12">
-                <MessageComponent register={(c)=>{showMessage=c}}/>
-            </div>
-            <div className="col s12">
-                <TagsFilterTable tag={value}/>
-            </div>
-        </div>
+        <Form>
+            <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                {half(
+                    <FormItem
+                        label="Select"
+                        {...formLayout}
+                        >
+                        {getFieldDecorator('parent', {
+                            initialValue: tag.parent,
+                        })(
+                            
+                            <Select placeholder='No parent' onChange={submit}>
+                                {getOptions(parent_list)}
+                            </Select>
+                        )}
+                    </FormItem>
+                )}
+                {half(
+                    <FormItem
+                        label="Management of conditions"
+                        {...formLayout}
+                        >
+                        {getFieldDecorator('negate_conditional', {
+                            initialValue: tag.negate_conditional,
+                        })(
+                            <Select onChange={submit}>
+                                {getOptions(negate_options)}
+                            </Select>
+                        )}
+                    </FormItem>
+                )}
+                {twoThird(
+                    <FormItem
+                        label="Name"
+                        {...formLayout}
+                        >
+                        {getFieldDecorator("name",{
+                            rules: [
+                                { required: true, message: 'Is required a name' }
+                            ],
+                            initialValue: tag.name,
+                        })(
+                            <Input placeholder="Name" type="text" value={tag.name} onBlur={submit}/>
+                        )}
+                    </FormItem>
+                )}
+                {oneThird(
+                    <FormItem>
+                        <Primary style={{width: '100%'}} {...propsButtons} onClick={eventHandler(apply)}>Apply</Primary>
+                        <Danger style={{width: '100%'}} {...propsButtons} onClick={eventHandler(destroy)}>Delete</Danger>
+                    </FormItem>
+                )}
+            </Row>
+        </Form>
     )
 }
 
-export default Form;
+const f = Form.create()(FormTag)
+
+export default f;

@@ -19,6 +19,12 @@ const manageResponse = (response)=> {
     }
 }
 
+export const whenComplete = (callback) => (isLoading, data) =>{
+    if (!isLoading && data){
+        return callback()
+    }
+}
+
 export const responseReloadAction = (action) => {
     return (isLoading, data) => {
         return {
@@ -99,5 +105,13 @@ export const fetchError = (data) => {
     return {
         type: ACTIONS.FETCH_ERROR,
         payload: data
+    }
+}
+
+export const compose = (action_name, action, id=null) => (isLoading, data)=>{
+    return {
+        type: action_name,
+        payload: action(isLoading, data),
+        id: id
     }
 }
