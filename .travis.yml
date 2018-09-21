@@ -25,13 +25,15 @@ before_script:
 
 script:
   - (cd view; npm run build)
-  - docker build -t dracks/mrscrooge:${TRAVIS_TAG:-snapshot} -f config/sqlite/Dockerfile .
+  - docker build -t dracks/mrscrooge:latest -f config/sqlite/Dockerfile .
+  - docker tag dracks/mrscrooge:latest dracks/mrscrooge:${TRAVIS_TAG:-snapshot}
+  - docker build -t dracks/mrscrooge:${TRAVIS_TAG:-snapshot}-postgres config/postgres-extended/
 
 before_deploy:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin
 
 deploy:
   provider: script
-  script: docker push dracks/mrscrooge:${TRAVIS_TAG:-snapshot}
+  script: (docker push dracks/mrscrooge:${TRAVIS_TAG:-snapshot} && docker push dracks/mrscrooge:${TRAVIS_TAG:-snapshot}-postgres)
   on:
     tags: true
