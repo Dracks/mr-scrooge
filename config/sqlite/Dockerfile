@@ -34,13 +34,12 @@ COPY view/build /home/view/
 
 RUN pip3 install -r /home/django/requirements.txt
 
-RUN cd /home/django && python3 manage.py migrate
-
 # copy uswgi config
 COPY config/uwsgi* /home/django/
 
 
 EXPOSE 80
 COPY config/sqlite/start.sh /usr/bin
+RUN chmod +x /usr/bin/start.sh
 
 ENTRYPOINT [ "start.sh" ]
