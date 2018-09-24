@@ -1,4 +1,4 @@
-import { fetchAction, responseReloadAction, saveAction, deleteAction } from '../../network/Actions'
+import { fetchAction, responseReloadAction, saveAction, deleteAction } from 'react-redux-rest'
 import { updateRawData } from '../RawData/Actions';
 
 export const FETCH_TAGS = "TAGS_FETCH";

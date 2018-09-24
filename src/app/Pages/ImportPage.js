@@ -4,7 +4,7 @@ import { Link, Route, Switch } from 'react-router-dom';
 
 import { Menu } from 'antd';
 
-import WithLoading from '../../network/LoadingHoc';
+import { withLoading } from 'react-redux-rest';
 import { fetchStatus } from '../Import/Actions';
 import Loading from '../../components/Loading';
 import SiderPage from '../../components/SiderPage';
@@ -67,5 +67,5 @@ const mapStateToProps = state => {
     }
 }
 
-const LoadingImportPage = WithLoading(ImportPage, Loading, 'status', 'fetchStatus')
+const LoadingImportPage = withLoading(ImportPage, Loading, 'status', 'fetchStatus')
 export default connect(mapStateToProps, {fetchStatus})(LoadingImportPage)

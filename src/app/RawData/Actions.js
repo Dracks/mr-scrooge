@@ -3,7 +3,7 @@ import {
     responseReloadAction,
     whenComplete,
     jsonHeaders
-} from '../../network/Actions'
+} from 'react-redux-rest'
 
 export const FETCH_RAW_DATA = "RAW_DATA_FETCH";
 

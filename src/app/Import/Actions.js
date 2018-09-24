@@ -1,4 +1,4 @@
-import { fetchAction, responseReloadAction } from '../../network/Actions';
+import { fetchAction, responseReloadAction } from 'react-redux-rest';
 import { updateRawData } from '../RawData/Actions';
 
 export const FETCH_IMPORT_STATUS = "IMPORT_STATUS_FETCH";

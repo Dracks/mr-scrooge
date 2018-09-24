@@ -1,4 +1,4 @@
-import { fetchAction } from '../../network/Actions'
+import { fetchAction } from 'react-redux-rest'
 
 export const FETCH_SESSION_DATA = "SESSION_FETCH_DATA";
 
