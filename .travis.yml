@@ -27,7 +27,7 @@ script:
   - (cd view; npm run build)
   - docker build -t dracks/mrscrooge:latest -f config/sqlite/Dockerfile .
   - docker tag dracks/mrscrooge:latest dracks/mrscrooge:${TRAVIS_TAG:-snapshot}
-  - docker build -t dracks/mrscrooge:latest-postgres config/postgres-extended/
+  - docker build -t dracks/mrscrooge:latest-postgres config/postgres/
   - docker tag dracks/mrscrooge:latest-postgres dracks/mrscrooge:${TRAVIS_TAG:-snapshot}-postgres
   - docker build -t dracks/mrscrooge:${TRAVIS_TAG:-snapshot}-openshift config/openshift/
 
