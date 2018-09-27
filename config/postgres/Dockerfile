@@ -1,23 +1,6 @@
-FROM lgatica/python-alpine:3.6
+from dracks/mrscrooge:latest
 
-RUN pip3 install --upgrade pip
+RUN pip3 install psycopg2-binary
 
-WORKDIR /home/server
+COPY settings.py /home/django/finances
 
-COPY server/ .
-
-COPY config/postgres/settings.py finances/
-
-RUN pip3 install -r requirements.txt && \
-    pip3 install psycopg2 
-    #pip3 install uwsgi
-
-RUN apk --no-cache add uwsgi-python3
-
-COPY config/uwsgi* ./
-
-COPY config/postgres/run.sh /usr/bin/run.sh
-
-#RUN ./manage.py migrate
-
-ENTRYPOINT [ "/usr/bin/run.sh" ]
