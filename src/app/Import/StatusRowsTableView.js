@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { withLoading } from 'react-redux-rest'
+import { withLoading } from 'redux-api-rest'
 
 import Loading from '../../components/Loading'
 import TableView from '../../components/TableView'
 
-const withFetch = ()=><div>Not implemented, old interface</div>
+const withFetch = ()=>()=><div>Not implemented, old interface</div>
 
 const LoadingTableView = withLoading(TableView, Loading, 'data', 'fetchData')
 const StatusRowsTableView = ({status}) =>{

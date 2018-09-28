@@ -1,6 +1,6 @@
 import { applyMiddleware } from 'redux';
 import logger from 'redux-logger';
 
-import { fetchMiddleware } from 'react-redux-rest';
+import { fetchMiddleware } from 'redux-api-rest';
 
 export default applyMiddleware(logger, fetchMiddleware)

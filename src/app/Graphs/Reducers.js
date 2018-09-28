@@ -1,4 +1,4 @@
-import { fetchReducer } from "react-redux-rest";
+import { fetchReducer } from "redux-api-rest";
 
 import { FETCH_GRAPHS, ADD_GRAPH, REMOVE_GRAPH } from './Actions';
 

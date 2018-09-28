@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { withLoading } from 'react-redux-rest';
+import { withLoading } from 'redux-api-rest';
 
 import { eventHandler } from '../../Utils'
 import ConstantsCss from '../../Constants-CSS';

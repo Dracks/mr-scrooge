@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { withLoading, MultiPropsLoadingHOC } from 'react-redux-rest';
+import { withLoading, MultiPropsLoadingHOC } from 'redux-api-rest';
 
 import { Layout } from 'antd';
 

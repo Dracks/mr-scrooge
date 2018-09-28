@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Row,  Card } from 'antd';
 
-import { withLoading,  extractData } from 'react-redux-rest';
+import { withLoading,  extractData } from 'redux-api-rest';
 import { Add } from '../../components/dessign/icons';
 import { Primary } from '../../components/dessign/buttons';
 import { half } from '../../components/dessign/grid';

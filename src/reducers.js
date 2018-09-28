@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import moment from 'moment';
 
-import { fetchReducer, reducerForData } from 'react-redux-rest';
+import { fetchReducer, reducerForData } from 'redux-api-rest';
 import { FETCH_SESSION_DATA } from './app/Session/Actions';
 import { FETCH_RAW_DATA } from './app/RawData/Actions';
 import { FETCH_IMPORT_STATUS, FETCH_IMPORT_KINDS } from './app/Import/Actions';
