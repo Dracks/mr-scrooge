@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { withLoading } from 'redux-api-rest'
+import { withLoading } from 'redux-api-rest-hocs'
 
 import Loading from '../../components/Loading'
 import TableView from '../../components/TableView'

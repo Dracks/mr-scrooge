@@ -4,7 +4,7 @@ import { Link, Route, Switch } from 'react-router-dom';
 
 import { Menu } from 'antd';
 
-import { withLoading } from 'redux-api-rest';
+import { withLoading } from 'redux-api-rest-hocs';
 import { fetchStatus } from '../Import/Actions';
 import Loading from '../../components/Loading';
 import SiderPage from '../../components/SiderPage';

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import { withLoading } from 'redux-api-rest';
+import { withLoading } from 'redux-api-rest-hocs';
 
 import CenteredLoading from '../components/Loading';
 import LoginPage from './Session/LoginPage';

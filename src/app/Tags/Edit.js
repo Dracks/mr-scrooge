@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {extractData, MultiPropsLoadingHOC } from 'redux-api-rest';
+import {extractData, MultiPropsLoadingHOC } from 'redux-api-rest-hocs';
 
 import { WithNotFound} from '../../components/NotFound';
 import Form from './Form';
