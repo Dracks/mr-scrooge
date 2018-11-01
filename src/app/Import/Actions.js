@@ -26,3 +26,8 @@ export const sendFile = (data, callback) => {
         body: data
     })
 }
+
+export const getStatusReport = (ids, callback) => {
+    let request = ids.rows.map((e)=>"ids[]="+e).join("&");
+    return fetchAction('/api/status-row/?'+request, callback)
+}
