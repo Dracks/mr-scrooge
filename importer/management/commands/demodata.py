@@ -79,7 +79,7 @@ class Command(BaseCommand):
                 "tag":0,
                 "horizontal":"month",
                 "group":"sign",
-                "kind":"line",
+                "kind":"bar",
                 "acumulative":False,
                 "date_range":"year",
                 "name":"Income vs outcome"
