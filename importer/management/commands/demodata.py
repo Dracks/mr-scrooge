@@ -40,8 +40,8 @@ class Command(BaseCommand):
                 expenses = Tag(name="Expenses")
                 expenses.save()
 
-                Filter(tag=expenses, 
-                    type_conditional=FilterConditionals.LOWER, 
+                Filter(tag=expenses,
+                    type_conditional=FilterConditionals.LOWER,
                     conditional=0
                 ).save()
 
@@ -76,7 +76,7 @@ class Command(BaseCommand):
         if graphs_enabled and Graph.objects.count()==0:
             expenses = Tag.objects.filter(name="Expenses").first()
             save_new_graph({
-                "tag":'0',
+                "tag":0,
                 "horizontal":"month",
                 "group":"sign",
                 "kind":"line",
@@ -118,6 +118,6 @@ class Command(BaseCommand):
                 value=-random.randint(10, 200)
                 ).save()
             fromDate += getRandomInterval()
-        
+
         for tag in Tag.objects.all():
             tag.apply_filters()
