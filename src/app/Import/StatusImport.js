@@ -3,21 +3,39 @@ import { connect } from 'react-redux';
 
 import { WithNotFound } from '../../components/NotFound';
 import StatusRowTableView from './StatusRowsTableView';
+import { Error, Warning } from '../../components/dessign/messages';
 
-const StatusImportView = WithNotFound(({data})=>{
+const StatusImportView = WithNotFound(({data, dispatch})=>{
+    let Msg = ()=><div/>
+    if (data.description){
+        switch(data.status){
+            case "e":
+                Msg = ()=>(<Error
+                    title="Error"
+                    message={data.description}
+                />);
+            break;
+            case "w":
+                Msg = ()=>(<Warning title="Warning" message={data.description}/>)
+                break
+            default:
+                Msg = ()=><div />
+        }
+    }
     return (
         <div>
             <h2 style={{textAlign:"center"}}>{data.kind}</h2>
-            <StatusRowTableView status={data} />
+            <Msg />
+            {data.rows.length>0 && <StatusRowTableView status={data} dispatch={dispatch}/>}
         </div>
     )
 }, 'data');
 
-const StatusImport = ({match, status}) => {
+const StatusImport = ({match, status, dispatch}) => {
     const id = parseInt(match.params.id, 10)
     const data = status.filter(e=>e.id===id)[0];
     
-    return <StatusImportView data={data} />
+    return <StatusImportView data={data} dispatch={dispatch}/>
 }
 
 const mapStateToProps = state => {

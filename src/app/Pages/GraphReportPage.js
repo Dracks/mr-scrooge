@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Row,  Card } from 'antd';
 
-import WithLoading, { extractData } from '../../network/LoadingHoc';
+import { withLoading,  extractData } from 'redux-api-rest-hocs';
 import { Add } from '../../components/dessign/icons';
 import { Primary } from '../../components/dessign/buttons';
 import { half } from '../../components/dessign/grid';
@@ -59,5 +59,5 @@ const mapStateToProps = state=>{
     }
 }
 
-const LoadingGraphReport = WithLoading(GraphReport, Loading, 'graphs', 'fetchGraphs')
+const LoadingGraphReport = withLoading(GraphReport, Loading, 'graphs', 'fetchGraphs')
 export default connect(mapStateToProps, {fetchGraphs, addGraph})(LoadingGraphReport)

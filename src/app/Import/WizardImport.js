@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom'
 import { Form, Button, Upload, Icon, Select} from 'antd';
 
-import withLoading from '../../network/LoadingHoc';
+import { withLoading } from 'redux-api-rest-hocs';
 import { getOptions } from '../../components/Select';
 import Loading from '../../components/Loading';
 import { Primary } from '../../components/dessign/buttons';

@@ -15,6 +15,8 @@
     "react-router-dom": "^4.2.2",
     "react-scripts": "^1.1.4",
     "redux": "^3.7.2",
+    "redux-api-rest": "^2.0.0-beta.1",
+    "redux-api-rest-hocs": "^1.0.0-beta",
     "redux-logger": "^3.0.6"
   },
   "devDependencies": {

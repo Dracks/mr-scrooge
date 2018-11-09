@@ -1,13 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import {extractData, MultiPropsLoadingHOC } from 'redux-api-rest-hocs';
 
-import { WithNotFound } from '../../components/NotFound';
+import { WithNotFound} from '../../components/NotFound';
 import Form from './Form';
 import {saveTag, applyFilters, destroyTag} from './Actions';
 import TagsFilterTable from './Filters/TagsFilterTable';
 import { fetchFiltersTypes, fetchFilters, saveFilter, deleteFilter } from "./Filters/Actions";
-import MultiPropsLoadingHOC from '../../network/MultiPropsLoadingHOC';
-import { extractData } from '../../network/LoadingHoc';
 
 const CompleteForm = (props) => {
     let tagProps = {

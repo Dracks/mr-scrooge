@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import { withLoading } from 'redux-api-rest-hocs';
+
 import { eventHandler } from '../../Utils'
 import ConstantsCss from '../../Constants-CSS';
 import Loading from '../../../components/Loading';
@@ -8,7 +10,6 @@ import { Primary } from '../../../components/dessign/buttons';
 import { Add } from '../../../components/dessign/icons';
 
 import FilterRow from './FilterRow';
-import withLoading from '../../../network/LoadingHoc';
 
 class TagsFilterTable extends Component {
     constructor(props){
