@@ -20,7 +20,7 @@ const actions = {
     }
 }
 
-const LoginPageWithRouter = withRouter(connect(mapStateToPropsLogin, actions)(LoginPage));
+const LoginPageWithRouter = withRouter(connect(mapStateToPropsLogin, actions)(LoginPage) as any);
 
 
 const App = ({session}) => {
@@ -38,4 +38,4 @@ const mapStateToProps = ({session})=>{
 const AppLoading = WithLoading(App, CenteredLoading, 'session', 'fetchSession')
 
 
-export default withRouter(connect(mapStateToProps, {fetchSession})(AppLoading));
+export default withRouter(connect(mapStateToProps, {fetchSession})(AppLoading) as any);

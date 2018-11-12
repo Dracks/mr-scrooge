@@ -86,7 +86,7 @@ export const saveAction = (url, action, body)=>{
     return fetchAction(url, action, {
         body: JSON.stringify(body),
         method: method,
-        headers: new jsonHeaders()
+        headers: jsonHeaders()
     })
 }
 
@@ -95,7 +95,7 @@ export const deleteAction = (url, action, body)=>{
     url = url.replace(":id", body.id);
     let actionObject =  fetchAction(url, action, {
         method: method,
-        headers: new jsonHeaders()
+        headers: jsonHeaders()
     });
     actionObject.payload.manageResponse = (e)=>e;
     return actionObject;

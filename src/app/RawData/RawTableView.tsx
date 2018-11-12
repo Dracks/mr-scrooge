@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
+import * as moment from 'moment';
 import InfiniteScroll from 'react-infinite-scroller';
 
 import { removeTag, addTag } from './Actions';

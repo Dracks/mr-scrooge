@@ -25,7 +25,7 @@ const mapStateToPropsHead = ({session}) => {
     return {session}
 }
 
-const HeaderWithSession = withRouter(connect(mapStateToPropsHead, {logout})(Header))
+const HeaderWithSession = withRouter(connect(mapStateToPropsHead, {logout})(Header) as any)
 
 const mapStateToProps = state=>{
     return {
@@ -45,7 +45,7 @@ const mapActionsToProps = (dispatch) => {
 const ContentsWithLoading = WithLoading(Contents, Loading, 'dataStatus', 'load');
 const ContentsWithData = connect(mapStateToProps, mapActionsToProps)(ContentsWithLoading)
 
-const ContentsWithRouter = withRouter(ContentsWithData)
+const ContentsWithRouter = withRouter(ContentsWithData as any)
 
 const App = (props) => {
     return (

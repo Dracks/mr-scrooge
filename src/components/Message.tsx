@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import * as React from 'react'; import { Component } from 'react';
 
-class MessageComponent extends Component{
+class MessageComponent extends Component<any, any>{
+    private previousTimer;
     constructor(props) {
-        super();
+        super(props);
         this.setData = this.setData.bind(this);
 
         this.state = { show: false };

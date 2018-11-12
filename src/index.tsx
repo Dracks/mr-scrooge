@@ -14,15 +14,15 @@ import middlewares from './middleware'
 
 let store=createStore(reducers, middlewares)
 
-//import registerServiceWorker from './registerServiceWorker';
+import registerServiceWorker from './registerServiceWorker';
 
 ReactDOM.render(
     <Provider store={store}>
         <Router>
             <ResponsiveProvider >
-                <App dataStatus={{isLoading: false, data:{}}}/>
+                <App/>
             </ResponsiveProvider>
         </Router>
     </Provider>
     , document.getElementById('root'));
-//registerServiceWorker();
+registerServiceWorker();

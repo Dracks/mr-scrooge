@@ -1,7 +1,7 @@
 // Import from https://tomas.piestansky.cz/posts/2018/responsive-menu-ant-design/
 
 import * as React from 'react';
-import PropTypes from 'prop-types';
+import * as PropTypes from 'prop-types';
 
 // use babel-import-plugin as specified in Ant Design Docs!
 // https://ant.design/docs/react/getting-started#Import-on-Demand

@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import moment from 'moment';
+import * as moment from 'moment';
 
 import fetchReducer from "./network/FetchReducer";
 import reducerForData from "./network/ReducerForData";
@@ -16,7 +16,7 @@ export default combineReducers({
     allData: fetchReducer(FETCH_RAW_DATA, (data)=>{
         if (data.data){
             data.data.forEach(element => {
-                element.date = new moment(element.date).toDate();
+                element.date = moment(element.date).toDate();
             });
         }
         return data;

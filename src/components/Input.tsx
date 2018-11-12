@@ -1,8 +1,12 @@
-import React, { Component } from 'react';
+import * as React from 'react'; import { Component } from 'react';
 
 import {eventHandler} from '../app/Utils';
 
-class Input extends Component {
+class Input extends Component<any> {
+    
+    private value;
+    private eventsObject;
+
     constructor(props){
         super(props)
 

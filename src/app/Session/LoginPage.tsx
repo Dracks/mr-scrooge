@@ -6,7 +6,7 @@ import {eventHandler} from '../Utils';
 
 const FormItem = Form.Item;
 
-class NormalLoginForm extends React.Component {
+class NormalLoginForm extends React.Component<any> {
   handleSubmit = eventHandler((e) => {
     this.props.form.validateFields((err, values) => {
         if (!err) {

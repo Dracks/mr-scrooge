@@ -1,7 +1,7 @@
 import Actions, { fetchError } from "./Actions";
 import Rest from './Rest';
 
-const getActions = (actionsList, isLoading, data) => {
+const getActions = (actionsList, isLoading, data?) => {
     return actionsList.map(e=>{
         if (typeof e === "function"){
             return e(isLoading, data);

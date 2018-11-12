@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 export default (Wrapped, field, size=20)=>{
-    class HOC extends React.Component{
+    class HOC extends React.Component<any, any>{
         constructor(props){
             super(props)
             this.state={

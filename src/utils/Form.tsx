@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import * as React from 'react'; import {Component} from 'react';
 
 const mapValues=(()=>{
     const hashValues = {
@@ -41,7 +41,7 @@ const getConfigView=(struct, state, callback)=>{
     })
 }
 
-class Form extends Component{
+class Form extends Component<any>{
     constructor(props){
         super(props);
         this.state = props.options || {};

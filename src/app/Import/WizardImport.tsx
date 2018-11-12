@@ -55,7 +55,7 @@ const tailFormItemLayout = {
   };
 
 const FormItem = Form.Item;
-class WizardImportForm extends React.Component {
+class WizardImportForm extends React.Component<any, any> {
     constructor(props){
         super(props);
         this.send = this.send.bind(this);
@@ -152,5 +152,5 @@ const mapDispatchToProps = (dispatch) => {
         fetchImportKinds: ()=>{dispatch(fetchImportKinds())},
     }
 }
-const WizardImportLoading = withLoading(withRouter(f), Loading, 'acceptedKinds', 'fetchImportKinds')
+const WizardImportLoading = withLoading(withRouter(f as any), Loading, 'acceptedKinds', 'fetchImportKinds')
 export default connect( mapStateToProps, mapDispatchToProps)(WizardImportLoading);

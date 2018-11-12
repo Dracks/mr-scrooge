@@ -14,7 +14,7 @@ const throttle = (callback, time) => {
     }
 }
 
-class Provider extends PureComponent{
+class Provider extends PureComponent<any>{
     state = getObjectResponsive(window.innerWidth)
 
     componentDidMount() {

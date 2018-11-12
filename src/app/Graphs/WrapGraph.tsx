@@ -1,4 +1,5 @@
-import React, {Component} from 'react';
+import * as React from 'react';
+import { Component } from 'react';
 
 import Form from '../../utils/Form';
 import { eventHandler } from '../Utils';
@@ -8,7 +9,8 @@ import { Warning } from '../../components/dessign/messages';
 
 import Graph from './Graph';
 
-class WrapGraph extends Component {
+
+class WrapGraph extends Component<any, any> {
     private cancel;
 
     constructor(props){

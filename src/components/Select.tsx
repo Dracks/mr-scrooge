@@ -23,7 +23,8 @@ const SelectComponent = (props) => {
     let newProps = {
         value: props.value,
         style: props.style,
-        placeholder: props.placeholder ? props.placeholder.value : undefined
+        placeholder: props.placeholder ? props.placeholder.value : undefined,
+        onChange: undefined,
     };
     if (props.onChangeFn){
         newProps.onChange=(e)=> {

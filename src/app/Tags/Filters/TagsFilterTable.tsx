@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import * as React from 'react';
+import { Component } from 'react';
 
 import { eventHandler } from '../../Utils'
 import ConstantsCss from '../../Constants-CSS';
@@ -10,7 +11,7 @@ import { Add } from '../../../components/dessign/icons';
 import FilterRow from './FilterRow';
 import withLoading from '../../../network/LoadingHoc';
 
-class TagsFilterTable extends Component {
+class TagsFilterTable extends Component<any, any> {
     constructor(props){
         super(props);
         this.create = this.create.bind(this);

@@ -32,7 +32,7 @@ const contents = (logout) => ()=>{
             </Menu.Item>
             )]
 }
-const custom = (l, data, logout)=>()=>{
+const custom = (l, data)=>()=>{
     return (<Menu theme="dark"
           mode={'horizontal'}
           selectedKeys={[l]}

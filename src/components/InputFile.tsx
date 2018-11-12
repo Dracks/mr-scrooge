@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
+import * as React from 'react'; import { Component } from 'react';
 
 import { eventHandler } from '../app/Utils';
 
-class InputFile extends Component {
+class InputFile extends Component<any, any> {
+
     constructor(props){
         super(props);
-
-        this.onChange=this.onChange.bind(this);
+        
         this.state = { name: '' }
     }
 
