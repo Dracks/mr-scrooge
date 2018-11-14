@@ -9,9 +9,12 @@ import { Warning } from '../../components/dessign/messages';
 
 import Graph from './Graph';
 
+type Callback = ()=>void;
 
 class WrapGraph extends Component<any, any> {
-    private cancel;
+    private cancel: Callback;
+    private save: Callback;
+    private destroy: Callback;
 
     constructor(props){
         super(props)
@@ -20,22 +23,24 @@ class WrapGraph extends Component<any, any> {
             isEdit: props.edit || false,
             options: props.options,
         }
-        this.cancel = eventHandler(this._cancel.bind(this));
+        this.cancel = this._cancel.bind(this);
+        this.save = this._save.bind(this);
+        this.destroy = this._destroy.bind(this);
     }
     changeOptions(options){
         this.setState({options: options})
     }
     _cancel(){
         this.setState({
-            isEdit: false, 
+            isEdit: false,
             options: this.props.options
         });
     }
-    save(){
+    _save(){
         this.setState({isEdit: false});
         this.props.save(this.state.options);
     }
-    destroy(){
+    _destroy(){
         this._cancel();
         this.props.destroy(this.props.options);
     }

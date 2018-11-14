@@ -1,5 +1,6 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme'; import, { shallow, mount } from 'enzyme';
+import * as Enzyme from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
 import { Select, Input } from 'antd';
 
@@ -19,7 +20,7 @@ describe('[Utils/FormHelper]', ()=>{
             const mockCallback = jest.fn();
             wrapper = mount(<Subject callback={mockCallback} value={'initial'} />)
             //const instance = wrapper.instance();
-            
+
             const input = mount(wrapper.find(Input).getElement());
 
             expect(input.instance().input.value).toBe('initial')
@@ -39,8 +40,8 @@ describe('[Utils/FormHelper]', ()=>{
 
         it('Change Selection', ()=>{
             const mockCallback = jest.fn();
-            wrapper = mount(<Subject 
-                callback={mockCallback} 
+            wrapper = mount(<Subject
+                callback={mockCallback}
                 options={options}
                 />);
 
@@ -87,12 +88,12 @@ describe('[Utils/FormHelper]', ()=>{
             wrapper = mount(<Subject callback={mockCallback} options={options} value={[1,2,3]}/>);
 
             expect(wrapper.find(tagClass).length).toEqual(3);
-            
+
             wrapper.find(tagClass).at(1).find('.ant-select-selection__choice__remove').simulate('click');
             expect(mockCallback).toHaveBeenCalledWith([1,3], expect.anything())
             // Same problem as previous one, animation problem
             // expect(wrapper.find(tagClass).length).toEqual(2);
-            
+
         });
     });
 })
