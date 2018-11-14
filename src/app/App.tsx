@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import WithLoading from '../network/LoadingHoc';
+import { withLoading } from 'redux-api-rest-hocs';
 
 import CenteredLoading from '../components/Loading';
 import LoginPage from './Session/LoginPage';
@@ -35,7 +35,7 @@ const mapStateToProps = ({session})=>{
     return {session};
 }
 
-const AppLoading = WithLoading(App, CenteredLoading, 'session', 'fetchSession')
+const AppLoading = withLoading(App, CenteredLoading, 'session', 'fetchSession')
 
 
 export default withRouter(connect(mapStateToProps, {fetchSession})(AppLoading) as any);

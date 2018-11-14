@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { withLoading, MultiPropsLoadingHOC } from 'redux-api-rest-hocs';
 
 import { Layout } from 'antd';
 
@@ -8,8 +9,6 @@ import { Layout } from 'antd';
 import { logout } from './Session/Actions';
 import { fetchRawData } from './RawData/Actions'
 import { fetchTags } from './Tags/Actions'
-import WithLoading from '../network/LoadingHoc';
-import MultiPropsLoadingHOC from '../network/MultiPropsLoadingHOC';
 
 import Loading from '../components/Loading';
 import Header from '../components/Header';
@@ -42,8 +41,8 @@ const mapActionsToProps = (dispatch) => {
     }
 }
 
-const ContentsWithLoading = WithLoading(Contents, Loading, 'dataStatus', 'load');
-const ContentsWithData = connect(mapStateToProps, mapActionsToProps)(ContentsWithLoading)
+const ContentswithLoading = withLoading(Contents, Loading, 'dataStatus', 'load');
+const ContentsWithData = connect(mapStateToProps, mapActionsToProps)(ContentswithLoading)
 
 const ContentsWithRouter = withRouter(ContentsWithData as any)
 

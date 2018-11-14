@@ -1,4 +1,4 @@
-import { fetchAction, responseReloadAction } from '../../network/Actions';
+import { fetchAction, responseReloadAction } from 'redux-api-rest';
 import { updateRawData } from '../RawData/Actions';
 
 export const FETCH_IMPORT_STATUS = "IMPORT_STATUS_FETCH";
@@ -25,4 +25,9 @@ export const sendFile = (data, callback) => {
         method: 'POST', 
         body: data
     })
+}
+
+export const getStatusReport = (ids, callback) => {
+    let request = ids.rows.map((e)=>"ids[]="+e).join("&");
+    return fetchAction('/api/status-row/?'+request, callback)
 }

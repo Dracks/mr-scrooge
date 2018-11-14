@@ -6,7 +6,7 @@ import {
     deleteAction, 
     responseAction,
     whenComplete
-} from '../../../network/Actions'
+} from 'redux-api-rest'
 
 export const FILTERS_PARENT = "FILTERS/TAG"
 export const FETCH_FILTER_TYPES = "FILTER_TYPES_FETCH";

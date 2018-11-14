@@ -1,4 +1,4 @@
-import { fetchAction, responseReloadAction, saveAction, deleteAction } from '../../network/Actions';
+import { fetchAction, responseReloadAction, saveAction, deleteAction } from 'redux-api-rest';
 
 export const FETCH_GRAPHS = "GRAPH_FETCH";
 export const ADD_GRAPH = "GRAPH_ADD";
