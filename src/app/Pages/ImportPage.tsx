@@ -5,25 +5,25 @@ import { Link, Route, Switch } from 'react-router-dom';
 import { Menu } from 'antd';
 
 import { withLoading } from 'redux-api-rest-hocs';
-import { fetchStatus } from '../Import/Actions';
 import Loading from '../../components/Loading';
 import SiderPage from '../../components/SiderPage';
+import { fetchStatus } from '../Import/Actions';
 import { getPathElementName } from '../Utils';
 
 
-import WizardImport from '../Import/WizardImport';
+import { AddCircle, Err, Ok, Warning } from '../../components/dessign/icons';
 import StatusImport from '../Import/StatusImport';
-import { Warning, Ok, Err, AddCircle } from '../../components/dessign/icons';
+import WizardImport from '../Import/WizardImport';
 
 const CLASS_NAME={
+    'e': Err,
     'o': Ok,
     'w': Warning,
-    'e': Err
 }
 
 const ImportPage = ({match, status, location}) => {
     const basepath=match.url
-    const statusListLinks=status.map((e, index)=>{
+    const statusListLinks=status.map((e)=>{
         const Ic = CLASS_NAME[e.status]
         return (<Menu.Item key={e.id}>
                     <Link to={basepath+'/'+e.id} className="collection-item">
@@ -34,14 +34,14 @@ const ImportPage = ({match, status, location}) => {
                 </Menu.Item>
         )
     })
-    var l = getPathElementName(location, match);
+    const l = getPathElementName(location, match);
     return (<SiderPage
                 side={(
                     <Menu selectedKeys={[l]}>
                         <Menu.Item key='/wizard'>
-                            <Link to={basepath+'/wizard'} className="collection-item"> 
+                            <Link to={basepath+'/wizard'} className="collection-item">
                                 <AddCircle />
-                                Wizard new 
+                                Wizard new
                             </Link>
                         </Menu.Item>
                         {statusListLinks}
@@ -57,7 +57,7 @@ const ImportPage = ({match, status, location}) => {
                             component={StatusImport}/>
                     </Switch>
                 )} />
- 
+
     )
 }
 

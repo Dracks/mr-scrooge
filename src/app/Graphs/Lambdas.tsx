@@ -1,5 +1,6 @@
 import * as moment from 'moment'
 
+/* tslint:disable object-literal-sort-keys */
 export const getRangeFilter=(months, reference)=>{
     const start = moment(reference).subtract(months-1, 'months').startOf('month').toDate();
     const end = moment(reference).endOf('month').toDate();
@@ -12,7 +13,7 @@ export const groupLambdas = {
     day:()=>(e)=>e.date.getDate(),
     sign:()=>(e)=> e.value<0? "expenses":"income",
     tags: (tagsList)=>(e)=>{
-        var tags = e.tags;
+        const tags = e.tags;
         return tagsList.reduce((ac, {id, name})=>{
             if (!ac && tags.indexOf(id)>=0){
                 return name;
@@ -30,11 +31,11 @@ export const reduceLambdas = {
 }
 
 const customSort = (data)=>{
-    var hash = {};
+    const hash = {};
     data.forEach(({name}, k)=>{hash[name]=k+1});
     return (a,b)=>{
-        var v1= hash[a];
-        var v2= hash[b];
+        const v1= hash[a];
+        const v2= hash[b];
         if (!v1){
             return 1;
         } else if (!v2){

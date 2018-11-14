@@ -1,17 +1,17 @@
+import { Button, Form, Icon, Select, Upload} from 'antd';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom'
-import { Form, Button, Upload, Icon, Select} from 'antd';
 
-import { withLoading } from 'redux-api-rest-hocs';
-import { getOptions } from '../../components/Select';
-import Loading from '../../components/Loading';
+import { restChain } from 'redux-api-rest-hocs';
 import { Primary } from '../../components/dessign/buttons';
+import Loading from '../../components/Loading';
+import { getOptions } from '../../components/Select';
 
 import { eventHandler } from '../Utils';
 
 import { fetchImportKinds, sendFile } from "./Actions";
-
+/* tslint:disable object-literal-sort-keys */
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -54,6 +54,8 @@ const tailFormItemLayout = {
     },
   };
 
+/* tslint:enable */
+
 const FormItem = Form.Item;
 class WizardImportForm extends React.Component<any, any> {
     constructor(props){
@@ -62,29 +64,26 @@ class WizardImportForm extends React.Component<any, any> {
         this.state={fileList: null}
     }
 
-    sendFile(kind, file){
-        var formData = new FormData();
+    public sendFile(kind, file){
+        const formData = new FormData();
         formData.append('kind', kind);
         formData.append('file', file, file.name);
         this.props.sendFile(formData, ( data)=>{
             this.props.history.push('/import/'+data.id);
         });
     }
-    send(){
+    public send(){
         this.props.form.validateFields((err, values)=>{
             if (!err){
                 this.sendFile(values.kind, this.state.fileList[0])
             }
         })
     }
-    render (){
-        const listKinds = [{key:'', value:'Select'}].concat(this.props.acceptedKinds.map((e)=>{return {key:e, value:e}}))
+    public render (){
+        const listKinds = [{key:'', value:'Select'}].concat(this.props.acceptedKinds.map((e)=>({key:e, value:e})))
         const { getFieldDecorator } = this.props.form;
 
         const sfUploaProps = {
-            onRemove: () => {
-              this.setState({fileList: []});
-            },
             beforeUpload: (file) => {
               this.setState({
                 fileList: [file],
@@ -92,6 +91,9 @@ class WizardImportForm extends React.Component<any, any> {
               return false;
             },
             fileList: this.state.fileList,
+            onRemove: () => {
+              this.setState({fileList: []});
+            },
           };
 
         return (
@@ -100,7 +102,7 @@ class WizardImportForm extends React.Component<any, any> {
                 <FormItem
                     {...formItemLayout}
                     label="Select"
-                    hasFeedback
+                    hasFeedback={true}
                     >
                     {getFieldDecorator('kind', {
                         rules: [
@@ -118,10 +120,11 @@ class WizardImportForm extends React.Component<any, any> {
                     >
                     {getFieldDecorator('file', {
                         rules: [ {
-                        required: true, message: 'You need a file to import',
+                            message: 'You need a file to import',
+                            required: true,
                         }],
                     })(
-                        <Upload name="logo" 
+                        <Upload name="logo"
                             listType="picture"
                             {...sfUploaProps}>
                             <Button>
@@ -140,17 +143,23 @@ class WizardImportForm extends React.Component<any, any> {
     }
 }
 
-const f = Form.create()(WizardImportForm)
+const f = withRouter(Form.create()(WizardImportForm) as any)
 
 const mapStateToProps = ({acceptedKinds}) => {
     return { acceptedKinds }
 }
 
 const mapDispatchToProps = (dispatch) => {
-    return { 
-        sendFile:(data, callback)=>{dispatch(sendFile(data, callback))},
+    return {
         fetchImportKinds: ()=>{dispatch(fetchImportKinds())},
+        sendFile:(data, callback)=>{dispatch(sendFile(data, callback))},
     }
 }
-const WizardImportLoading = withLoading(withRouter(f as any), Loading, 'acceptedKinds', 'fetchImportKinds')
+
+const WizardImportLoading = restChain()
+    .setProperty('acceptedKinds')
+    .setInitialize('fetchImportKinds')
+    .withLoading(Loading)
+    .build(f) as any
+
 export default connect( mapStateToProps, mapDispatchToProps)(WizardImportLoading);

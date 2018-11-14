@@ -1,12 +1,12 @@
-import * as React from 'react';
 import { Alert } from 'antd';
+import * as React from 'react';
 
 const Warning = (props) =>(
     <Alert
     message={props.title}
     description={props.message}
     type="warning"
-    showIcon
+    showIcon={true}
   />
 )
 
@@ -16,7 +16,7 @@ const Error = (props) =>(
     message={props.title}
     description={props.message}
     type="error"
-    showIcon
+    showIcon={true}
   />
 )
 export { Warning, Error }

@@ -1,19 +1,19 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { withLoading, MultiPropsLoadingHOC } from 'redux-api-rest-hocs';
+import { MultiPropsLoadingHOC, withLoading } from 'redux-api-rest-hocs';
 
 import { Layout } from 'antd';
 
 
-import { logout } from './Session/Actions';
 import { fetchRawData } from './RawData/Actions'
+import { logout } from './Session/Actions';
 import { fetchTags } from './Tags/Actions'
 
-import Loading from '../components/Loading';
-import Header from '../components/Header';
-import Contents from './Contents';
 import Footer from '../components/Footer';
+import Header from '../components/Header';
+import Loading from '../components/Loading';
+import Contents from './Contents';
 
 const isLoading = MultiPropsLoadingHOC([
     'allData',

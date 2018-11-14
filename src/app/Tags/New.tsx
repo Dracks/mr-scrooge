@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import Form from './Form';
 import {saveTag} from './Actions';
+import Form from './Form';
 
 const New = (props) => {
     return (

@@ -9,7 +9,7 @@ export const fetchStatus = ()=>{
 }
 
 export const updateStatus = (callback)=>{
-    let r = [responseReloadAction(FETCH_IMPORT_STATUS)]
+    const r = [responseReloadAction(FETCH_IMPORT_STATUS)]
     if (callback){
         r.push(callback);
     }
@@ -21,13 +21,13 @@ export const fetchImportKinds = ()=>{
 }
 
 export const sendFile = (data, callback) => {
-    return fetchAction('/api/import/upload/', [updateRawData, (isLoading, data)=>!isLoading && data && updateStatus((isLoading)=>!isLoading && callback(data))], {
-        method: 'POST', 
-        body: data
+    return fetchAction('/api/import/upload/', [updateRawData, (isLoading, subdata)=>!isLoading && subdata && updateStatus((isLoading2)=>!isLoading2 && callback(subdata))], {
+        body: data,
+        method: 'POST',
     })
 }
 
 export const getStatusReport = (ids, callback) => {
-    let request = ids.rows.map((e)=>"ids[]="+e).join("&");
+    const request = ids.rows.map((e)=>"ids[]="+e).join("&");
     return fetchAction('/api/status-row/?'+request, callback)
 }

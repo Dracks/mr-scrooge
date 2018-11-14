@@ -1,10 +1,10 @@
-import * as React from 'react';
+import { Input, Select } from 'antd';
 import * as Enzyme from 'enzyme';
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
-import { Select, Input } from 'antd';
+import * as React from 'react';
 
-import { getInputOptions, getSelectOptions, getMultiSelectOptions } from './FormHelper';
+import { getInputOptions, getMultiSelectOptions, getSelectOptions } from './FormHelper';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -13,17 +13,17 @@ describe('[Utils/FormHelper]', ()=>{
     describe('Input text', ()=>{
         let Subject;
         beforeEach(()=>{
-            Subject = getInputOptions().input;
+            Subject = getInputOptions("", "").input;
         });
 
         it('Input text file', ()=>{
             const mockCallback = jest.fn();
             wrapper = mount(<Subject callback={mockCallback} value={'initial'} />)
-            //const instance = wrapper.instance();
+            // const instance = wrapper.instance();
 
             const input = mount(wrapper.find(Input).getElement());
 
-            expect(input.instance().input.value).toBe('initial')
+            expect((input.instance() as any).input.value).toBe('initial')
             input.simulate('change', {target: {value: 'abc'}});
             input.simulate('blur');
             expect(mockCallback).toHaveBeenCalledWith('abc');
@@ -34,8 +34,8 @@ describe('[Utils/FormHelper]', ()=>{
         let Subject;
         let options;
         beforeEach(()=>{
-            Subject = getSelectOptions().input;
-            options = [1,2,3].map((e)=>{return {key:e, value:e}})
+            Subject = getSelectOptions("", "", {}).input;
+            options = [1,2,3].map((e)=>({key:e, value:e}))
         });
 
         it('Change Selection', ()=>{
@@ -46,7 +46,7 @@ describe('[Utils/FormHelper]', ()=>{
                 />);
 
             expect(wrapper.find('label').length).toEqual(1);
-            var select = wrapper.find(Select);
+            const select = wrapper.find(Select);
 
             expect(select.length).toEqual(1);
             wrapper.find(Select).simulate('click')
@@ -61,8 +61,8 @@ describe('[Utils/FormHelper]', ()=>{
         let options;
         const tagClass = ".ant-select-selection__choice"
         beforeEach(()=>{
-            Subject = getMultiSelectOptions().input;
-            options = [1,2,3].map((e)=>{return {key:e, value:"option:"+e}})
+            Subject = getMultiSelectOptions("", "", {}).input;
+            options = [1,2,3].map((e)=>({key:e, value:"option:"+e}))
         });
 
         it('Change Selection', ()=>{
@@ -79,8 +79,8 @@ describe('[Utils/FormHelper]', ()=>{
             wrapper.find(".ant-select-dropdown-menu-item").at(1).simulate("click")
             expect(mockCallback).toHaveBeenCalledWith([1,2], expect.anything())
             // Some kind of problems with animations I supouse
-            //expect(wrapper.find(tagClass).length).toEqual(2);
-            //expect(wrapper.find(tagClass).last().text()).toContain('option:2');
+            // expect(wrapper.find(tagClass).length).toEqual(2);
+            // expect(wrapper.find(tagClass).last().text()).toContain('option:2');
         });
 
         it('Remove option', ()=>{

@@ -1,11 +1,11 @@
-import { groupLambdas, sortLambdas, getRangeFilter } from './Lambdas';
 import * as moment from 'moment';
+import { getRangeFilter, groupLambdas, sortLambdas } from './Lambdas';
 
 describe("[Lambdas]", ()=>{
 
     describe("Group Lambdas", ()=>{
-        var data=[];
-        var subject = groupLambdas;
+        let data=[];
+        const subject = groupLambdas;
 
         beforeEach(()=>{
             data = [
@@ -18,25 +18,25 @@ describe("[Lambdas]", ()=>{
         });
 
         it("Group by tags", ()=>{
-            var tags = [
+            const tags = [
                 {id: 1, name: "Dr Who"},
                 {id: 2, name: "Farscape"},
                 {id: 3, name: "Firefly"}
             ]
 
-            var result = data.map(subject.tags(tags))
+            const result = data.map(subject.tags(tags))
 
             expect(result).toEqual(['Dr Who', 'Farscape', 'Others', 'Dr Who', 'Firefly']);
         });
     });
 
     describe('Range filter', ()=>{
-        var subject
+        let subject
         const check = (date, value)=>{
             expect(subject({date: moment(date).toDate()})).toBe(value)
         }
         it('One month', ()=>{
-            var ref = moment("2016-07-01").toDate()
+            const ref = moment("2016-07-01").toDate()
             subject = getRangeFilter(1, ref);
             check("2016-07-31",true);
             check("2016-07-01",true);
@@ -45,7 +45,7 @@ describe("[Lambdas]", ()=>{
         })
 
         it('three month', ()=>{
-            var ref = moment("2016-07-01").toDate()
+            const ref = moment("2016-07-01").toDate()
             subject = getRangeFilter(3, ref);
             check("2016-07-31",true);
             check("2016-05-01",true);
@@ -55,18 +55,18 @@ describe("[Lambdas]", ()=>{
     });
 
     describe("Sort Lambdas", ()=>{
-        var subject = sortLambdas;
-        const values_to_sort = ["pum", "ping", "pam"].map(e=>{return {name:e}})
+        const subject = sortLambdas;
+        const valuesToSort = ["pum", "ping", "pam"].map(e=>({name:e}))
 
         it("sort customized with all the same", ()=>{
-            var data = ["ping", "pam", "pum"]
-            var result = data.sort(subject.tags(values_to_sort))
+            const data = ["ping", "pam", "pum"]
+            const result = data.sort(subject.tags(valuesToSort))
             expect(result).toEqual(["pum", "ping", "pam"])
         });
 
         it("sort customized with others", ()=>{
-            var data = ["ping", "others", "pam", "pum"]
-            var result = data.sort(subject.tags(values_to_sort))
+            const data = ["ping", "others", "pam", "pum"]
+            const result = data.sort(subject.tags(valuesToSort))
             expect(result).toEqual(["pum", "ping", "pam", "others"])
         });
     })

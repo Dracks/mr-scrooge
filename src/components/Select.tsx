@@ -1,5 +1,5 @@
-import * as React from 'react'
 import { Select } from 'antd'
+import * as React from 'react'
 
 import { eventHandler } from '../app/Utils';
 
@@ -8,23 +8,23 @@ const renderAntdOption = (key, value)=>{
     return (<Option key={key} value={key}>{value}</Option>)
 }
 
-export const getOptions = (listOptions) => 
+export const getOptions = (listOptions) =>
     listOptions.map((e)=>renderAntdOption(e.key, e.value))
 
 
 const SelectComponent = (props) => {
     const options = getOptions(props.options);
     // to share the value with the same type, we create a hash to transform the value
-    const hash = {} 
+    const hash = {}
     props.options.forEach(element => {
         hash[element.key]= element.key
     });
 
-    let newProps = {
-        value: props.value,
-        style: props.style,
-        placeholder: props.placeholder ? props.placeholder.value : undefined,
+    const newProps = {
         onChange: undefined,
+        placeholder: props.placeholder ? props.placeholder.value : undefined,
+        style: props.style,
+        value: props.value,
     };
     if (props.onChangeFn){
         newProps.onChange=(e)=> {
@@ -39,6 +39,7 @@ const SelectComponent = (props) => {
 }
 
 export const MyMultipleSelect = (props)=>{
+
     let {options, placeholder, onChangeFn, value, ...newProps } = props
     options = getOptions(options);
 

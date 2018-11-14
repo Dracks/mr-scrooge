@@ -1,10 +1,10 @@
-import * as React from 'react';
-import * as Enzyme from 'enzyme'; 
-import { shallow, mount } from 'enzyme';
+import * as Enzyme from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
+import * as React from 'react';
 
 import Form from './Form';
-import { getSelectOptions, getOption } from './FormHelper';
+import { getOption, getSelectOptions } from './FormHelper';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -28,7 +28,7 @@ describe('[Utils/Form]', ()=>{
             const mockCallback = jest.fn();
             wrapper = shallow(<Form config={initial} onChange={mockCallback} options={{something:'else'}}/>);
             const instance = wrapper.instance();
-    
+
             instance.changeProperty('component', 'line')
             expect(mockCallback).toHaveBeenCalledWith({component:'line', something:'else'})
         });
@@ -37,7 +37,7 @@ describe('[Utils/Form]', ()=>{
             const mockCallback = jest.fn();
             wrapper = shallow(<Form config={initial} onChange={mockCallback} options={{component:'bar'}}/>);
             const instance = wrapper.instance();
-    
+
             instance.changeProperty('component', 'line')
             expect(mockCallback).toHaveBeenCalledWith({component:'line'})
         });
@@ -46,15 +46,13 @@ describe('[Utils/Form]', ()=>{
     describe('Initialize...', ()=>{
         it('testing initial configuration/Nothing selected', ()=>{
             wrapper = mount(<Form config={initial}/>);
-            const instance = wrapper.instance();
-            
+
             expect(wrapper.find('FormSelectOption').length).toEqual(1)
         });
 
         it('testingconfiguration line selected ', ()=>{
             wrapper = mount(<Form config={initial} options={{component: 'line'}} />);
-            const instance = wrapper.instance();
-            
+
             expect(wrapper.find('FormSelectOption').length).toEqual(3)
         });
     });

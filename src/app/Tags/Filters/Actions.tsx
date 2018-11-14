@@ -1,10 +1,10 @@
 import { 
-    fetchAction, 
     compose, 
-    responseReloadAction, 
-    saveAction, 
     deleteAction, 
-    responseAction,
+    fetchAction, 
+    responseAction, 
+    responseReloadAction, 
+    saveAction,
     whenComplete
 } from 'redux-api-rest'
 

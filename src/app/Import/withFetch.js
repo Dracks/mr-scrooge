@@ -5,8 +5,6 @@ export const withFetch = (Component, url, property) => {
     class ConnectionHocEmbed extends React.PureComponent {
         constructor(props){
             super(props);
-            // Això requereix un dispatch
-            console.log(this.props.dispatch);
             this.fetch = ()=>this.props.dispatch(fetchAction(url, this.callback.bind(this)))
         }
 
@@ -21,8 +19,8 @@ export const withFetch = (Component, url, property) => {
             } else {
                 let newState = {
                     [property]:  {
+                        data: data,
                         isLoading: false,
-                        data: data
                     }
                 }
                 this.setState(newState)

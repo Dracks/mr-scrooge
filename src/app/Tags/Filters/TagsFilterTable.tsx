@@ -3,9 +3,8 @@ import { Component } from 'react';
 
 import { withLoading } from 'redux-api-rest-hocs';
 
-import { eventHandler } from '../../Utils'
-import ConstantsCss from '../../Constants-CSS';
 import Loading from '../../../components/Loading';
+import { eventHandler } from '../../Utils'
 
 import { Primary } from '../../../components/dessign/buttons';
 import { Add } from '../../../components/dessign/icons';
@@ -21,30 +20,30 @@ class TagsFilterTable extends Component<any, any> {
         }
     }
 
-    componentWillReceiveProps(newProps){
+    public componentWillReceiveProps(newProps){
         if (this.props !== newProps ){
             this.setState({new:null});
         }
     }
 
-    create(){
-        var newData = {tag: this.props.tag.id}
+    public create(){
+        const newData = {tag: this.props.tag.id}
         this.setState({new: newData})
     }
-    render() {
-        let { types, filtersList, saveFilter, deleteFilter } = this.props;
-        let filterProps = { types, saveFilter, deleteFilter }
-        
-        let rowsList = filtersList
-            .map((e, index)=><FilterRow 
-                {...filterProps} 
-                key={index} 
+    public render() {
+        const { types, filtersList, saveFilter, deleteFilter } = this.props;
+        const filterProps = { types, saveFilter, deleteFilter }
+
+        const rowsList = filtersList
+            .map((e, index)=><FilterRow
+                {...filterProps}
+                key={index}
                 filter={e}/>)
-        
+
         let add;
         if (this.state.new === null){
             add = <tr>
-                <td colSpan={2}></td>
+                <td colSpan={2}/>
                 <td>
                     <Primary shape="circle" onClick={eventHandler(this.create)}><Add /></Primary>
                 </td>
@@ -54,14 +53,14 @@ class TagsFilterTable extends Component<any, any> {
                 key="new"
                 filter={this.state.new}
                 {...{
-                    types,
+                    deleteFilter:()=>this.setState({new:null}),
                     saveFilter: (f)=>{this.setState(Object.assign({},f)); saveFilter(f)},
-                    deleteFilter:()=>this.setState({new:null})
+                    types,
                 }}
                 />
         }
         return (
-            <table className={ConstantsCss.Table.Striped} style={{width:"100%"}}>
+            <table style={{width:"100%"}}>
                 <thead>
                     <tr>
                         <th>type</th>

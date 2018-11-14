@@ -1,13 +1,13 @@
 import * as React from 'react';
 
-import { Form, Icon, Input, Button, Row, Col } from 'antd';
+import { Button, Col, Form, Icon, Input, Row } from 'antd';
 
 import {eventHandler} from '../Utils';
 
 const FormItem = Form.Item;
 
 class NormalLoginForm extends React.Component<any> {
-  handleSubmit = eventHandler((e) => {
+  public handleSubmit = eventHandler((e) => {
     this.props.form.validateFields((err, values) => {
         if (!err) {
             this.props.login(values);
@@ -15,7 +15,7 @@ class NormalLoginForm extends React.Component<any> {
     });
   })
 
-  render() {
+  public render() {
     const { getFieldDecorator } = this.props.form;
     return (
         <Row type="flex" justify="center" align="middle">

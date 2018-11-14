@@ -1,16 +1,18 @@
 import * as React from 'react';
 
-import { groupLambdas, reduceLambdas, sortLambdas, colorizeLambdas, getRangeFilter } from './Lambdas';
 import { GraphComponentHash } from './Configs';
+import { colorizeLambdas, getRangeFilter, groupLambdas, reduceLambdas, sortLambdas } from './Lambdas';
 
 import DataManager from './DataManage';
 
+/* tslint:disable object-literal-sort-keys */
 const hashDateRange = {
     month: 1,
     three: 3,
     six: 6,
     year: 12
 }
+/* tslint:enable */
 
 const Graph = (props)=> {
     const {
@@ -27,7 +29,7 @@ const Graph = (props)=> {
             return e.tags.indexOf(tag)!== -1;
         })
     }
-    var helper = new DataManager(data.map(e=>{
+    let helper = new DataManager(data.map(e=>{
         return {date: e.date, value: e.value, tags: e.tags};
     })).groupForGraph(groupLambdas[group.name](group.value), groupLambdas[horizontal.name](horizontal.value))
         .reduceGroups(reduceLambdas.absSum)

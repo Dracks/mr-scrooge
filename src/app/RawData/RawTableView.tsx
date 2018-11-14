@@ -1,22 +1,22 @@
-import * as React from 'react';
-import { connect } from 'react-redux';
 import * as moment from 'moment';
+import * as React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
+import { connect } from 'react-redux';
 
-import { removeTag, addTag } from './Actions';
-import TagCell from './TagCell';
-import TableView from '../../components/TableView';
 import InfiniteScrollHOC from '../../components/list/InfiniteScrollHOC';
+import TableView from '../../components/TableView';
+import { addTag, removeTag } from './Actions';
+import TagCell from './TagCell';
 
 
-const RawTableView = ({header, allData, allTags, removeTag, addTag, loadMore, hasMore}) =>{
-    let data =  allData.map(({id, kind, movement_name, tags, value, date})=>{
+const RawTableView = ({header, allData, allTags, removeTagFn, addTagFn, loadMore, hasMore}) =>{
+    const data =  allData.map(({id, kind, movement_name, tags, value, date})=>{
         return {
-            kind, 
-            movement_name,  
+            date: moment(date).format("DD-MM-YYYY hh:mm:ss"),
+            kind,
+            movement_name,
+            tags: <TagCell rds={id} {...{tags, allTags, addTag: addTagFn, removeTag: removeTagFn}}/>,
             value,
-            tags: <TagCell rds={id} {...{tags, allTags, addTag, removeTag}}/>,
-            date: moment(date).format("DD-MM-YYYY hh:mm:ss")
         }
     })
     return (
@@ -24,7 +24,7 @@ const RawTableView = ({header, allData, allTags, removeTag, addTag, loadMore, ha
             loadMore={loadMore}
             pageStart={0}
             hasMore={hasMore}>
-            <TableView header={header} data={data} />
+            <TableView data={data} header={header}/>
         </InfiniteScroll>
     )
 }
@@ -40,8 +40,8 @@ const mapStateToProps = ({allData, tags})=>{
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        addTag: (data, tag)=>{dispatch(addTag(data, tag))},
-        removeTag: (data, tag)=>{dispatch(removeTag(data, tag))},
+        addTagFn: (data, tag)=>{dispatch(addTag(data, tag))},
+        removeTagFn: (data, tag)=>{dispatch(removeTag(data, tag))},
     }
 }
 

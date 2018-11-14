@@ -1,9 +1,14 @@
 
 import DataManage from './DataManage';
-import { sortLambdas, groupLambdas, reduceLambdas } from './Lambdas';
+import {
+    groupLambdas,
+    reduceLambdas,
+    sortLambdas,
+} from './Lambdas';
 
+/* tslint:disable  object-literal-sort-keys */
 describe("[DataManage]", ()=>{
-    var subject;
+    let subject;
 
     describe(" Raw Data ", ()=>{
         beforeEach(()=>{
@@ -14,21 +19,21 @@ describe("[DataManage]", ()=>{
                 { date:new Date("2017-07-04"), value: 14 }
             ]);
         });
-    
+
         it("test group by lambda", ()=>{
-            var ret = subject.groupByLambda((e)=>e.date.getFullYear()).get()
+            const ret = subject.groupByLambda((e)=>e.date.getFullYear()).get()
             expect(Object.keys(ret)).toEqual(["2017", "2018"]);
             expect(ret['2017'].length).toBe(3);
         });
-    
+
         it("test group Month And Days", ()=>{
-            var ret = subject.groupForGraph(groupLambdas.month(), groupLambdas.day()).get();
+            const ret = subject.groupForGraph(groupLambdas.month(), groupLambdas.day()).get();
             expect(Object.keys(ret)).toEqual(["2017-07", "2017-02", "2018-01"])
             expect(Object.keys(ret["2017-07"])).toEqual(["3", "4"])
         });
 
         it("test Mount data for chartjs", ()=>{
-            var ret = subject.groupForGraph(groupLambdas.month(), groupLambdas.day())
+            const ret = subject.groupForGraph(groupLambdas.month(), groupLambdas.day())
                         .reduceGroups(reduceLambdas.sum)
                         .toChartJs2Axis(sortLambdas.day())
                         .get()
@@ -48,7 +53,7 @@ describe("[DataManage]", ()=>{
         });
 
         it("test sum groups", ()=>{
-            var ret = subject.reduceGroups(reduceLambdas.sum).get();
+            const ret = subject.reduceGroups(reduceLambdas.sum).get();
             expect(ret).toEqual({"pepe":11, "hello":{"world": 63}});
         })
     });

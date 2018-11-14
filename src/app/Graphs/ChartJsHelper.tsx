@@ -10,9 +10,9 @@ const COLORS_LIST = [
 ];
 
 const PREPROCESSED_COLORS_LIST = COLORS_LIST.map((color) => {
-    var red = parseInt(color.substr(1, 2), 16);
-    var green = parseInt(color.substr(3, 2), 16);
-    var blue = parseInt(color.substr(5, 2), 16);
+    const red = parseInt(color.substr(1, 2), 16);
+    const green = parseInt(color.substr(3, 2), 16);
+    const blue = parseInt(color.substr(5, 2), 16);
     return "rgba(" + red + "," + green + "," + blue + ",";
 });
 
@@ -20,35 +20,36 @@ class ChartJsHelper {
     constructor(private datasets, private labels){
     }
 
-    acumulate(){
+    public acumulate(){
         this.datasets.forEach(e=>{
-            var acum = 0;
-            e.data = e.data.map(e=>{
-                acum += e;
+            let acum = 0;
+            e.data = e.data.map(e1=>{
+                acum += e1;
                 return acum;
             })
         });
         return this;
     }
 
-    applyColors(colorize){
-        var colorsKeys = Object.keys(colorize(""));
+    public applyColors(colorize){
+        const colorsKeys = Object.keys(colorize(""));
         if (this.datasets.length<20){
-            this.datasets.forEach(function (e, k) {
-                var colors = colorize(PREPROCESSED_COLORS_LIST[k])
-                colorsKeys.forEach(function (field) {
+            this.datasets.forEach((e, k) => {
+                const colors = colorize(PREPROCESSED_COLORS_LIST[k])
+                colorsKeys.forEach((field) => {
                     if (!e[field]) {
                         e[field] = colors[field]
                     }
                 });
             });
         } else {
+            // tslint:disable-next-line
             console.error("List of groups bigger than number of colors")
         }
         return this;
     }
 
-    get(){
+    public get(){
         return {datasets: this.datasets, labels: this.labels}
     }
 }

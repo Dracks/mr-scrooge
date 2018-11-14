@@ -10,19 +10,19 @@ export default (Wrapped, field, size=20)=>{
             this.loadMore = this.loadMore.bind(this);
         }
 
-        loadMore(page){
+        public loadMore(page){
             this.setState({
                 currentPage:page
             })
         }
 
-        render(){
-            let totalSize = this.state.currentPage*size;
-            let {[field]:oldList, ...props} = this.props;
-            let newProps = {
+        public render(){
+            const totalSize = this.state.currentPage*size;
+            const {[field]:oldList, ...props} = this.props;
+            const newProps = {
                 [field]: oldList.slice(0, totalSize),
+                hasMore: oldList.length>totalSize,
                 loadMore: this.loadMore,
-                hasMore: oldList.length>totalSize
             }
             return <Wrapped {...props} {...newProps}/>
         }

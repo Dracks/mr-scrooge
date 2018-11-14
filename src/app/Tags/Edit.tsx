@@ -1,15 +1,16 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import {extractData, MultiPropsLoadingHOC } from 'redux-api-rest-hocs';
+import { MultiPropsLoadingHOC, restChain } from 'redux-api-rest-hocs';
 
 import { WithNotFound} from '../../components/NotFound';
-import Form from './Form';
-import {saveTag, applyFilters, destroyTag} from './Actions';
+import {applyFilters, destroyTag, saveTag} from './Actions';
+import { deleteFilter, fetchFilters, fetchFiltersTypes, saveFilter } from "./Filters/Actions";
 import TagsFilterTable from './Filters/TagsFilterTable';
-import { fetchFiltersTypes, fetchFilters, saveFilter, deleteFilter } from "./Filters/Actions";
+import Form from './Form';
 
 const CompleteForm = (props) => {
-    let tagProps = {
+    /* tslint:disable object-literal-sort-keys */
+    const tagProps = {
         value:props.value,
         saveTag:props.saveTag,
         destroyTag:props.destroyTag,
@@ -17,7 +18,7 @@ const CompleteForm = (props) => {
         hashTags:props.hashTags,
         tags:props.tags,
     }
-    let filterProps = {
+    const filterProps = {
         tag:props.value,
         types:props.types,
         filtersList: props.filtersList,
@@ -26,6 +27,7 @@ const CompleteForm = (props) => {
         saveFilter: props.saveFilter,
         deleteFilter: props.deleteFilter,
     }
+    /* tslint:enable */
     return (
         <div>
             <h2>Edit {props.value.name}</h2>
@@ -39,24 +41,29 @@ const NotFoundForm = WithNotFound(CompleteForm, 'value');
 
 const isLoadingFilter = MultiPropsLoadingHOC(['filtersList', 'filterTypes']);
 
+const typesExtract = restChain().setProperty('types').build
+const filtersListExtract = restChain().setProperty('filtersList').build
+
 const mapStateToProps = ({tags, hashTags, filterTypes, tagsFilters}, {match}) => {
-    var id=parseInt(match.params.id, 10)
-    var l=tags.data.filter((e)=> e.id===id)
-    var tag = l[0]
-    var filtersList = tagsFilters[tag.id]
+    const id=parseInt(match.params.id, 10)
+    const l=tags.data.filter((e)=> e.id===id)
+    const tag = l[0]
+    const filtersList = tagsFilters[tag.id]
+    /* tslint:disable object-literal-sort-keys */
     return {
         tags: tags.data,
         hashTags,
         value: tag,
-        types: extractData(filterTypes),
-        filtersList: extractData(filtersList),
+        types: filterTypes,
+        filtersList,
         isLoading: isLoadingFilter({filtersList, filterTypes})
     }
+    /* tslint:enable */
 }
 
-export default connect(mapStateToProps, (dispatch)=>({
-    saveTag: (tag)=>dispatch(saveTag(tag)),
+const mapDispatchToProps = (dispatch)=>({
     applyFilters: (tag) => dispatch(applyFilters(tag)),
+    deleteFilter: (filter)=>dispatch(deleteFilter(filter)),
     destroyTag: (tag, onDelete)=>dispatch(destroyTag(tag, onDelete)),
     loadFilters: ({types, tag})=>{
         if (!types){
@@ -65,5 +72,7 @@ export default connect(mapStateToProps, (dispatch)=>({
         dispatch(fetchFilters(tag))
     },
     saveFilter: (filter)=>dispatch(saveFilter(filter)),
-    deleteFilter: (filter)=>dispatch(deleteFilter(filter))
-}))(NotFoundForm)
+    saveTag: (tag)=>dispatch(saveTag(tag)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(filtersListExtract(typesExtract(NotFoundForm)) as any)

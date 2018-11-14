@@ -11,12 +11,12 @@ class MessageComponent extends Component<any, any>{
         props.register(this.setData);
     }
 
-    setData(className, title, body, time) {
+    public setData(className, title, body, time) {
         this.setState({
+            body,
+            className,
             show: true,
-            className: className,
-            title: title,
-            body: body
+            title,
         })
         if (this.previousTimer) {
             clearTimeout(this.previousTimer);
@@ -30,7 +30,7 @@ class MessageComponent extends Component<any, any>{
 
         }
     }
-    render() {
+    public render() {
         if (this.state.show) {
             const { className, title, body } = this.state;
             return (

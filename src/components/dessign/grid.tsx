@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { Col } from 'antd';
+import * as React from 'react';
 
 
 const getCol = (span) => (children, props?) => (

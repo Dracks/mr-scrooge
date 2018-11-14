@@ -1,8 +1,8 @@
-import { 
+import {
     fetchAction,
+    jsonHeaders,
     responseReloadAction,
-    whenComplete,
-    jsonHeaders
+    whenComplete
 } from 'redux-api-rest'
 
 export const FETCH_RAW_DATA = "RAW_DATA_FETCH";
@@ -17,7 +17,7 @@ export const updateRawData = ()=> {
 }
 
 export const addTag = (rds, tag)=>{
-    return fetchAction('/api/raw-data/'+rds+'/link/', [whenComplete(updateRawData), console.log], {
+    return fetchAction('/api/raw-data/'+rds+'/link/', [ whenComplete(updateRawData) ] as any, {
         body: JSON.stringify({tag}),
         headers: jsonHeaders(),
         method: "POST"

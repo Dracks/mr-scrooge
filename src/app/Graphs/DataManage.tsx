@@ -1,10 +1,10 @@
 import ChartJsHelper from './ChartJsHelper';
 
 const getGroupByLambda = (data, lambda)=>{
-    var r = {}
+    const r = {}
     data.forEach(e=>{
-        let key = lambda(e);
-        var group = r[key];
+        const key = lambda(e);
+        let group = r[key];
         if (!group){
             group = r[key] = [];
         }
@@ -16,67 +16,66 @@ const getGroupByLambda = (data, lambda)=>{
 class DataManage {
     constructor(private data){}
 
-    get(){
+    public get(){
         return this.data;
     }
 
-    groupByLambda(lambda){
+    public groupByLambda(lambda){
         this.data = getGroupByLambda(this.data, lambda);
         return this;
     }
 
-    groupForGraph(firstLambda, secondLambda){
-        var firstGroup = getGroupByLambda(this.data, firstLambda);
+    public groupForGraph(firstLambda, secondLambda){
+        const firstGroup = getGroupByLambda(this.data, firstLambda);
         Object.keys(firstGroup).forEach((key)=>{
-            let values = firstGroup[key];
+            const values = firstGroup[key];
             firstGroup[key] = getGroupByLambda(values, secondLambda);
         });
         this.data = firstGroup;
         return this
     }
 
-    reduceGroups(callback){
-        var newData = {}
-        var data = this.data;
-        Object.keys(data).forEach(key_first => {
-            var subGroup = data[key_first];
+    public reduceGroups(callback){
+        const newData = {}
+        const data = this.data;
+        Object.keys(data).forEach(keyFirst => {
+            const subGroup = data[keyFirst];
             if (subGroup instanceof Array){
-                newData[key_first] = callback(subGroup);
+                newData[keyFirst] = callback(subGroup);
             } else {
-                newData[key_first] = new DataManage(subGroup).reduceGroups(callback).get();
+                newData[keyFirst] = new DataManage(subGroup).reduceGroups(callback).get();
             }
         });
         this.data = newData;
         return this;
     }
 
-    toChartJs2Axis(sort_lambda){
-        var labels = []
-        let data = this.data;
-        Object.keys(data).forEach((key_first)=>{
-            Object.keys(data[key_first]).forEach(key=>{
+    public toChartJs2Axis(sortLambda){
+        let labels = []
+        const data = this.data;
+        Object.keys(data).forEach((keyFirst)=>{
+            Object.keys(data[keyFirst]).forEach(key=>{
                 if (labels.indexOf(key)===-1){
                     labels.push(key);
                 }
             });
         });
-        
-        labels = labels.sort(sort_lambda);
-        var datasets = Object.keys(data).map((key)=>{
-            var singleData = data[key]
-            var obj = {
-                label: key,
+
+        labels = labels.sort(sortLambda);
+        const datasets = Object.keys(data).map((key)=>{
+            const singleData = data[key]
+            return {
                 data: labels.map(k=>{
-                    let v = singleData[k];
+                    const v = singleData[k];
                     if (v){
                         return v;
                     } else {
                         return 0;
                     }
-                })
-                    
+                }),
+                label: key,
+
             }
-            return obj;
         });
         return new ChartJsHelper(datasets, labels);
     }

@@ -2,9 +2,9 @@ import * as React from 'react';
 
 import { MyMultipleSelect } from '../../components/Select';
 
-let applyDifference = (()=>{
+const applyDifference = (()=>{
     const apply=(first, second, lambda)=>{
-        let difference = first.filter((e)=>second.indexOf(e)===-1)
+        const difference = first.filter((e)=>second.indexOf(e)===-1)
         difference.forEach(lambda)
     }
 
@@ -15,8 +15,8 @@ let applyDifference = (()=>{
 })()
 const TagCell = ({tags, rds, allTags, removeTag, addTag})=>{
     
-    var listSelect = allTags
-        .map((e)=>{return {key: e.id, value: e.name}})
+    const listSelect = allTags
+        .map((e)=>({key: e.id, value: e.name}))
     const onChange = (values)=>{
         applyDifference(values, tags, (e)=>{
             addTag(rds, e)

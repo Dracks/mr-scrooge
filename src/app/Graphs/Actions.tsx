@@ -1,4 +1,9 @@
-import { fetchAction, responseReloadAction, saveAction, deleteAction } from 'redux-api-rest';
+import {
+    deleteAction,
+    fetchAction,
+    responseReloadAction,
+    saveAction,
+} from 'redux-api-rest';
 
 export const FETCH_GRAPHS = "GRAPH_FETCH";
 export const ADD_GRAPH = "GRAPH_ADD";
@@ -27,8 +32,8 @@ export const deleteGraph= (data)=>{
         return deleteAction('/api/graph/:id/', (isLoading)=>!isLoading && updateGraphs(), data)
     } else {
         return {
+            payload: data,
             type: REMOVE_GRAPH,
-            payload: data
         }
     }
 }

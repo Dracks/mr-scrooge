@@ -1,13 +1,13 @@
+import { Menu } from 'antd';
 import * as React from 'react'
 import { Link } from 'react-router-dom';
-import { Menu } from 'antd';
 import ResponsiveNavDefault from '../components/ResponsiveNav';
 
 import ResizableHOC from '../utils/responsive/HOC';
 
 const ResponsiveNav = ResizableHOC(ResponsiveNavDefault);
 
-//{ mobileVersion, activeLinkKey, onLinkClick, className }
+// { mobileVersion, activeLinkKey, onLinkClick, className }
 const contents = (logout) => ()=>{
     return [
             (
@@ -49,7 +49,7 @@ const mobile = (l, data) => ()=>{
             mode={'horizontal'}
             selectedKeys={[l]}
             >
-            <Menu.SubMenu 
+            <Menu.SubMenu
                 title={<span>Menu</span>}>
                 {data()}
             </Menu.SubMenu>
@@ -57,12 +57,12 @@ const mobile = (l, data) => ()=>{
     )
 }
 export default ({location, logout})=>{
-    var l = location.pathname
-    var last_path = l.indexOf("/",2)
-    if (last_path) {
-        l = l.substr(0, last_path)
+    let l = location.pathname
+    const lastPath = l.indexOf("/",2)
+    if (lastPath) {
+        l = l.substr(0, lastPath)
     }
-    var c = contents(logout)
+    const c = contents(logout)
     return (<ResponsiveNav
         menuMarkup={custom(l, c)}
         menuMarkupMobile={mobile(l, c)}

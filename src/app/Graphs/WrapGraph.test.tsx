@@ -1,15 +1,16 @@
-import * as React from 'react';
 import * as Enzyme from 'enzyme';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
+import * as React from 'react';
 
 import Subject from './WrapGraph';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-const mockClick = {preventDefault:()=>{}};
+const mockClick = {preventDefault:()=>("")};
 const changedOptions = {id:1, "Tv show": "Dr Who"};
 const defaultOptions = {id: 1}
+const packer = (e)=>e
 
 describe('[Graphs/WrapGraph]', ()=>{
     let wrapper;
@@ -18,10 +19,10 @@ describe('[Graphs/WrapGraph]', ()=>{
     let mockDestroy;
 
     const instantiate = (edit)=>{
-        wrapper = shallow(<Subject 
-            data={[]} 
-            packer={(e)=>e} 
-            options={defaultOptions} 
+        wrapper = shallow(<Subject
+            data={[]}
+            packer={packer}
+            options={defaultOptions}
             save={mockSave}
             destroy={mockDestroy}
             edit={edit}/>);
@@ -56,7 +57,7 @@ describe('[Graphs/WrapGraph]', ()=>{
 
             expect(wrapper.find({id:'edit'}).length).toEqual(1);
             wrapper.find({id:'edit'}).simulate('click', mockClick);
-            
+
             checkIsEditing()
         });
 
@@ -69,7 +70,7 @@ describe('[Graphs/WrapGraph]', ()=>{
 
         it('check editing save', ()=>{
             executeAction({id:"save"});
-            
+
             expect(instance.state.options).toEqual(changedOptions);
             expect(instance.state.isEdit).toEqual(false);
             expect(mockSave).toHaveBeenCalledWith(changedOptions);
@@ -77,7 +78,7 @@ describe('[Graphs/WrapGraph]', ()=>{
 
         it('check editing delete', ()=>{
             executeAction({id: 'delete'});
-            
+
             expect(instance.state.options).toEqual(defaultOptions);
             expect(instance.state.isEdit).toEqual(false);
             expect(mockDestroy).toHaveBeenCalledWith(defaultOptions);

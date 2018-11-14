@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import RawDataPage from './Pages/RawDataPage';
 import GraphReportPage from './Pages/GraphReportPage';
-import TagPage from './Pages/TagPage';
 import ImportPage from './Pages/ImportPage';
+import RawDataPage from './Pages/RawDataPage';
+import TagPage from './Pages/TagPage';
 
 
 const Contents = () => {
@@ -13,7 +13,7 @@ const Contents = () => {
         <Switch>
             <Route
                 path="/"
-                exact
+                exact={true}
                 component={GraphReportPage} />
             <Route
                 path="/raw-data"

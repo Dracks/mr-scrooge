@@ -13,7 +13,7 @@ describe('[Utils]', ()=>{
             subject = getPathElementName
         })
         it ('root element', ()=>{
-            let data = subject(mockLocation('/Dr Who'), mockMatch('/'));
+            const data = subject(mockLocation('/Dr Who'), mockMatch('/'));
             expect(data).toEqual('Dr Who')
         })
     })

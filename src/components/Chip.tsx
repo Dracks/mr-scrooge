@@ -2,7 +2,7 @@ import * as React from 'react';
 import { eventHandler } from '../app/Utils';
 
 const Chip = (props) => {
-    let contents = []
+    const contents = []
     contents.push(props.name)
     if (props.onClick){
         contents.push(

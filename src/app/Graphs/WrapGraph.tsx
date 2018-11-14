@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Component } from 'react';
 
+import { Danger, Normal, Primary } from '../../components/dessign/buttons';
+import { Cancel, Delete, Edit, Save } from '../../components/dessign/icons';
+import { Warning } from '../../components/dessign/messages';
 import Form from '../../utils/Form';
 import { eventHandler } from '../Utils';
-import { Save, Delete, Edit, Cancel } from '../../components/dessign/icons';
-import { Normal, Primary, Danger } from '../../components/dessign/buttons';
-import { Warning } from '../../components/dessign/messages';
 
 import Graph from './Graph';
 
@@ -27,25 +27,25 @@ class WrapGraph extends Component<any, any> {
         this.save = this._save.bind(this);
         this.destroy = this._destroy.bind(this);
     }
-    changeOptions(options){
-        this.setState({options: options})
+    public changeOptions(options){
+        this.setState({options})
     }
-    _cancel(){
+    public _cancel(){
         this.setState({
             isEdit: false,
             options: this.props.options
         });
     }
-    _save(){
+    public _save(){
         this.setState({isEdit: false});
         this.props.save(this.state.options);
     }
-    _destroy(){
+    public _destroy(){
         this._cancel();
         this.props.destroy(this.props.options);
     }
-    render(){
-        let graphOptions = this.props.packer(this.state.options)
+    public render(){
+        const graphOptions = this.props.packer(this.state.options)
         let g= <Warning message="Graph not configured well" />
         if (graphOptions){
             g = <Graph data={this.props.data} options={graphOptions} />

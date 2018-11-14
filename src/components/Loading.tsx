@@ -1,8 +1,8 @@
+import { Col, Icon, Row, Spin } from 'antd';
 import * as React from 'react';
-import { Row, Col, Spin, Icon } from 'antd';
 
 const Loading = (props) => {
-    const antIcon = <Icon type="loading" style={{ fontSize: 64 }} spin />;
+    const antIcon = <Icon type="loading" style={{ fontSize: 64 }} spin={true} />;
     return (
         <div className={props.className}>
             <Spin indicator={antIcon} />

@@ -1,10 +1,8 @@
-import * as React from 'react';
 import { Table } from 'antd';
-
-//import ConstantsCss from '../app/Constants-CSS'
+import * as React from 'react';
 
 const TableView = ({data, header}) =>{
-    let columns = Object.keys(header).map((e, k)=>{
+    const columns = Object.keys(header).map((e, k)=>{
         return {
             title: header[e],
             dataIndex: e,
@@ -12,9 +10,9 @@ const TableView = ({data, header}) =>{
         }
     })
 
-    return <Table 
-        columns={columns} 
-        dataSource={data} 
+    return <Table
+        columns={columns}
+        dataSource={data}
         pagination={false}/>
 }
 

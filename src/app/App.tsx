@@ -1,22 +1,23 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { restChain } from 'redux-api-rest-hocs';
 
-import { withLoading } from 'redux-api-rest-hocs';
 
 import CenteredLoading from '../components/Loading';
-import LoginPage from './Session/LoginPage';
 import ProtectedPage from './ProtectedPage';
 import { fetchSession, login } from './Session/Actions';
+import LoginPage from './Session/LoginPage';
+
 import 'antd/dist/antd.css';
 
 const mapStateToPropsLogin = ()=>{
-    return {}
+   return {}
 }
 
 const actions = {
     login: (data)=>{
-        return login(data)
+      return login(data)
     }
 }
 
@@ -35,7 +36,11 @@ const mapStateToProps = ({session})=>{
     return {session};
 }
 
-const AppLoading = withLoading(App, CenteredLoading, 'session', 'fetchSession')
+const AppLoading = restChain()
+        .setProperty('session')
+        .setInitialize('fetchSession')
+        .withLoading(CenteredLoading)
+        .build(App)
 
 
-export default withRouter(connect(mapStateToProps, {fetchSession})(AppLoading) as any);
+export default withRouter(connect(mapStateToProps, {fetchSession})(AppLoading as any) as any);

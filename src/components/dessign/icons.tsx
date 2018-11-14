@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { Icon } from 'antd'
+import * as React from 'react';
 
 const getIcon = (icon) => ()=> <Icon type={icon} />
 // Actions

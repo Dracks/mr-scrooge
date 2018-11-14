@@ -1,13 +1,20 @@
-import { Line, Bar } from "react-chartjs-2";
-import { getOption, getInputOptions,  getSelectOptions, getMultiSelectOptions, getBooleanOptions } from '../../utils/FormHelper';
+import { Bar, Line } from "react-chartjs-2";
+import {
+    getBooleanOptions,
+    getInputOptions,
+    getMultiSelectOptions,
+    getOption,
+    getSelectOptions,
+} from '../../utils/FormHelper';
 
+/* tslint:disable  object-literal-sort-keys */
 export const GraphComponentHash={
     line: {
         component: Line,
         options: {
             tooltips: {
-                mode: 'index',
                 intersect: false,
+                mode: 'index',
             },
         }
     },
@@ -39,10 +46,10 @@ const getBasicGroups = (tags)=> {
         }),
         tag: getSelectOptions('Tag', 'Select tag', {0:{name:'--'}, ...tags}, "int"),
         acumulative: getBooleanOptions('Sum Values:', {}),
-        group: getSelectOptions('Group', 'Select some group function', 
+        group: getSelectOptions('Group', 'Select some group function',
             getGroupFunctions('group', tags)
         ),
-        horizontal: getSelectOptions('X-Axis', 'Select some group function', 
+        horizontal: getSelectOptions('X-Axis', 'Select some group function',
             getGroupFunctions('horizontal', tags)
         ),
     }
@@ -66,7 +73,7 @@ export const serializerConfig = ({hashTags}) => ({tag, date_range, kind, group, 
         return {
             kind,
             date_range,
-            tag:tag,
+            tag,
             acumulative,
             group: {name: group},
             horizontal: {name: horizontal, value: horizontal_value.map((e=>hashTags[e]))}

@@ -1,18 +1,18 @@
-import * as React from 'react';
-import { 
-    Select,
+import {
     Form,
     Input,
-    Row
+    Row,
+    Select
 } from 'antd';
+import * as React from 'react';
 
+import { Danger, Primary } from '../../components/dessign/buttons'
 import { half, oneThird, twoThird } from '../../components/dessign/grid'
-import { Primary, Danger } from '../../components/dessign/buttons'
 
-import {eventHandler} from '../Utils';
-//import MessageComponent from '../../components/Message';
-//import Input from '../../components/Input';
+// import MessageComponent from '../../components/Message';
+// import Input from '../../components/Input';
 import { getOptions } from '../../components/Select';
+import {eventHandler} from '../Utils';
 
 const formLayout = {
     labelCol: {
@@ -23,7 +23,7 @@ const formLayout = {
     },
 }
 
-const negate_options = [
+const NEGATE_OPTIONS = [
     {key: false, value: "cond1 or cond2 ..."},
     {key: true, value: "not cond1 and not cond2 ..."}
 ]
@@ -31,14 +31,14 @@ const negate_options = [
 const FormItem = Form.Item;
 const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form}) => {
     const { getFieldDecorator } = form;
-    var tag = value;
+    const tag = value;
     const propsButtons = tag.id ? {} : {disabled:true};
 
-    var notShownListTags = [];
+    const notShownListTags = [];
     if (value.id){
-        var listChildren = [value.id];
+        const listChildren = [value.id];
         while(listChildren.length){
-            var first = listChildren.shift()
+            const first = listChildren.shift()
             notShownListTags.push(first);
             hashTags[first].children.forEach(e=>{
                 listChildren.push(e);
@@ -46,22 +46,22 @@ const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form
         }
     }
 
-    let parent_list = tags
+    const parentList = tags
         .filter(({id})=>notShownListTags.indexOf(id)===-1)
-        .map(({id, name})=>{return {key:id, value:name}});
+        .map(({id, name})=>({key:id, value:name}));
 
-    let apply = ()=>{
+    const apply = ()=>{
         applyFilters(tag)
     }
 
-    let destroy = ()=>{
-        destroyTag(tag, ()=>{});
+    const destroy = ()=>{
+        destroyTag(tag);
     }
 
     const submit = ()=>{
-        form.validateFields((err, tag)=>{
+        form.validateFields((err, tag2)=>{
             if (!err){
-                saveTag(Object.assign(value, tag))
+                saveTag(Object.assign(value, tag2))
             }
         })
     }
@@ -77,9 +77,9 @@ const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form
                         {getFieldDecorator('parent', {
                             initialValue: tag.parent,
                         })(
-                            
+
                             <Select placeholder='No parent' onChange={submit}>
-                                {getOptions(parent_list)}
+                                {getOptions(parentList)}
                             </Select>
                         )}
                     </FormItem>
@@ -93,7 +93,7 @@ const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form
                             initialValue: tag.negate_conditional,
                         })(
                             <Select onChange={submit}>
-                                {getOptions(negate_options)}
+                                {getOptions(NEGATE_OPTIONS)}
                             </Select>
                         )}
                     </FormItem>
@@ -104,10 +104,10 @@ const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form
                         {...formLayout}
                         >
                         {getFieldDecorator("name",{
+                            initialValue: tag.name,
                             rules: [
                                 { required: true, message: 'Is required a name' }
                             ],
-                            initialValue: tag.name,
                         })(
                             <Input placeholder="Name" type="text" value={tag.name} onBlur={submit}/>
                         )}

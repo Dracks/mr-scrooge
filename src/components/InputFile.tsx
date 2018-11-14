@@ -10,9 +10,9 @@ class InputFile extends Component<any, any> {
         this.state = { name: '' }
     }
 
-    onChange(e){
-        var name='';
-        var file = null;
+    public onChange(e){
+        let name='';
+        let file = null;
         if (e.target.files.length > 0 ){
             file = e.target.files[0]
             name = file.name;
@@ -20,10 +20,10 @@ class InputFile extends Component<any, any> {
         if (this.props.onChange){
             this.props.onChange(file);
         }
-        this.setState({name: name})
+        this.setState({name})
     }
 
-    render(){
+    public render(){
         return (<div className="file-field input-field">
         <div className="btn">
           <span>File</span>

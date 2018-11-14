@@ -10,6 +10,8 @@
     "jsx": "react",
     "moduleResolution": "node",
     "rootDir": "src",
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck":true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "suppressImplicitAnyIndexErrors": true,

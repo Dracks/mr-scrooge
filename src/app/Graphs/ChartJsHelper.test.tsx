@@ -1,27 +1,27 @@
 import ChartJsHelper from './ChartJsHelper';
 
 describe("[ChartJsHelper]", ()=>{
-    var subject
+    let subject
 
     beforeEach(()=>{
         subject = new ChartJsHelper(
             [
                 {
+                    data: [1,5,2,3],
                     label: "ping",
-                    data: [1,5,2,3]
                 }
-            ], 
+            ],
             [ "1", "2", "3", "4" ]
         )
     });
 
     it('acumValues', ()=>{
-        var ret = subject.acumulate().get();
+        const ret = subject.acumulate().get();
         expect(ret.datasets[0].data).toEqual([1,6,8,11]);
     });
 
     it('Apply colors', ()=>{
-        var ret = subject.applyColors((e)=>{
+        const ret = subject.applyColors((e)=>{
             return {borderColor:e}
         }).get();
         expect(ret.datasets[0].borderColor).not.toBeNull();

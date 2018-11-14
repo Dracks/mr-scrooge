@@ -7,7 +7,7 @@ const mapValues=(()=>{
     }
 
     return (kind, v)=>{
-        let cast = hashValues[kind]
+        const cast = hashValues[kind]
         if (!cast){
             return hashValues.str(v)
         } 
@@ -18,14 +18,14 @@ const getConfigView=(struct, state, callback)=>{
     return Object.keys(struct).filter((e)=>{
         return struct[e].options;
     }).map((property, index)=>{
-        var c=struct[property];
-        var options = Object.keys(c.options).map((e)=>{ return { value: c.options[e].name, key: mapValues(c.kind, e)}});
-        var value = state[property];
-        var children = [];
+        const c=struct[property];
+        const options = Object.keys(c.options).map((e)=> ({ value: c.options[e].name, key: mapValues(c.kind, e)}));
+        const value = state[property];
+        let children = [];
         const Input = c.input;
         if (value && options.length>0){
             if (typeof value === "string" || typeof value === "number"){
-                var select = c.options[value];
+                const select = c.options[value];
                 if (select){
                     if (select.config){
                         children = getConfigView(select.config, state, callback)
@@ -48,8 +48,8 @@ class Form extends Component<any>{
         this.changeProperty = this.changeProperty.bind(this);
     }
 
-    changeProperty(property, value){
-        let change= {[property]:value};
+    public changeProperty(property, value){
+        const change= {[property]:value};
         if (this.props.onChange){
             const state = Object.assign(this.state, change)
             this.props.onChange(state);
@@ -58,7 +58,7 @@ class Form extends Component<any>{
         
     }
 
-    render(){
+    public render(){
         return (
             <div className="row">
                 {getConfigView(this.props.config, this.state, this.changeProperty)}

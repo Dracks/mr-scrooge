@@ -1,5 +1,6 @@
 
 const debugLambda = (lambda) => (...args)=> {
+    /* tslint:disable-next-line */
     console.log(args)
     return lambda(...args)
 }
@@ -12,11 +13,11 @@ const eventHandler=(callback) => {
 }
 
 const getPathElementName = (location, match) => {
-    var urlLength = match.url.length;
-    var l = location.pathname
-    var last_path = l.indexOf("/",urlLength+1)
-    if (last_path>=0) {
-        l = l.substring(urlLength, last_path)
+    const urlLength = match.url.length;
+    let l = location.pathname
+    const lastPath = l.indexOf("/",urlLength+1)
+    if (lastPath>=0) {
+        l = l.substring(urlLength, lastPath)
     } else {
         l = l.substring(urlLength);
     }

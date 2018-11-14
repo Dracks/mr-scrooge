@@ -1,16 +1,23 @@
-import * as React from 'react';
 import * as Enzyme from 'enzyme';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
+import * as React from 'react';
 
 import InfiniteScrollHOC from './InfiniteScrollHOC';
 
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('[Components/list/InfiniteScrollHOC]', ()=>{
-    let Subject, data, dataRecived, loadFnReceived, hasMoreReceived, othersReceived, wrapper;
-    let Test = ({data, loadMore, hasMore, ...others})=>{
-        dataRecived = data;
+    let Subject;
+    let data;
+    let dataRecived;
+    let loadFnReceived;
+    let hasMoreReceived;
+    let othersReceived;
+    let wrapper;
+
+    const Test = ({dataTest, loadMore, hasMore, ...others})=>{
+        dataRecived = dataTest;
         loadFnReceived = loadMore;
         hasMoreReceived = hasMore;
         othersReceived = others;

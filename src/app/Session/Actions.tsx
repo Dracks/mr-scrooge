@@ -8,16 +8,16 @@ export const fetchSession = ()=>{
 
 export const login = (data)=>{
     return fetchAction('/api/session/', FETCH_SESSION_DATA, {
-        method: "POST",
+        body: JSON.stringify(data),
         headers: new Headers({
             'Content-Type': 'application/json'
         }),
-        body: JSON.stringify(data)
+        method: "POST",
     });
 }
 
 export const logout = () => {
-    var action = fetchAction('/api/session/logout', FETCH_SESSION_DATA);
+    const action = fetchAction('/api/session/logout', FETCH_SESSION_DATA);
     action.payload.request = {
         method: "DELETE"
     }

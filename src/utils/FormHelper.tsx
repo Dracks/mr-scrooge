@@ -1,7 +1,7 @@
+import { Checkbox, Input } from 'antd';
 import * as React from 'react';
-import { Input, Checkbox } from 'antd';
 
-//import Input from '../components/Input';
+// import Input from '../components/Input';
 import Select, {MyMultipleSelect} from '../components/Select';
 
 export const getOption=(name, config?)=>{
