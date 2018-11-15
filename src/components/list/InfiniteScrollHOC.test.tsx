@@ -24,7 +24,7 @@ describe('[Components/list/InfiniteScrollHOC]', ()=>{
     }
 
     beforeEach(()=>{
-        Subject = InfiniteScrollHOC(Test, 'data', 5)
+        Subject = InfiniteScrollHOC(Test, 'dataTest', 5)
         data = []
         for (let i=0; i<30; i++){
             data.push(i);
@@ -38,7 +38,7 @@ describe('[Components/list/InfiniteScrollHOC]', ()=>{
     }
 
     it('Load with default', ()=>{
-        wrapper = shallow(<Subject data={data} dalek="Dr Who"/>)
+        wrapper = shallow(<Subject dataTest={data} dalek="Dr Who"/>)
         wrapper.at(0).shallow();
 
         expect(dataRecived).toEqual([]);
@@ -50,7 +50,7 @@ describe('[Components/list/InfiniteScrollHOC]', ()=>{
     });
 
     it('Has more?', ()=>{
-        wrapper = shallow(<Subject data={data} />)
+        wrapper = shallow(<Subject dataTest={data} />)
         wrapper.at(0).shallow();
 
         expect(hasMoreReceived).toBe(true);
