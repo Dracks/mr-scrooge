@@ -4,16 +4,17 @@ import * as React from 'react';
 const TableView = ({data, header}) =>{
     const columns = Object.keys(header).map((e, k)=>{
         return {
-            title: header[e],
             dataIndex: e,
-            key: e
+            key: e,
+            title: header[e],
         }
     })
 
     return <Table
         columns={columns}
         dataSource={data}
-        pagination={false}/>
+        pagination={false}
+        />
 }
 
 export default TableView

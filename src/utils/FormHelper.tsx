@@ -4,28 +4,39 @@ import * as React from 'react';
 // import Input from '../components/Input';
 import Select, {MyMultipleSelect} from '../components/Select';
 
+/* tslint:disable object-literal-sort-keys */
+
 export const getOption=(name, config?)=>{
     return {
+        config,
         name,
-        config
     }
 }
 
 const FormInputOption = ({name, placeholder, value, callback, children})=>{
+    const props = {
+        placeholder,
+        value,
+        onChange: e=>callback(e.target.value)
+    }
     return (
         <div>
             <label>{name}</label>
-            <Input placeholder={placeholder} value={value} onChange={e=>callback(e.target.value)} />
+            <Input {...props} />
             {children}
         </div>
     )
 }
 
 const FormBooleanOption = ({name, value, callback}) => {
+    const props = {
+        onChange: ()=>callback(!value),
+        checked: value
+    }
     return (
         <div>
             <label>{name}</label>
-            <Checkbox onChange={()=>callback(!value)} checked={value}/>
+            <Checkbox {...props}/>
         </div>
     )
 }
@@ -69,8 +80,8 @@ const helper = (input)=>{
 
 export const getInputOptions = (name, placeholder)=>{
     return {
-        name, 
-        placeholder, 
+        name,
+        placeholder,
         input: FormInputOption,
         options: {},
         kind: "str",

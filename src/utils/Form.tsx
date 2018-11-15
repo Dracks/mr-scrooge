@@ -10,7 +10,7 @@ const mapValues=(()=>{
         const cast = hashValues[kind]
         if (!cast){
             return hashValues.str(v)
-        } 
+        }
         return cast(v)
     }
 })()
@@ -31,13 +31,16 @@ const getConfigView=(struct, state, callback)=>{
                         children = getConfigView(select.config, state, callback)
                     }
                 } else {
+                    /* tslint:disable-next-line no-console */
                     console.error(value + ' value not found in '+JSON.stringify(c.options));
                 }
             } else if (!(value instanceof Array)) {
+                /* tslint:disable-next-line no-console */
                 console.warn('Type \'' + typeof value + '\' value not implemented')
             }
         }
-        return <Input key={index} name={c.name} placeholder={c.placeholder} options={options} value={value} callback={(value)=>callback(property, value)} children={children}/>
+        const callbackFn = (subValue)=>callback(property, subValue)
+        return <Input key={index} name={c.name} placeholder={c.placeholder} options={options} value={value} callback={callbackFn} children={children}/>
     })
 }
 
@@ -55,7 +58,7 @@ class Form extends Component<any>{
             this.props.onChange(state);
         }
         this.setState(change);
-        
+
     }
 
     public render(){

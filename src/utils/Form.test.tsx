@@ -14,11 +14,11 @@ describe('[Utils/Form]', ()=>{
     beforeEach(()=>{
         initial = {
            component: getSelectOptions('', '', {
+               bar: getOption('Bar'),
                 line: getOption('Line', {
                     xaxis: getSelectOptions('x', 'x', {}),
                     yaxis: getSelectOptions('y', 'y', {})
                 }),
-                bar: getOption('Bar'),
             })
        }
     })

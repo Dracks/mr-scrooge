@@ -65,4 +65,8 @@ const LoadingGraphReport = restChain()
     .withLoading(Loading)
     .build(GraphReport)
 
-export default connect(mapStateToProps, {fetchGraphs, addGraphFn: addGraph})(restChain().setProperty('allData').build(LoadingGraphReport) as any)
+const extractedData = restChain()
+    .setProperty('allData')
+    .build(LoadingGraphReport)
+
+export default connect(mapStateToProps, {fetchGraphs, addGraphFn: addGraph})(extractedData as any)

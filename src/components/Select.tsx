@@ -39,7 +39,7 @@ const SelectComponent = (props) => {
 }
 
 export const MyMultipleSelect = (props)=>{
-
+    /* tslint:disable-next-line prefer-const*/
     let {options, placeholder, onChangeFn, value, ...newProps } = props
     options = getOptions(options);
 
