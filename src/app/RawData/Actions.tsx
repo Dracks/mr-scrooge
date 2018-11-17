@@ -16,18 +16,20 @@ export const updateRawData = ()=> {
     return fetchAction('/api/raw-data/', responseReloadAction(FETCH_RAW_DATA));
 }
 
-export const addTag = (rds, tag)=>{
-    return fetchAction('/api/raw-data/'+rds+'/link/', [ whenComplete(updateRawData) ] as any, {
-        body: JSON.stringify({tag}),
-        headers: jsonHeaders(),
-        method: "POST"
-    })
-}
-
-export const removeTag = (rds, tag)=>{
-    return fetchAction('/api/raw-data/'+rds+'/link/', whenComplete(updateRawData), {
-        body: JSON.stringify({tag}),
-        headers: jsonHeaders(),
-        method: "DELETE",
-    })
+export const TagActions = {
+    add: (rds, tag)=>{
+        return fetchAction('/api/raw-data/'+rds+'/link/', [ whenComplete(updateRawData) ] as any, {
+            body: JSON.stringify({tag}),
+            headers: jsonHeaders(),
+            method: "POST"
+        })
+    },
+    
+    remove:(rds, tag)=>{
+        return fetchAction('/api/raw-data/'+rds+'/link/', whenComplete(updateRawData), {
+            body: JSON.stringify({tag}),
+            headers: jsonHeaders(),
+            method: "DELETE",
+        })
+    }
 }

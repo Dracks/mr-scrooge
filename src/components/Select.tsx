@@ -3,17 +3,27 @@ import * as React from 'react'
 
 import { eventHandler } from '../app/Utils';
 
-interface IPairData {
-    key: string | boolean | number,
+type SelectIndex = string | boolean | number
+type SelectValue = string | number
+
+export interface IPairData {
+    key: SelectIndex,
     value: string
 }
 
-interface IMySelectProps{
+interface IAbstractSelectProps {
     options: IPairData[]
     placeholder?: string | IPairData
     style?: any
-    value: string
     onChangeFn: any
+}
+
+export interface IMySelectProps extends IAbstractSelectProps {
+    value: SelectValue
+}
+
+export interface IMyMultiSelectProps extends IAbstractSelectProps {
+    value: SelectValue[]
 }
 
 const Option = Select.Option;
@@ -28,11 +38,12 @@ const SelectComponent = (props: IMySelectProps) => {
     const options = getOptions(props.options);
     // to share the value with the same type, we create a hash to transform the value
     const hash = {}
-    props.options.forEach(element => {
-        hash[element.key]= element.key
+    props.options.forEach(({key}) => {
+        const indexKey = typeof key ==="boolean" ? String(key) : key
+        hash[indexKey]= key
     });
 
-    let newPlaceholder :string = undefined;
+    let newPlaceholder :string;
     if (props.placeholder){
         if (typeof props.placeholder === "object"){
             newPlaceholder = props.placeholder.value
@@ -59,16 +70,16 @@ const SelectComponent = (props: IMySelectProps) => {
     )
 }
 
-export const MyMultipleSelect = (props: IMySelectProps)=>{
+export const MyMultipleSelect = (props: IMyMultiSelectProps)=>{
     /* tslint:disable-next-line prefer-const*/
     let {options, placeholder, onChangeFn, value, ...newProps } = props
-    let optionsView = getOptions(options);
+    const optionsView = getOptions(options);
 
     if (placeholder && typeof(placeholder) === "object"){
         placeholder = placeholder.value;
     }
     return (
-        <Select mode="multiple" onChange={onChangeFn} value={value} placeholder={placeholder} {...newProps}>
+        <Select mode="multiple" onChange={onChangeFn} value={value as any} placeholder={placeholder} {...newProps}>
             {optionsView}
         </Select>
     )
