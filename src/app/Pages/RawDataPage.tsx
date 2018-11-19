@@ -1,3 +1,4 @@
+import { Input } from 'antd';
 import * as React from 'react'
 import { connect } from 'react-redux';
 
@@ -15,29 +16,41 @@ import { ACTIONS, IRawDataState } from '../RawData/reducer';
 const Tags = (tags: IPairData[], current, onChange)=>()=> (
     <div>
         Tags
-        <MySelect 
+        <MySelect
             onChangeFn={onChange}
-            options={tags} 
-            placeholder="Filter" 
+            options={tags}
+            placeholder="Filter"
             value={current}
             style={{width:"100%"}}
             />
     </div>
 )
 
-const Content = ({selectTagsList, filters, rdsList, setTagFilter, addTagFn, removeTagFn}) =>{
+const Name = (current, onChange) => ()=>(
+    <div>
+        Movement name
+        <Input
+            style={{width:"100%"}}
+            placeholder="Filter"
+            value={current}
+            onChange = {onChange}
+            />
+    </div>
+)
+
+const Content = ({selectTagsList, filters, rdsList, setNameFilter, setTagFilter, addTagFn, removeTagFn}) =>{
     return (
         <div >
-            <RawTableView 
+            <RawTableView
             header={ {
-                "kind":"kind", 
-                "tags": Tags(selectTagsList, filters.tagFilter, setTagFilter), 
-                "movement_name": "movement name", 
-                "value":"import", 
-                "date":"date"} } 
+                "kind":"kind",
+                "tags": Tags(selectTagsList, filters.tagFilter, setTagFilter),
+                "movement_name": Name(filters.nameFilter, setNameFilter),
+                "value":"import",
+                "date":"date"} }
             addTag = {addTagFn}
             removeTag = {removeTagFn}
-            { ...{ 
+            { ...{
                 selectTagsList,
                 rdsList,
             }}
@@ -46,24 +59,30 @@ const Content = ({selectTagsList, filters, rdsList, setTagFilter, addTagFn, remo
     )
 }
 
-const getFilteredData=({tagFilter}: IRawDataState, data: IRawData[])=>{
-    let filterLambda = (_:IRawData)=>true
+const getFilteredData=({tagFilter, nameFilter}: IRawDataState, data: IRawData[])=>{
+    let ret = data;
     if (tagFilter){
-        filterLambda = (e)=>e.tags.indexOf(tagFilter)!==-1
+        ret = ret.filter((e)=>e.tags.indexOf(tagFilter)!==-1)
     }
 
-    return data.filter(filterLambda)
+    if (nameFilter && nameFilter.length>0){
+        const name = nameFilter.toUpperCase()
+        ret = ret.filter(e=>e.movement_name.toUpperCase().indexOf(name)!==-1)
+    }
+
+    return ret
 }
 
 const mapStateToProps = ({rawDataView, tags, allData}:IStoreType)=>({
     filters: rawDataView,
     tagsList:tags.data,
     rdsList: getFilteredData(rawDataView, allData.data),
-    selectTagsList: tags.data.map(t=>({key:t.id, value: t.name})), 
+    selectTagsList: tags.data.map(t=>({key:t.id, value: t.name})),
 })
 
 const mapDispatchToProps = addDispatch({
     addTagFn: TagActions,
+    setNameFilter: (e)=>ACTIONS.filterName(e.target.value),
     setTagFilter : ACTIONS.filterTag,
     removeTagFn: TagActions.remove,
 })
