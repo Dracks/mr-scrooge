@@ -26,4 +26,4 @@ class DemoUserTest(TestCase):
         self.assertTrue(subject.is_staff)
         self.assertIn('User "dr_who" created with password "allons-y"', self.out.getvalue())
 
-        
+

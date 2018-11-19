@@ -1,9 +1,10 @@
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, views
 from rest_framework.response import Response
 from rest_framework.decorators import list_route
+from rest_framework.permissions import IsAuthenticated
 
-from .serializers import UserSerializer
+from .serializers import UserSessionSerializer, ProfileSerializer
 
 
 NOT_AUTHENTICATED_RESPONSE = { "is_authenticated": False }
@@ -17,7 +18,7 @@ class SessionViewSet(viewsets.ViewSet):
 
     def list(self, request):
         if request.user.is_authenticated:
-            return Response(UserSerializer(request.user).data)
+            return Response(UserSessionSerializer(request.user).data)
         else:
             return Response(NOT_AUTHENTICATED_RESPONSE)
 
@@ -25,11 +26,43 @@ class SessionViewSet(viewsets.ViewSet):
         user = authenticate(request, username=request.data.get('user'), password=request.data.get('password'))
         if user and user.is_active:
             auth_login(request, user)
-            return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+            return Response(UserSessionSerializer(user).data, status=status.HTTP_201_CREATED)
         else:
             return Response(NOT_AUTHENTICATED_RESPONSE)
-    
+
     @list_route(methods=["DELETE"])
     def logout(self, request, pk=None):
         auth_logout(request)
         return Response(NOT_AUTHENTICATED_RESPONSE)
+
+class MyProfileEndpoint(views.APIView):
+    """
+    Manage my profile, it requires less permissions to manage that User, but the modifications should be limited
+    @todo Limit and control the modifications, (change e-mail or password should require the old password
+    """
+    resource_name = 'profiles'
+
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self, request):
+        return request.user
+
+    def get(self, request, format=None):
+        user = self.get_object(request)
+        serializer = ProfileSerializer(user, context={'request': request, 'resource_name': 'profile'})
+        return Response(serializer.data)
+
+    def __save(self, request, partial=False):
+        user = self.get_object(request)
+        serializer = ProfileSerializer(user, data=request.data, partial=partial)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, format=None):
+        return self.__save(request)
+
+    def patch(self, request, format=None):
+        return self.__save(request, True)
+
