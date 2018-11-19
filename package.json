@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/react-loadable": "^5.4.1",
     "antd": "^3.6.4",
     "chart.js": "^2.7.1",
     "moment": "^2.0.0",
@@ -10,6 +11,7 @@
     "react-chartjs-2": "^2.7.4",
     "react-dom": "^16.6.3",
     "react-infinite-scroller": "1.2.2",
+    "react-loadable": "^5.5.0",
     "react-redux": "5.1.1",
     "react-router-dom": "^4.2.2",
     "react-scripts-ts": "3.1.0",
