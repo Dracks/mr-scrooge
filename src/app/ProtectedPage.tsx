@@ -7,7 +7,7 @@ import { Layout } from 'antd';
 
 
 import { fetchRawData } from './RawData/Actions'
-import { logout } from './Session/Actions';
+import SessionActions from './Session/Actions';
 import { fetchTags } from './Tags/Actions'
 
 import Footer from '../components/Footer';
@@ -24,7 +24,7 @@ const mapStateToPropsHead = ({session}) => {
     return {session}
 }
 
-const HeaderWithSession = withRouter(connect(mapStateToPropsHead, {logout})(Header) as any)
+const HeaderWithSession = withRouter(connect(mapStateToPropsHead, {logout: SessionActions.logout})(Header) as any)
 
 const mapStateToProps = state=>{
     return {
@@ -46,7 +46,7 @@ const ContentsWithData = connect(mapStateToProps, mapActionsToProps)(Contentswit
 
 const ContentsWithRouter = withRouter(ContentsWithData as any)
 
-const App = (props) => {
+const App = (props: any) => {
     return (
         <Layout>
             <Layout.Header>

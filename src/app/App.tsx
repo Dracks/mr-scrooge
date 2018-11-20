@@ -6,7 +6,7 @@ import { restChain } from 'redux-api-rest-hocs';
 
 import CenteredLoading from '../components/Loading';
 import ProtectedPage from './ProtectedPage';
-import { fetchSession, login } from './Session/Actions';
+import SessionActions from './Session/Actions';
 import LoginPage from './Session/LoginPage';
 
 import 'antd/dist/antd.css';
@@ -16,9 +16,7 @@ const mapStateToPropsLogin = ()=>{
 }
 
 const actions = {
-    login: (data)=>{
-      return login(data)
-    }
+    login: (data)=>SessionActions.login(data)
 }
 
 const LoginPageWithRouter = withRouter(connect(mapStateToPropsLogin, actions)(LoginPage) as any);
@@ -43,4 +41,4 @@ const AppLoading = restChain()
         .build(App)
 
 
-export default withRouter(connect(mapStateToProps, {fetchSession})(AppLoading as any) as any);
+export default withRouter(connect(mapStateToProps, {fetchSession: SessionActions.fetch})(AppLoading as any) as any);

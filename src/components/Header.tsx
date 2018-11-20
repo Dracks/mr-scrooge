@@ -46,6 +46,7 @@ const desktop = (l, profileItems)=>()=>{
     return (<Menu theme="dark"
           mode={'horizontal'}
           selectedKeys={[l]}
+          style={{ lineHeight: '64px' }}
         >
         <Menu.Item>Mr Scrooge</Menu.Item>
         {Contents()}
