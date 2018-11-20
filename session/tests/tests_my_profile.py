@@ -22,14 +22,20 @@ class MyProfileTest(TestCase):
         })
 
     def test_update(self):
-        response = self.client.put('/api/me/', {'email': 'dracks@dracks.drk', 'username': 'dalek'}, format='json')
+        data = {'email': 'dracks@dracks.drk', 'username': 'dalek'}
+        response = self.client.put('/api/me/', data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        data['password'] = PASSWORD_TEST
+        response = self.client.put('/api/me/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         user = User.objects.get(pk=self.user.pk)
-        self.assertEqual(user.username, "dalek")
+        self.assertEqual(user.username, data['username'])
+        self.assertEqual(user.email, data['email'])
 
     def test_patch_password(self):
         response = self.client.patch('/api/me/', {'new-password': '123456!a', 'password': '123'}, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         user = User.objects.get(pk=self.user.pk)
         self.assertFalse(user.check_password('123456!ab'), "Check with incorrect password")
 
