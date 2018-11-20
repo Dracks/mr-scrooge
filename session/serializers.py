@@ -10,13 +10,11 @@ class ProfileSerializer(AbstractSerializer):
 
     def validate(self, data):
         new_password = self.initial_data.get('new-password', None)
-        email = data.get('email', None)
-        if new_password or email:
-            password = self.initial_data.get('password', None)
-            if not(password and self.instance.check_password(password)):
-                raise serializers.ValidationError("Password not valid")
-            if new_password:
-                validate_password(new_password, self.instance)
+        password = self.initial_data.get('password', None)
+        if not(password and self.instance.check_password(password)):
+            raise serializers.ValidationError("Password not valid")
+        if new_password:
+            validate_password(new_password, self.instance)
 
         return super(ProfileSerializer, self).validate(data)
 
