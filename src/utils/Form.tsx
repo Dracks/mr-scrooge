@@ -14,6 +14,7 @@ const mapValues=(()=>{
         return cast(v)
     }
 })()
+
 const getConfigView=(struct, state, callback)=>{
     return Object.keys(struct).filter((e)=>{
         return struct[e].options;
