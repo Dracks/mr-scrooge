@@ -12,6 +12,16 @@ const eventHandler=(callback) => {
     }
 }
 
+const debounce=<T extends []>(callback: (...p:T)=>void, time: number) => {
+    let timer: NodeJS.Timeout;
+    return (...args: T)=> {
+        if (timer){
+            clearTimeout(timer)
+        }
+        timer = setTimeout(()=>callback(...args), time)
+    }
+}
+
 const getPathElementName = (location, match) => {
     const urlLength = match.url.length;
     let l = location.pathname
@@ -24,4 +34,4 @@ const getPathElementName = (location, match) => {
     return l
 }
 
-export { eventHandler, getPathElementName, debugLambda };
+export { eventHandler, getPathElementName, debugLambda, debounce };

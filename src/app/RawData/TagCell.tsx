@@ -1,6 +1,7 @@
 import * as React from 'react';
 
-import { MyMultipleSelect } from '../../components/Select';
+import { PRIMARY_KEY } from 'src/types/data';
+import { IPairData, MyMultipleSelect } from '../../components/Select';
 
 const applyDifference = (()=>{
     const apply=(first, second, lambda)=>{
@@ -13,12 +14,19 @@ const applyDifference = (()=>{
         apply(second, first, lambdaSecond)
     }
 })()
-const TagCell = ({tags, rds, allTags, removeTag, addTag})=>{
+
+export interface ITagCell{
+    selectedTags: PRIMARY_KEY[],
+    rds: PRIMARY_KEY,
+    selectTagsList: IPairData[],
+    removeTag: (rds:PRIMARY_KEY, tagId: PRIMARY_KEY)=>void
+    addTag: (rds:PRIMARY_KEY, tagId: PRIMARY_KEY)=>void
+}
+
+const TagCell = ({selectedTags, rds, selectTagsList, removeTag, addTag}:ITagCell)=>{
     
-    const listSelect = allTags
-        .map((e)=>({key: e.id, value: e.name}))
     const onChange = (values)=>{
-        applyDifference(values, tags, (e)=>{
+        applyDifference(values, selectedTags, (e)=>{
             addTag(rds, e)
         }, (e)=>{
             removeTag(rds,e)
@@ -28,9 +36,9 @@ const TagCell = ({tags, rds, allTags, removeTag, addTag})=>{
         <div>
             <MyMultipleSelect
                 style={{width:"100%"}}
-                options={listSelect}
+                options={selectTagsList}
                 placeholder="Select"
-                value={tags}
+                value={selectedTags}
                 onChangeFn={onChange}/>
         </div>
         )
