@@ -23,4 +23,7 @@ const Warning = getIcon("exclamation-circle");
 
 const Err = getIcon("cross-circle");
 
-export { Add, AddCircle, Edit, Save, Delete, Cancel, Ok, Warning, Err }
+// Others
+const Dropdown = getIcon("caret-down");
+
+export { Add, AddCircle, Dropdown, Edit, Save, Delete, Cancel, Ok, Warning, Err }

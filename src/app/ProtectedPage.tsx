@@ -10,6 +10,7 @@ import { fetchRawData } from './RawData/Actions'
 import SessionActions from './Session/Actions';
 import { fetchTags } from './Tags/Actions'
 
+import { IStoreType } from 'src/reducers';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import Loading from '../components/Loading';
@@ -20,8 +21,8 @@ const isLoading = MultiPropsLoadingHOC([
     'tags'
 ])
 
-const mapStateToPropsHead = ({session}) => {
-    return {session}
+const mapStateToPropsHead = ({session}: IStoreType) => {
+    return {session: session.data}
 }
 
 const HeaderWithSession = withRouter(connect(mapStateToPropsHead, {logout: SessionActions.logout})(Header) as any)

@@ -11,12 +11,13 @@ import { ISession } from './app/Session/types';
 import { FETCH_TAGS } from './app/Tags/Actions';
 import { FETCH_FILTER, FETCH_FILTER_TYPES, FILTERS_PARENT }  from './app/Tags/Filters/Actions'
 import fetchTagsReducer from "./app/Tags/Reducers";
+import { IRawData, ITag } from './types/data';
 
 export interface IStoreType {
-    allData: any
+    allData: NetworkResponse<IRawData[]>
     rawDataView: IRawDataState
     session: NetworkResponse<ISession>
-    tags: any
+    tags: NetworkResponse<ITag[]>
 }
 
 export default combineReducers({

@@ -3,9 +3,17 @@ import * as React from 'react'
 import { Link } from 'react-router-dom';
 import ResponsiveNavDefault from '../components/ResponsiveNav';
 
+import { ISession } from 'src/app/Session/types';
 import ResizableHOC from '../utils/responsive/HOC';
+import { Dropdown } from './dessign/icons';
 
 const ResponsiveNav = ResizableHOC(ResponsiveNavDefault);
+
+interface IHeaderProps {
+    location: any,
+    logout: ()=>void
+    session: ISession
+}
 
 // { mobileVersion, activeLinkKey, onLinkClick, className }
 const Contents = ()=>[
@@ -42,7 +50,7 @@ const profile = (logout)=>[
     ]
 
 
-const desktop = (l, profileItems)=>()=>{
+const desktop = (l, profileItems, username)=>()=>{
     return (<Menu theme="dark"
           mode={'horizontal'}
           selectedKeys={[l]}
@@ -51,7 +59,7 @@ const desktop = (l, profileItems)=>()=>{
         <Menu.Item>Mr Scrooge</Menu.Item>
         {Contents()}
         <Menu.SubMenu
-            title={<span>User profile</span>}>
+            title={<span>User: {username} &nbsp; <Dropdown/></span>}>
         {profileItems}
         </Menu.SubMenu>
     </Menu>
@@ -73,7 +81,8 @@ const mobile = (l, profileItems) => ()=>{
         </Menu>
     )
 }
-export default ({location, logout})=>{
+
+export default ({location, logout, session}: IHeaderProps)=>{
     let l = location.pathname
     const lastPath = l.indexOf("/",2)
     if (lastPath) {
@@ -81,7 +90,7 @@ export default ({location, logout})=>{
     }
     const c = profile(logout)
     return (<ResponsiveNav
-        menuMarkup={desktop(l, c)}
+        menuMarkup={desktop(l, c, session.username)}
         menuMarkupMobile={mobile(l, c)}
         mobileBreakPoint={767}
      />
