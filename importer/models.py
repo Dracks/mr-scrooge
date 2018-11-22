@@ -1,4 +1,5 @@
 from django.db import models
+from finances.core import models as fc_models
 
 # Create your models here.
 class IMPORT_STATUS:
@@ -11,31 +12,6 @@ IMPORT_STATUS.CHOICES = (
     ( IMPORT_STATUS.WARNING, "Warnings"),
     ( IMPORT_STATUS.ERROR, "Error")
 )
-
-class AbstractRawDataSource(models.Model):
-    movement_name=models.CharField(max_length=255)
-    date=models.DateField()
-    date_value=models.DateField(null=True)
-    details=models.TextField(null=True, blank=True)
-    value=models.FloatField()
-
-    def __str__(self):
-        return "m:{} d:{} v:{} dd:{}$".format(self.movement_name, self.date, self.value, self.details)
-
-    class Meta:
-        abstract = True
-
-class RawDataSource(AbstractRawDataSource):
-    kind=models.CharField(max_length=255)
-
-    def __str__(self):
-        return "k:{} {}".format(self.kind,super(AbstractRawDataSource, self).__str__())
-
-    class Meta:
-        indexes = [
-            models.Index(fields=['kind', 'movement_name', 'date', 'value'])
-        ]
-        ordering = ('-date', '-date_value', 'movement_name')
 
 class StatusReport(models.Model):
     kind = models.CharField(max_length=255)
@@ -52,6 +28,7 @@ class StatusReport(models.Model):
     class Meta:
         ordering = ('-date', )
 
-class StatusReportRow(AbstractRawDataSource):
+class StatusReportRow(fc_models.AbstractRawDataSource):
     report = models.ForeignKey(StatusReport,on_delete=models.CASCADE, related_name="rows")
+    raw_data = models.ForeignKey(fc_models.RawDataSource, on_delete=models.SET_NULL, null=True, blank=True)
     message = models.TextField()

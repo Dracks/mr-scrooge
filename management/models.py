@@ -3,7 +3,7 @@ from functools import reduce
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 
-from importer.models import RawDataSource
+from finances.core.models import RawDataSource
 
 # Create your models here.
 class FilterConditionals:

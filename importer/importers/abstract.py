@@ -1,6 +1,7 @@
 import traceback
 
-from ..models import RawDataSource, StatusReport, StatusReportRow, IMPORT_STATUS
+from ..models import StatusReport, StatusReportRow, IMPORT_STATUS
+from finances.core.models import RawDataSource
 from management.models import Tag
 
 class AbstractImporter():

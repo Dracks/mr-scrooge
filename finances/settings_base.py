@@ -29,6 +29,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'finances.core.apps.FinancesCoreConfig',
     'importer.apps.ImporterConfig',
     'management.apps.ManagementConfig',
     'session.apps.SessionConfig',
