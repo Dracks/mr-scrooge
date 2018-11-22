@@ -7,7 +7,7 @@ import random
 from datetime import date
 
 from session.tests import get_user
-from ..models import RawDataSource
+from finances.core.models import RawDataSource
 from management.models import Tag, ValuesToTag
 
 class RawDataSourceApiTest(TestCase):

@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from datetime import datetime, timedelta, date
 import random
 
-from importer.models import RawDataSource
+from finances.core.models import RawDataSource
 from management.models import Tag, Filter, FilterConditionals
 from graphs.models import Graph
 from graphs.rest_api import save_new_graph

@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from importer.models import RawDataSource, StatusReport, StatusReportRow
+from finances.core.models import RawDataSource
+from importer.models import StatusReport, StatusReportRow
 from management.models import ValuesToTag
 
 class Command(BaseCommand):

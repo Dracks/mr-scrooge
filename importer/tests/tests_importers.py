@@ -1,7 +1,8 @@
 from django.test import TestCase, TransactionTestCase
 import os
 
-from ..models import RawDataSource, StatusReport, StatusReportRow, IMPORT_STATUS
+from finances.core.models import RawDataSource
+from ..models import StatusReport, StatusReportRow, IMPORT_STATUS
 from ..importers import caixa_bank
 
 from management.models import Tag, Filter, FilterConditionals
