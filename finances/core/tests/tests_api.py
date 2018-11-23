@@ -6,9 +6,9 @@ import json
 import random
 from datetime import date
 
-from session.tests import get_user
+from finances.session.tests import get_user
 from finances.core.models import RawDataSource
-from management.models import Tag, ValuesToTag
+from finances.management.models import Tag, ValuesToTag
 
 class RawDataSourceApiTest(TestCase):
     def setUp(self):

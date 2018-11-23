@@ -1,10 +1,10 @@
 from django.core.management.base import BaseCommand, CommandError
 
 from finances.core.models import RawDataSource,
-from importer.models import StatusReport, StatusReportRow
-from management.models import ValuesToTag
+from finances.importer.models import StatusReport, StatusReportRow
+from finances.management.models import ValuesToTag
 
-from importer.importers import FORMAT_LIST
+from finances.importer.importers import FORMAT_LIST
 
 class Command(BaseCommand):
     help = "Import some file to the database"

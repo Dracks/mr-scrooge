@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import RawDataSource
 from .serializers import RawDataSerializer
-from management.models import ValuesToTag
+from finances.management.models import ValuesToTag
 
 
 class RawDataSourceViewSet(viewsets.ReadOnlyModelViewSet, viewsets.mixins.CreateModelMixin):

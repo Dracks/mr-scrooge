@@ -29,11 +29,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'finances.core.apps.FinancesCoreConfig',
-    'importer.apps.ImporterConfig',
-    'management.apps.ManagementConfig',
-    'session.apps.SessionConfig',
-    'graphs.apps.GraphsConfig',
+    'finances.core.apps.CoreConfig',
+    'finances.importer.apps.ImporterConfig',
+    'finances.management.apps.ManagementConfig',
+    'finances.session.apps.SessionConfig',
+    'finances.graphs.apps.GraphsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -133,6 +133,6 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend', 'finances.filters.CoalesceFilterBackend',),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
-        'session.authentication.CsrfExemptSessionAuthentication',
+        'finances.session.authentication.CsrfExemptSessionAuthentication',
     )
 }

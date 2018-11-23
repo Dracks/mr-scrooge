@@ -3,8 +3,8 @@ from django.test import TestCase
 from unittest.mock import patch
 
 
-from management.models import Tag, Filter, ValuesToTag
-from graphs.models import Graph
+from finances.management.models import Tag, Filter, ValuesToTag
+from finances.graphs.models import Graph
 from finances.core.models import RawDataSource
 
 @patch('finances.core.management.commands.demodata.MONTHS_PERIOD', 0.5)

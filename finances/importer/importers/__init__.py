@@ -1,4 +1,4 @@
-from importer.importers import caixa_bank, edenred
+from finances.importer.importers import caixa_bank, edenred
 
 FORMAT_LIST = {
     caixa_bank.CaixaBankAccount.key: caixa_bank.CaixaBankAccount,

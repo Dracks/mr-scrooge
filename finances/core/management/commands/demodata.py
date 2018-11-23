@@ -4,9 +4,9 @@ from datetime import datetime, timedelta, date
 import random
 
 from finances.core.models import RawDataSource
-from management.models import Tag, Filter, FilterConditionals
-from graphs.models import Graph
-from graphs.rest_api import save_new_graph
+from finances.management.models import Tag, Filter, FilterConditionals
+from finances.graphs.models import Graph
+from finances.graphs.rest_api import save_new_graph
 
 def getRandomInterval():
     return timedelta(hours=random.randint(10,24))

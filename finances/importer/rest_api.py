@@ -6,8 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import StatusReport, StatusReportRow
 from .serializers import StatusReportSerializer, StatusReportRowSerializer
-from management.models import ValuesToTag, Tag
-from management.serializers import ValuesToTagSerializer
+from finances.management.models import ValuesToTag, Tag
+from finances.management.serializers import ValuesToTagSerializer
 from .importers import FORMAT_LIST
 
 

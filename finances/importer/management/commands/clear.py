@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 
 from finances.core.models import RawDataSource
 from importer.models import StatusReport, StatusReportRow
-from management.models import ValuesToTag
+from finances.management.models import ValuesToTag
 
 class Command(BaseCommand):
     help = "Clear all movements from the database"

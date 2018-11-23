@@ -5,7 +5,7 @@ from finances.core.models import RawDataSource
 from ..models import StatusReport, StatusReportRow, IMPORT_STATUS
 from ..importers import caixa_bank
 
-from management.models import Tag, Filter, FilterConditionals
+from finances.management.models import Tag, Filter, FilterConditionals
 
 from .classes.importer import TestAccount, SAMPLE_DATA
 

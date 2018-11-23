@@ -4,7 +4,7 @@ from rest_framework import status
 
 import json
 
-from session.tests import get_user
+from finances.session.tests import get_user
 from ..models import Tag
 
 class TagApiTest(TestCase):

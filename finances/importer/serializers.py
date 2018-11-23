@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .models import StatusReport, StatusReportRow
-from management.models import ValuesToTag, Tag
+from finances.management.models import ValuesToTag, Tag
 
 
 class StatusReportSerializer(serializers.ModelSerializer):
