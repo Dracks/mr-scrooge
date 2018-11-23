@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .model import RawDataSource
+from .models import RawDataSource
 from management.models import ValuesToTag, Tag
 
 

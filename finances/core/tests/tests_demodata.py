@@ -7,7 +7,7 @@ from management.models import Tag, Filter, ValuesToTag
 from graphs.models import Graph
 from finances.core.models import RawDataSource
 
-@patch('importer.management.commands.demodata.MONTHS_PERIOD', 0.5)
+@patch('finances.core.management.commands.demodata.MONTHS_PERIOD', 0.5)
 class DemoDataTest(TestCase):
 
     def tearDown(self):
