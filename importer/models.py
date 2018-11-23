@@ -30,5 +30,5 @@ class StatusReport(models.Model):
 
 class StatusReportRow(fc_models.AbstractRawDataSource):
     report = models.ForeignKey(StatusReport,on_delete=models.CASCADE, related_name="rows")
-    raw_data = models.ForeignKey(fc_models.RawDataSource, on_delete=models.SET_NULL, null=True, blank=True)
+    #raw_data = models.ForeignKey(fc_models.RawDataSource, on_delete=models.SET_NULL, null=True, blank=True)
     message = models.TextField()
