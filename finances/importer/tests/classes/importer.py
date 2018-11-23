@@ -1,5 +1,5 @@
 
-from importer.importers.abstract import AbstractImporter
+from finances.importer.importers.abstract import AbstractImporter
 
 SAMPLE_DATA = [
     ('first', '1990-03-01', -20.0),

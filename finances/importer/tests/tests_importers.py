@@ -13,7 +13,7 @@ PATH = os.path.dirname(__file__)
 
 class AbstractImportTest(TestCase):
     def setUp(self):
-        self.subject = TestAccount(SAMPLE_DATA)
+        self.subject = TestAccount("ping", SAMPLE_DATA)
 
     def tearDown(self):
         Tag.objects.all().delete()
@@ -71,7 +71,7 @@ class AbstractImportTest(TestCase):
 
 class CaixaBankCardTests(TransactionTestCase):
     def setUp(self):
-        self.subject = caixa_bank.CaixaBankCard(PATH + "/resources/caixabank-card.xls", 'test')
+        self.subject = caixa_bank.CaixaBankCard('caixabank', PATH + "/resources/caixabank-card.xls", 'test')
 
     def check_errors(self, status):
         status = StatusReport.objects.filter(status=IMPORT_STATUS.ERROR)
@@ -109,7 +109,7 @@ class CaixaBankCardTests(TransactionTestCase):
         self.check_errors(IMPORT_STATUS.ERROR)
 
     def test_duplicated_vs_old_file(self):
-        caixa_bank.CaixaBankCardOld(PATH+"/resources/caixabank-card-old.xls", "test").run()
+        caixa_bank.CaixaBankCardOld('caixabankOld', PATH+"/resources/caixabank-card-old.xls", "test").run()
         self.subject.run()
 
         self.assertEquals(RawDataSource.objects.all().count(), 4)

@@ -7,16 +7,17 @@ from finances.management.models import Tag
 class AbstractImporter():
     key='abstract'
     _mapping = {}
-    def _creator(self, file_name):
+    def _creator(self, file_path):
         raise Exception("Not implemented")
 
-    def __init__(self, file_name, key=None):
+    def __init__(self, file_name, file_path, key=None):
         assert(self.key is not 'abstract')
         status = StatusReport()
         status.status = IMPORT_STATUS.OK
+        status.file_name = file_name
         
         self.status = status
-        self.source_file = self._creator(file_name)
+        self.source_file = self._creator(file_path)
         if key is not None:
             self.key = key
         

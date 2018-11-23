@@ -21,8 +21,9 @@ class ImportViewSet(viewsets.ViewSet):
         data = self.request.data
         kind = data.get('kind')
         key = data.get('key')
+        print(data.get('file'), data.get('file').name)
         fileName = data.get('file').temporary_file_path()
-        importer = FORMAT_LIST[kind](fileName, key)
+        importer = FORMAT_LIST[kind](data.get('file').name, fileName, key)
         importer.run()
         importer.apply_filters()
         return Response(StatusReportSerializer(importer.status).data)
