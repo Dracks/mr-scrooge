@@ -24,6 +24,7 @@ class AbstractImportTest(TestCase):
     def test_insert(self):
         self.subject.run()
         self.assertEquals(RawDataSource.objects.all().count(), 4)
+        self.assertEquals(StatusReportRow.objects.all().count(), 4)
 
     def test_insert_with_tag(self):
         tag = Tag(name="Parent")
@@ -68,7 +69,6 @@ class AbstractImportTest(TestCase):
         
         child.delete()
 
-
 class CaixaBankCardTests(TransactionTestCase):
     def setUp(self):
         self.subject = caixa_bank.CaixaBankCard('caixabank', PATH + "/resources/caixabank-card.xls", 'test')
@@ -105,7 +105,7 @@ class CaixaBankCardTests(TransactionTestCase):
         self.subject.run()
 
         self.assertEquals(RawDataSource.objects.all().count(), 4)
-        self.assertEquals(StatusReportRow.objects.all().count(), 2)
+        self.assertEquals(StatusReportRow.objects.all().filter(raw_data=None).count(), 2)
         self.check_errors(IMPORT_STATUS.ERROR)
 
     def test_duplicated_vs_old_file(self):
@@ -113,7 +113,7 @@ class CaixaBankCardTests(TransactionTestCase):
         self.subject.run()
 
         self.assertEquals(RawDataSource.objects.all().count(), 4)
-        self.assertEquals(StatusReportRow.objects.all().count(), 4)
+        self.assertEquals(StatusReportRow.objects.all().filter(raw_data=None).count(), 4)
         self.check_errors(IMPORT_STATUS.ERROR)
 
 

@@ -33,6 +33,11 @@ class AbstractImporter():
         return newSource
 
     def addError(self, source, message):
+        status = self.generate_status(source)
+        status.message = message
+        status.save()
+
+    def generate_status(self, source):
         status = StatusReportRow(
             movement_name = source.movement_name,
             date = source.date,
@@ -40,9 +45,8 @@ class AbstractImporter():
             details = source.details,
             value = source.value 
             )
-        status.message = message
         status.report = self.status
-        status.save()
+        return status
 
     def apply_filters(self):
         root_list = list(Tag.objects.filter(parent=None))
@@ -58,10 +62,12 @@ class AbstractImporter():
         self.movements = []
         try: 
             previous = None
+            previous_status = None
             discarting = True
             for row in self.source_file:
                 source = self.build(row)
                 if source:
+                    status_row = self.generate_status(source)
                     repe_number = RawDataSource.objects.filter(
                         kind = source.kind, 
                         movement_name = source.movement_name, 
@@ -70,24 +76,32 @@ class AbstractImporter():
                         value = source.value).count()
                     if repe_number == 0:
                         if previous is not None:
-                            self.addError(previous, "Repeated row, but inserted")
                             previous.save()
                             self.movements.append(source)
+
+                            previous_status.message = "Repeated row, but inserted"
+                            previous_status.raw_data = previous
+                            previous_status.save()
                             previous = None
                         discarting = False
                         source.save()
+                        status_row.raw_data = source
+                        status_row.save()
                         self.movements.append(source)
                     else:
                         if not discarting:
                             previous = source
+                            previous_status = status_row
                             discarting = True
                         else:
-                            self.status.setWarning()
+                            status.setWarning()
                             text = "repeated row, not inserted"
                             if previous is not None:
-                                self.addError(previous, text)
+                                previous_status.message = text
+                                previous_status.save()
                                 previous = None
-                            self.addError(source, text)
+                            status_row.message = text
+                            status_row.save()
         except Exception as e:
             status.description = traceback.format_exc()
             status.status = IMPORT_STATUS.ERROR
