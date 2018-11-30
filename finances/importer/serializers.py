@@ -12,4 +12,4 @@ class StatusReportSerializer(serializers.ModelSerializer):
 class StatusReportRowSerializer(serializers.ModelSerializer):
     class Meta:
         model = StatusReportRow
-        fields = ('movement_name', 'date', 'date_value', 'details', 'value', 'message')
+        fields = ('id', 'movement_name', 'date', 'date_value', 'details', 'value', 'message', 'raw_data')
