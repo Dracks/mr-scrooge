@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { FullDate } from '../../components/dessign/date';
 import { Error, Warning } from '../../components/dessign/messages';
 import { WithNotFound } from '../../components/NotFound';
 import StatusRowTableView from './StatusRowsTableView';
@@ -25,6 +26,7 @@ const StatusImportView = WithNotFound(({data, dispatch})=>{
     return (
         <div>
             <h2 style={{textAlign:"center"}}>{data.kind}</h2>
+            <div style={{textAlign:"center"}}><FullDate date={data.date}/></div>
             <Msg />
             {data.rows.length>0 && <StatusRowTableView status={data} dispatch={dispatch}/>}
         </div>
