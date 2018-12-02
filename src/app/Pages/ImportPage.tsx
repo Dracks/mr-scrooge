@@ -8,7 +8,7 @@ import { withLoading } from 'redux-api-rest-hocs';
 import Loading from '../../components/Loading';
 import SiderPage from '../../components/SiderPage';
 import { fetchStatus } from '../Import/Actions';
-import { getPathElementName } from '../Utils';
+import { getPathElementName, shorterString } from '../Utils';
 
 
 import { AddCircle, Err, Ok, Warning } from '../../components/dessign/icons';
@@ -20,6 +20,7 @@ const CLASS_NAME={
     'o': Ok,
     'w': Warning,
 }
+const shorter = shorterString(5, 10)
 
 const ImportPage = ({match, status, location}) => {
     const basepath=match.url
@@ -27,9 +28,8 @@ const ImportPage = ({match, status, location}) => {
         const Ic = CLASS_NAME[e.status]
         return (<Menu.Item key={e.id}>
                     <Link to={basepath+'/'+e.id} className="collection-item">
-                    <Ic />
-                    {e.kind}
-                    <i>{e.date}</i>
+                        <Ic />
+                        {shorter(e.file_name)}
                     </Link>
                 </Menu.Item>
         )
