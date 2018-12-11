@@ -7,7 +7,7 @@ import { Menu } from 'antd';
 import { withLoading } from 'redux-api-rest-hocs';
 import Loading from '../../components/Loading';
 import SiderPage from '../../components/SiderPage';
-import { fetchStatus } from '../Import/Actions';
+import ImportActions from '../Import/Actions';
 import { getPathElementName, shorterString } from '../Utils';
 
 
@@ -68,4 +68,4 @@ const mapStateToProps = state => {
 }
 
 const LoadingImportPage = withLoading(ImportPage, Loading, 'status', 'fetchStatus')
-export default connect(mapStateToProps, {fetchStatus})(LoadingImportPage)
+export default connect(mapStateToProps, {fetchStatus: ImportActions.fetch})(LoadingImportPage)

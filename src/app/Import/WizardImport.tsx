@@ -7,10 +7,12 @@ import { restChain } from 'redux-api-rest-hocs';
 import { Primary } from '../../components/dessign/buttons';
 import Loading from '../../components/Loading';
 import { getOptions } from '../../components/Select';
+import ImportActions from "./Actions";
 
+import addDispatch from 'src/utils/redux/AddDispatch';
 import { eventHandler } from '../Utils';
 
-import { fetchImportKinds, sendFile } from "./Actions";
+
 /* tslint:disable object-literal-sort-keys */
 const formItemLayout = {
     labelCol: {
@@ -149,12 +151,10 @@ const mapStateToProps = ({acceptedKinds}) => {
     return { acceptedKinds }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchImportKinds: ()=>{dispatch(fetchImportKinds())},
-        sendFile:(data, callback)=>{dispatch(sendFile(data, callback))},
-    }
-}
+const mapDispatchToProps = addDispatch({
+    fetchImportKinds: ImportActions.getKinds,
+    sendFile: ImportActions.sendFile
+});
 
 const WizardImportLoading = restChain()
     .setProperty('acceptedKinds')
