@@ -14,11 +14,14 @@ import ImportActions from './Actions';
 import StatusRowTableView from './StatusRowsTableView';
 
 const LIMIT = moment().add(-7, 'days');
-const StatusImportView = WithNotFound(({data, dispatch, remove})=>{
+const StatusImportView = WithNotFound(({data, dispatch, remove, reload, match, history})=>{
     const removeFn = ()=>{
-        remove(data, ()=>{
-            // tslint:disable-next-line:no-console
-            console.log("ping!");
+        remove(data, (isLoading)=>{
+            if (!isLoading){
+                reload()
+                const base = match.url as string;
+                history.push(base.substr(0, base.lastIndexOf('/')))
+            }
         })
     }
     let Msg = ()=><div/>
@@ -63,9 +66,11 @@ const StatusImportView = WithNotFound(({data, dispatch, remove})=>{
 
 const StatusImport = ({match, status, ...others}) => {
     const id = parseInt(match.params.id, 10)
+    // tslint:disable-next-line:no-console
+    console.log(id)
     const data = status.filter(e=>e.id===id)[0];
     
-    return <StatusImportView data={data} {...others}/>
+    return <StatusImportView {...{data, match}} {...others}/>
 }
 
 const mapStateToProps = state => {
@@ -76,6 +81,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = addDispatch({
     dispatch: action => action,
+    reload: ImportActions.update,
     remove: ImportActions.remove,
 })
 

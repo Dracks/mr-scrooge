@@ -27,7 +27,7 @@ const ImportPage = ({match, status, location}) => {
     const statusListLinks=status.map((e)=>{
         const Ic = CLASS_NAME[e.status]
         return (<Menu.Item key={e.id}>
-                    <Link to={basepath+'/'+e.id} className="collection-item">
+                    <Link to={(basepath+'/'+e.id).replace('//', '/')} className="collection-item">
                         <Ic />
                         {shorter(e.file_name)}
                     </Link>
