@@ -1,3 +1,4 @@
+import { connectRouter } from 'connected-react-router'
 import * as moment from 'moment';
 import { combineReducers } from "redux";
 
@@ -20,22 +21,26 @@ export interface IStoreType {
     tags: NetworkResponse<ITag[]>
 }
 
-export default combineReducers({
+const mapDate = (data)=>{
+    if (data.data){
+        data.data.forEach(element => {
+            element.date = moment(element.date).toDate();
+        });
+    }
+    return data;
+}
+
+
+export default (history)=>combineReducers({
 
     acceptedKinds: fetchReducer(FETCH_IMPORT_KINDS),
-    allData: fetchReducer(FETCH_RAW_DATA, (data)=>{
-        if (data.data){
-            data.data.forEach(element => {
-                element.date = moment(element.date).toDate();
-            });
-        }
-        return data;
-    }),
+    allData: fetchReducer(FETCH_RAW_DATA, mapDate),
     filterTypes: fetchReducer(FETCH_FILTER_TYPES),
     graphs: graphReducer,
     hashTags: fetchTagsReducer,
-    importStatus: fetchReducer(FETCH_IMPORT_STATUS),
+    importStatus: fetchReducer(FETCH_IMPORT_STATUS, mapDate),
     rawDataView,
+    router: connectRouter(history), 
     session: fetchReducer(FETCH_SESSION_DATA),
     tags: fetchReducer(FETCH_TAGS),
     tagsFilters: reducerForData(FILTERS_PARENT, fetchReducer(FETCH_FILTER)),

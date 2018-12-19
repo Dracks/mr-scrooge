@@ -5,7 +5,7 @@ const TableView = ({data, header}) =>{
     const columns = Object.keys(header).map((e, k)=>{
         return {
             dataIndex: e,
-            key: e,
+            key: k,
             title: header[e],
         }
     })

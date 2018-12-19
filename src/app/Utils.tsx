@@ -34,4 +34,14 @@ const getPathElementName = (location, match) => {
     return l
 }
 
-export { eventHandler, getPathElementName, debugLambda, debounce };
+const shorterString = (pref:number, suf:number)=> {
+    const totalSize = pref + suf +1;
+    return (str:string) =>{
+        if (str.length>totalSize){
+            return str.substr(0, pref) + '…' + str.substr(-suf)
+        }
+        return str;
+    }
+}
+
+export { eventHandler, getPathElementName, debugLambda, debounce, shorterString };
