@@ -33,5 +33,6 @@ graphs_urls.api_views(router)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/',include(router.urls))
+    path('api/',include(router.urls)),
 ]
+urlpatterns.extend(session_urls.urlpatterns)
