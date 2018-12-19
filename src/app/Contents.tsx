@@ -3,6 +3,7 @@ import Loadable from 'react-loadable';
 import { Route, Switch } from 'react-router-dom';
 
 import { CenteredLoading } from '../components/Loading';
+import NotFoundPage from './Pages/NotFoundPage';
 
 
 const GraphReportPage = Loadable({
@@ -25,6 +26,11 @@ const TagPage = Loadable({
     loading: CenteredLoading,
 });
 
+const ProfilePage = Loadable({
+    loader: ()=>import('./Profile'),
+    loading: CenteredLoading,
+})
+
 const Contents = () => {
     return (
       <div>
@@ -42,6 +48,11 @@ const Contents = () => {
             <Route
                 path="/import"
                 component={ImportPage} />
+            <Route
+                path="/profile"
+                component={ProfilePage} />
+            <Route
+                component={NotFoundPage} />
         </Switch>
       </div>
     );

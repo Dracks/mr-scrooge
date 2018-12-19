@@ -7,9 +7,10 @@ import { Layout } from 'antd';
 
 
 import { fetchRawData } from './RawData/Actions'
-import { logout } from './Session/Actions';
+import SessionActions from './Session/Actions';
 import { fetchTags } from './Tags/Actions'
 
+import { IStoreType } from 'src/reducers';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import Loading from '../components/Loading';
@@ -20,11 +21,11 @@ const isLoading = MultiPropsLoadingHOC([
     'tags'
 ])
 
-const mapStateToPropsHead = ({session}) => {
-    return {session}
+const mapStateToPropsHead = ({session}: IStoreType) => {
+    return {session: session.data}
 }
 
-const HeaderWithSession = withRouter(connect(mapStateToPropsHead, {logout})(Header) as any)
+const HeaderWithSession = withRouter(connect(mapStateToPropsHead, {logout: SessionActions.logout})(Header) as any)
 
 const mapStateToProps = state=>{
     return {
@@ -46,7 +47,7 @@ const ContentsWithData = connect(mapStateToProps, mapActionsToProps)(Contentswit
 
 const ContentsWithRouter = withRouter(ContentsWithData as any)
 
-const App = (props) => {
+const App = (props: any) => {
     return (
         <Layout>
             <Layout.Header>

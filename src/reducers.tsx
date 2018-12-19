@@ -2,20 +2,23 @@ import { connectRouter } from 'connected-react-router'
 import * as moment from 'moment';
 import { combineReducers } from "redux";
 
-import { fetchReducer, reducerForData } from 'redux-api-rest';
+import { fetchReducer, NetworkResponse, reducerForData } from 'redux-api-rest';
 import graphReducer from './app/Graphs/Reducers';
 import { FETCH_IMPORT_KINDS, FETCH_IMPORT_STATUS } from './app/Import/Actions';
 import { FETCH_RAW_DATA } from './app/RawData/Actions';
 import rawDataView, { IRawDataState } from './app/RawData/reducer';
 import { FETCH_SESSION_DATA } from './app/Session/Actions';
+import { ISession } from './app/Session/types';
 import { FETCH_TAGS } from './app/Tags/Actions';
 import { FETCH_FILTER, FETCH_FILTER_TYPES, FILTERS_PARENT }  from './app/Tags/Filters/Actions'
 import fetchTagsReducer from "./app/Tags/Reducers";
+import { IRawData, ITag } from './types/data';
 
 export interface IStoreType {
-    rawDataView: IRawDataState,
-    tags: any,
-    allData: any
+    allData: NetworkResponse<IRawData[]>
+    rawDataView: IRawDataState
+    session: NetworkResponse<ISession>
+    tags: NetworkResponse<ITag[]>
 }
 
 const mapDate = (data)=>{

@@ -13,3 +13,8 @@ export interface IRawData {
     value: number,
     date: Date,
 }
+
+export interface IProfileData {
+    username: string,
+    email: string
+}
