@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { MultiPropsLoadingHOC, withLoading } from 'redux-api-rest-hocs';
 
 import { Layout } from 'antd';
@@ -11,6 +10,7 @@ import SessionActions from './Session/Actions';
 import { fetchTags } from './Tags/Actions'
 
 import { IStoreType } from 'src/reducers';
+import RouterSelectors from 'src/utils/router/selectors';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import Loading from '../components/Loading';
@@ -21,11 +21,16 @@ const isLoading = MultiPropsLoadingHOC([
     'tags'
 ])
 
-const mapStateToPropsHead = ({session}: IStoreType) => {
-    return {session: session.data}
+const mapStateToPropsHead = ({session, ...state}: IStoreType) => {
+    // tslint:disable-next-line:no-console
+    console.log(state)
+    return {
+        pathname: RouterSelectors.pathname(state),
+        session: session.data,
+    }
 }
 
-const HeaderWithSession = withRouter(connect(mapStateToPropsHead, {logout: SessionActions.logout})(Header) as any)
+const HeaderWithSession = connect(mapStateToPropsHead, {logout: SessionActions.logout})(Header) as any
 
 const mapStateToProps = state=>{
     return {
@@ -45,8 +50,6 @@ const mapActionsToProps = (dispatch) => {
 const ContentswithLoading = withLoading(Contents, Loading, 'dataStatus', 'load');
 const ContentsWithData = connect(mapStateToProps, mapActionsToProps)(ContentswithLoading)
 
-const ContentsWithRouter = withRouter(ContentsWithData as any)
-
 const App = (props: any) => {
     return (
         <Layout>
@@ -54,7 +57,7 @@ const App = (props: any) => {
                 <HeaderWithSession />
             </Layout.Header>
             <Layout.Content>
-                <ContentsWithRouter />
+                <ContentsWithData />
             </Layout.Content>
             <Layout.Footer>
                 <Footer />
