@@ -22,8 +22,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '2&_7krtq544)s^9=8i$om!u+9ump*)#-7rcrka9pjld2nnk6p='
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -31,10 +29,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'importer.apps.ImporterConfig',
-    'management.apps.ManagementConfig',
-    'session.apps.SessionConfig',
-    'graphs.apps.GraphsConfig',
+    'finances.core.apps.CoreConfig',
+    'finances.importer.apps.ImporterConfig',
+    'finances.management.apps.ManagementConfig',
+    'finances.session.apps.SessionConfig',
+    'finances.graphs.apps.GraphsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -134,6 +133,6 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend', 'finances.filters.CoalesceFilterBackend',),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
-        'session.authentication.CsrfExemptSessionAuthentication',
+        'finances.session.authentication.CsrfExemptSessionAuthentication',
     )
 }
