@@ -1,3 +1,4 @@
+import { connectRouter } from 'connected-react-router'
 import * as moment from 'moment';
 import { combineReducers } from "redux";
 
@@ -25,7 +26,9 @@ const mapDate = (data)=>{
     }
     return data;
 }
-export default combineReducers({
+
+
+export default (history)=>combineReducers({
 
     acceptedKinds: fetchReducer(FETCH_IMPORT_KINDS),
     allData: fetchReducer(FETCH_RAW_DATA, mapDate),
@@ -34,6 +37,7 @@ export default combineReducers({
     hashTags: fetchTagsReducer,
     importStatus: fetchReducer(FETCH_IMPORT_STATUS, mapDate),
     rawDataView,
+    router: connectRouter(history), 
     session: fetchReducer(FETCH_SESSION_DATA),
     tags: fetchReducer(FETCH_TAGS),
     tagsFilters: reducerForData(FILTERS_PARENT, fetchReducer(FETCH_FILTER)),

@@ -11,4 +11,8 @@ const addDispatch =<T extends {}>(obj: T)=>(dispatch:Dispatch<Action>):T=>{
     }, {}) as T
 }
 
+export const addDispatchWithProps = <T extends {}, P extends {}>(call:(p:P)=>T)=>(dispatch: Dispatch<Action>, state: P): T => {
+    return addDispatch(call(state))(dispatch)
+}
+
 export default addDispatch
