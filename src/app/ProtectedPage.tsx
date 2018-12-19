@@ -22,8 +22,6 @@ const isLoading = MultiPropsLoadingHOC([
 ])
 
 const mapStateToPropsHead = ({session, ...state}: IStoreType) => {
-    // tslint:disable-next-line:no-console
-    console.log(state)
     return {
         pathname: RouterSelectors.pathname(state),
         session: session.data,

@@ -84,7 +84,7 @@ const mobile = (l, profileItems) => ()=>{
 
 export default ({pathname, logout, session}: IHeaderProps)=>{
     const lastPath = pathname.indexOf("/",2)
-    if (lastPath) {
+    if (lastPath>0) {
         pathname = pathname.substr(0, lastPath)
     }
     const c = profile(logout)
