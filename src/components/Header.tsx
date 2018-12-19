@@ -10,7 +10,7 @@ import { Dropdown } from './dessign/icons';
 const ResponsiveNav = ResizableHOC(ResponsiveNavDefault);
 
 interface IHeaderProps {
-    location: any,
+    pathname: string,
     logout: ()=>void
     session: ISession
 }
@@ -82,16 +82,15 @@ const mobile = (l, profileItems) => ()=>{
     )
 }
 
-export default ({location, logout, session}: IHeaderProps)=>{
-    let l = location.pathname
-    const lastPath = l.indexOf("/",2)
-    if (lastPath) {
-        l = l.substr(0, lastPath)
+export default ({pathname, logout, session}: IHeaderProps)=>{
+    const lastPath = pathname.indexOf("/",2)
+    if (lastPath>0) {
+        pathname = pathname.substr(0, lastPath)
     }
     const c = profile(logout)
     return (<ResponsiveNav
-        menuMarkup={desktop(l, c, session.username)}
-        menuMarkupMobile={mobile(l, c)}
+        menuMarkup={desktop(pathname, c, session.username)}
+        menuMarkupMobile={mobile(pathname, c)}
         mobileBreakPoint={767}
      />
      )

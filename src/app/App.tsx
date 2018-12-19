@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { restChain } from 'redux-api-rest-hocs';
 
 
@@ -19,14 +18,13 @@ const actions = {
     login: (data)=>SessionActions.login(data)
 }
 
-const LoginPageWithRouter = withRouter(connect(mapStateToPropsLogin, actions)(LoginPage) as any);
-
+const LoginPageWithData = connect(mapStateToPropsLogin, actions)(LoginPage) as any;
 
 const App = ({session}) => {
     if (session && session.is_authenticated){
         return <ProtectedPage />
     } else {
-        return <LoginPageWithRouter />
+        return <LoginPageWithData />
     }
 }
 
@@ -41,4 +39,4 @@ const AppLoading = restChain()
         .build(App)
 
 
-export default withRouter(connect(mapStateToProps, {fetchSession: SessionActions.fetch})(AppLoading as any) as any);
+export default connect(mapStateToProps, {fetchSession: SessionActions.fetch})(AppLoading as any) as any;

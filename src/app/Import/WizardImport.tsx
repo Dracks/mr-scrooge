@@ -1,7 +1,6 @@
 import { Button, Form, Icon, Select, Upload} from 'antd';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom'
 
 import { restChain } from 'redux-api-rest-hocs';
 import { Primary } from '../../components/dessign/buttons';
@@ -145,7 +144,7 @@ class WizardImportForm extends React.Component<any, any> {
     }
 }
 
-const f = withRouter(Form.create()(WizardImportForm) as any)
+const f = Form.create()(WizardImportForm) as any
 
 const mapStateToProps = ({acceptedKinds}) => {
     return { acceptedKinds }
