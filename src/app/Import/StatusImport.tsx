@@ -47,7 +47,7 @@ const StatusImportView = WithNotFound(({data, dispatch, remove, reload, match, g
                 {half(
                     <div>
                         <span>Kind:</span>{data.kind}<br />
-                        <span>Date:></span><FullDate date={data.date}/>
+                        <span>Date:</span><FullDate date={data.date}/>
                     </div>
                 )}
                 {half(
