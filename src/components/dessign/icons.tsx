@@ -21,7 +21,7 @@ const Ok = getIcon("check-circle");
 
 const Warning = getIcon("exclamation-circle");
 
-const Err = getIcon("cross-circle");
+const Err = getIcon("close-circle");
 
 // Others
 const Dropdown = getIcon("caret-down");
