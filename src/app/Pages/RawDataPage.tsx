@@ -81,7 +81,7 @@ const mapStateToProps = ({rawDataView, tags, allData}:IStoreType)=>({
 })
 
 const mapDispatchToProps = addDispatch({
-    addTagFn: TagActions,
+    addTagFn: TagActions.add,
     setNameFilter: (e)=>ACTIONS.filterName(e.target.value),
     setTagFilter : ACTIONS.filterTag,
     removeTagFn: TagActions.remove,
