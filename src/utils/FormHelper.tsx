@@ -3,6 +3,7 @@ import * as React from 'react';
 
 // import Input from '../components/Input';
 import Select, {MyMultipleSelect} from '../components/Select';
+import { selectFilterByContents } from './Select';
 
 /* tslint:disable object-literal-sort-keys */
 
@@ -60,6 +61,7 @@ const FormMultiSelectOptions = ({name, placeholder, options, value, callback, ch
                     options={options}
                     value={value}
                     style={{ width: '100%' }}
+                    filterOption={selectFilterByContents}
                     onChangeFn={callback} />
                 {children}
             </div>

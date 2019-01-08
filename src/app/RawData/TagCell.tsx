@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { PRIMARY_KEY } from 'src/types/data';
+import { selectFilterByContents } from 'src/utils/Select';
 import { IPairData, MyMultipleSelect } from '../../components/Select';
 
 const applyDifference = (()=>{
@@ -39,6 +40,7 @@ const TagCell = ({selectedTags, rds, selectTagsList, removeTag, addTag}:ITagCell
                 options={selectTagsList}
                 placeholder="Select"
                 value={selectedTags}
+                filterOption={selectFilterByContents}
                 onChangeFn={onChange}/>
         </div>
         )

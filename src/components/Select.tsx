@@ -16,6 +16,7 @@ interface IAbstractSelectProps {
     placeholder?: string | IPairData
     style?: any
     onChangeFn: any
+    filterOption?: (a:any, b:any)=>boolean
 }
 
 export interface IMySelectProps extends IAbstractSelectProps {
