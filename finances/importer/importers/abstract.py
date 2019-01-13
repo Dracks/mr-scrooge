@@ -6,7 +6,11 @@ from finances.management.models import Tag
 
 class AbstractImporter():
     key='abstract'
+    file_regex = None
+    
     _mapping = {}
+    
+
     def _creator(self, file_path):
         raise Exception("Not implemented")
 

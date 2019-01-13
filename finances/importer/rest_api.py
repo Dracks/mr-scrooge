@@ -38,6 +38,13 @@ class StatusReportViewSet(viewsets.ReadOnlyModelViewSet):
     def kinds(self, request):
         return Response(FORMAT_LIST.keys())
 
+    @list_route(methods=['get'])
+    def file_regex(self, request):
+        ret = {
+            key: val.file_regex for (key, val) in FORMAT_LIST.items()
+        }
+        return Response(ret)
+
     # Destroy the Status Report 
     def destroy(self, request, pk=None):
         StatusReport.objects.get(pk=pk).delete()

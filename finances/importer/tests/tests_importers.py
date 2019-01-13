@@ -108,12 +108,4 @@ class CaixaBankCardTests(TransactionTestCase):
         self.assertEquals(StatusReportRow.objects.all().filter(raw_data=None).count(), 2)
         self.check_errors(IMPORT_STATUS.ERROR)
 
-    def test_duplicated_vs_old_file(self):
-        caixa_bank.CaixaBankCardOld('caixabankOld', PATH+"/resources/caixabank-card-old.xls", "test").run()
-        self.subject.run()
-
-        self.assertEquals(RawDataSource.objects.all().count(), 4)
-        self.assertEquals(StatusReportRow.objects.all().filter(raw_data=None).count(), 4)
-        self.check_errors(IMPORT_STATUS.ERROR)
-
 

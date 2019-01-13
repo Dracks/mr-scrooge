@@ -6,7 +6,9 @@ from .abstract import AbstractImporter
 from .source_file import ExcelSourceFile, HtmlSourceFile
 
 class CaixaBankAccount(AbstractImporter):
-    key="caixa-bank/account"
+    key = "caixa-bank/account"
+
+    file_regex = 'Movimientos_cuenta_.*\.xls'
 
     _discard = 2
 
@@ -21,8 +23,11 @@ class CaixaBankAccount(AbstractImporter):
     def _creator(self, file_name):
         return ExcelSourceFile(file_name, 0, self._discard)
 
-class CaixaBankCardOld(CaixaBankAccount):
-    key="caixa-bank/card-old"
+
+class CaixaBankCard(CaixaBankAccount):
+    key="caixa-bank/card"
+
+    file_regex = 'lista_movimientos.*\.xls'
 
     _discard = 3
 
@@ -35,6 +40,10 @@ class CaixaBankCardOld(CaixaBankAccount):
 
     exp = re.compile(r'^(.* )?(\d*.\d*\,\d*) (.*)$')
 
+
+    def _creator(self, file_name):
+        return HtmlSourceFile(file_name, 1)
+
     def build(self, data):
         if "Operaciones" in data[0]:
             return
@@ -45,13 +54,5 @@ class CaixaBankCardOld(CaixaBankAccount):
         while len(data)<6:
             data.append(None)
         data.append(m[0])
-        return super(CaixaBankCardOld, self).build(data)
-
-
-class CaixaBankCard(CaixaBankCardOld):
-    key="caixa-bank/card"
-
-
-    def _creator(self, file_name):
-        return HtmlSourceFile(file_name, 1)
+        return super(CaixaBankAccount, self).build(data)
 

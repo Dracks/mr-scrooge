@@ -92,7 +92,7 @@ class StatusRowApiTest(TestCase):
             'details': None,
             'id':self.row1.pk,
             'raw_data': 1,
-            'date': "{}-{}-{}".format(DATE_TEST.year, DATE_TEST.month, DATE_TEST.day)
+            'date': DATE_TEST.strftime("%Y-%m-%d")
         }
         self.assertEquals(data, body_test)
 
