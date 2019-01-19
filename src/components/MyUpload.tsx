@@ -18,9 +18,9 @@ class MyUpload extends React.Component<IMyUploadProps, {}>{
     }
 
     public render(){
-        return (<span>
+        return (<span className="ant-upload">
             <input id={this.inputRef} type="file" multiple={true} onChange={this.addFiles} style={{display:'none'}}/>
-            <label htmlFor={this.inputRef} >
+            <label htmlFor={this.inputRef} className="ant-btn">
                 {this.props.children}
             </label>
         </span>)

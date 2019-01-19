@@ -9,6 +9,7 @@ import Loading from '../../components/Loading';
 import { IPairData } from '../../components/Select';
 import ImportActions from "./Actions";
 
+import { TextCenter } from 'src/components/dessign/style';
 import addDispatch from 'src/utils/redux/AddDispatch';
 import FileImportPreview from './Wizard/FileImportPreview';
 
@@ -123,19 +124,20 @@ class WizardImportForm extends React.Component<IWizardImportProps, IWizardImport
     public render (){
         return (
             <div>
-                <h2 style={{textAlign:"center"}}>Import new data</h2>
-                <MyUpload onAddFiles={this.addFiles}>
-                    <Icon type="upload" /> Click to upload
-                </MyUpload>
-        
-                {this.state.fileList.map((e, key)=><FileImportPreview 
-                    acceptedKinds={this.listKinds}
-                    key={key} 
-                    data={e}
-                    changeType={this.onChangeType(key)}
-                    remove={this.onRemoveFile(key)}
-                    />)}
-                <div style={{textAlign:"center"}}>
+                <h2 style={TextCenter}>Import new data</h2>
+                <div style={TextCenter}>
+                    <MyUpload onAddFiles={this.addFiles}>
+                        <Icon type="upload" /> Click to upload
+                    </MyUpload>
+                    <br />
+                    {this.state.fileList.map((e, key)=><FileImportPreview 
+                        acceptedKinds={this.listKinds}
+                        key={key} 
+                        data={e}
+                        changeType={this.onChangeType(key)}
+                        remove={this.onRemoveFile(key)}
+                        />)}
+                    <br />
                     <Primary onClick={this.sendNext}>
                         Send All
                     </Primary>
