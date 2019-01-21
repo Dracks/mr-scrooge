@@ -9,7 +9,7 @@ const ImportActions = {
         return fetchAction('/api/status/', FETCH_IMPORT_STATUS);
     },
     getKinds: ()=>{
-        return fetchAction('/api/status/kinds/', FETCH_IMPORT_KINDS);
+        return fetchAction('/api/status/file_regex/', FETCH_IMPORT_KINDS);
     },
     getReport: (ids, callback) => {
         const request = ids.rows.map((e)=>"ids[]="+e).join("&");

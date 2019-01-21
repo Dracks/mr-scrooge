@@ -1,4 +1,4 @@
-import {Button } from 'antd';
+import { Button } from 'antd';
 import * as React from 'react';
 
 const Primary = (props) =>(

@@ -30,14 +30,25 @@ const mapDate = (data)=>{
     return data;
 }
 
+const mapKinds = (obj)=>{
+    if (obj.data){
+        const data = obj.data
+        obj.data = Object.keys(data)
+            .map((e)=>({ 
+                    key: e,
+                    regexp : new RegExp(data[e])
+            }))
+    }
+    return obj
+}
+
 
 export default (history)=>combineReducers({
-
-    acceptedKinds: fetchReducer(FETCH_IMPORT_KINDS),
     allData: fetchReducer(FETCH_RAW_DATA, mapDate),
     filterTypes: fetchReducer(FETCH_FILTER_TYPES),
     graphs: graphReducer,
     hashTags: fetchTagsReducer,
+    importFileKinds: fetchReducer(FETCH_IMPORT_KINDS, mapKinds),
     importStatus: fetchReducer(FETCH_IMPORT_STATUS, mapDate),
     rawDataView,
     router: connectRouter(history), 
