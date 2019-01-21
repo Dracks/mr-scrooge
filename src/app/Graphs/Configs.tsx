@@ -20,7 +20,15 @@ export const GraphComponentHash={
     },
     bar: {
         component: Bar,
-        options: {}
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
     },
 };
 
