@@ -26,4 +26,6 @@ const Err = getIcon("close-circle");
 // Others
 const Dropdown = getIcon("caret-down");
 
-export { Add, AddCircle, Dropdown, Edit, Save, Delete, Cancel, Ok, Warning, Err }
+const Attachment = getIcon("paper-clip")
+
+export { Add, AddCircle, Attachment, Dropdown, Edit, Save, Delete, Cancel, Ok, Warning, Err }
