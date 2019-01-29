@@ -8,7 +8,7 @@ import RawTableView from '../RawData/RawTableView'
 import { IRawData } from 'src/types/data';
 import addDispatch from 'src/utils/redux/AddDispatch';
 import { IStoreType } from '../../reducers';
-import { TagActions} from '../RawData/Actions';
+import { RawDataActions, TagActions } from '../RawData/Actions';
 import { ACTIONS, IRawDataState } from '../RawData/reducer';
 
 /* tslint:disable object-literal-sort-keys */
@@ -38,7 +38,7 @@ const Name = (current, onChange) => ()=>(
     </div>
 )
 
-const Content = ({selectTagsList, filters, rdsList, setNameFilter, setTagFilter, addTagFn, removeTagFn}) =>{
+const Content = ({selectTagsList, filters, rdsList, setNameFilter, setTagFilter, setDescription, addTagFn, removeTagFn}) =>{
     return (
         <div >
             <RawTableView
@@ -47,12 +47,15 @@ const Content = ({selectTagsList, filters, rdsList, setNameFilter, setTagFilter,
                 "tags": Tags(selectTagsList, filters.tagFilter, setTagFilter),
                 "movement_name": Name(filters.nameFilter, setNameFilter),
                 "value":"import",
-                "date":"date"} }
+                "date":"date",
+                "description": "Description"
+            } }
             addTag = {addTagFn}
             removeTag = {removeTagFn}
             { ...{
                 selectTagsList,
                 rdsList,
+                setDescription,
             }}
                 />
         </div>
@@ -82,6 +85,7 @@ const mapStateToProps = ({rawDataView, tags, allData}:IStoreType)=>({
 
 const mapDispatchToProps = addDispatch({
     addTagFn: TagActions.add,
+    setDescription: RawDataActions.setDescription,
     setNameFilter: (e)=>ACTIONS.filterName(e.target.value),
     setTagFilter : ACTIONS.filterTag,
     removeTagFn: TagActions.remove,

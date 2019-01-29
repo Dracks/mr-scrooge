@@ -1,5 +1,5 @@
 import { deleteAction, fetchAction, responseReloadAction, saveAction } from 'redux-api-rest'
-import { updateRawData } from '../RawData/Actions';
+import { RawDataActions } from '../RawData/Actions';
 
 export const FETCH_TAGS = "TAGS_FETCH";
 
@@ -16,7 +16,7 @@ export const saveTag = (tag)=>{
 }
 
 export const applyFilters = (tag) => {
-    return fetchAction('/api/tag/'+tag.id+'/apply_filters/', [updateRawData], {
+    return fetchAction('/api/tag/'+tag.id+'/apply_filters/', [RawDataActions.update], {
         method: 'POST'
     })
 }

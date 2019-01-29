@@ -5,7 +5,7 @@ import { MultiPropsLoadingHOC, withLoading } from 'redux-api-rest-hocs';
 import { Layout } from 'antd';
 
 
-import { fetchRawData } from './RawData/Actions'
+import { RawDataActions } from './RawData/Actions'
 import SessionActions from './Session/Actions';
 import { fetchTags } from './Tags/Actions'
 
@@ -39,7 +39,7 @@ const mapStateToProps = state=>{
 const mapActionsToProps = (dispatch) => {
     return {
         load: ()=>{
-            dispatch(fetchRawData())
+            dispatch(RawDataActions.fetch())
             dispatch(fetchTags())
         }
     }
