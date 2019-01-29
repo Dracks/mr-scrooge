@@ -47,3 +47,16 @@ class RawDataSourceApiTest(TestCase):
         self.assertEqual(tagQuery.count(), 1)
         data = json.loads(response.content)
         self.assertEqual(len(data['tags']),1)
+
+    def test_description(self):
+        response = self.client.post('/api/raw-data/{}/description/'.format(self.rds.pk), {
+            "description": "Bla Bla Bla"
+        })
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        rdsQuery = RawDataSource.objects.get(pk=self.rds.pk)
+        self.assertEqual(rdsQuery.description, "Bla Bla Bla")
+
+        response = self.client.delete('/api/raw-data/{}/description/'.format(self.rds.pk))
+        rdsQuery = RawDataSource.objects.get(pk=self.rds.pk)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(rdsQuery.description, None)

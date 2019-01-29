@@ -36,4 +36,4 @@ class RawDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RawDataSource
-        fields = ('kind', 'id', 'movement_name', 'date', 'date_value', 'details', 'value', 'tags')
+        fields = ('kind', 'id', 'movement_name', 'date', 'date_value', 'details', 'description', 'value', 'tags')
