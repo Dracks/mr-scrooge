@@ -3,7 +3,7 @@ import os
 
 from finances.core.models import RawDataSource
 from ..models import StatusReport, StatusReportRow, IMPORT_STATUS
-from ..importers import caixa_bank
+from ..importers import caixa_bank, n26
 
 from finances.management.models import Tag, Filter, FilterConditionals
 
@@ -30,14 +30,14 @@ class AbstractImportTest(TestCase):
         tag = Tag(name="Parent")
         tag.save()
         f1 = Filter(
-            tag=tag, 
+            tag=tag,
             type_conditional=FilterConditionals.PREFIX,
             conditional="first")
         f1.save()
 
         self.subject.run()
         self.subject.apply_filters()
-        
+
         self.assertEqual(tag.values.count(), 2)
 
         tag.delete()
@@ -46,7 +46,7 @@ class AbstractImportTest(TestCase):
         tag = Tag(name="Parent")
         tag.save()
         f1 = Filter(
-            tag=tag, 
+            tag=tag,
             type_conditional=FilterConditionals.PREFIX,
             conditional="first")
         f1.save()
@@ -60,14 +60,14 @@ class AbstractImportTest(TestCase):
         )
         f2.save()
 
-
         self.subject.run()
         self.subject.apply_filters()
-        
+
         self.assertEqual(tag.values.count(), 2)
         self.assertEqual(child.values.count(), 1)
-        
+
         child.delete()
+
 
 class CaixaBankCardTests(TransactionTestCase):
     def setUp(self):
@@ -80,7 +80,6 @@ class CaixaBankCardTests(TransactionTestCase):
                 print(errors.description)
             self.assertTrue(False)
 
-
     def test_insert(self):
         self.subject.run()
         self.assertEquals(RawDataSource.objects.all().count(), 4)
@@ -89,17 +88,17 @@ class CaixaBankCardTests(TransactionTestCase):
     def test_duplicated(self):
         RawDataSource(
             kind="test",
-            movement_name = "American company",
-            date = "1990-01-05",
-            value = -11.33,
-            details = "( 11,99 USD) "
+            movement_name="American company",
+            date="1990-01-05",
+            value=-11.33,
+            details="( 11,99 USD) "
         ).save()
         RawDataSource(
             kind="test",
-            movement_name = "Something usual",
-            date = "1990-02-11",
-            value = -9.5,
-            details = None
+            movement_name="Something usual",
+            date="1990-02-11",
+            value=-9.5,
+            details=None
         ).save()
 
         self.subject.run()
@@ -108,4 +107,17 @@ class CaixaBankCardTests(TransactionTestCase):
         self.assertEquals(StatusReportRow.objects.all().filter(raw_data=None).count(), 2)
         self.check_errors(IMPORT_STATUS.ERROR)
 
+
+class N26Test(TransactionTestCase):
+    def setUp(self):
+        self.subject = n26.Number26('n26', PATH + "/resources/n26_es.csv", 'test')
+
+    def test_insert(self):
+        self.subject.run()
+        self.assertEquals(RawDataSource.objects.all().count(), 3)
+        queryTest = RawDataSource.objects.filter(date="2019-01-20")
+        self.assertEquals(queryTest.count(), 1)
+        test_value = queryTest.first()
+        self.assertEquals(test_value.value, 120)
+        self.assertEquals(test_value.movement_name, "RENTAL FLAT")
 

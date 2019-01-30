@@ -7,9 +7,9 @@ from finances.management.models import Tag
 class AbstractImporter():
     key='abstract'
     file_regex = None
-    
+
     _mapping = {}
-    
+
 
     def _creator(self, file_path):
         raise Exception("Not implemented")
@@ -19,12 +19,12 @@ class AbstractImporter():
         status = StatusReport()
         status.status = IMPORT_STATUS.OK
         status.file_name = file_name
-        
+
         self.status = status
         self.source_file = self._creator(file_path)
         if key is not None:
             self.key = key
-        
+
         status.kind = self.key
         status.save()
 
@@ -33,7 +33,7 @@ class AbstractImporter():
         newSource.kind = self.key
         for (key, index) in self._mapping.items():
             newSource.__setattr__(key, data[index])
-        
+
         return newSource
 
     def addError(self, source, message):
@@ -47,7 +47,7 @@ class AbstractImporter():
             date = source.date,
             date_value = source.date_value,
             details = source.details,
-            value = source.value 
+            value = source.value
             )
         status.report = self.status
         return status
@@ -64,7 +64,7 @@ class AbstractImporter():
     def run(self):
         status = self.status
         self.movements = []
-        try: 
+        try:
             previous = None
             previous_status = None
             discarting = True
@@ -73,9 +73,9 @@ class AbstractImporter():
                 if source:
                     status_row = self.generate_status(source)
                     repe_number = RawDataSource.objects.filter(
-                        kind = source.kind, 
-                        movement_name = source.movement_name, 
-                        date = source.date, 
+                        kind = source.kind,
+                        movement_name = source.movement_name,
+                        date = source.date,
                         details = source.details,
                         value = source.value).count()
                     if repe_number == 0:

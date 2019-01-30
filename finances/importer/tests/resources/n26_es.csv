@@ -1,0 +1,4 @@
+"Fecha","Beneficiario","Número de cuenta","Tipo de transacción","Referencia de pago","Categoría","Cantidad (EUR)","Cantidad (Divisa extranjera)","Tipo de divisa extranjera","Tipo de cambio"
+"2019-01-08","Dr Who","ES9271020570520240752219","Ingreso"," ","Ingresos","10.0","","",""
+"2019-01-20","Dr Who","ES9271020570520240752219","Ingreso","RENTAL FLAT","Seguros & Finanzas","120.0","","",""
+"2019-01-28","Dalek","DE717287002202217671300","Transferencia saliente","Dr Who","Otros","-140.0","","",""

@@ -24,4 +24,3 @@ class TicketRestaurant(AbstractImporter):
         data[0] = tmp
         data[2] = float(data[2].replace('.','').replace(',','.'))
         return super(TicketRestaurant, self).build(data)
-        
