@@ -112,6 +112,21 @@ class N26Test(TransactionTestCase):
     def setUp(self):
         self.subject = n26.Number26('n26', PATH + "/resources/n26_es.csv", 'test')
 
+    def test_filters(self):
+        t1 = Tag(name="Test tag")
+        t1.save()
+        f = Filter(
+            tag=t1, 
+            type_conditional=FilterConditionals.GREATER, 
+            conditional="0")
+        f.save()
+
+        self.subject.run()
+        self.subject.apply_filters()
+        rds = RawDataSource.objects.filter(date="2019-01-20").first()
+        self.assertEquals(rds.tags.count(), 1)
+
+
     def test_insert(self):
         self.subject.run()
         self.assertEquals(RawDataSource.objects.all().count(), 3)
@@ -119,5 +134,5 @@ class N26Test(TransactionTestCase):
         self.assertEquals(queryTest.count(), 1)
         test_value = queryTest.first()
         self.assertEquals(test_value.value, 120)
-        self.assertEquals(test_value.movement_name, "RENTAL FLAT")
+        self.assertEquals(test_value.movement_name, "Dr Who")
 
