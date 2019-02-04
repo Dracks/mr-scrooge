@@ -1,5 +1,5 @@
 from rest_framework.parsers import FormParser, MultiPartParser
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -14,6 +14,20 @@ class RawDataSourceViewSet(viewsets.ReadOnlyModelViewSet, viewsets.mixins.Create
     serializer_class = RawDataSerializer
 
     permission_classes = (IsAuthenticated,)
+
+    @detail_route(methods=['delete', 'post'])
+    def description(self, request, pk=None):
+        rds = RawDataSource.objects.get(pk=pk)
+        returnStatus = status.HTTP_202_ACCEPTED
+
+        if request.method == 'DELETE':
+            rds.description = None
+            returnStatus = status.HTTP_204_NO_CONTENT
+        else:
+            rds.description = request.data.get('description')
+
+        rds.save()
+        return Response(RawDataSerializer(rds).data, status=returnStatus)
 
     @detail_route(methods=['delete', 'post'])
     def link(self, request, pk=None):

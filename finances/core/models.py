@@ -15,10 +15,11 @@ class AbstractRawDataSource(models.Model):
 
 class RawDataSource(AbstractRawDataSource):
     kind=models.CharField(max_length=255)
-    #description = models.TextField()
+    description = models.TextField(default=None, null=True)
 
     def __str__(self):
-        return "k:{} {}".format(self.kind,super(AbstractRawDataSource, self).__str__())
+        parent = AbstractRawDataSource.__str__(self)
+        return "k:{} {}".format(self.kind,parent)
 
     class Meta:
         indexes = [
