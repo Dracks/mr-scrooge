@@ -18,3 +18,8 @@ export interface IProfileData {
     username: string,
     email: string
 }
+
+export interface IFileKind {
+    key: string,
+    regexp: RegExp
+}

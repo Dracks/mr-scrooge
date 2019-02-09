@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { restChain } from 'redux-api-rest-hocs';
 import MyUpload from 'src/components/MyUpload';
 import { Primary } from '../../components/dessign/buttons';
-import Loading from '../../components/Loading';
 import { IPairData } from '../../components/Select';
 import ImportActions from "./Actions";
 
@@ -163,14 +162,11 @@ const mapStateToProps = ({importFileKinds}) => {
 }
 
 const mapDispatchToProps = addDispatch({
-    fetchImportKinds: ImportActions.getKinds,
     sendFile: ImportActions.sendFile
 });
 
 const WizardImportLoading = restChain()
     .setProperty('importFileKinds')
-    .setInitialize('fetchImportKinds')
-    .withLoading(Loading)
     .build(WizardImportForm) as any
 
 export default connect( mapStateToProps, mapDispatchToProps)(WizardImportLoading);

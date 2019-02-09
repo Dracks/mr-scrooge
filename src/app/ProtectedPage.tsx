@@ -15,10 +15,12 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import Loading from '../components/Loading';
 import Contents from './Contents';
+import ImportActions from './Import/Actions';
 
 const isLoading = MultiPropsLoadingHOC([
     'allData',
-    'tags'
+    'tags',
+    'importFileKinds'
 ])
 
 const mapStateToPropsHead = ({session, ...state}: IStoreType) => {
@@ -41,6 +43,7 @@ const mapActionsToProps = (dispatch) => {
         load: ()=>{
             dispatch(RawDataActions.fetch())
             dispatch(fetchTags())
+            dispatch(ImportActions.getKinds())
         }
     }
 }

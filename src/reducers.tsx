@@ -12,10 +12,11 @@ import { ISession } from './app/Session/types';
 import { FETCH_TAGS } from './app/Tags/Actions';
 import { FETCH_FILTER, FETCH_FILTER_TYPES, FILTERS_PARENT }  from './app/Tags/Filters/Actions'
 import fetchTagsReducer from "./app/Tags/Reducers";
-import { IRawData, ITag } from './types/data';
+import { IFileKind, IRawData, ITag } from './types/data';
 
 export interface IStoreType {
     allData: NetworkResponse<IRawData[]>
+    importFileKinds: IFileKind[]
     rawDataView: IRawDataState
     session: NetworkResponse<ISession>
     tags: NetworkResponse<ITag[]>
@@ -30,7 +31,7 @@ const mapDate = (data)=>{
     return data;
 }
 
-const mapKinds = (obj)=>{
+const mapKinds = (obj):IFileKind[]=>{
     if (obj.data){
         const data = obj.data
         obj.data = Object.keys(data)
