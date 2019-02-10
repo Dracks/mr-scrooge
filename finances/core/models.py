@@ -15,7 +15,7 @@ class AbstractRawDataSource(models.Model):
 
 class RawDataSource(AbstractRawDataSource):
     kind=models.CharField(max_length=255)
-    description = models.TextField(default=None, null=True)
+    description = models.TextField(default=None, null=True, blank=True)
 
     def __str__(self):
         parent = AbstractRawDataSource.__str__(self)
