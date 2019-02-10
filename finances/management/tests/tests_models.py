@@ -81,6 +81,18 @@ class TagModelTest(TestCase):
         self.assertEqual(self.subject.values.first(), self.rds_list[1])
         self.assertEqual(report['deleted'], 1)
         self.assertEqual(report['inserted'], 0)
+
+    def test_apply_filters_with_previous_manual(self):
+        f1 = Filter(
+            tag = self.subject,
+            type_conditional = FilterConditionals.LOWER,
+            conditional = "0"
+        )
+        f1.save()
+        ValuesToTag.objects.create(tag=self.subject, raw_data_source = self.rds_list[0], automatic=0).save()
+        report = self.subject.apply_filters()
+        self.assertEqual(report['deleted'], 0)
+        self.assertEqual(report['inserted'], 2)
     
     def test_apply_filters_parent(self):
         subject = self.subject

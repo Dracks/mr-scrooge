@@ -91,7 +91,10 @@ class Tag(models.Model):
             l=map(lambda e: e.isValid(rds), filter_list)
             isFilter = reduce(reducer, l, initial)
             if isFilter:
-                ValuesToTag.objects.create(tag=self, raw_data_source=rds, automatic=1)
+                if ValuesToTag.objects.filter(raw_data_source=rds, tag=self).count()==0:
+                    ValuesToTag.objects.create(tag=self, raw_data_source=rds, automatic=1)
+                else:
+                    isFilter = False
 
             return isFilter
 
