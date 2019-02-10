@@ -122,6 +122,13 @@ class ValuesToTag(models.Model):
     enable = models.IntegerField(default=1) # By default we enable it, only to disable manually. 
     automatic = models.IntegerField()
 
+    class Meta:
+        unique_together = (("raw_data_source", "tag"),)
+        indexes = [
+            models.Index(fields=['raw_data_source'], name='rds_idx'),
+            models.Index(fields=['tag'], name='tag_idx'),
+        ]
+
 
 class Filter(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name="filters")

@@ -36,6 +36,9 @@ class RawDataSourceViewSet(viewsets.ReadOnlyModelViewSet, viewsets.mixins.Create
         try:
             link = ValuesToTag.objects.get(raw_data_source=pk, tag=tag)
             # link.automatic = 0
+        except ValuesToTag.MultipleObjectsReturned:
+            list_links = ValuesToTag.objects.filter(raw_data_source=pk, tag=tag)
+            link = list_links.first()
         except ValuesToTag.DoesNotExist:
             rds = RawDataSource.objects.get(pk=pk)
             tag = Tag.objects.get(pk=tag)
