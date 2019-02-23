@@ -35,7 +35,7 @@ class RawDataSourceViewSet(viewsets.ReadOnlyModelViewSet, viewsets.mixins.Create
         tag = request.data.get('tag')
         try:
             link = ValuesToTag.objects.get(raw_data_source=pk, tag=tag)
-            # link.automatic = 0
+            link.automatic = (link.automatic + 1) % 2
         except ValuesToTag.MultipleObjectsReturned:
             list_links = ValuesToTag.objects.filter(raw_data_source=pk, tag=tag)
             link = list_links.first()
