@@ -7,6 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('importer', '0003_auto_20180920_1828'),
+        ('management', '0003_auto_20180503_1926'),
     ]
 
     operations = [
