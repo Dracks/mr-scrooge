@@ -1,3 +1,5 @@
+import { ColorCaseEnum } from './Lambdas';
+
 export const OPTIONS_BEGIN_AT_ZERO = { scales: { yAxes: [{ ticks: { beginAtZero: true } }] } };
 export const OPTIONS_LEGEND_BOTTOM = { legend: {position: 'bottom'} };
 export const SCALE_LOG = { scales: { yAxes: [{ type: 'myLogarithmic' }] } };
@@ -31,9 +33,15 @@ class ChartJsHelper {
         return this;
     }
 
-    public applyColors(colorize){
+    public applyColors(colorize: any, colorCase: ColorCaseEnum){
         const colorsKeys = Object.keys(colorize(""));
-        if (this.datasets.length<20){
+        if (colorCase === ColorCaseEnum.value){
+            const dataset = this.datasets[0]
+            const colorsList = dataset.data.map((_,k)=>colorize(PREPROCESSED_COLORS_LIST[k]))
+            Object.keys(colorsList[0]).forEach((e)=>{
+                dataset[e] = colorsList.map((v)=>v[e])
+            })
+        } else if (this.datasets.length<20){
             this.datasets.forEach((e, k) => {
                 const colors = colorize(PREPROCESSED_COLORS_LIST[k])
                 colorsKeys.forEach((field) => {

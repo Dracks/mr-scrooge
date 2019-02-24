@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { GraphComponentHash } from './Configs';
-import { colorizeLambdas, getRangeFilter, groupLambdas, reduceLambdas, sortLambdas } from './Lambdas';
+import { colorCase, colorizeLambdas, getRangeFilter, groupLambdas, reduceLambdas, sortLambdas } from './Lambdas';
 
 import DataManager from './DataManage';
 
@@ -23,7 +23,12 @@ const Graph = (props)=> {
         acumulative,
         kind,
     } = props.options;
-    let data = props.data.filter(getRangeFilter(hashDateRange[date_range], new Date()));
+    let data = props.data;
+
+    if (hashDateRange[date_range]){
+        data = data.filter(getRangeFilter(hashDateRange[date_range], new Date()));
+    }
+
     if (tag){
         data = data.filter((e)=>{
             return e.tags.indexOf(tag)!== -1;
@@ -34,7 +39,7 @@ const Graph = (props)=> {
     })).groupForGraph(groupLambdas[group.name](group.value), groupLambdas[horizontal.name](horizontal.value))
         .reduceGroups(reduceLambdas.absSum)
         .toChartJs2Axis(sortLambdas[horizontal.name](horizontal.value))
-        .applyColors(colorizeLambdas[kind])
+        .applyColors(colorizeLambdas[kind], colorCase[kind])
     if (acumulative){
         helper = helper.acumulate();
     }
