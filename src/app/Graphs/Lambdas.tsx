@@ -20,7 +20,10 @@ export const groupLambdas = {
             }
             return ac;
         }, null) || "Others";
-    }
+    },
+    identity: ()=>()=>{
+        return "identity"
+    },
 }
 
 export const reduceLambdas = {
@@ -70,5 +73,21 @@ export const colorizeLambdas = {
             borderColor: c+"1)",
             borderWidth: "1"
         }
+    },
+    pie: (c)=>{
+        return {
+            backgroundColor: c+"0.5)",
+            borderColor: c+"1)",
+            borderWidth: "0.5"
+        }
     }
+}
+export enum ColorCaseEnum {
+    dataset,
+    value
+}
+export const colorCase = {
+    line: ColorCaseEnum.dataset,
+    bar: ColorCaseEnum.dataset,
+    pie: ColorCaseEnum.value
 }

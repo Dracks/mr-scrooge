@@ -1,6 +1,7 @@
-import { Bar, Line } from "react-chartjs-2";
+import { Bar, Line, Pie } from "react-chartjs-2";
 import {
     getBooleanOptions,
+    getHiddenOptions,
     getInputOptions,
     getMultiSelectOptions,
     getOption,
@@ -30,6 +31,9 @@ export const GraphComponentHash={
             }
         }
     },
+    pie: {
+        component: Pie,
+    }
 };
 
 const getGroupFunctions = (prefix, tags)=>{
@@ -44,19 +48,33 @@ const getGroupFunctions = (prefix, tags)=>{
     };
 }
 
+const DATE_RANGE = getSelectOptions('Range dates', 'Select a period of time', {
+    month: getOption('one month'),
+    three: getOption('Three months'),
+    six: getOption('Half a year'),
+    year: getOption('One year'),
+    all: getOption('All'),
+});
+
 const getBasicGroups = (tags)=> {
     return {
-        date_range: getSelectOptions('Range dates', 'Select a period of time', {
-            month: getOption('one month'),
-            three: getOption('Three months'),
-            six: getOption('Half a year'),
-            year: getOption('One year'),
-        }),
+        date_range: DATE_RANGE,
         tag: getSelectOptions('Tag', 'Select tag', {0:{name:'--'}, ...tags}, "int"),
         acumulative: getBooleanOptions('Sum Values:', {}),
         group: getSelectOptions('Group', 'Select some group function',
             getGroupFunctions('group', tags)
         ),
+        horizontal: getSelectOptions('X-Axis', 'Select some group function',
+            getGroupFunctions('horizontal', tags)
+        ),
+    }
+}
+
+const getPieGroups = (tags)=>{
+    return {
+        date_range: DATE_RANGE,
+        tag: getSelectOptions('Tag', 'Select tag', {0:{name:'--'}, ...tags}, "int"),
+        group: getHiddenOptions('Group', 'identity'),
         horizontal: getSelectOptions('X-Axis', 'Select some group function',
             getGroupFunctions('horizontal', tags)
         ),
@@ -69,6 +87,7 @@ export const getGraphConfig=(tags) => {
         kind: getSelectOptions( 'kind', 'Select a graph kind', {
             line: getOption('Line', getBasicGroups(tags)),
             bar: getOption('Bar', getBasicGroups(tags)),
+            pie: getOption('Pie', getPieGroups(tags)),
             debug: getOption('debug', {
                 acumulative: getBooleanOptions('Acumulative:', {})
             })

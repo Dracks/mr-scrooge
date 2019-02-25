@@ -68,6 +68,13 @@ const FormMultiSelectOptions = ({name, placeholder, options, value, callback, ch
     )
 }
 
+const FormHiddenOptions = (d: string)=>({value, callback})=>{
+    if (d!==value) {
+        setTimeout(()=>callback(d), 100)
+    }
+    return <div />
+}
+
 const helper = (input)=>{
     return (name, placeholder, options, kind="str")=>{
         return {
@@ -77,6 +84,15 @@ const helper = (input)=>{
             input,
             kind,
         }
+    }
+}
+
+export const getHiddenOptions = (name, d:string) => {
+    return {
+        name, 
+        input: FormHiddenOptions(d),
+        options: {},
+        kind: "str"
     }
 }
 
