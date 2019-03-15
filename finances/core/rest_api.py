@@ -15,6 +15,14 @@ class RawDataSourceViewSet(viewsets.ReadOnlyModelViewSet, viewsets.mixins.Create
 
     permission_classes = (IsAuthenticated,)
 
+    def get_queryset(self):
+        queryset = RawDataSource.objects.all()
+        from_param = self.request.query_params.get('from', None)
+        to_param = self.request.query_params.get('to', None)
+        if from_param is not None or to_param is not None:
+            queryset = queryset.filter(date__range=(from_param, to_param))
+        return queryset
+
     @detail_route(methods=['delete', 'post'])
     def description(self, request, pk=None):
         rds = RawDataSource.objects.get(pk=pk)

@@ -26,6 +26,21 @@ class RawDataSourceApiTest(TestCase):
         RawDataSource.objects.all().delete()
         Tag.objects.all().delete()
 
+    def test_get_data_filtered_by_date(self):
+        rds_first = RawDataSource(kind="demo", movement_name="demo", date="2018-02-01", value=25)
+        rds_first.save()
+        rds_second = RawDataSource(kind="demo", movement_name="demo", date="2018-02-03", value=25)
+        rds_second.save()
+        response = self.client.get('/api/raw-data/?from=2018-02-01&to=2018-02-03')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = json.loads(response.content)
+        self.assertEquals(len(data), 2)
+
+        response = self.client.get('/api/raw-data/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = json.loads(response.content)
+        self.assertEquals(len(data), 3)
+
     def test_get_data_with_tags(self):
         response = self.client.get('/api/raw-data/1/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
