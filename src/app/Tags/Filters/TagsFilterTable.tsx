@@ -3,7 +3,7 @@ import { Component } from 'react';
 
 import { withLoading } from 'redux-api-rest-hocs';
 
-import Loading from '../../../components/Loading';
+import Loading from '../../../components/network/Loading';
 import { eventHandler } from '../../Utils'
 
 import { Primary } from '../../../components/dessign/buttons';

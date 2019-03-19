@@ -5,7 +5,7 @@ import { Link, Route, Switch } from 'react-router-dom';
 import { Menu } from 'antd';
 
 import { withLoading } from 'redux-api-rest-hocs';
-import Loading from '../../components/Loading';
+import Loading from '../../components/network/Loading';
 import SiderPage from '../../components/SiderPage';
 import ImportActions from '../Import/Actions';
 import { getPathElementName, shorterString } from '../Utils';

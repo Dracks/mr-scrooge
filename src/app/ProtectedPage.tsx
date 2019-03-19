@@ -13,7 +13,7 @@ import { IStoreType } from 'src/reducers';
 import RouterSelectors from 'src/utils/router/selectors';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
-import Loading from '../components/Loading';
+import Loading from '../components/network/Loading';
 import Contents from './Contents';
 import ImportActions from './Import/Actions';
 
