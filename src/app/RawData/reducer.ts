@@ -1,9 +1,14 @@
+import { NetworkResponse } from 'redux-api-rest';
+
+import { IRawData } from 'src/types/data';
+import { mapDate } from 'src/utils/rest';
 import createReducer from "../../utils/redux/CreateReducer";
 import generateActions from "../../utils/redux/GenerateActions";
 
 const RAW_FILTER_KIND = "RAW_FILTER_KIND"
 const RAW_FILTER_TAG = "RAW_FILTER_TAG"
 const RAW_FILTER_NAME = "RAW_FILTER_NAME"
+
 export const ACTIONS = generateActions({
     filterKind: RAW_FILTER_KIND,
     filterName: RAW_FILTER_NAME,
@@ -22,7 +27,7 @@ const INITIAL : IRawDataState= {
     tagFilter: [],
 }
 
-export const rawDataReducers = createReducer(INITIAL, {
+export const rawDataFiltersReducers = createReducer(INITIAL, {
     [RAW_FILTER_KIND]: (state, {payload})=>(
         {...state, kindFilter: payload[0]}
     ),
@@ -34,4 +39,42 @@ export const rawDataReducers = createReducer(INITIAL, {
     },
 });
 
-export default rawDataReducers;
+const compare = (a: IRawData, b: IRawData)=>{
+    if (a.date<b.date){
+        return -1
+    } else if (a.date>b.date){
+        return 1
+    } else {
+        if ( a.id < b.id){
+            return -1
+        } else if (a.id > b.id){
+            return 1
+        } else {
+            return 0
+        }
+    }
+}
+
+export const rawDataMergeAndSortReducerCb = (newValues: NetworkResponse<any[]>, status: NetworkResponse<IRawData[]>)=>{
+    const oldValues = status && [...status.data] || []
+    if (newValues.data){
+        const newDataValues = mapDate(newValues) as NetworkResponse<IRawData[]>
+        newDataValues.data.forEach((v)=>{
+            let statusComparation = -1;
+            let index = 0;
+            while (statusComparation === -1 && index < oldValues.length){
+                statusComparation = compare(v,oldValues[index])
+                index++;
+            }
+            if (statusComparation === 1){
+                index--;
+                oldValues.splice(index, 0, v)
+            } else if (index === oldValues.length){
+                oldValues.push(v)
+            }
+        })
+    }
+    return { ...newValues, data: oldValues}
+} 
+
+export default rawDataFiltersReducers;
