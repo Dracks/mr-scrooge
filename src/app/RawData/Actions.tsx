@@ -5,11 +5,23 @@ import {
     whenComplete
 } from 'redux-api-rest'
 
+import * as moment from 'moment';
+
 export const FETCH_RAW_DATA = "RAW_DATA_FETCH";
 
+const DATE_FORMAT_REQUEST = "YYYY-MM-DD"
+
 export const RawDataActions = {
-    fetch: ()=>{
-        return fetchAction('/api/raw-data/', FETCH_RAW_DATA);
+    fetch: (to=moment())=>{
+        const from= to.clone().subtract(6, "months")
+        return fetchAction('/api/raw-data/?from='+from.format(DATE_FORMAT_REQUEST)+'&to='+to.format(DATE_FORMAT_REQUEST), [
+            FETCH_RAW_DATA,
+            (isLoading, data)=>{
+                if (!isLoading && (data as any[]).length>0){
+                    return RawDataActions.fetch(from)
+                }
+            }
+        ]);
     },
     setDescription: (rdsId: number, description:string)=>{
         return fetchAction('/api/raw-data/'+rdsId+'/description/', [], {
