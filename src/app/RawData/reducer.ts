@@ -69,10 +69,16 @@ export const rawDataMergeAndSortReducerCb = (newValues: NetworkResponse<any[]>, 
             if (statusComparation === 1){
                 index--;
                 oldValues.splice(index, 0, v)
+            } else if (statusComparation === 0) {
+                if (newValues.reload){
+                    oldValues[index-1]=v;
+                }
             } else if (index === oldValues.length){
                 oldValues.push(v)
             }
         })
+    } else {
+        newValues.isLoading = oldValues.length === 0
     }
     return { ...newValues, data: oldValues}
 } 
