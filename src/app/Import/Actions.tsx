@@ -1,5 +1,5 @@
 import { deleteAction, fetchAction, responseReloadAction } from 'redux-api-rest';
-import { MetaData } from 'redux-api-rest/lib/Types';
+import { MetaData } from 'redux-api-rest';
 import { RawDataActions } from '../RawData/Actions';
 
 export const FETCH_IMPORT_STATUS = "IMPORT_STATUS_FETCH";

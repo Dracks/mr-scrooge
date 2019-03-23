@@ -6,7 +6,7 @@ import {
 } from 'redux-api-rest'
 
 import * as moment from 'moment';
-import { MetaData } from 'redux-api-rest/lib/Types';
+import { MetaData } from 'redux-api-rest';
 
 export const FETCH_RAW_DATA = "RAW_DATA_FETCH";
 

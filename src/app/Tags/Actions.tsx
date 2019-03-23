@@ -1,5 +1,5 @@
 import { deleteAction, fetchAction, responseReloadAction, saveAction } from 'redux-api-rest'
-import { MetaData } from 'redux-api-rest/lib/Types';
+import { MetaData } from 'redux-api-rest';
 import { RawDataActions } from '../RawData/Actions';
 
 export const FETCH_TAGS = "TAGS_FETCH";

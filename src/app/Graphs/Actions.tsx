@@ -4,7 +4,7 @@ import {
     responseReloadAction,
     saveAction,
 } from 'redux-api-rest';
-import { MetaData } from 'redux-api-rest/lib/Types';
+import { MetaData } from 'redux-api-rest';
 
 export const FETCH_GRAPHS = "GRAPH_FETCH";
 export const ADD_GRAPH = "GRAPH_ADD";

@@ -4,7 +4,7 @@ import moment from 'moment';
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { MetaData } from 'redux-api-rest/lib/Types';
+import { MetaData } from 'redux-api-rest';
 import { Danger } from 'src/components/dessign/buttons';
 import { half } from 'src/components/dessign/grid';
 import { Delete } from 'src/components/dessign/icons';
