@@ -4,6 +4,7 @@ import {
     responseReloadAction,
     saveAction,
 } from 'redux-api-rest';
+import { MetaData } from 'redux-api-rest';
 
 export const FETCH_GRAPHS = "GRAPH_FETCH";
 export const ADD_GRAPH = "GRAPH_ADD";
@@ -18,7 +19,7 @@ export const updateGraphs = ()=>{
 }
 
 export const saveGraphs = (data)=>{
-    return saveAction('/api/graph/:id/', (isLoading)=>!isLoading && updateGraphs(), data);
+    return saveAction('/api/graph/:id/', (meta:MetaData)=>!meta.isLoading && updateGraphs(), data);
 }
 
 export const addGraph=()=>{
@@ -29,7 +30,7 @@ export const addGraph=()=>{
 
 export const deleteGraph= (data)=>{
     if (data.id){
-        return deleteAction('/api/graph/:id/', (isLoading)=>!isLoading && updateGraphs(), data)
+        return deleteAction('/api/graph/:id/', (meta:MetaData)=>!meta.isLoading && updateGraphs(), data)
     } else {
         return {
             payload: data,

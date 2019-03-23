@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Danger } from "src/components/dessign/buttons";
 import { Attachment, Delete, Err, Ok } from "src/components/dessign/icons";
-import { Loading } from 'src/components/Loading';
+import { Loading } from 'src/components/network/Loading';
 import {  getOptions, IPairData } from "src/components/Select";
 import { IFileData } from '../WizardImport';
 

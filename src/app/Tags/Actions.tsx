@@ -1,4 +1,5 @@
 import { deleteAction, fetchAction, responseReloadAction, saveAction } from 'redux-api-rest'
+import { MetaData } from 'redux-api-rest';
 import { RawDataActions } from '../RawData/Actions';
 
 export const FETCH_TAGS = "TAGS_FETCH";
@@ -22,5 +23,5 @@ export const applyFilters = (tag) => {
 }
 
 export const destroyTag = (tag, onDeleted) =>{
-    return deleteAction('/api/tag/:id', [(isLoading)=>!isLoading && onDeleted(), updateTags], tag)
+    return deleteAction('/api/tag/:id', [(meta:MetaData)=>!meta.isLoading && onDeleted(), updateTags], tag)
 }

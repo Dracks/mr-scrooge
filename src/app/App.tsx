@@ -3,33 +3,20 @@ import { connect } from 'react-redux';
 import { restChain } from 'redux-api-rest-hocs';
 
 
-import CenteredLoading from '../components/Loading';
+import CenteredLoading from '../components/network/Loading';
 import ProtectedPage from './ProtectedPage';
 import SessionActions from './Session/Actions';
 import LoginPage from './Session/LoginPage';
 
 import 'antd/dist/antd.css';
 
-const mapStateToPropsLogin = ()=>{
-   return {}
-}
 
-const actions = {
-    login: (data)=>SessionActions.login(data)
-}
-
-const LoginPageWithData = connect(mapStateToPropsLogin, actions)(LoginPage) as any;
-
-const App = ({session}) => {
+const App = ({session, error, login}) => {
     if (session && session.is_authenticated){
         return <ProtectedPage />
     } else {
-        return <LoginPageWithData />
+        return <LoginPage login={login} error={error}/>
     }
-}
-
-const mapStateToProps = ({session})=>{
-    return {session};
 }
 
 const AppLoading = restChain()
@@ -38,5 +25,16 @@ const AppLoading = restChain()
         .withLoading(CenteredLoading)
         .build(App)
 
+const mapStateToProps = ({session})=>{
+    return {
+        error: session && session.error,
+        session,
+    };
+}
 
-export default connect(mapStateToProps, {fetchSession: SessionActions.fetch})(AppLoading as any) as any;
+const actions = {
+    fetchSession: SessionActions.fetch,
+    login: (data)=>SessionActions.login(data),
+}
+
+export default connect(mapStateToProps, actions)(AppLoading as any) as any;
