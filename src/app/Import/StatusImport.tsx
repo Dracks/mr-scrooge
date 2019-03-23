@@ -4,6 +4,7 @@ import moment from 'moment';
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { MetaData } from 'redux-api-rest/lib/Types';
 import { Danger } from 'src/components/dessign/buttons';
 import { half } from 'src/components/dessign/grid';
 import { Delete } from 'src/components/dessign/icons';
@@ -15,10 +16,10 @@ import ImportActions from './Actions';
 import StatusRowTableView from './StatusRowsTableView';
 
 const LIMIT = moment().add(-7, 'days');
-const StatusImportView = WithNotFound(({data, dispatch, remove, reload, match, goToRoot})=>{
+const StatusImportView = WithNotFound(({data, dispatch, remove, reload, goToRoot})=>{
     const removeFn = ()=>{
-        remove(data, (isLoading)=>{
-            if (!isLoading){
+        remove(data, (meta:MetaData)=>{
+            if (!meta.isLoading){
                 reload()
                 goToRoot();
             }

@@ -17,12 +17,12 @@ export const withFetch = (Component, url, property) => {
             }
         }
 
-        callback (isLoading, data){
-            var state = {isLoading: true}
-            if (!isLoading) {
+        callback (meta, data){
+            var state = {meta}
+            if (!meta.isLoading) {
                 state = {
                     data: data,
-                    isLoading: false,
+                    meta,
                 }
             }
             this.setState({[property]: state})

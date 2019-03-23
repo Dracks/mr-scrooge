@@ -6,6 +6,7 @@ import {
 } from 'redux-api-rest'
 
 import * as moment from 'moment';
+import { MetaData } from 'redux-api-rest/lib/Types';
 
 export const FETCH_RAW_DATA = "RAW_DATA_FETCH";
 
@@ -16,8 +17,8 @@ export const RawDataActions = {
         const from= to.clone().subtract(6, "months")
         return fetchAction('/api/raw-data/?from='+from.format(DATE_FORMAT_REQUEST)+'&to='+to.format(DATE_FORMAT_REQUEST), [
             FETCH_RAW_DATA,
-            (isLoading, data)=>{
-                if (!isLoading && (data as any[]).length>0){
+            (meta:MetaData, data)=>{
+                if (!meta.isLoading && (data as any[]).length>0){
                     return RawDataActions.fetch(from)
                 }
             }
