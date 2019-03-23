@@ -1,9 +1,17 @@
 import React from 'react';
 
-const ErrorViewer = (props)=>{
-    // tslint:disable-next-line:no-console
-    console.log(props);
-    return <div />
+import {IErrorProps} from 'redux-api-rest-hocs';
+import { Error } from '../dessign/messages';
+
+const ErrorViewer = (props: IErrorProps)=>{
+    const contents = (<div>
+            <div>{props.url}</div>
+            {props.error.description}
+        </div>)
+    return (<Error
+                title = {props.error.code}
+                message= {contents}
+                />)
 }
 
 export default ErrorViewer

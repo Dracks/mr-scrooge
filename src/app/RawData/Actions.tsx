@@ -18,7 +18,7 @@ export const RawDataActions = {
         return fetchAction('/api/raw-data/?from='+from.format(DATE_FORMAT_REQUEST)+'&to='+to.format(DATE_FORMAT_REQUEST), [
             FETCH_RAW_DATA,
             (meta:MetaData, data)=>{
-                if (!meta.isLoading && (data as any[]).length>0){
+                if (!meta.isLoading && data &&(data as any[]).length>0){
                     return RawDataActions.fetch(from)
                 }
             }

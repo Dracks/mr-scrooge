@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { Button, Col, Form, Icon, Input, Row } from 'antd';
 
+import { Error } from 'src/components/dessign/messages';
 import {eventHandler} from '../Utils';
 
 const FormItem = Form.Item;
@@ -16,10 +17,13 @@ class NormalLoginForm extends React.Component<any> {
   })
 
   public render() {
-    const { getFieldDecorator } = this.props.form;
+    const props = this.props;
+    const { getFieldDecorator } = props.form;
+    const error = props.error && <Error title={props.error.code} message={props.error.description} /> || <div/>
     return (
         <Row type="flex" justify="center" align="middle">
             <Col  xs={20} sm={16} md={12} lg={10} xl={8} >
+                {error}
                 <Form onSubmit={this.handleSubmit} className="login-form">
                     <FormItem>
                     {getFieldDecorator('user', {

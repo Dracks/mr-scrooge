@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { MultiPropsLoadingHOC, withLoading } from 'redux-api-rest-hocs';
+import { MultiPropsLoadingHOC, restChain } from 'redux-api-rest-hocs';
 
 import { Layout } from 'antd';
 
@@ -9,6 +9,7 @@ import { RawDataActions } from './RawData/Actions'
 import SessionActions from './Session/Actions';
 import { fetchTags } from './Tags/Actions'
 
+import ErrorViewer from 'src/components/network/ErrorViewer';
 import { IStoreType } from 'src/reducers';
 import RouterSelectors from 'src/utils/router/selectors';
 import Footer from '../components/Footer';
@@ -48,7 +49,12 @@ const mapActionsToProps = (dispatch) => {
     }
 }
 
-const ContentswithLoading = withLoading(Contents, Loading, 'dataStatus', 'load');
+const ContentswithLoading = restChain()
+    .setProperty('dataStatus')
+    .setInitialize('load')
+    .withLoading(Loading)
+    .withError(ErrorViewer)
+    .build(Contents)
 const ContentsWithData = connect(mapStateToProps, mapActionsToProps)(ContentswithLoading)
 
 const App = (props: any) => {
