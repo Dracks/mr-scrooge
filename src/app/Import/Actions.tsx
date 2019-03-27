@@ -20,7 +20,7 @@ const ImportActions = {
         return deleteAction('/api/status/:id/', callback, status)
     },
     sendFile: (data, callback) => {
-        return fetchAction('/api/import/upload/', [RawDataActions.update, (meta:MetaData, subdata)=>!meta.isLoading && subdata && ImportActions.update((isLoading2)=>!isLoading2 && callback(subdata))], {
+        return fetchAction('/api/import/upload/', [()=>RawDataActions.update(), (meta:MetaData, subdata)=>!meta.isLoading && subdata && ImportActions.update((isLoading2)=>!isLoading2 && callback(subdata))], {
             body: data,
             method: 'POST',
         })
