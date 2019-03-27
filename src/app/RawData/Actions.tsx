@@ -40,7 +40,9 @@ export const RawDataActions = {
         ]);
     },
     setDescription: (rdsId: number, description:string)=>{
-        return fetchAction('/api/raw-data/'+rdsId+'/description/', [], {
+        return fetchAction('/api/raw-data/'+rdsId+'/description/', [
+            RawDataResponseActions.single
+        ], {
             body: JSON.stringify({description}),
             headers: jsonHeaders(),
             method: "POST"
