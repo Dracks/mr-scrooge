@@ -39,7 +39,7 @@ class RawDataSourceViewSet(viewsets.ReadOnlyModelViewSet, viewsets.mixins.Create
 
     @detail_route(methods=['delete', 'post'])
     def link(self, request, pk=None):
-        
+        rds = RawDataSource.objects.get(pk=pk)
         tag = request.data.get('tag')
         try:
             link = ValuesToTag.objects.get(raw_data_source=pk, tag=tag)
@@ -48,7 +48,6 @@ class RawDataSourceViewSet(viewsets.ReadOnlyModelViewSet, viewsets.mixins.Create
             list_links = ValuesToTag.objects.filter(raw_data_source=pk, tag=tag)
             link = list_links.first()
         except ValuesToTag.DoesNotExist:
-            rds = RawDataSource.objects.get(pk=pk)
             tag = Tag.objects.get(pk=tag)
             link = ValuesToTag(raw_data_source=rds, tag=tag, automatic=0, enable = 0)
         
@@ -62,4 +61,4 @@ class RawDataSourceViewSet(viewsets.ReadOnlyModelViewSet, viewsets.mixins.Create
             link.delete()
         else:
             link.save()
-        return Response(ValuesToTagSerializer(link).data)
+        return Response(RawDataSerializer(rds).data)
