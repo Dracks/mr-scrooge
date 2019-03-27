@@ -1,7 +1,8 @@
 import * as React from 'react';
 
-import { Button, Col, Form, Icon, Input, Row } from 'antd';
+import { Col, Form, Icon, Input, Row } from 'antd';
 
+import { Primary } from 'src/components/dessign/buttons';
 import { Error } from 'src/components/dessign/messages';
 import {eventHandler} from '../Utils';
 
@@ -40,9 +41,9 @@ class NormalLoginForm extends React.Component<any> {
                     )}
                     </FormItem>
                     <FormItem>
-                    <Button type="primary" htmlType="submit" className="login-form-button">
+                    <Primary htmlType="submit" className="login-form-button">
                         Log in
-                    </Button>
+                    </Primary>
                     </FormItem>
                 </Form>
             </Col>

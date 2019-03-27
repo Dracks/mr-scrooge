@@ -1,6 +1,5 @@
 import { deleteAction, fetchAction, responseReloadAction } from 'redux-api-rest';
 import { MetaData } from 'redux-api-rest';
-import { RawDataActions } from '../RawData/Actions';
 
 export const FETCH_IMPORT_STATUS = "IMPORT_STATUS_FETCH";
 export const FETCH_IMPORT_KINDS = "KINDS_IMPORT_FETCH";
@@ -20,7 +19,15 @@ const ImportActions = {
         return deleteAction('/api/status/:id/', callback, status)
     },
     sendFile: (data, callback) => {
-        return fetchAction('/api/import/upload/', [()=>RawDataActions.update(), (meta:MetaData, subdata)=>!meta.isLoading && subdata && ImportActions.update((isLoading2)=>!isLoading2 && callback(subdata))], {
+        return fetchAction('/api/import/upload/', [ 
+            (meta:MetaData, subdata)=>{
+                if (!meta.isLoading && subdata) {
+                    return ImportActions.update((meta2: MetaData)=>
+                        !meta2.isLoading && callback(subdata)
+                    )
+                } 
+            }
+            ], {
             body: data,
             method: 'POST',
         })

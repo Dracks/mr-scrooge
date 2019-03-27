@@ -10,6 +10,7 @@ import ImportActions from "./Actions";
 
 import { TextCenter } from 'src/components/dessign/style';
 import addDispatch from 'src/utils/redux/AddDispatch';
+import { RawDataActions } from '../RawData/Actions';
 import FileImportPreview from './Wizard/FileImportPreview';
 
 enum FileStatus {
@@ -32,7 +33,8 @@ interface IWizardImportProps {
             key: string,
             regexp: RegExp
         }>
-    sendFile: any
+    sendFile: any,
+    updateData: any,
     history: any
 }
 
@@ -75,6 +77,9 @@ class WizardImportForm extends React.Component<IWizardImportProps, IWizardImport
                 found=true;
             }
             index++;
+        }
+        if (!found){
+            this.props.updateData()
         }
     }
 
@@ -162,7 +167,10 @@ const mapStateToProps = ({importFileKinds}) => {
 }
 
 const mapDispatchToProps = addDispatch({
-    sendFile: ImportActions.sendFile
+    sendFile: ImportActions.sendFile,
+    // As fetch, merge all Data, but don't delete the old one, we can launch fetch.
+    // Update will replace all the data, which means reload all components
+    updateData: RawDataActions.fetch
 });
 
 const WizardImportLoading = restChain()

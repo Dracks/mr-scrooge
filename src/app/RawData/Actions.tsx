@@ -1,8 +1,7 @@
 import {
     fetchAction,
     jsonHeaders,
-    responseReloadAction,
-    whenComplete
+    responseReloadAction
 } from 'redux-api-rest'
 
 import * as moment from 'moment';
@@ -59,7 +58,7 @@ export const RawDataActions = {
 
 export const TagActions = {
     add: (rds, tag)=>{
-        return fetchAction('/api/raw-data/'+rds+'/link/', [ whenComplete(()=>RawDataActions.update()) ] as any, {
+        return fetchAction('/api/raw-data/'+rds+'/link/', RawDataResponseActions.single, {
             body: JSON.stringify({tag}),
             headers: jsonHeaders(),
             method: "POST"
@@ -67,7 +66,7 @@ export const TagActions = {
     },
     
     remove:(rds, tag)=>{
-        return fetchAction('/api/raw-data/'+rds+'/link/', whenComplete(()=>RawDataActions.update()), {
+        return fetchAction('/api/raw-data/'+rds+'/link/', RawDataResponseActions.single, {
             body: JSON.stringify({tag}),
             headers: jsonHeaders(),
             method: "DELETE",
