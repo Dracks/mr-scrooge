@@ -17,7 +17,7 @@ export const saveTag = (tag)=>{
 }
 
 export const applyFilters = (tag) => {
-    return fetchAction('/api/tag/'+tag.id+'/apply_filters/', [()=>RawDataActions.update()], {
+    return fetchAction('/api/tag/'+tag.id+'/apply_filters/', [(meta)=>!meta.isLoading && RawDataActions.update()], {
         method: 'POST'
     })
 }
