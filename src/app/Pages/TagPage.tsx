@@ -13,7 +13,7 @@ import { getPathElementName } from '../Utils';
 const TagPage = ({location, match, tags}) => {
     const basepath=match.url
     const tagsListLinks=tags.map((e)=>{
-        return <Menu.Item key={e.id}><Link to={basepath+'/'+e.id}>{e.name}</Link ></Menu.Item>;
+        return <Menu.Item key={'/'+e.id}><Link to={basepath+'/'+e.id}>{e.name}</Link ></Menu.Item>;
     })
     const l = getPathElementName(location, match);
     return (<SiderPage
