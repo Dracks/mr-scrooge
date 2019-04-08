@@ -1,3 +1,4 @@
+import { push } from 'connected-react-router';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { MultiPropsLoadingHOC, restChain } from 'redux-api-rest-hocs';
@@ -48,7 +49,7 @@ const mapStateToProps = ({tags, hashTags, filterTypes, tagsFilters}, {match}) =>
     const id=parseInt(match.params.id, 10)
     const l=tags.data.filter((e)=> e.id===id)
     const tag = l[0]
-    const filtersList = tagsFilters[tag.id]
+    const filtersList = tag && tagsFilters[tag.id]
     /* tslint:disable object-literal-sort-keys */
     return {
         tags: tags.data,
@@ -61,10 +62,10 @@ const mapStateToProps = ({tags, hashTags, filterTypes, tagsFilters}, {match}) =>
     /* tslint:enable */
 }
 
-const mapDispatchToProps = (dispatch)=>({
+const mapDispatchToProps = (dispatch, {basepath})=>({
     applyFilters: (tag) => dispatch(applyFilters(tag)),
     deleteFilter: (filter)=>dispatch(deleteFilter(filter)),
-    destroyTag: (tag, onDelete)=>dispatch(destroyTag(tag, onDelete)),
+    destroyTag: (tag)=>dispatch(destroyTag(tag, ()=>push(basepath))),
     loadFilters: ({types, tag})=>{
         if (!types){
             dispatch(fetchFiltersTypes())

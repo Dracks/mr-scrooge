@@ -40,9 +40,12 @@ const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form
         while(listChildren.length){
             const first = listChildren.shift()
             notShownListTags.push(first);
-            hashTags[first].children.forEach(e=>{
-                listChildren.push(e);
-            });
+            const lookingChildren = hashTags[first]
+            if (lookingChildren){
+                lookingChildren.children.forEach(e=>{
+                    listChildren.push(e);
+                });
+            }
         }
     }
 

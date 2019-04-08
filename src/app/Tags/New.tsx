@@ -1,5 +1,7 @@
+import { push } from 'connected-react-router';
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { MetaData } from 'redux-api-rest';
 
 import {saveTag} from './Actions';
 import Form from './Form';
@@ -20,6 +22,6 @@ const mapStateToProps = ({hashTags, tags})=>{
     }
 }
 
-export default connect(mapStateToProps, (dispatch)=>({
-    saveTag: (tag)=>dispatch(saveTag(tag)),
+export default connect(mapStateToProps, (dispatch, props: any)=>({
+    saveTag: (tag)=>dispatch(saveTag(tag, (meta:MetaData, data)=>!meta.isLoading && push(props.basepath+data.id))),
 }))(New)
