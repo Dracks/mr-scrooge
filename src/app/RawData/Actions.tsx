@@ -11,6 +11,7 @@ import { Action, ResponseTypesActions } from 'redux-api-rest/lib/Types';
 export const FETCH_RAW_DATA = "RAW_DATA_FETCH";
 
 const DATE_FORMAT_REQUEST = "YYYY-MM-DD"
+const DATE_PERIOD = window && window.localStorage && window.localStorage.getItem("fetchDatePeriod") || 3
 
 const fetchMore=(from:moment.Moment, cb: (to:moment.Moment)=>Action):ResponseTypesActions=>
     (meta:MetaData, data)=>{
@@ -32,7 +33,7 @@ export const RawDataResponseActions = {
 
 export const RawDataActions = {
     fetch: (to=moment())=>{
-        const from= to.clone().subtract(6, "months")
+        const from= to.clone().subtract(DATE_PERIOD, "months")
         return fetchAction('/api/raw-data/?from='+from.format(DATE_FORMAT_REQUEST)+'&to='+to.format(DATE_FORMAT_REQUEST), [
             FETCH_RAW_DATA,
             fetchMore(from, RawDataActions.fetch)
@@ -48,7 +49,7 @@ export const RawDataActions = {
         })
     },
     update: (to=moment())=>{
-        const from= to.clone().subtract(6, "months")
+        const from= to.clone().subtract(DATE_PERIOD, "months")
         return fetchAction('/api/raw-data/?from='+from.format(DATE_FORMAT_REQUEST)+'&to='+to.format(DATE_FORMAT_REQUEST), [
             RawDataResponseActions.reloadMultiple,
             fetchMore(from, RawDataActions.update)
