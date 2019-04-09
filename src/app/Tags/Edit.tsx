@@ -45,7 +45,12 @@ const isLoadingFilter = MultiPropsLoadingHOC(['filtersList', 'filterTypes']);
 const typesExtract = restChain().setProperty('types').build
 const filtersListExtract = restChain().setProperty('filtersList').build
 
-const mapStateToProps = ({tags, hashTags, filterTypes, tagsFilters}, {match}) => {
+interface IEditPublicProps {
+    match: any
+    basepath: string
+}
+
+const mapStateToProps = ({tags, hashTags, filterTypes, tagsFilters}, {match}: IEditPublicProps) => {
     const id=parseInt(match.params.id, 10)
     const l=tags.data.filter((e)=> e.id===id)
     const tag = l[0]
@@ -62,7 +67,7 @@ const mapStateToProps = ({tags, hashTags, filterTypes, tagsFilters}, {match}) =>
     /* tslint:enable */
 }
 
-const mapDispatchToProps = (dispatch, {basepath})=>({
+const mapDispatchToProps = (dispatch, {basepath}: IEditPublicProps)=>({
     applyFilters: (tag) => dispatch(applyFilters(tag)),
     deleteFilter: (filter)=>dispatch(deleteFilter(filter)),
     destroyTag: (tag)=>dispatch(destroyTag(tag, ()=>push(basepath))),
