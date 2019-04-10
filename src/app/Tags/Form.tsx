@@ -62,11 +62,15 @@ const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form
     }
 
     const submit = ()=>{
-        form.validateFields((err, tag2)=>{
-            if (!err){
-                saveTag(Object.assign(value, tag2))
-            }
-        })
+        // FIX-ME: It's a workarround, we tried with onFieldsChanged, 
+        // but crash everything
+        setTimeout(()=>{
+            form.validateFields((err, tag2)=>{
+                if (!err){
+                    saveTag(Object.assign(value, tag2))
+                }
+            })
+        }, 50);
     }
 
     return (
@@ -78,11 +82,12 @@ const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form
                         {...formLayout}
                         >
                         {getFieldDecorator('parent', {
-                            initialValue: tag.parent !== null ? ""+tag.parent : undefined,
+                            initialValue: tag.parent,
+                            onChange: submit,
                         })(
 
-                            <Select placeholder='No parent' onChange={submit}>
-                                {getOptions([{value:"No parent"}, ...parentList])}
+                            <Select>
+                                {getOptions([{value:"No parent", key:null}, ...parentList])}
                             </Select>
                         )}
                     </FormItem>
@@ -94,8 +99,9 @@ const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form
                         >
                         {getFieldDecorator('negate_conditional', {
                             initialValue: ""+tag.negate_conditional,
+                            onChange: submit,
                         })(
-                            <Select onChange={submit}>
+                            <Select>
                                 {getOptions(NEGATE_OPTIONS)}
                             </Select>
                         )}
@@ -111,6 +117,7 @@ const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form
                             rules: [
                                 { required: true, message: 'Is required a name' }
                             ],
+                            
                         })(
                             <Input placeholder="Name" type="text" onBlur={submit}/>
                         )}

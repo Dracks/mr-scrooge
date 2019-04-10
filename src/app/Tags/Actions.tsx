@@ -1,4 +1,4 @@
-import { deleteAction, fetchAction, responseReloadAction, saveAction } from 'redux-api-rest'
+import { deleteAction, fetchAction, responseReloadAction, saveAction, whenComplete } from 'redux-api-rest'
 import { MetaData } from 'redux-api-rest';
 import { ActionCallback } from 'redux-api-rest/lib/Types';
 import { RawDataActions } from '../RawData/Actions';
@@ -14,7 +14,7 @@ export const updateTags = ()=>{
 }
 
 export const saveTag = (tag, cb?: ActionCallback)=>{
-    return saveAction('/api/tag/:id/',[updateTags, cb], tag)
+    return saveAction('/api/tag/:id/',[whenComplete(updateTags), cb], tag)
 }
 
 export const applyFilters = (tag) => {
