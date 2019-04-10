@@ -10,7 +10,7 @@ const New = (props) => {
     return (
         <div>
             <h2> New tag </h2>
-            <Form value={{filters: [], children:[]}} {...props} />
+            <Form value={{filters: [], children:[], negate_conditional:false, parent:null}} {...props} />
         </div>
     )
 }
@@ -23,5 +23,5 @@ const mapStateToProps = ({hashTags, tags})=>{
 }
 
 export default connect(mapStateToProps, (dispatch, props: any)=>({
-    saveTag: (tag)=>dispatch(saveTag(tag, (meta:MetaData, data)=>!meta.isLoading && push(props.basepath+data.id))),
+    saveTag: (tag)=>dispatch(saveTag(tag, (meta:MetaData, data)=>!meta.isLoading && data && push(props.basepath+data.id))),
 }))(New)

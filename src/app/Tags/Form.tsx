@@ -24,8 +24,8 @@ const formLayout = {
 }
 
 const NEGATE_OPTIONS = [
-    {key: false, value: "cond1 or cond2 ..."},
-    {key: true, value: "not cond1 and not cond2 ..."}
+    {key: "false", value: "cond1 or cond2 ..."},
+    {key: "true", value: "not cond1 and not cond2 ..."}
 ]
 
 const FormItem = Form.Item;
@@ -78,11 +78,11 @@ const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form
                         {...formLayout}
                         >
                         {getFieldDecorator('parent', {
-                            initialValue: tag.parent,
+                            initialValue: tag.parent !== null ? ""+tag.parent : undefined,
                         })(
 
                             <Select placeholder='No parent' onChange={submit}>
-                                {getOptions(parentList)}
+                                {getOptions([{value:"No parent"}, ...parentList])}
                             </Select>
                         )}
                     </FormItem>
@@ -93,7 +93,7 @@ const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form
                         {...formLayout}
                         >
                         {getFieldDecorator('negate_conditional', {
-                            initialValue: tag.negate_conditional,
+                            initialValue: ""+tag.negate_conditional,
                         })(
                             <Select onChange={submit}>
                                 {getOptions(NEGATE_OPTIONS)}
@@ -112,7 +112,7 @@ const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form
                                 { required: true, message: 'Is required a name' }
                             ],
                         })(
-                            <Input placeholder="Name" type="text" value={tag.name} onBlur={submit}/>
+                            <Input placeholder="Name" type="text" onBlur={submit}/>
                         )}
                     </FormItem>
                 )}
