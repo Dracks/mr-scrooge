@@ -11,7 +11,6 @@ const debug = w.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
 
 
 
-
 export default (history:any)=>{
     return debug
         (applyMiddleware(logger, fetchMiddleware as any, routerMiddleware(history)))

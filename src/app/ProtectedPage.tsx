@@ -18,7 +18,7 @@ import Loading from '../components/network/Loading';
 import Contents from './Contents';
 import ImportActions from './Import/Actions';
 
-import MultiPropsLoadingMemo from 'src/utils/MultiPropsLoadingMemo';
+import MultiPropsLoadingMemo from 'src/utils/network/MultiPropsLoadingMemo';
 
 const isLoading = MultiPropsLoadingMemo([
     'allData',
