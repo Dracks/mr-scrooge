@@ -1,13 +1,15 @@
 import { push } from 'connected-react-router';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { MultiPropsLoadingHOC, restChain } from 'redux-api-rest-hocs';
+import { restChain } from 'redux-api-rest-hocs';
 
 import { WithNotFound} from '../../components/NotFound';
 import {applyFilters, destroyTag, saveTag} from './Actions';
 import { deleteFilter, fetchFilters, fetchFiltersTypes, saveFilter } from "./Filters/Actions";
 import TagsFilterTable from './Filters/TagsFilterTable';
 import Form from './Form';
+
+import MultiPropsLoadingMemo from 'src/utils/MultiPropsLoadingMemo';
 
 const CompleteForm = (props) => {
     /* tslint:disable object-literal-sort-keys */
@@ -40,7 +42,7 @@ const CompleteForm = (props) => {
 
 const NotFoundForm = WithNotFound(CompleteForm, 'value');
 
-const isLoadingFilter = MultiPropsLoadingHOC(['filtersList', 'filterTypes']);
+const isLoadingFilter = MultiPropsLoadingMemo(['filtersList', 'filterTypes']);
 
 const typesExtract = restChain().setProperty('types').build
 const filtersListExtract = restChain().setProperty('filtersList').build

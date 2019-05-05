@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { MultiPropsLoadingHOC, restChain } from 'redux-api-rest-hocs';
+import { restChain } from 'redux-api-rest-hocs';
 
 import { Layout } from 'antd';
 
@@ -18,7 +18,9 @@ import Loading from '../components/network/Loading';
 import Contents from './Contents';
 import ImportActions from './Import/Actions';
 
-const isLoading = MultiPropsLoadingHOC([
+import MultiPropsLoadingMemo from 'src/utils/MultiPropsLoadingMemo';
+
+const isLoading = MultiPropsLoadingMemo([
     'allData',
     'tags',
     'importFileKinds'
