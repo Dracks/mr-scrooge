@@ -8,6 +8,11 @@ import {eventHandler} from '../Utils';
 
 const FormItem = Form.Item;
 
+interface ILoginPublicProps {
+    login: (a:any)=>void
+    error: any
+}
+
 class NormalLoginForm extends React.Component<any> {
   public handleSubmit = eventHandler((e) => {
     this.props.form.validateFields((err, values) => {
@@ -54,4 +59,4 @@ class NormalLoginForm extends React.Component<any> {
 
 const LoginPage = Form.create()(NormalLoginForm);
 
-export default LoginPage
+export default LoginPage as React.ComponentType<ILoginPublicProps>
