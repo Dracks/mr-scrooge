@@ -6,13 +6,25 @@ import {
 } from 'antd';
 import * as React from 'react';
 
+import AntdFormHelper from 'src/utils/AntdForm';
 import { Danger, Primary } from '../../components/dessign/buttons'
 import { half, oneThird, twoThird } from '../../components/dessign/grid'
 
-// import MessageComponent from '../../components/Message';
-// import Input from '../../components/Input';
 import { getOptions } from '../../components/Select';
 import {eventHandler} from '../Utils';
+
+import { ITag } from 'src/types/data';
+
+type TagAction = (tag: ITag)=>void;
+
+interface ITagFormProps {
+    value: ITag,
+    saveTag: TagAction,
+    destroyTag: TagAction,
+    applyFilters: TagAction,
+    hashTags: {[id:string]:ITag},
+    tags: ITag[]
+}
 
 const formLayout = {
     labelCol: {
@@ -29,7 +41,8 @@ const NEGATE_OPTIONS = [
 ]
 
 const FormItem = Form.Item;
-const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form}) => {
+
+const GetTagForm = ({value, saveTag, destroyTag, applyFilters, hashTags, tags})=>({form}) => {
     const { getFieldDecorator } = form;
     const tag = value;
     const propsButtons = tag.id ? {} : {disabled:true};
@@ -134,6 +147,11 @@ const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form
     )
 }
 
-const f = Form.create()(FormTag)
+const FormHelper = AntdFormHelper()
+const FormTag = (props: ITagFormProps)=>(
+    <FormHelper>
+        {GetTagForm(props)}
+    </FormHelper>
+)
 
-export default f;
+export default FormTag
