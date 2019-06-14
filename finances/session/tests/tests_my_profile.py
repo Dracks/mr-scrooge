@@ -5,6 +5,7 @@ from rest_framework import status
 import json
 
 from finances.session.tests import get_user, User, PASSWORD_TEST
+from finances.session.rest_api import NOT_AUTHENTICATED_RESPONSE
 
 class MyProfileTest(TestCase):
     def setUp(self):
@@ -48,3 +49,11 @@ class MyProfileTest(TestCase):
         client = APIClient()
         response = client.get('/api/me/')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+    
+class SessionTest(TestCase):
+    def test_login(self):
+        client = APIClient()
+        data = { 'username': 'david', 'password': "peperoni"}
+        response = client.post('/api/session/', data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(NOT_AUTHENTICATED_RESPONSE, json.loads(response.content))
