@@ -7,8 +7,9 @@ This is the base repository, to clone and start it using docker.
 ## File formats suported
 Currently this application supports the following bank file formats:
 
-* Caixabanc Account and card Xls
+- Caixabanc Account and card Excel
 - N26 CSV file
+- MultiBank QIF File (Thanks to [Albert Sola](https://github.com/albertsola/))
 
 
 ## Demo
