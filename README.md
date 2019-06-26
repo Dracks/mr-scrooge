@@ -4,6 +4,12 @@ This is the base repository, to clone and start it using docker.
 ## Status
 ![https://travis-ci.org/Dracks/finances.svg?branch=master](https://travis-ci.org/Dracks/finances.svg?branch=master)
 
+## File formats suported
+Currently this application supports the following bank file formats:
+
+* Caixabanc Account and card Xls
+- N26 CSV file
+
 
 ## Demo
 You can run the docker image generated for the release inside her:
@@ -30,8 +36,31 @@ You can set the following environment variables:
 ![Data in desktop](/docs/images/4-Desktop-Data.png)
 [Data in mobile](/docs/images/4-Mobile-Data.png)
 
+## How to contribute
+
+1. Fork the branch develop of the part you wish to contribute (mrscrooge-server or mrscrooge-view). 
+2. Clone the server and the view repositories
+3. Run it
+
+### Run the server
+1. Make sure you have python3 available in your machine
+2. Install dependencies (Recomendable use of virtual env [tutorial sample](https://www.pythonforbeginners.com/basics/how-to-use-python-virtualenv)) with:
+```pip install -r requirements.txt```
+3. Run the tests
+```./manage.py test```
+4. Run the server
+```./manage.py runserver```
+
+### Run the view
+1. Make sure you have node 8.0 or superior
+2. Install dependencies:
+```yarn```
+or 
+```npm install ```
+3. Run the tests ```yarn test``` or ```npm test``` (It will run with a watcher, this means that don't stop after run the tests waiting for changes)
+4. Run the project ```yarn start``` or ```npm start```
+
 ## Thanks
-1. Marc Torrent: Who did a great introduction course to React in Privalia
-2. VisualPharm: The author of my current Logo (CC Attribution-NoDerivs)
+The current application icon is from VisualPharm 
 
 
