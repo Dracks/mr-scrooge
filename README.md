@@ -2,7 +2,7 @@
 This is the base repository, to clone and start it using docker.
 
 ## Status
-![https://travis-ci.org/Dracks/finances.svg?branch=master](https://travis-ci.org/Dracks/finances.svg?branch=master)
+![https://travis-ci.org/Dracks/mr-scrooge.svg?branch=master](https://travis-ci.org/Dracks/mr-scrooge.svg?branch=master)
 
 ## File formats suported
 Currently this application supports the following bank file formats:
