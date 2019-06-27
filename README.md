@@ -11,6 +11,8 @@ Currently this application supports the following bank file formats:
 - N26 CSV file
 - MultiBank QIF File (Thanks to [Albert Sola](https://github.com/albertsola/))
 
+(*) To create a new one, can you take a look at the changes from @AlbertSola to add the qif format [commit](https://github.com/Dracks/mr-scrooge-server/commit/630d6bafe99ba6cbbe29a92959a6954726cdcb88)
+
 
 ## Demo
 You can run the docker image generated for the release inside her:
