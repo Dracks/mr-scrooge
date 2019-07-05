@@ -1,10 +1,10 @@
 {
-  "name": "finances-react",
-  "version": "0.1.0",
+  "name": "mr-scrooge-view",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@types/react-loadable": "^5.4.1",
-    "antd": "3.6.4",
+    "antd": "^3.19.3",
     "chart.js": "^2.7.1",
     "connected-react-router": "^6.2.1",
     "moment": "^2.0.0",

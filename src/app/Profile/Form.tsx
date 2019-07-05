@@ -5,17 +5,20 @@ import * as React from 'react';
 import { Centered } from 'src/components/dessign/alignment';
 import { Primary } from 'src/components/dessign/buttons';
 import { half } from 'src/components/dessign/grid';
+import { ISession } from '../Session/types';
 import { eventHandler } from '../Utils';
+import { IUpdateProfileData } from './redux';
+
+import AntdFormHelper from 'src/utils/AntdForm';
 
 const FormItem = Form.Item
 
 export interface IProfileFormProps {
-    username: string
-    email: string
+    profile: ISession
+    save: (data: IUpdateProfileData) => void
 }
 
-const ProfileForm = ({profile, save, form})=>{
-    const { getFieldDecorator } = form;
+const SubForm = (profile: ISession, save: any) => ({form}) =>{
     const checkSecondPassword = (rule, value, callback) => {
         if (value && value !== form.getFieldValue('new-password')) {
           callback('Confirm password don\'t match new password');
@@ -30,6 +33,7 @@ const ProfileForm = ({profile, save, form})=>{
             }
         })
     }
+    const { getFieldDecorator } = form;
     return (
         <Form>
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
@@ -88,6 +92,17 @@ const ProfileForm = ({profile, save, form})=>{
             </Centered>
         </Form>
     )
+
 }
 
-export default Form.create()(ProfileForm)
+const FormHelper = AntdFormHelper();
+const ProfileForm = ({profile, save}: IProfileFormProps)=>{
+    const child = SubForm(profile, save);
+    return (
+        <FormHelper>
+            {child}
+        </FormHelper>
+    )
+}
+
+export default  ProfileForm
