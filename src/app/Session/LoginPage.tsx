@@ -1,26 +1,38 @@
 import * as React from 'react';
 
-import { Button, Col, Form, Icon, Input, Row } from 'antd';
+import { Col, Form, Icon, Input, Row } from 'antd';
 
-import {eventHandler} from '../Utils';
+import { Primary } from 'src/components/dessign/buttons';
+import { Error } from 'src/components/dessign/messages';
+import AntdFormHelper from 'src/utils/AntdForm';
+import { eventHandler } from '../Utils';
+
+type LoginAction = (params:{user:string, password:string})=>void
+interface ILoginProps {
+    login: LoginAction
+    error: any
+}
 
 const FormItem = Form.Item;
 
-class NormalLoginForm extends React.Component<any> {
-  public handleSubmit = eventHandler((e) => {
-    this.props.form.validateFields((err, values) => {
-        if (!err) {
-            this.props.login(values);
-        }
-    });
-  })
+const GetLoginForm = (login: LoginAction, error: any) => ({form})=>{
+    const handleSubmit = React.useCallback(eventHandler(()=>{
 
-  public render() {
-    const { getFieldDecorator } = this.props.form;
+        form.validateFields((err, values) => {
+            if (!err) {
+                // tslint:disable-next-line:no-console
+                console.log("Login with "+values);
+                login(values);
+            }
+        })
+    }), [form])
+    const { getFieldDecorator } = form;
+    const errorComponent = error && <Error title={error.code} message={error.description} /> || <div/>
     return (
         <Row type="flex" justify="center" align="middle">
             <Col  xs={20} sm={16} md={12} lg={10} xl={8} >
-                <Form onSubmit={this.handleSubmit} className="login-form">
+                {errorComponent}
+                <Form onSubmit={handleSubmit} className="login-form">
                     <FormItem>
                     {getFieldDecorator('user', {
                         rules: [{ required: true, message: 'Please input your username!' }],
@@ -36,17 +48,21 @@ class NormalLoginForm extends React.Component<any> {
                     )}
                     </FormItem>
                     <FormItem>
-                    <Button type="primary" htmlType="submit" className="login-form-button">
+                    <Primary htmlType="submit" className="login-form-button">
                         Log in
-                    </Button>
+                    </Primary>
                     </FormItem>
                 </Form>
             </Col>
       </Row>
     );
-  }
 }
 
-const LoginPage = Form.create()(NormalLoginForm);
+const FormHelper = AntdFormHelper();
+const LoginPage = ({login, error}: ILoginProps)=>(
+    <FormHelper>
+        {GetLoginForm(login, error)}
+    </FormHelper>
+)
 
 export default LoginPage

@@ -7,7 +7,7 @@ import { Primary } from '../../components/dessign/buttons';
 import { half } from '../../components/dessign/grid';
 import { Add } from '../../components/dessign/icons';
 
-import Loading from '../../components/Loading';
+import Loading from '../../components/network/Loading';
 import { addGraph, deleteGraph, fetchGraphs, saveGraphs } from '../Graphs/Actions';
 import { getGraphConfig, serializerConfig } from '../Graphs/Configs';
 import WrapGraph from '../Graphs/WrapGraph';

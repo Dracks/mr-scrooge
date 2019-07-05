@@ -6,21 +6,25 @@ import { Link, Route, Switch } from 'react-router-dom';
 import { AddCircle } from '../../components/dessign/icons';
 import SiderPage from '../../components/SiderPage';
 
+import addPropsHoc from 'src/utils/router/addPropsHoc';
 import EditTag from '../Tags/Edit';
 import NewTag from '../Tags/New';
 import { getPathElementName } from '../Utils';
 
 const TagPage = ({location, match, tags}) => {
-    const basepath=match.url
+    const basepath = match;
+
     const tagsListLinks=tags.map((e)=>{
-        return <Menu.Item key={e.id}><Link to={basepath+'/'+e.id}>{e.name}</Link ></Menu.Item>;
+        return <Menu.Item key={'/'+e.id}><Link to={basepath+e.id}>{e.name}</Link ></Menu.Item>;
     })
-    const l = getPathElementName(location, match);
+
+    const NewWithBasepath = addPropsHoc(NewTag, {basepath});
+    const EditWithBasepath = addPropsHoc(EditTag as any, {basepath});
     return (<SiderPage
         side={(
-            <Menu selectedKeys={[l]}>
+            <Menu selectedKeys={[location]}>
                 <Menu.Item key='/new'>
-                    <Link to={basepath+'/new'}>
+                    <Link to={basepath+'new'}>
                         <AddCircle />
                         Create
                     </Link>
@@ -31,20 +35,23 @@ const TagPage = ({location, match, tags}) => {
         content={(
             <Switch>
                 <Route
-                    path={basepath + "/new"}
-                    component={NewTag}/>
+                    path={basepath + "new"}
+                    component={NewWithBasepath}/>
 
                 <Route
-                    path={basepath + "/:id"}
-                    component={EditTag}/>
+                    path={basepath + ":id"}
+                    component={EditWithBasepath}/>
             </Switch>
 
         )}
     />)
 }
-const mapStateToProps = state => {
+
+const mapStateToProps = (state, {match, location}) => {
     return {
-        tags: state.tags.data
+        location: getPathElementName(location, match),
+        match: (match.url+'/').replace('//','/'),
+        tags: state.tags.data,
     }
 }
 export default connect(mapStateToProps)(TagPage)

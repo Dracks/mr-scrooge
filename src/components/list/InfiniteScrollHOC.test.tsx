@@ -21,6 +21,7 @@ describe('[Components/list/InfiniteScrollHOC]', ()=>{
         loadFnReceived = loadMore;
         hasMoreReceived = hasMore;
         othersReceived = others;
+        return <div />
     }
 
     beforeEach(()=>{

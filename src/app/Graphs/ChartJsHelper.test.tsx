@@ -1,4 +1,5 @@
 import ChartJsHelper from './ChartJsHelper';
+import { ColorCaseEnum } from './Lambdas';
 
 describe("[ChartJsHelper]", ()=>{
     let subject
@@ -23,7 +24,7 @@ describe("[ChartJsHelper]", ()=>{
     it('Apply colors', ()=>{
         const ret = subject.applyColors((e)=>{
             return {borderColor:e}
-        }).get();
+        }, ColorCaseEnum.dataset).get();
         expect(ret.datasets[0].borderColor).not.toBeNull();
     });
 })

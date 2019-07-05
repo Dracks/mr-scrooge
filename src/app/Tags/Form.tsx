@@ -6,13 +6,25 @@ import {
 } from 'antd';
 import * as React from 'react';
 
+import AntdFormHelper from 'src/utils/AntdForm';
 import { Danger, Primary } from '../../components/dessign/buttons'
 import { half, oneThird, twoThird } from '../../components/dessign/grid'
 
-// import MessageComponent from '../../components/Message';
-// import Input from '../../components/Input';
 import { getOptions } from '../../components/Select';
 import {eventHandler} from '../Utils';
+
+import { ITag } from 'src/types/data';
+
+type TagAction = (tag: ITag)=>void;
+
+interface ITagFormProps {
+    value: ITag,
+    saveTag: TagAction,
+    destroyTag: TagAction,
+    applyFilters: TagAction,
+    hashTags: {[id:string]:ITag},
+    tags: ITag[]
+}
 
 const formLayout = {
     labelCol: {
@@ -24,12 +36,13 @@ const formLayout = {
 }
 
 const NEGATE_OPTIONS = [
-    {key: false, value: "cond1 or cond2 ..."},
-    {key: true, value: "not cond1 and not cond2 ..."}
+    {key: "false", value: "cond1 or cond2 ..."},
+    {key: "true", value: "not cond1 and not cond2 ..."}
 ]
 
 const FormItem = Form.Item;
-const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form}) => {
+
+const GetTagForm = ({value, saveTag, destroyTag, applyFilters, hashTags, tags})=>({form}) => {
     const { getFieldDecorator } = form;
     const tag = value;
     const propsButtons = tag.id ? {} : {disabled:true};
@@ -40,9 +53,12 @@ const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form
         while(listChildren.length){
             const first = listChildren.shift()
             notShownListTags.push(first);
-            hashTags[first].children.forEach(e=>{
-                listChildren.push(e);
-            });
+            const lookingChildren = hashTags[first]
+            if (lookingChildren){
+                lookingChildren.children.forEach(e=>{
+                    listChildren.push(e);
+                });
+            }
         }
     }
 
@@ -59,11 +75,15 @@ const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form
     }
 
     const submit = ()=>{
-        form.validateFields((err, tag2)=>{
-            if (!err){
-                saveTag(Object.assign(value, tag2))
-            }
-        })
+        // FIX-ME: It's a workarround, we tried with onFieldsChanged, 
+        // but crash everything
+        setTimeout(()=>{
+            form.validateFields((err, tag2)=>{
+                if (!err){
+                    saveTag(Object.assign(value, tag2))
+                }
+            })
+        }, 50);
     }
 
     return (
@@ -76,10 +96,11 @@ const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form
                         >
                         {getFieldDecorator('parent', {
                             initialValue: tag.parent,
+                            onChange: submit,
                         })(
 
-                            <Select placeholder='No parent' onChange={submit}>
-                                {getOptions(parentList)}
+                            <Select>
+                                {getOptions([{value:"No parent", key:null}, ...parentList])}
                             </Select>
                         )}
                     </FormItem>
@@ -90,9 +111,10 @@ const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form
                         {...formLayout}
                         >
                         {getFieldDecorator('negate_conditional', {
-                            initialValue: tag.negate_conditional,
+                            initialValue: ""+tag.negate_conditional,
+                            onChange: submit,
                         })(
-                            <Select onChange={submit}>
+                            <Select>
                                 {getOptions(NEGATE_OPTIONS)}
                             </Select>
                         )}
@@ -108,8 +130,9 @@ const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form
                             rules: [
                                 { required: true, message: 'Is required a name' }
                             ],
+                            
                         })(
-                            <Input placeholder="Name" type="text" value={tag.name} onBlur={submit}/>
+                            <Input placeholder="Name" type="text" onBlur={submit}/>
                         )}
                     </FormItem>
                 )}
@@ -124,6 +147,11 @@ const FormTag = ({value, saveTag, destroyTag, applyFilters, hashTags, tags, form
     )
 }
 
-const f = Form.create()(FormTag)
+const FormHelper = AntdFormHelper()
+const FormTag = (props: ITagFormProps)=>(
+    <FormHelper>
+        {GetTagForm(props)}
+    </FormHelper>
+)
 
-export default f;
+export default FormTag

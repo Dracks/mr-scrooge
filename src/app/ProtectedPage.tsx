@@ -1,30 +1,39 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { MultiPropsLoadingHOC, withLoading } from 'redux-api-rest-hocs';
+import { restChain } from 'redux-api-rest-hocs';
 
 import { Layout } from 'antd';
 
 
-import { fetchRawData } from './RawData/Actions'
-import { logout } from './Session/Actions';
+import { RawDataActions } from './RawData/Actions'
+import SessionActions from './Session/Actions';
 import { fetchTags } from './Tags/Actions'
 
+import ErrorViewer from 'src/components/network/ErrorViewer';
+import { IStoreType } from 'src/reducers';
+import RouterSelectors from 'src/utils/router/selectors';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
-import Loading from '../components/Loading';
+import Loading from '../components/network/Loading';
 import Contents from './Contents';
+import ImportActions from './Import/Actions';
 
-const isLoading = MultiPropsLoadingHOC([
+import MultiPropsLoadingMemo from 'src/utils/network/MultiPropsLoadingMemo';
+
+const isLoading = MultiPropsLoadingMemo([
     'allData',
-    'tags'
+    'tags',
+    'importFileKinds'
 ])
 
-const mapStateToPropsHead = ({session}) => {
-    return {session}
+const mapStateToPropsHead = ({session, ...state}: IStoreType) => {
+    return {
+        pathname: RouterSelectors.pathname(state),
+        session: session.data,
+    }
 }
 
-const HeaderWithSession = withRouter(connect(mapStateToPropsHead, {logout})(Header) as any)
+const HeaderWithSession = connect(mapStateToPropsHead, {logout: SessionActions.logout})(Header) as any
 
 const mapStateToProps = state=>{
     return {
@@ -35,25 +44,29 @@ const mapStateToProps = state=>{
 const mapActionsToProps = (dispatch) => {
     return {
         load: ()=>{
-            dispatch(fetchRawData())
+            dispatch(RawDataActions.fetch())
             dispatch(fetchTags())
+            dispatch(ImportActions.getKinds())
         }
     }
 }
 
-const ContentswithLoading = withLoading(Contents, Loading, 'dataStatus', 'load');
+const ContentswithLoading = restChain()
+    .setProperty('dataStatus')
+    .setInitialize('load')
+    .withLoading(Loading)
+    .withError(ErrorViewer)
+    .build(Contents)
 const ContentsWithData = connect(mapStateToProps, mapActionsToProps)(ContentswithLoading)
 
-const ContentsWithRouter = withRouter(ContentsWithData as any)
-
-const App = (props) => {
+const App = (props: any) => {
     return (
         <Layout>
             <Layout.Header>
                 <HeaderWithSession />
             </Layout.Header>
             <Layout.Content>
-                <ContentsWithRouter />
+                <ContentsWithData />
             </Layout.Content>
             <Layout.Footer>
                 <Footer />

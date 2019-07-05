@@ -21,7 +21,7 @@ class WrapGraph extends Component<any, any> {
         this.changeOptions = this.changeOptions.bind(this);
         this.state={
             isEdit: props.edit || false,
-            options: props.options,
+            options: {...props.options},
         }
         this.cancel = this._cancel.bind(this);
         this.save = this._save.bind(this);
