@@ -3,7 +3,7 @@ This is the view of the application [MrScrooge](https://github.com/Dracks/mr-scr
 
 
 ## Status
-![https://travis-ci.org/Dracks/finances-react-view.svg?branch=master](https://travis-ci.org/Dracks/finances-react-view.svg?branch=master)
+![https://travis-ci.org/Dracks/mr-scrooge-view.svg?branch=master](https://travis-ci.org/Dracks/mr-scrooge-view.svg?branch=master)
 
 
 ## To Develop

@@ -1,6 +1,6 @@
 {
-  "name": "finances-react",
-  "version": "0.1.0",
+  "name": "mr-scrooge-view",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@types/react-loadable": "^5.4.1",
