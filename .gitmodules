@@ -1,6 +1,6 @@
 [submodule "server"]
 	path = server
-	url = https://github.com/Dracks/finances-server.git
+	url = https://github.com/Dracks/mr-scrooge-server.git
 [submodule "view"]
 	path = view
-	url = https://github.com/Dracks/finances-react-view.git
+	url = https://github.com/Dracks/mr-scrooge-view.git

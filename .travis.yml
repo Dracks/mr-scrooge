@@ -17,7 +17,7 @@ addons:
 
 install:
   - pip install -r server/requirements.txt
-  - (cd view; npm install)
+  - (cd view; rm -rf node_modules/*/.git; npm install)
 
 before_script:
   - (cd server; ./manage.py test)
