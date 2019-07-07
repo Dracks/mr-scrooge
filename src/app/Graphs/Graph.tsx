@@ -18,7 +18,8 @@ const hashDateRange = {
     month: 1,
     three: 3,
     six: 6,
-    year: 12
+    year: 12,
+    twoYears: 24,
 }
 /* tslint:enable */
 

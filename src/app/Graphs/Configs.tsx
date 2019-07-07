@@ -54,6 +54,7 @@ const DATE_RANGE = getSelectOptions('Range dates', 'Select a period of time', {
     three: getOption('Three months'),
     six: getOption('Half a year'),
     year: getOption('One year'),
+    twoYears: getOption("Two years"),
     all: getOption('All'),
 });
 

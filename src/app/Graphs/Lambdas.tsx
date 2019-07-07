@@ -1,7 +1,7 @@
 import * as moment from 'moment'
 
 /* tslint:disable object-literal-sort-keys */
-export const getRangeFilter=(months, reference)=>{
+export const getRangeFilter=(months:number, reference: Date)=>{
     const start = moment(reference).subtract(months-1, 'months').startOf('month').toDate();
     const end = moment(reference).endOf('month').toDate();
 
