@@ -4,11 +4,13 @@ const getGroupByLambda = (data, lambda)=>{
     const r = {}
     data.forEach(e=>{
         const key = lambda(e);
-        let group = r[key];
-        if (!group){
-            group = r[key] = [];
+        if (key){
+            let group = r[key];
+            if (!group){
+                group = r[key] = [];
+            }
+            group.push(e);
         }
-        group.push(e);
     })
     return r;
 }

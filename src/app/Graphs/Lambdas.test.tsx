@@ -24,9 +24,13 @@ describe("[Lambdas]", ()=>{
                 {id: 3, name: "Firefly"}
             ]
 
-            const result = data.map(subject.tags(tags))
+            let result = data.map(subject.tags(tags, true))
 
             expect(result).toEqual(['Dr Who', 'Farscape', 'Others', 'Dr Who', 'Firefly']);
+
+            result = data.map(subject.tags(tags, false))
+
+            expect(result).toEqual(['Dr Who', 'Farscape', false, 'Dr Who', 'Firefly']);
         });
     });
 

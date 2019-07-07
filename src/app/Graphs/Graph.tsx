@@ -36,7 +36,7 @@ const Graph = (props)=> {
     }
     let helper = new DataManager(data.map(e=>{
         return {date: e.date, value: e.value, tags: e.tags};
-    })).groupForGraph(groupLambdas[group.name](group.value), groupLambdas[horizontal.name](horizontal.value))
+    })).groupForGraph(groupLambdas[group.name](group.value, group.others), groupLambdas[horizontal.name](horizontal.value, horizontal.others))
         .reduceGroups(reduceLambdas.absSum)
         .toChartJs2Axis(sortLambdas[horizontal.name](horizontal.value))
         .applyColors(colorizeLambdas[kind], colorCase[kind])
