@@ -1,4 +1,6 @@
-import { ColorCaseEnum } from './Lambdas';
+import { ChartDataSets } from 'chart.js';
+
+import { ColorCaseEnum, ColorSelectorFn } from './Lambdas';
 
 export const OPTIONS_BEGIN_AT_ZERO = { scales: { yAxes: [{ ticks: { beginAtZero: true } }] } };
 export const OPTIONS_LEGEND_BOTTOM = { legend: {position: 'bottom'} };
@@ -19,31 +21,36 @@ const PREPROCESSED_COLORS_LIST = COLORS_LIST.map((color) => {
 });
 
 class ChartJsHelper {
-    constructor(private datasets, private labels){
+    constructor(private datasets: ChartDataSets[], private labels: Array<string | string[]>){
     }
 
     public acumulate(){
         this.datasets.forEach(e=>{
-            let acum = 0;
-            e.data = e.data.map(e1=>{
+            let acum :number = 0;
+            e.data = (e.data as number[]).map((e1)=>{
                 acum += e1;
-                return acum;
+                return acum as number;
             })
         });
         return this;
     }
 
-    public applyColors(colorize: any, colorCase: ColorCaseEnum){
+    public applyColors(colorize: any, colorCase: ColorCaseEnum, colorSelector:{group: ColorSelectorFn, horizontal: ColorSelectorFn}){
         const colorsKeys = Object.keys(colorize(""));
         if (colorCase === ColorCaseEnum.value){
             const dataset = this.datasets[0]
-            const colorsList = dataset.data.map((_,k)=>colorize(PREPROCESSED_COLORS_LIST[k]))
+            const colorsList = (dataset.data as number[]).map((_,k)=>{
+                const labelData = this.labels[k] as string
+                const selectedColor = colorSelector.horizontal(k, labelData)
+                return colorize(PREPROCESSED_COLORS_LIST[selectedColor])
+            })
             Object.keys(colorsList[0]).forEach((e)=>{
                 dataset[e] = colorsList.map((v)=>v[e])
             })
         } else if (this.datasets.length<20){
             this.datasets.forEach((e, k) => {
-                const colors = colorize(PREPROCESSED_COLORS_LIST[k])
+                const selectedColor = colorSelector.group(k, e.label)
+                const colors = colorize(PREPROCESSED_COLORS_LIST[selectedColor])
                 colorsKeys.forEach((field) => {
                     if (!e[field]) {
                         e[field] = colors[field]

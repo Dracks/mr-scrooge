@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { getRangeFilter, groupLambdas, sortLambdas } from './Lambdas';
+import { colorSelector, getRangeFilter, groupLambdas, sortLambdas } from './Lambdas';
 
 describe("[Lambdas]", ()=>{
 
@@ -33,6 +33,44 @@ describe("[Lambdas]", ()=>{
             expect(result).toEqual(['Dr Who', 'Farscape', false, 'Dr Who', 'Firefly']);
         });
     });
+
+    describe('ColorSelector', ()=>{
+        it('day', ()=>{
+            const subject = colorSelector.day
+            expect(subject(0, "")).toBe(0)
+            expect(subject(1, "")).toBe(1)
+        })
+
+        it("month", ()=>{
+            let allMonth = Array(12).fill(null).map((_, index)=>{
+                const d = new Date()
+                d.setMonth(index)
+                return {
+                    label: moment(d).format("YYY-MM"),
+                    month: index+1
+                }
+            })
+
+            allMonth= allMonth.reduce((ac, e)=>{
+                const index = Math.floor(Math.random()*ac.length)
+                ac.splice(index, 0, e)
+                return ac
+            }, [])
+
+            const subject = colorSelector.month
+
+            allMonth.forEach((v, index)=>{
+                const result = subject(index, v.label)
+                expect(result).toBe(v.month)
+            })
+        })
+        it('sign', ()=>{
+            const subject = colorSelector.sign
+
+            expect(subject(0, "income")).toBe(0)
+            expect(subject(0, "expenses")).toBe(1)
+        })
+    })
 
     describe('Range filter', ()=>{
         let subject

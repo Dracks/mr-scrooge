@@ -24,7 +24,7 @@ describe("[ChartJsHelper]", ()=>{
     it('Apply colors', ()=>{
         const ret = subject.applyColors((e)=>{
             return {borderColor:e}
-        }, ColorCaseEnum.dataset).get();
+        }, ColorCaseEnum.dataset, {group: (k)=>k, horizontal: (k)=>k}).get();
         expect(ret.datasets[0].borderColor).not.toBeNull();
     });
 })

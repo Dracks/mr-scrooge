@@ -8,10 +8,19 @@ export const getRangeFilter=(months, reference)=>{
     return e=>e.date >= start && e.date <= end
 }
 
-export const groupLambdas = {
+type GroupKeys = "month" | "day" | "sign" | "tags"
+type IGroupAbstract<T> = {
+    [key in GroupKeys]: T
+} & { 
+    identity?: T
+}
+
+type LabelSign = "expenses" | "income"
+
+export const groupLambdas :IGroupAbstract<(...args:any[])=>(e:any)=>string>= {
     month:()=>(e) => moment(e.date).format("YYYY-MM"),
     day:()=>(e)=>e.date.getDate(),
-    sign:()=>(e)=> e.value<0? "expenses":"income",
+    sign:()=>(e):LabelSign=> e.value<0? "expenses":"income",
     tags: (tagsList, others)=>{
         const othersKey = others ? "Others" : false
         return (e)=>{
@@ -27,6 +36,17 @@ export const groupLambdas = {
     identity: ()=>()=>{
         return "identity"
     },
+}
+
+const colorSelectorByIndex = (index:number)=>index
+export type ColorSelectorFn = (index:number, label:string)=>number
+export const colorSelector : IGroupAbstract<ColorSelectorFn>= {
+    month: (_:number, month: string)=>{
+        return parseInt(month.split('-')[1], 10)
+    },
+    day: colorSelectorByIndex,
+    sign: (_:number, label:LabelSign)=>label==="expenses"? 1 : 0,
+    tags: colorSelectorByIndex,
 }
 
 export const reduceLambdas = {

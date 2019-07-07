@@ -1,7 +1,15 @@
 import * as React from 'react';
 
 import { GraphComponentHash } from './Configs';
-import { colorCase, colorizeLambdas, getRangeFilter, groupLambdas, reduceLambdas, sortLambdas } from './Lambdas';
+import { 
+    colorCase, 
+    colorizeLambdas, 
+    colorSelector, 
+    getRangeFilter, 
+    groupLambdas, 
+    reduceLambdas, 
+    sortLambdas 
+} from './Lambdas';
 
 import DataManager from './DataManage';
 
@@ -39,7 +47,7 @@ const Graph = (props)=> {
     })).groupForGraph(groupLambdas[group.name](group.value, group.others), groupLambdas[horizontal.name](horizontal.value, horizontal.others))
         .reduceGroups(reduceLambdas.absSum)
         .toChartJs2Axis(sortLambdas[horizontal.name](horizontal.value))
-        .applyColors(colorizeLambdas[kind], colorCase[kind])
+        .applyColors(colorizeLambdas[kind], colorCase[kind], {group: colorSelector[group.name], horizontal: colorSelector[horizontal.name]})
     if (acumulative){
         helper = helper.acumulate();
     }
