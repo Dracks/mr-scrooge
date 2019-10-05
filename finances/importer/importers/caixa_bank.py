@@ -1,9 +1,9 @@
 import re
-
 from datetime import datetime
 
-from .abstract import AbstractImporter
 from ..parsers import ExcelSourceFile, HtmlSourceFile
+from .abstract import AbstractImporter, MapLocaleDateMixin, MapLocaleValueMixin
+
 
 class CaixaBankAccount(AbstractImporter):
     key = "caixa-bank/account"
@@ -24,7 +24,7 @@ class CaixaBankAccount(AbstractImporter):
         return ExcelSourceFile(file_name, 0, self._discard)
 
 
-class CaixaBankCard(CaixaBankAccount):
+class CaixaBankCard(CaixaBankAccount, MapLocaleValueMixin, MapLocaleDateMixin):
     key="caixa-bank/card"
 
     file_regex = 'lista_movimientos.*\.xls'
@@ -44,15 +44,18 @@ class CaixaBankCard(CaixaBankAccount):
     def _creator(self, file_name):
         return HtmlSourceFile(file_name, 1)
 
-    def build(self, data):
-        if "Operaciones" in data[0]:
+    def build(self, row):
+        if "Operaciones" in row[0]:
             return
-        data[1] = datetime.strptime(data[1], '%d/%m/%Y')
-        value = data[2]
-        match_value = self.exp.match(value).groups()
-        data[2] = - float(match_value[1].replace('.', '').replace(',', '.'))
-        while len(data)<6:
-            data.append(None)
-        data.append(match_value[0])
-        return super(CaixaBankAccount, self).build(data)
 
+        value = row[2]
+        match_value = self.exp.match(value).groups()
+        row[2] = "-"+match_value[1]
+
+        row = self.map_locale_value(row)
+        row = self.map_locale_date(row)
+
+        while len(row)<6:
+            row.append(None)
+        row.append(match_value[0])
+        return super(CaixaBankAccount, self).build(row)

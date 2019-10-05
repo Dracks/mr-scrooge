@@ -1,4 +1,5 @@
 from pyquery import PyQuery as pq
+
 from .abstract_file import AbstractSourceFile
 
 
@@ -15,6 +16,9 @@ class HtmlSourceFile(AbstractSourceFile):
         self.__rows = data('tr')
         self.__length = len(self.__rows)
 
+    def end(self):
+        self.location = self.__length -1
+
     def next(self):
         self.location +=1
         if self.location == self.__length:
@@ -22,5 +26,3 @@ class HtmlSourceFile(AbstractSourceFile):
         children = pq(self.__rows[self.location]).children()
         #row = map(lambda e: e.text.strip(), children)
         return list(map(get_text_stripped, children))
-
-
