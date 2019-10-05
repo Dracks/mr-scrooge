@@ -19,7 +19,6 @@ class TicketRestaurant(AbstractImporter):
         return CsvSourceFile(file_name, self._discard, delimiter=';')
 
     def build(self, data):
-
         tmp = datetime.strptime(data[0], "%d/%m/%Y %H:%M:%S")
         data[0] = tmp
         data[2] = float(data[2].replace('.','').replace(',','.'))

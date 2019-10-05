@@ -94,10 +94,9 @@ class StatusRowApiTest(TestCase):
             'raw_data': 1,
             'date': DATE_TEST.strftime("%Y-%m-%d")
         }
-        self.assertEquals(data, body_test)
+        self.assertEqual(data, body_test)
 
         response = self.client.post('/api/status-row/'+str_id+'/generate/')
         self.assertEqual(RawDataSource.objects.all().count(), 1)
 
 
-    

@@ -9,7 +9,7 @@ def get_text_stripped(e):
     return t
 
 class HtmlSourceFile(AbstractSourceFile):
-    def __init__(self,filename, discard):
+    def __init__(self, filename, discard):
         super(HtmlSourceFile, self).__init__(discard)
         data = pq(open(filename, encoding = "cp1252").read())
         self.__rows = data('tr')

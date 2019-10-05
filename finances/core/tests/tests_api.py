@@ -34,12 +34,12 @@ class RawDataSourceApiTest(TestCase):
         response = self.client.get('/api/raw-data/?from=2018-02-01&to=2018-02-03')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = json.loads(response.content)
-        self.assertEquals(len(data), 2)
+        self.assertEqual(len(data), 2)
 
         response = self.client.get('/api/raw-data/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = json.loads(response.content)
-        self.assertEquals(len(data), 3)
+        self.assertEqual(len(data), 3)
 
     def test_get_data_with_tags(self):
         response = self.client.get('/api/raw-data/1/')
