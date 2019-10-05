@@ -1,5 +1,5 @@
 from .abstract import AbstractImporter
-from .source_file import CsvSourceFile
+from ..parsers import CsvSourceFile
 
 class Number26(AbstractImporter):
     key = "n26/es"

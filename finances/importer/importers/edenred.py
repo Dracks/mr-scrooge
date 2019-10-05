@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from .abstract import AbstractImporter
-from .source_file import CsvSourceFile
+from ..parsers import CsvSourceFile
 
 class TicketRestaurant(AbstractImporter):
     key="edenred/ticket-restaurant"

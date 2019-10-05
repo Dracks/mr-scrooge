@@ -3,7 +3,7 @@ import re
 from datetime import datetime
 
 from .abstract import AbstractImporter
-from .source_file import ExcelSourceFile, HtmlSourceFile
+from ..parsers import ExcelSourceFile, HtmlSourceFile
 
 class CaixaBankAccount(AbstractImporter):
     key = "caixa-bank/account"

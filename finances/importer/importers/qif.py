@@ -1,6 +1,5 @@
-from finances.importer.parsers.qif_file import QifFile
+from ..parsers import QifFile
 from .abstract import AbstractImporter
-from .source_file import CsvSourceFile
 
 class Qif(AbstractImporter):
     key = "qif"
