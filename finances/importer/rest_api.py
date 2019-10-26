@@ -1,23 +1,24 @@
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, MultiPartParser
-from rest_framework import viewsets, status
-from rest_framework.decorators import list_route, detail_route
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-from .models import StatusReport, StatusReportRow
-from .serializers import StatusReportSerializer, StatusReportRowSerializer
 from finances.core.models import RawDataSource
-from finances.management.models import ValuesToTag, Tag
+from finances.management.models import Tag, ValuesToTag
 from finances.management.serializers import ValuesToTagSerializer
+
 from .importers import FORMAT_LIST
+from .models import StatusReport, StatusReportRow
+from .serializers import StatusReportRowSerializer, StatusReportSerializer
 
 
 class ImportViewSet(viewsets.ViewSet):
     parser_classes = (MultiPartParser, FormParser,)
-    
+
     permission_classes = (IsAuthenticated,)
 
-    @list_route(methods=['post'])
+    @action(methods=['post'], detail=False)
     def upload(self, request):
         data = self.request.data
         kind = data.get('kind')
@@ -34,18 +35,18 @@ class StatusReportViewSet(viewsets.ReadOnlyModelViewSet):
 
     permission_classes = (IsAuthenticated,)
 
-    @list_route(methods=['get'])
+    @action(methods=['get'], detail=False)
     def kinds(self, request):
         return Response(FORMAT_LIST.keys())
 
-    @list_route(methods=['get'])
+    @action(methods=['get'], detail=False)
     def file_regex(self, request):
         ret = {
             key: val.file_regex for (key, val) in FORMAT_LIST.items()
         }
         return Response(ret)
 
-    # Destroy the Status Report 
+    # Destroy the Status Report
     def destroy(self, request, pk=None):
         StatusReport.objects.get(pk=pk).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -57,13 +58,13 @@ class StatusReportRowViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (IsAuthenticated,)
 
     # Generate a raw data source
-    @detail_route(methods=['post'])
+    @action(methods=['post'], detail=True)
     def generate(self, request, pk=None):
         try:
             info = StatusReportRow.objects.get(pk=pk)
         except StatusReportRow.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        
+
         if info.raw_data is not None:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
@@ -79,4 +80,3 @@ class StatusReportRowViewSet(viewsets.ReadOnlyModelViewSet):
         info.raw_data = rds
         info.save()
         return Response(status=status.HTTP_201_CREATED)
-
