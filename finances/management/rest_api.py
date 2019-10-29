@@ -1,17 +1,18 @@
 from rest_framework import viewsets
-from rest_framework.decorators import detail_route, list_route
-from rest_framework.response import Response
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-from .models import Tag, Filter, FILTER_CONDITIONALS
-from .serializers import TagSerializer, FilterSerializer
+from .models import FILTER_CONDITIONALS, Filter, Tag
+from .serializers import FilterSerializer, TagSerializer
+
 
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (IsAuthenticated,)
 
-    @detail_route(methods=['post'])
+    @action(methods=['post'], detail=True)
     def apply_filters(self, request, pk=None):
         tag = self.get_object()
         data = tag.apply_filters()
@@ -23,6 +24,6 @@ class FilterViewSet(viewsets.ModelViewSet):
     filter_fields = ('tag', )
     permission_classes = (IsAuthenticated,)
 
-    @list_route(methods=['get'])
+    @action(methods=['get'], detail=False)
     def types(self, request):
         return Response(dict(FILTER_CONDITIONALS))

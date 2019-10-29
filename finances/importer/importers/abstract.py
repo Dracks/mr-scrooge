@@ -1,8 +1,11 @@
 import traceback
+from datetime import datetime
 
-from ..models import StatusReport, StatusReportRow, IMPORT_STATUS
 from finances.core.models import RawDataSource
 from finances.management.models import Tag
+
+from ..models import IMPORT_STATUS, StatusReport, StatusReportRow
+
 
 class AbstractImporter():
     key='abstract'
@@ -110,3 +113,23 @@ class AbstractImporter():
             status.description = traceback.format_exc()
             status.status = IMPORT_STATUS.ERROR
             status.save()
+
+
+class MapLocaleValueMixin:
+    def map_locale_value(self, row):
+        value_index = self._mapping['value']
+        row[value_index] = float(row[value_index].replace('.', '').replace(',', '.'))
+        return row
+
+class MapLocaleDateMixin:
+    def map_locale_date(self, row):
+        date_index_list = [self._mapping['date']]
+        date_value = self._mapping.get('date_value', None)
+
+        if date_value is not None:
+            date_index_list.append(date_value)
+
+        for date_index in date_index_list:
+            row[date_index] = datetime.strptime(row[date_index], '%d/%m/%Y')
+
+        return row

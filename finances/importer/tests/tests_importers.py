@@ -1,13 +1,13 @@
-from django.test import TestCase, TransactionTestCase
 import os
 
+from django.test import TestCase, TransactionTestCase
+
 from finances.core.models import RawDataSource
-from ..models import StatusReport, StatusReportRow, IMPORT_STATUS
-from ..importers import caixa_bank, n26
+from finances.management.models import Filter, FilterConditionals, Tag
 
-from finances.management.models import Tag, Filter, FilterConditionals
-
-from .classes.importer import TestAccount, SAMPLE_DATA
+from ..importers import caixa_bank, caixa_enginyers, n26
+from ..models import IMPORT_STATUS, StatusReport, StatusReportRow
+from .classes.importer import SAMPLE_DATA, TestAccount
 
 PATH = os.path.dirname(__file__)
 
@@ -23,8 +23,8 @@ class AbstractImportTest(TestCase):
 
     def test_insert(self):
         self.subject.run()
-        self.assertEquals(RawDataSource.objects.all().count(), 4)
-        self.assertEquals(StatusReportRow.objects.all().count(), 4)
+        self.assertEqual(RawDataSource.objects.all().count(), 4)
+        self.assertEqual(StatusReportRow.objects.all().count(), 4)
 
     def test_insert_with_tag(self):
         tag = Tag(name="Parent")
@@ -82,7 +82,7 @@ class CaixaBankCardTests(TransactionTestCase):
 
     def test_insert(self):
         self.subject.run()
-        self.assertEquals(RawDataSource.objects.all().count(), 4)
+        self.assertEqual(RawDataSource.objects.all().count(), 4)
         self.check_errors(IMPORT_STATUS.ERROR)
 
     def test_duplicated(self):
@@ -103,8 +103,8 @@ class CaixaBankCardTests(TransactionTestCase):
 
         self.subject.run()
 
-        self.assertEquals(RawDataSource.objects.all().count(), 4)
-        self.assertEquals(StatusReportRow.objects.all().filter(raw_data=None).count(), 2)
+        self.assertEqual(RawDataSource.objects.all().count(), 4)
+        self.assertEqual(StatusReportRow.objects.all().filter(raw_data=None).count(), 2)
         self.check_errors(IMPORT_STATUS.ERROR)
 
 
@@ -116,23 +116,78 @@ class N26Test(TransactionTestCase):
         t1 = Tag(name="Test tag")
         t1.save()
         f = Filter(
-            tag=t1, 
-            type_conditional=FilterConditionals.GREATER, 
+            tag=t1,
+            type_conditional=FilterConditionals.GREATER,
             conditional="0")
         f.save()
 
         self.subject.run()
         self.subject.apply_filters()
         rds = RawDataSource.objects.filter(date="2019-01-20").first()
-        self.assertEquals(rds.tags.count(), 1)
+        self.assertEqual(rds.tags.count(), 1)
 
 
     def test_insert(self):
         self.subject.run()
-        self.assertEquals(RawDataSource.objects.all().count(), 3)
-        queryTest = RawDataSource.objects.filter(date="2019-01-20")
-        self.assertEquals(queryTest.count(), 1)
-        test_value = queryTest.first()
-        self.assertEquals(test_value.value, 120)
-        self.assertEquals(test_value.movement_name, "Dr Who")
+        self.assertEqual(RawDataSource.objects.all().count(), 3)
+        query_test = RawDataSource.objects.filter(date="2019-01-20")
+        self.assertEqual(query_test.count(), 1)
+        test_value = query_test.first()
+        self.assertEqual(test_value.value, 120)
+        self.assertEqual(test_value.movement_name, "Dr Who")
 
+
+class CaixaEnginyers(TransactionTestCase):
+    def setUp(self):
+        self.subject = caixa_enginyers.CaixaEnginyersAccount('caixa_enginyers', PATH+"/resources/MovimientosCuenta.xls", 'test')
+
+    def tearDown(self):
+        RawDataSource.objects.all().delete()
+        StatusReportRow.objects.all().delete()
+        StatusReport.objects.all().delete()
+
+    def test_basic(self):
+        self.subject.run()
+        self.assertEqual(RawDataSource.objects.all().count(), 4)
+
+        query_test = RawDataSource.objects.filter(date="2019-08-04")
+        self.assertEqual(query_test.count(), 1)
+        test_value = query_test.first()
+        self.assertEqual(test_value.value, 1500)
+        self.assertEqual(test_value.movement_name, "Dr Who")
+        self.assertEqual(test_value.details, "Transfer")
+
+        query_test = RawDataSource.objects.filter(date="2019-11-09")
+        self.assertEqual(query_test.count(), 1)
+        test_value = query_test.first()
+        self.assertEqual(test_value.value, -2.88)
+        self.assertEqual(test_value.movement_name, "OPERACIÓ VIKINI")
+        self.assertEqual(test_value.details, "TARGETA *5019")
+
+        query_test = RawDataSource.objects.filter(date="2019-10-08")
+        self.assertEqual(query_test.count(), 1)
+        test_value = query_test.first()
+        self.assertEqual(test_value.value, -120)
+        self.assertEqual(test_value.movement_name, "AI DIOS NOS AYUDE")
+        self.assertEqual(test_value.details, "Bill")
+
+
+
+class CaixaEnginyersCredit(TransactionTestCase):
+    def setUp(self):
+        self.subject = caixa_enginyers.CaixaEnginyersCredit('caixa_enginyers', PATH+"/resources/MovimientosTarjetaCredito.xls", 'test')
+
+    def tearDown(self):
+        RawDataSource.objects.all().delete()
+        StatusReportRow.objects.all().delete()
+        StatusReport.objects.all().delete()
+
+    def test_basic(self):
+        self.subject.run()
+        self.assertEqual(RawDataSource.objects.all().count(), 1)
+
+        query_test = RawDataSource.objects.filter(date="2018-05-12")
+        self.assertEqual(query_test.count(), 1)
+        test_value = query_test.first()
+        self.assertEqual(test_value.value, -5.31)
+        self.assertEqual(test_value.movement_name, "PAYPAL *SOMEHOBBY")

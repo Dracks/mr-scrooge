@@ -1,13 +1,15 @@
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, MultiPartParser
-from rest_framework import viewsets, status
-from rest_framework.decorators import list_route, detail_route
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from finances.management.models import Tag, ValuesToTag
+from finances.management.serializers import ValuesToTagSerializer
 
 from .models import RawDataSource
 from .serializers import RawDataSerializer
-from finances.management.models import ValuesToTag, Tag
-from finances.management.serializers import ValuesToTagSerializer
+
 
 class RawDataSourceViewSet(viewsets.ReadOnlyModelViewSet, viewsets.mixins.CreateModelMixin):
     queryset = RawDataSource.objects.all()
@@ -23,8 +25,8 @@ class RawDataSourceViewSet(viewsets.ReadOnlyModelViewSet, viewsets.mixins.Create
             queryset = queryset.filter(date__range=(from_param, to_param))
         return queryset
 
-    @detail_route(methods=['delete', 'post'])
-    def description(self, request, pk=None):
+    @action(methods=['delete', 'post'], detail=True, url_path='description')
+    def desc(self, request, pk=None):
         rds = RawDataSource.objects.get(pk=pk)
         returnStatus = status.HTTP_202_ACCEPTED
 
@@ -37,7 +39,7 @@ class RawDataSourceViewSet(viewsets.ReadOnlyModelViewSet, viewsets.mixins.Create
         rds.save()
         return Response(RawDataSerializer(rds).data, status=returnStatus)
 
-    @detail_route(methods=['delete', 'post'])
+    @action(methods=['delete', 'post'], detail=True)
     def link(self, request, pk=None):
         rds = RawDataSource.objects.get(pk=pk)
         tag = request.data.get('tag')
@@ -50,7 +52,7 @@ class RawDataSourceViewSet(viewsets.ReadOnlyModelViewSet, viewsets.mixins.Create
         except ValuesToTag.DoesNotExist:
             tag = Tag.objects.get(pk=tag)
             link = ValuesToTag(raw_data_source=rds, tag=tag, automatic=0, enable = 0)
-        
+
         if request.method == 'DELETE' and link.enable == 1:
             link.enable = 0
         elif request.method == "POST" and link.enable == 0:

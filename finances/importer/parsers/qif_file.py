@@ -1,5 +1,4 @@
 from qifparse.parser import QifParser
-from finances.importer.importers.source_file import AbstractSourceFile
 
 
 def trans_to_dict(transaction):

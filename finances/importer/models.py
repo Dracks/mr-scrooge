@@ -1,5 +1,7 @@
 from django.db import models
+
 from finances.core import models as fc_models
+
 
 # Create your models here.
 class IMPORT_STATUS:
