@@ -1,11 +1,12 @@
-from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
-from rest_framework import viewsets, status, views
-from rest_framework.response import Response
-from rest_framework.decorators import list_route
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout as auth_logout
+from rest_framework import status, views, viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-from .serializers import UserSessionSerializer, ProfileSerializer
-
+from .serializers import ProfileSerializer, UserSessionSerializer
 
 NOT_AUTHENTICATED_RESPONSE = { "is_authenticated": False }
 
@@ -30,7 +31,7 @@ class SessionViewSet(viewsets.ViewSet):
         else:
             return Response(NOT_AUTHENTICATED_RESPONSE)
 
-    @list_route(methods=["DELETE"])
+    @action(methods=["delete"], detail=False)
     def logout(self, request, pk=None):
         auth_logout(request)
         return Response(NOT_AUTHENTICATED_RESPONSE)
@@ -65,4 +66,3 @@ class MyProfileEndpoint(views.APIView):
 
     def patch(self, request, format=None):
         return self.__save(request, True)
-

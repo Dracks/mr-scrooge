@@ -1,14 +1,15 @@
-from django.test import TestCase
-from rest_framework.test import APIClient
-from rest_framework import status
-
 import json
 import random
 from datetime import date
 
-from finances.session.tests import get_user
+from django.test import TestCase
+from rest_framework import status
+from rest_framework.test import APIClient
+
 from finances.core.models import RawDataSource
 from finances.management.models import Tag, ValuesToTag
+from finances.session.tests import get_user
+
 
 class RawDataSourceApiTest(TestCase):
     def setUp(self):
@@ -62,6 +63,12 @@ class RawDataSourceApiTest(TestCase):
         self.assertEqual(tagQuery.count(), 1)
         data = json.loads(response.content)
         self.assertEqual(len(data['tags']),1)
+
+    def test_link_deletion(self):
+        response = self.client.delete('/api/raw-data/{}/link/'.format(self.rds.pk), {"tag": self.tag.pk})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        linksQuery = ValuesToTag.objects.all().filter(raw_data_source=self.rds.pk, tag=self.tag.pk)
+        self.assertEqual(linksQuery.count(), 0)
 
     def test_description(self):
         response = self.client.post('/api/raw-data/{}/description/'.format(self.rds.pk), {
