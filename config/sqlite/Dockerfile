@@ -7,7 +7,7 @@ FROM ubuntu:16.04
 # Install required packages and remove the apt packages cache when done.
 
 RUN apt-get update && \
-    apt-get upgrade -y && \ 	
+    apt-get upgrade -y && \
     apt-get install -y \
 	git \
 	python3 \
@@ -30,9 +30,11 @@ COPY config/sqlite/supervisor-app.conf /etc/supervisor/conf.d/
 
 # add (the rest of) our code
 COPY server /home/django/
-COPY view/build /home/view/ 
+COPY view/build /home/view/
 
 RUN pip3 install -r /home/django/requirements.txt
+COPY config/sqlite/settings.py /home/django/finances
+RUN (cd /home/django;python3 manage.py collectstatic)
 
 # copy uswgi config
 COPY config/uwsgi* /home/django/

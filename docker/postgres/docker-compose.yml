@@ -1,0 +1,21 @@
+version: '3.1'
+
+services:
+  mrscrooge:
+    image: dracks/mrscrooge:1.1.0-postgres
+    depends_on:
+      - postgres
+    environment:
+      DEMOUSER: "user"
+      DEMOPWD: "pwd"
+    ports:
+      - 3333:80
+      - 3334:8000
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: mrscrooge
+

@@ -29,7 +29,6 @@ script:
   - docker tag dracks/mrscrooge:latest dracks/mrscrooge:${TRAVIS_TAG:-snapshot}
   - docker build -t dracks/mrscrooge:latest-postgres config/postgres/
   - docker tag dracks/mrscrooge:latest-postgres dracks/mrscrooge:${TRAVIS_TAG:-snapshot}-postgres
-  - docker build -t dracks/mrscrooge:${TRAVIS_TAG:-snapshot}-openshift config/openshift/
 
 before_deploy:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin
@@ -37,9 +36,8 @@ before_deploy:
 deploy:
   provider: script
   script: (
-    docker push dracks/mrscrooge:${TRAVIS_TAG:-snapshot} && 
-    docker push dracks/mrscrooge:${TRAVIS_TAG:-snapshot}-postgres &&
-    docker push dracks/mrscrooge:${TRAVIS_TAG:-snapshot}-openshift
+    docker push dracks/mrscrooge:${TRAVIS_TAG:-snapshot} &&
+    docker push dracks/mrscrooge:${TRAVIS_TAG:-snapshot}-postgres
     )
   on:
     tags: true

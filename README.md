@@ -30,6 +30,7 @@ You can set the following environment variables:
 - DEMODATA: Default false. this will create a random data with tags and graphs
 - DEMOUSER: default "demo". The username to create on the application
 - DEMOPWD: default "demo". The password for the user
+- ALLOWED_HOSTS: default "localhost". You can put a list of hosts separed with a comma character
 
 ## Screenshots MVP
 ### Home
@@ -42,7 +43,7 @@ You can set the following environment variables:
 
 ## How to contribute
 
-1. Fork the branch develop of the part you wish to contribute (mrscrooge-server or mrscrooge-view). 
+1. Fork the branch develop of the part you wish to contribute (mrscrooge-server or mrscrooge-view).
 2. Clone the server and the view repositories
 3. Run it
 
@@ -59,12 +60,12 @@ You can set the following environment variables:
 1. Make sure you have node 8.0 or superior
 2. Install dependencies:
 ```yarn```
-or 
+or
 ```npm install ```
 3. Run the tests ```yarn test``` or ```npm test``` (It will run with a watcher, this means that don't stop after run the tests waiting for changes)
 4. Run the project ```yarn start``` or ```npm start```
 
 ## Thanks
-The current application icon is from VisualPharm 
+The current application icon is from VisualPharm
 
 
