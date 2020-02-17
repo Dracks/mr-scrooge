@@ -108,35 +108,6 @@ class CaixaBankCardTests(TransactionTestCase):
         self.check_errors(IMPORT_STATUS.ERROR)
 
 
-class N26Test(TransactionTestCase):
-    def setUp(self):
-        self.subject = n26.Number26('n26', PATH + "/resources/n26_es.csv", 'test')
-
-    def test_filters(self):
-        t1 = Tag(name="Test tag")
-        t1.save()
-        f = Filter(
-            tag=t1,
-            type_conditional=FilterConditionals.GREATER,
-            conditional="0")
-        f.save()
-
-        self.subject.run()
-        self.subject.apply_filters()
-        rds = RawDataSource.objects.filter(date="2019-01-20").first()
-        self.assertEqual(rds.tags.count(), 1)
-
-
-    def test_insert(self):
-        self.subject.run()
-        self.assertEqual(RawDataSource.objects.all().count(), 3)
-        query_test = RawDataSource.objects.filter(date="2019-01-20")
-        self.assertEqual(query_test.count(), 1)
-        test_value = query_test.first()
-        self.assertEqual(test_value.value, 120)
-        self.assertEqual(test_value.movement_name, "Dr Who")
-
-
 class CaixaEnginyers(TransactionTestCase):
     def setUp(self):
         self.subject = caixa_enginyers.CaixaEnginyersAccount('caixa_enginyers', PATH+"/resources/MovimientosCuenta.xls", 'test')
@@ -191,3 +162,30 @@ class CaixaEnginyersCredit(TransactionTestCase):
         test_value = query_test.first()
         self.assertEqual(test_value.value, -5.31)
         self.assertEqual(test_value.movement_name, "PAYPAL *SOMEHOBBY")
+
+class N26Test(TransactionTestCase):
+    def setUp(self):
+        self.subject = n26.Number26('n26', PATH + "/resources/n26_es.csv", 'test')
+
+    def test_filters(self):
+        t1 = Tag(name="Test tag")
+        t1.save()
+        f = Filter(
+            tag=t1,
+            type_conditional=FilterConditionals.GREATER,
+            conditional="0")
+        f.save()
+
+        self.subject.run()
+        self.subject.apply_filters()
+        rds = RawDataSource.objects.filter(date="2019-01-20").first()
+        self.assertEqual(rds.tags.count(), 1)
+
+    def test_insert(self):
+        self.subject.run()
+        self.assertEqual(RawDataSource.objects.all().count(), 3)
+        query_test = RawDataSource.objects.filter(date="2019-01-20")
+        self.assertEqual(query_test.count(), 1)
+        test_value = query_test.first()
+        self.assertEqual(test_value.value, 120)
+        self.assertEqual(test_value.movement_name, "Dr Who")
