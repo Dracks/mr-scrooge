@@ -5,7 +5,7 @@ from django.test import TestCase, TransactionTestCase
 from finances.core.models import RawDataSource
 from finances.management.models import Filter, FilterConditionals, Tag
 
-from ..importers import caixa_bank, caixa_enginyers, n26
+from ..importers import caixa_bank, caixa_enginyers, n26, commerz_bank
 from ..models import IMPORT_STATUS, StatusReport, StatusReportRow
 from .classes.importer import SAMPLE_DATA, TestAccount
 
@@ -162,6 +162,49 @@ class CaixaEnginyersCredit(TransactionTestCase):
         test_value = query_test.first()
         self.assertEqual(test_value.value, -5.31)
         self.assertEqual(test_value.movement_name, "PAYPAL *SOMEHOBBY")
+
+class CommerzBank(TransactionTestCase):
+    def setUp(self):
+        self.subject = commerz_bank.CommerzBank('cb', PATH+"/resources/commerz_bank.CSV", 'test')
+
+    def test_basic(self):
+        self.subject.run()
+        self.assertEqual(StatusReport.objects.all().count(), 1)
+        # print(StatusReport.objects.first().description)
+        self.assertEqual(RawDataSource.objects.all().count(), 5)
+
+        query_test = RawDataSource.objects.filter(date='2019-05-02')
+        self.assertEqual(query_test.count(), 1)
+        test_value = query_test.first()
+        self.assertEqual(test_value.value, 256.01)
+        self.assertEqual(test_value.movement_name, "Concept and more concepts")
+
+        query_test = RawDataSource.objects.filter(date='2020-01-09')
+        self.assertEqual(query_test.count(), 1)
+        test_value = query_test.first()
+        self.assertEqual(test_value.value, -25)
+        self.assertEqual(test_value.movement_name, "Commerzbank 0321554")
+
+        query_test = RawDataSource.objects.filter(date='2020-02-09')
+        self.assertEqual(query_test.count(), 1)
+        test_value = query_test.first()
+        self.assertEqual(test_value.movement_name, "Commerzbank 0321554")
+
+        query_test = RawDataSource.objects.filter(date='2020-01-09')
+        self.assertEqual(query_test.count(), 1)
+        test_value = query_test.first()
+        self.assertEqual(test_value.movement_name, "ARAL Some address")
+
+        query_test = RawDataSource.objects.filter(date='2020-02-07')
+        self.assertEqual(query_test.count(), 1)
+        test_value = query_test.first()
+        self.assertEqual(test_value.movement_name, "BACKSTUBE WUENSCHE GMBH")
+
+
+        print(RawDataSource.objects.all())
+
+
+
 
 class N26Test(TransactionTestCase):
     def setUp(self):
