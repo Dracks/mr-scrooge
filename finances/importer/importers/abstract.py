@@ -122,6 +122,8 @@ class MapLocaleValueMixin:
         return row
 
 class MapLocaleDateMixin:
+    LOCAL_DATE_FORMAT = '%d/%m/%Y'
+
     def map_locale_date(self, row):
         date_index_list = [self._mapping['date']]
         date_value = self._mapping.get('date_value', None)
@@ -130,6 +132,6 @@ class MapLocaleDateMixin:
             date_index_list.append(date_value)
 
         for date_index in date_index_list:
-            row[date_index] = datetime.strptime(row[date_index], '%d/%m/%Y')
+            row[date_index] = datetime.strptime(row[date_index], self.LOCAL_DATE_FORMAT)
 
         return row
