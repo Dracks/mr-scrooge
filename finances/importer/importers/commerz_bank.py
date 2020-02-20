@@ -7,8 +7,8 @@ DATE_REGEX = re.compile('(\d{4})\-(\d{2})\-(\d{2})T\d{2}:\d{2}:\d{2}')
 class CommerzBank(AbstractImporter, MapLocaleDateMixin):
     LOCAL_DATE_FORMAT = "%d.%m.%Y"
 
-    key = "cbank"
-    file_regex = "Umsaetze_KtoNr*.\.CSV"
+    key = "commerz-bank"
+    file_regex = "Umsaetze_KtoNr.*\.CSV"
 
     _discard = 1
 
@@ -24,6 +24,10 @@ class CommerzBank(AbstractImporter, MapLocaleDateMixin):
         return CsvSourceFile(file_name, self._discard, delimiter=',')
 
     def split_message(self, message):
+        if message.startswith("Auszahlung"):
+            message = message[len("Auszahlung"):]
+        elif message.startswith("Kartenzahlung"):
+            message = message[len("Kartenzahlung"):]
         date_match = DATE_REGEX.search(message)
         end_index = message.find("End-to-End-Ref")
         if date_match is not None:
@@ -53,4 +57,6 @@ class CommerzBank(AbstractImporter, MapLocaleDateMixin):
         row.extend([movement_name, details, new_date])
 
         row = self.map_locale_date(row)
-        return super(CommerzBank, self).build(row)
+        data = super(CommerzBank, self).build(row)
+        data.value = float(data.value)
+        return data

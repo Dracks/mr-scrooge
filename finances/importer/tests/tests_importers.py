@@ -185,12 +185,12 @@ class CommerzBank(TransactionTestCase):
         self.assertEqual(test_value.value, -25)
         self.assertEqual(test_value.movement_name, "Commerzbank 0321554")
 
-        query_test = RawDataSource.objects.filter(date='2020-02-09')
+        query_test = RawDataSource.objects.filter(date='2020-01-07')
         self.assertEqual(query_test.count(), 1)
         test_value = query_test.first()
-        self.assertEqual(test_value.movement_name, "Commerzbank 0321554")
+        self.assertEqual(test_value.movement_name, "Backerei Sipl GmbH Fil.35 GIR 69036")
 
-        query_test = RawDataSource.objects.filter(date='2020-01-09')
+        query_test = RawDataSource.objects.filter(date='2020-02-09')
         self.assertEqual(query_test.count(), 1)
         test_value = query_test.first()
         self.assertEqual(test_value.movement_name, "ARAL Some address")
@@ -200,10 +200,19 @@ class CommerzBank(TransactionTestCase):
         test_value = query_test.first()
         self.assertEqual(test_value.movement_name, "BACKSTUBE WUENSCHE GMBH")
 
+    def test_filters(self):
+        t1 = Tag(name="Test tag")
+        t1.save()
+        f = Filter(
+            tag=t1,
+            type_conditional=FilterConditionals.GREATER,
+            conditional="0")
+        f.save()
 
-        print(RawDataSource.objects.all())
-
-
+        self.subject.run()
+        self.subject.apply_filters()
+        rds = RawDataSource.objects.filter(date="2019-05-02").first()
+        self.assertEqual(rds.tags.count(), 1)
 
 
 class N26Test(TransactionTestCase):
