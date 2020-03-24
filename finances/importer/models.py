@@ -10,9 +10,9 @@ class IMPORT_STATUS:
     ERROR = "e"
 
 IMPORT_STATUS.CHOICES = (
-    ( IMPORT_STATUS.OK, "Ok"),
-    ( IMPORT_STATUS.WARNING, "Warnings"),
-    ( IMPORT_STATUS.ERROR, "Error")
+    ( IMPORT_STATUS.OK, "Ok" ),
+    ( IMPORT_STATUS.WARNING, "Warnings" ),
+    ( IMPORT_STATUS.ERROR, "Error" )
 )
 
 class StatusReport(models.Model):
@@ -31,6 +31,6 @@ class StatusReport(models.Model):
         ordering = ('-date', )
 
 class StatusReportRow(fc_models.AbstractRawDataSource):
-    report = models.ForeignKey(StatusReport,on_delete=models.CASCADE, related_name="rows")
+    report = models.ForeignKey(StatusReport, on_delete=models.CASCADE, related_name="rows")
     raw_data = models.ForeignKey(fc_models.RawDataSource, on_delete=models.SET_NULL, null=True, blank=True)
     message = models.TextField()

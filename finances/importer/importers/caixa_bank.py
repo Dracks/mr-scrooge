@@ -24,6 +24,29 @@ class CaixaBankAccount(AbstractImporter):
         return ExcelSourceFile(file_name, 0, self._discard)
 
 
+class CaixaBankCard2020(CaixaBankAccount, MapLocaleDateMixin):
+    key = "caixa-bank/card2020"
+
+    file_regex = 'movimientos.*\.xls'
+
+    _mapping = {
+        'movement_name':1,
+        'date': 0,
+        'value': 3,
+        'details':2
+    }
+
+    # ToDo: Check with CaixaBank and repair this, it should be 1
+    _discard = 0
+
+    def build(self, row):
+        row[3] = -row[3]
+
+        row = self.map_locale_date(row)
+
+        return super(CaixaBankCard2020, self).build(row)
+
+
 class CaixaBankCard(CaixaBankAccount, MapLocaleValueMixin, MapLocaleDateMixin):
     key="caixa-bank/card"
 
@@ -58,4 +81,4 @@ class CaixaBankCard(CaixaBankAccount, MapLocaleValueMixin, MapLocaleDateMixin):
         while len(row)<6:
             row.append(None)
         row.append(match_value[0])
-        return super(CaixaBankAccount, self).build(row)
+        return super(CaixaBankCard, self).build(row)
