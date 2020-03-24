@@ -1,5 +1,6 @@
 import traceback
 from datetime import datetime
+import dateparser
 
 from finances.core.models import RawDataSource
 from finances.management.models import Tag
@@ -122,7 +123,8 @@ class MapLocaleValueMixin:
         return row
 
 class MapLocaleDateMixin:
-    LOCAL_DATE_FORMAT = '%d/%m/%Y'
+    LOCAL_DATE_FORMAT = ['%d/%m/%Y']
+    LOCAL_DATE_LANG = None
 
     def map_locale_date(self, row):
         date_index_list = [self._mapping['date']]
@@ -132,6 +134,6 @@ class MapLocaleDateMixin:
             date_index_list.append(date_value)
 
         for date_index in date_index_list:
-            row[date_index] = datetime.strptime(row[date_index], self.LOCAL_DATE_FORMAT)
+            row[date_index] = dateparser.parse(row[date_index], languages=self.LOCAL_DATE_LANG, date_formats=self.LOCAL_DATE_FORMAT)
 
         return row

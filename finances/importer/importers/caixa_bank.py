@@ -4,7 +4,53 @@ from datetime import datetime
 from ..parsers import ExcelSourceFile, HtmlSourceFile
 from .abstract import AbstractImporter, MapLocaleDateMixin, MapLocaleValueMixin
 
+class CaixaBankAbstract(AbstractImporter, MapLocaleDateMixin):
 
+    def build(self, row):
+        row = self.map_locale_date(row)
+        return super(CaixaBankAbstract, self).build(row)
+
+    def _creator(self, file_name):
+        return ExcelSourceFile(file_name, 0, self._discard)
+
+class CaixaBankAccount2020(CaixaBankAbstract):
+    key = "caixa-bank/account2020"
+
+    file_regex = 'Moviments\_compte\_.*\.xls'
+
+    _discard = 3
+
+    _mapping = {
+        'date': 0,
+        'movement_name': 1,
+        'details': 2,
+        'value': 3,
+    }
+
+    LOCAL_DATE_FORMAT = ['%d %b %Y']
+
+
+class CaixaBankCard2020(CaixaBankAbstract):
+    key = "caixa-bank/card2020"
+
+    file_regex = 'movimientos.*\.xls'
+
+    _mapping = {
+        'movement_name':1,
+        'date': 0,
+        'value': 3,
+        'details':2
+    }
+
+    _discard = 1
+
+    def build(self, row):
+        row[3] = -row[3]
+
+        return super(CaixaBankCard2020, self).build(row)
+
+
+# Deprecated, is an old file format
 class CaixaBankAccount(AbstractImporter):
     key = "caixa-bank/account"
 
@@ -22,30 +68,6 @@ class CaixaBankAccount(AbstractImporter):
 
     def _creator(self, file_name):
         return ExcelSourceFile(file_name, 0, self._discard)
-
-
-class CaixaBankCard2020(CaixaBankAccount, MapLocaleDateMixin):
-    key = "caixa-bank/card2020"
-
-    file_regex = 'movimientos.*\.xls'
-
-    _mapping = {
-        'movement_name':1,
-        'date': 0,
-        'value': 3,
-        'details':2
-    }
-
-    # ToDo: Check with CaixaBank and repair this, it should be 1
-    _discard = 0
-
-    def build(self, row):
-        row[3] = -row[3]
-
-        row = self.map_locale_date(row)
-
-        return super(CaixaBankCard2020, self).build(row)
-
 
 class CaixaBankCard(CaixaBankAccount, MapLocaleValueMixin, MapLocaleDateMixin):
     key="caixa-bank/card"

@@ -5,7 +5,7 @@ from ..parsers import CsvSourceFile
 DATE_REGEX = re.compile('(\d{4})\-(\d{2})\-(\d{2})T\d{2}:\d{2}:\d{2}')
 
 class CommerzBank(AbstractImporter, MapLocaleDateMixin):
-    LOCAL_DATE_FORMAT = "%d.%m.%Y"
+    LOCAL_DATE_FORMAT = ["%d.%m.%Y"]
 
     key = "commerz-bank"
     file_regex = "Umsaetze_KtoNr.*\.CSV"

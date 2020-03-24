@@ -24,10 +24,11 @@ class ExcelSourceFile(AbstractSourceFile):
         self.sheet = workbook.sheet_by_index(sheet)
 
     def next(self):
-        self.location += 1
 
         if self.location == self.sheet.nrows:
             raise StopIteration
 
         irow = self.sheet.row(self.location)
+        self.location += 1
+
         return list(map(mapping_excel, irow))
