@@ -68,6 +68,30 @@ class AbstractImportTest(TestCase):
 
         child.delete()
 
+class CaixaBankAccount2020Tests(TransactionTestCase):
+    def setUp(self):
+        self.subject = caixa_bank.CaixaBankAccount2020('caixabank', PATH+"/resources/caixabank-account2020.xls", 'test')
+
+    def test_insert(self):
+        self.subject.run()
+        self.assertEqual(RawDataSource.objects.all().count(), 3)
+
+        income = RawDataSource.objects.get(date="2020-02-28")
+        self.assertEqual(income.movement_name, "Income")
+        self.assertEqual(income.value, 25.00)
+
+class CaixaBankCard2020Tests(TransactionTestCase):
+    def setUp(self):
+        self.subject = caixa_bank.CaixaBankCard2020('caixabank', PATH+"/resources/caixabank-card2020.xls", 'test')
+
+    def test_insert(self):
+        self.subject.run()
+        self.assertEqual(RawDataSource.objects.all().count(), 3)
+
+        book_store = RawDataSource.objects.get(date="2020-02-10")
+        self.assertEqual(book_store.movement_name, "Alguna Llibreria")
+        self.assertEqual(book_store.value, -9.95)
+
 
 class CaixaBankCardTests(TransactionTestCase):
     def setUp(self):

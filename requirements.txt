@@ -6,3 +6,4 @@ xlrd==1.2.0
 lxml==4.4.0
 pyquery==1.4.0
 qifparse
+dateparser==0.7.4
