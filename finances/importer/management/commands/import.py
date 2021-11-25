@@ -1,6 +1,7 @@
+import os
 from django.core.management.base import BaseCommand, CommandError
 
-from finances.core.models import RawDataSource,
+from finances.core.models import RawDataSource
 from finances.importer.models import StatusReport, StatusReportRow
 from finances.management.models import ValuesToTag
 
@@ -16,7 +17,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         file_path = options.get('file')
-        file_name = os.path.basename(file)
+        file_name = os.path.basename(file_path)
         importer = FORMAT_LIST[options.get('format')](file_name, file_path, options.get('key'))
         importer.run()
         importer.apply_filters()
