@@ -11,8 +11,8 @@ class Number26(AbstractImporter):
         'movement_name': 1,
         'date': 0,
         'date_value': 0,
-        'value': 6,
-        'details': 4
+        'value': 5,
+        # 'details': 4
     }
 
     def _creator(self, file_name):

@@ -13,11 +13,11 @@ class CommerzBank(AbstractImporter, MapLocaleDateMixin):
     _discard = 1
 
     _mapping = {
-        'movement_name': 10,
-        'date': 12,
+        'movement_name': 9,
+        'date': 11,
         'date_value': 1,
         'value': 4,
-        'details': 11
+        'details': 10
     }
 
     def _creator(self, file_name):
@@ -38,7 +38,7 @@ class CommerzBank(AbstractImporter, MapLocaleDateMixin):
             slash_index = movement_name.find('/')
             details = None
             if slash_index>0:
-                details = movement_name[slash_index+1:].strip()
+                details = movement_name[slash_index+2:].strip()
                 movement_name = movement_name[:slash_index]
 
             return movement_name.strip(), details, date_info
