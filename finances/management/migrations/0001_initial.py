@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('enable', models.IntegerField(default=1)),
                 ('automatic', models.IntegerField()),
-                ('raw_data_source', models.ForeignKey(on_delete=None, to='importer.RawDataSource')),
+                ('raw_data_source', models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, to='importer.RawDataSource')),
                 ('tag', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='management.Tag')),
             ],
         ),
