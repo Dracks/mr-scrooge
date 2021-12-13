@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
   mrscrooge:
-    image: dracks/mrscrooge:1.1.0-postgres
+    image: dracks/mrscrooge:latest-postgres
     depends_on:
       - postgres
     environment:
