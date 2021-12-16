@@ -15,11 +15,11 @@ const RawTableView = ({header, rdsList, selectTagsList, setDescription,  removeT
         }
         return {
             date: moment(date).format("DD-MM-YYYY hh:mm:ss"),
-            description: (<DescriptionCell description={description} set={setDescriptionFn}/>),
+            description: (<DescriptionCell description={description || ""} set={setDescriptionFn}/>),
             kind,
             movement_name,
-            tags: (<TagCell 
-                rds={id} 
+            tags: (<TagCell
+                rds={id}
                 selectedTags = {tags}
                 {...{selectTagsList, addTag, removeTag}}/>
             ),

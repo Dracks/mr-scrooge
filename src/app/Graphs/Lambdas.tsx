@@ -1,29 +1,52 @@
 import * as moment from 'moment'
 
 /* tslint:disable object-literal-sort-keys */
-export const getRangeFilter=(months, reference)=>{
+export const getRangeFilter=(months:number, reference: Date)=>{
     const start = moment(reference).subtract(months-1, 'months').startOf('month').toDate();
     const end = moment(reference).endOf('month').toDate();
 
     return e=>e.date >= start && e.date <= end
 }
 
-export const groupLambdas = {
+type GroupKeys = "month" | "day" | "sign" | "tags"
+type IGroupAbstract<T> = {
+    [key in GroupKeys]: T
+} & { 
+    identity?: T
+}
+
+type LabelSign = "expenses" | "income"
+
+export const groupLambdas :IGroupAbstract<(...args:any[])=>(e:any)=>string>= {
     month:()=>(e) => moment(e.date).format("YYYY-MM"),
     day:()=>(e)=>e.date.getDate(),
-    sign:()=>(e)=> e.value<0? "expenses":"income",
-    tags: (tagsList)=>(e)=>{
-        const tags = e.tags;
-        return tagsList.reduce((ac, {id, name})=>{
-            if (!ac && tags.indexOf(id)>=0){
-                return name;
-            }
-            return ac;
-        }, null) || "Others";
+    sign:()=>(e):LabelSign=> e.value<0? "expenses":"income",
+    tags: (tagsList, others)=>{
+        const othersKey = others ? "Others" : false
+        return (e)=>{
+            const tags = e.tags;
+            return tagsList.reduce((ac, {id, name})=>{
+                if (!ac && tags.indexOf(id)>=0){
+                    return name;
+                }
+                return ac;
+            }, null) || othersKey;
+        }
     },
     identity: ()=>()=>{
         return "identity"
     },
+}
+
+const colorSelectorByIndex = (index:number)=>index
+export type ColorSelectorFn = (index:number, label:string)=>number
+export const colorSelector : IGroupAbstract<ColorSelectorFn>= {
+    month: (_:number, month: string)=>{
+        return parseInt(month.split('-')[1], 10)
+    },
+    day: colorSelectorByIndex,
+    sign: (_:number, label:LabelSign)=>label==="expenses"? 1 : 0,
+    tags: colorSelectorByIndex,
 }
 
 export const reduceLambdas = {

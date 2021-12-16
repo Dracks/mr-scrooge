@@ -1,7 +1,15 @@
 import * as React from 'react';
 
 import { GraphComponentHash } from './Configs';
-import { colorCase, colorizeLambdas, getRangeFilter, groupLambdas, reduceLambdas, sortLambdas } from './Lambdas';
+import { 
+    colorCase, 
+    colorizeLambdas, 
+    colorSelector, 
+    getRangeFilter, 
+    groupLambdas, 
+    reduceLambdas, 
+    sortLambdas 
+} from './Lambdas';
 
 import DataManager from './DataManage';
 
@@ -10,7 +18,8 @@ const hashDateRange = {
     month: 1,
     three: 3,
     six: 6,
-    year: 12
+    year: 12,
+    twoYears: 24,
 }
 /* tslint:enable */
 
@@ -36,10 +45,10 @@ const Graph = (props)=> {
     }
     let helper = new DataManager(data.map(e=>{
         return {date: e.date, value: e.value, tags: e.tags};
-    })).groupForGraph(groupLambdas[group.name](group.value), groupLambdas[horizontal.name](horizontal.value))
+    })).groupForGraph(groupLambdas[group.name](group.value, group.others), groupLambdas[horizontal.name](horizontal.value, horizontal.others))
         .reduceGroups(reduceLambdas.absSum)
         .toChartJs2Axis(sortLambdas[horizontal.name](horizontal.value))
-        .applyColors(colorizeLambdas[kind], colorCase[kind])
+        .applyColors(colorizeLambdas[kind], colorCase[kind], {group: colorSelector[group.name], horizontal: colorSelector[horizontal.name]})
     if (acumulative){
         helper = helper.acumulate();
     }

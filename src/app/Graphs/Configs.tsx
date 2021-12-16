@@ -42,7 +42,8 @@ const getGroupFunctions = (prefix, tags)=>{
         day: getOption('Day'),
         sign: getOption('Sign'),
         tags: getOption('Tags', {
-                [prefix+'_value']: getMultiSelectOptions('['+prefix+'] Tags', 'Select tags', tags, "int")
+                [prefix+'_value']: getMultiSelectOptions('['+prefix+'] Tags', 'Select tags', tags, "int"),
+                [prefix+'_hideOthers']: getBooleanOptions('['+prefix+'] Hide Others', {})
             }
         )
     };
@@ -53,6 +54,7 @@ const DATE_RANGE = getSelectOptions('Range dates', 'Select a period of time', {
     three: getOption('Three months'),
     six: getOption('Half a year'),
     year: getOption('One year'),
+    twoYears: getOption("Two years"),
     all: getOption('All'),
 });
 
@@ -95,15 +97,23 @@ export const getGraphConfig=(tags) => {
     }
 }
 
-export const serializerConfig = ({hashTags}) => ({tag, date_range, kind, group, horizontal, acumulative, group_value=[], horizontal_value=[]}) => {
+export const serializerConfig = ({hashTags}) => ({tag, date_range, kind, group, horizontal, acumulative, group_value=[], horizontal_value=[], group_hideOthers=false, horizontal_hideOthers=false}) => {
     if ( kind && group && horizontal && date_range){
         return {
             kind,
             date_range,
             tag,
             acumulative,
-            group: {name: group, value: group_value.map((e=>hashTags[e]))},
-            horizontal: {name: horizontal, value: horizontal_value.map((e=>hashTags[e]))}
+            group: {
+                name: group, 
+                value: group_value.map((e=>hashTags[e])),
+                others: !group_hideOthers
+            },
+            horizontal: {
+                name: horizontal, 
+                value: horizontal_value.map((e=>hashTags[e])),
+                others: !horizontal_hideOthers
+            }
         }
     }
 }
