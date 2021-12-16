@@ -38,18 +38,7 @@ jobs:
         with:
           submodules: true
 
-      # Login against a Docker registry except on PR
-      # https://github.com/docker/login-action
-      - name: Log into registry ${{ env.REGISTRY }}
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: dracks
-          password: ${{ secrets.DOCKER_TOKEN }}
-
-      -
-        name: Set up QEMU
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
           
       - uses: actions/setup-node@v2
@@ -90,9 +79,19 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           flavor: |
-            latest=auto
-            suffix=-postgres,onlatest=true
+            latest=false
+            suffix=-postgres
             prefix=
+
+      # Login against a Docker registry except on PR
+      # https://github.com/docker/login-action
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: dracks
+          password: ${{ secrets.DOCKER_TOKEN }}
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
@@ -116,7 +115,7 @@ jobs:
           file: ./config/postgres/Dockerfile
           platforms: ${{ env.PLATFORMS}}
           push: ${{ github.event_name != 'pull_request' }}
-          tags: "${{ steps.meta-postgres.outputs.tags }}"
+          tags: "${{ steps.meta-postgres.outputs.tags }},docker.io/dracks/mrscrooge:latest-postgres"
           labels: ${{ steps.meta-postgres.outputs.labels }}
 
 
