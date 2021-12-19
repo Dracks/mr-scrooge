@@ -6,6 +6,8 @@ from .abstract import AbstractImporter, MapLocaleDateMixin, MapLocaleValueMixin
 
 class CaixaBankAbstract(AbstractImporter, MapLocaleDateMixin):
 
+    _discard = 0
+
     def build(self, row):
         row = self.map_locale_date(row)
         return super(CaixaBankAbstract, self).build(row)
