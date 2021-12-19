@@ -2,6 +2,7 @@ Django==3.2.10
 django-filter==21.1
 django-mptt==0.13.4
 djangorestframework==3.12.4
+drf-yasg==1.20.0
 xlrd==2.0.1
 lxml==4.7.0
 pyquery==1.4.3

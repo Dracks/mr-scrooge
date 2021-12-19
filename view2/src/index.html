@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Mr Scrooge</title>
+
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png' %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon/favicon-16x16.png' %}">
+        <link rel="manifest" href="{% static 'favicon/site.webmanifest' %}">
+        <link rel="mask-icon" href="{% static 'favicon/safari-pinned-tab.svg' %}" color="#5bbad5">
+        <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}">
+        <meta name="msapplication-TileColor" content="#ffc40d">
+        <meta name="msapplication-config" content="{% static 'favicon/browserconfig.xml' %}">
+        <meta name="theme-color" content="#ffffff">
+
+        <!-- Load scss (css) files -->
+        <% for (item of htmlWebpackPlugin.files.css) { %>
+            <link href="{% static '<%= item %>' %}" rel='stylesheet'></link>
+        <% } %>
+    </head>
+
+    <!-- WIP: Webpack -->
+    <script>
+        __webpack_public_path__ = "{% static '' %}";
+        window.__webpack_public_path__ = __webpack_public_path__;
+    </script>
+
+    <!-- Load javascript files -->
+    <% for (item of htmlWebpackPlugin.files.js) { %>
+        <script src="{% static '<%= item %>' %}" type='text/javascript'></script>
+    <% } %>
+<body>
+    <div id='body'></div>
+</body>
+</html>
+
+<!--
+
+    <%= JSON.stringify(htmlWebpackPlugin.files, undefined, 4) %>
+-->

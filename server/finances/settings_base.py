@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_filters',
-    'rest_framework'
+    'rest_framework',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -59,7 +60,7 @@ ROOT_URLCONF = 'finances.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        "DIRS": ["finances/templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -124,6 +125,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
 # File uploads
 # https://docs.djangoproject.com/en/2.0/topics/http/file-uploads/#upload-handlers
 
@@ -135,4 +140,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'finances.session.authentication.CsrfExemptSessionAuthentication',
     )
+}
+
+## Swagger
+SWAGGER_SETTINGS = {
+   'DEFAULT_INFO': 'finances.swagger.schema_info',
 }

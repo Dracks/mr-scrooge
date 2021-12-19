@@ -1,0 +1,21 @@
+{
+    "moduleFileExtensions": [
+        "js",
+        "json",
+        "ts",
+        "tsx"
+    ],
+    "rootDir": "../src",
+    "testRegex": ".spec.tsx?$",
+    "transform": {
+        "^.+\\.tsx?$": "ts-jest"
+    },
+    "setupFilesAfterEnv": ["<rootDir>/../config/setupTests.js"],
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "jsdom",
+    "globals": {
+        "ts-jest": {
+          "tsConfig": "./config/tsconfig.json"
+        }
+    }
+}

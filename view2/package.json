@@ -1,0 +1,51 @@
+{
+  "name": "mrscrooge-view",
+  "version": "2.0.0",
+  "main": "index.js",
+  "author": "Jaume Singla Valls",
+  "license": "MIT",
+  "scripts": {
+    "build": "NODE_ENV=production webpack --config config/webpack.config.js",
+    "build:watch": "node config/webpack.run.js",
+    "build:watch-nodemon": "nodemon --config config/nodemon.json config/webpack.run.js",
+    "build:api-models": "openapi-typescript http://localhost:8000/api/swagger.json --output src/api/generated-models.ts",
+    "lint": "eslint src/**/*.{ts,tsx}",
+    "lint:fix": "eslint --fix 'src/**/*.{ts,tsx}'",
+    "format": "prettier --config .prettiercss --write 'src/**/*.scss'",
+    "format:fix": "prettier --write 'src/**/*.{ts,tsx}'",
+    "test": "jest --config config/jest.json",
+    "test:watch": "jest --config config/jest.json --watch"
+  },
+  "dependencies": {
+    "axios": "^0.24.0",
+    "axios-case-converter": "^0.9.0",
+    "axios-hooks": "^3.0.0",
+    "grommet": "^2.19.1",
+    "grommet-icons": "^4.7.0",
+    "html-webpack-plugin": "^5.5.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-i18next": "^11.15.1",
+    "react-router": "^6.2.1",
+    "react-router-dom": "^6.2.1",
+    "ts-loader": "^9.2.6"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.37",
+    "@types/react-router": "^5.1.17",
+    "@types/react-router-dom": "^5.3.2",
+    "css-loader": "^6.5.1",
+    "enzyme": "^3.11.0",
+    "eslint": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.27.1",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "mini-css-extract-plugin": "^2.4.5",
+    "node-sass": "^7.0.0",
+    "openapi-typescript": "^4.4.0",
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.4",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1"
+  }
+}

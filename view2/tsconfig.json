@@ -1,0 +1,15 @@
+{
+    "include": [
+        "src/"
+    ],
+    "compilerOptions": {
+        "sourceMap": true,
+        "strict": true,
+        "module": "commonjs",
+        "target": "es6",
+        "jsx": "react",
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true
+    }
+}
