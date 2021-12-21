@@ -5,7 +5,7 @@ import { ITagModel, Tag } from './tag'
 
 interface TagInputProps {
     value: ITagModel[]
-    onAdd: (a: ITagModel | { name: string }) => void
+    onAdd: (a: ITagModel) => void
     onChange?: (e: unknown) => void
     onRemove: (a: ITagModel) => void
     suggestions?: ITagModel[]
@@ -29,16 +29,9 @@ export const InputTag: React.FC<TagInputProps> = ({
         }
     }
 
-    const onAddTag = (tag: ITagModel | { name: string }) => {
+    const onAddTag = (tag: ITagModel) => {
         if (onAdd) {
             onAdd(tag)
-        }
-    }
-
-    const onEnter = () => {
-        if (currentTag.length) {
-            onAddTag({ name: currentTag })
-            setCurrentTag('')
         }
     }
 
@@ -50,7 +43,6 @@ export const InputTag: React.FC<TagInputProps> = ({
         ))
 
     return (
-        <Keyboard onEnter={onEnter}>
             <Box
                 direction="row"
                 align="center"
@@ -66,15 +58,16 @@ export const InputTag: React.FC<TagInputProps> = ({
                         plain
                         dropTarget={boxRef.current!}
                         {...rest}
-                        suggestions={suggestions?.map(tag => ({label: tag.name, value: tag.name}))?? []}
+                        suggestions={suggestions?.filter(tag => tag.name.toLowerCase().includes(currentTag.toLowerCase())).map(tag => ({label: tag.name, value: tag.id}))?? []}
                         onChange={updateCurrentTag as any}
                         value={currentTag}
-                        onSuggestionSelect={(event) =>
-                            onAddTag(event.suggestion)
+                        onSuggestionSelect={(event) =>{
+                            const {value, label} : {value: number, label: string} = event.suggestion
+                            onAddTag({id: value, name: label})
+                        }
                         }
                     />
                 </Box>
             </Box>
-        </Keyboard>
     )
 }

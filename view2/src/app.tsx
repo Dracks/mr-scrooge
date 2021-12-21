@@ -8,24 +8,30 @@ import { usePostLogin } from './api/client/session/use-post-login'
 import { AxiosError } from 'axios'
 import Login from './contents/session/login'
 import RestrictedContent from './contents/restricted-content'
+import { UserSession } from './api/client/session/types'
+import { UserSessionContext } from './contents/session/context'
+import { useDeleteLogout } from './api/client/session/use-delete-logout'
 
 interface SessionStatus {
     loading: boolean
     error?: AxiosError | null
-    data?: boolean
+    data?: Partial<UserSession>
 }
 
 const App: React.FC<{}> = () => {
-    const [sessionRequest, refetch] = useGetSession()
+    const [sessionRequest, reloadSession] = useGetSession()
     const [loginStatus, useLogin] = usePostLogin()
+    const [, logout] = useDeleteLogout()
 
     const [sessionStatus, setSession] = React.useState<SessionStatus>({
         loading: sessionRequest.loading,
     })
     React.useEffect(() => {
+        console.log(sessionRequest.data)
+
         setSession({
             loading: sessionRequest.loading,
-            data: sessionRequest.data?.isAuthorized,
+            data: sessionRequest.data,
             error: sessionRequest.error,
         })
     }, [sessionRequest])
@@ -34,7 +40,7 @@ const App: React.FC<{}> = () => {
         useLogin({data: { user, password }}).then((response) => {
             setSession({
                 ...sessionStatus,
-                data: response.data?.isAuthenticated,
+                data: response.data,
             })
         })
     }
@@ -42,8 +48,18 @@ const App: React.FC<{}> = () => {
     if (sessionStatus.loading){
         return <LoadingPage />
     } else if (!sessionStatus.error) {
-        if (sessionStatus.data){
-            return <RestrictedContent reloadSession={()=>{refetch()}}/>
+        if (sessionStatus.data && sessionStatus.data.isAuthenticated){
+            return <UserSessionContext.Provider
+                value={{
+                    ...(sessionStatus.data as UserSession),
+                    logout: async () => {
+                        await logout()
+                        reloadSession()
+                    },
+                }}
+            >
+                <RestrictedContent/>
+            </UserSessionContext.Provider>
         } else {
             return <Login
                     isLoading={loginStatus.loading}
@@ -54,31 +70,6 @@ const App: React.FC<{}> = () => {
     } else {
         return <div>Error: {sessionStatus.error?.name}</div>
     }
-
-    //const [, logout] = useLogOutMutation()
-
-    /*
-    if (sessionStatus.loading) {
-        return <LoadingPage />
-    } else {
-        if (sessionStatus.data) {
-            return (
-                <UserSessionContext.Provider
-                    value={{
-                        ...sessionStatus.data,
-                        logout: async () => {
-                            await logout()
-                            const { data: _data, ...sess } = sessionStatus
-                            setSession(sess)
-                        },
-                    }}
-                >
-                    <RestrictedContent />
-                </UserSessionContext.Provider>
-            )
-        }
-        
-    }*/
 }
 
 export default App

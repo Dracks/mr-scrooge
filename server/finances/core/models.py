@@ -16,6 +16,12 @@ class AbstractRawDataSource(models.Model):
 class RawDataSource(AbstractRawDataSource):
     kind=models.CharField(max_length=255)
     description = models.TextField(default=None, null=True, blank=True)
+    page_key = models.CharField(max_length=255, default='')
+    
+    def save(self, *args, **kwargs):
+        if not self.page_key:
+            self.page_key = f"{self.date};{self.pk}"
+        super(RawDataSource, self).save(*args, **kwargs)
 
     def __str__(self):
         parent = AbstractRawDataSource.__str__(self)
@@ -23,6 +29,7 @@ class RawDataSource(AbstractRawDataSource):
 
     class Meta:
         indexes = [
-            models.Index(fields=['kind', 'movement_name', 'date', 'value'])
+            models.Index(fields=['kind', 'movement_name', 'date', 'value']),
+            models.Index(fields=['page_key']),
         ]
         ordering = ('-date', '-date_value', 'movement_name')

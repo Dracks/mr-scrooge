@@ -9,4 +9,5 @@ def api_views(router):
     router.register('import', rest_api.ImportViewSet, basename='import')
 
 urlpatterns = [
+    path('api/kind/', rest_api.KindEndpoint.as_view())
 ]

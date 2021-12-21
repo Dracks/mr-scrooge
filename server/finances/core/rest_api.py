@@ -1,28 +1,36 @@
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from finances.management.models import Tag, ValuesToTag
-from finances.management.serializers import ValuesToTagSerializer
 
 from .models import RawDataSource
 from .serializers import RawDataSerializer
+from ..common.custom_pagination import CustomCursorPagination
+
+
+class RdsPagination(CustomCursorPagination):
+    page_size = 20
+    page_size_query_param = 'page_size'
+    max_page_size = 10000
+    ordering = '-date'
 
 
 class RawDataSourceViewSet(viewsets.ReadOnlyModelViewSet, viewsets.mixins.CreateModelMixin):
     queryset = RawDataSource.objects.all()
     serializer_class = RawDataSerializer
-
+    pagination_class = RdsPagination
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         queryset = RawDataSource.objects.all()
         from_param = self.request.query_params.get('from', None)
         to_param = self.request.query_params.get('to', None)
+
         if from_param is not None or to_param is not None:
             queryset = queryset.filter(date__range=(from_param, to_param))
+        
         return queryset
 
     @action(methods=['delete', 'post'], detail=True, url_path='description')

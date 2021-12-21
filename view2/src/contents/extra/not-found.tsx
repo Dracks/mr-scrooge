@@ -4,7 +4,7 @@ import React from 'react'
 const NotFound = () => (
     <Box
         direction="column"
-        border={{ color: 'brand', size: 'large' }}
+        border={{ color: 'brand', size: 'small' }}
         pad="medium"
     >
         <Heading>Not Found</Heading>

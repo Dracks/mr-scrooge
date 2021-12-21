@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from .models import StatusReport, StatusReportRow
-from finances.management.models import ValuesToTag, Tag
 
 
 class StatusReportSerializer(serializers.ModelSerializer):
@@ -13,3 +12,8 @@ class StatusReportRowSerializer(serializers.ModelSerializer):
     class Meta:
         model = StatusReportRow
         fields = ('id', 'movement_name', 'date', 'date_value', 'details', 'value', 'message', 'raw_data')
+
+class KindSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    regex = serializers.CharField()
+    

@@ -8,7 +8,7 @@
     "build": "NODE_ENV=production webpack --config config/webpack.config.js",
     "build:watch": "node config/webpack.run.js",
     "build:watch-nodemon": "nodemon --config config/nodemon.json config/webpack.run.js",
-    "build:api-models": "openapi-typescript http://localhost:8000/api/swagger.json --output src/api/generated-models.ts",
+    "build:api-models": "openapi-typescript http://localhost:8000/api/schema/ --output src/api/generated-models.ts",
     "lint": "eslint src/**/*.{ts,tsx}",
     "lint:fix": "eslint --fix 'src/**/*.{ts,tsx}'",
     "format": "prettier --config .prettiercss --write 'src/**/*.scss'",
@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@types/react": "^17.0.37",
+    "@types/react-dom": "^17.0.11",
     "@types/react-router": "^5.1.17",
     "@types/react-router-dom": "^5.3.2",
     "css-loader": "^6.5.1",
@@ -44,6 +45,7 @@
     "node-sass": "^7.0.0",
     "openapi-typescript": "^4.4.0",
     "prettier": "^2.5.1",
+    "type-fest": "^2.8.0",
     "typescript": "^4.5.4",
     "webpack": "^5.65.0",
     "webpack-cli": "^4.9.1"

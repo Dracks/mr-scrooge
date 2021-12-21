@@ -5,24 +5,34 @@ from rest_framework import status, views, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+#from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema, extend_schema_view
 
 from .serializers import ProfileSerializer, UserSessionSerializer
 
 NOT_AUTHENTICATED_RESPONSE = { "is_authenticated": False }
 
+@extend_schema_view(
+    serializer = UserSessionSerializer
+)
 class SessionViewSet(viewsets.ViewSet):
     """
     It's a custom api to identify a user, and set the session via cookie
     """
 
     #serializer_class = SessionSerializer
-
+    @extend_schema(responses={
+        200: UserSessionSerializer(many=True)
+    })
     def list(self, request):
         if request.user.is_authenticated:
             return Response(UserSessionSerializer(request.user).data)
         else:
             return Response(NOT_AUTHENTICATED_RESPONSE)
 
+    @extend_schema(responses={
+        201: UserSessionSerializer(many=True)
+    })
     def create(self, request):
         user = authenticate(request, username=request.data.get('user'), password=request.data.get('password'))
         if user and user.is_active:
@@ -36,6 +46,9 @@ class SessionViewSet(viewsets.ViewSet):
         auth_logout(request)
         return Response(NOT_AUTHENTICATED_RESPONSE)
 
+@extend_schema_view(
+    serializer = ProfileSerializer
+)
 class MyProfileEndpoint(views.APIView):
     """
     Manage my profile, it requires less permissions to manage that User, but the modifications should be limited

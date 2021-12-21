@@ -30,6 +30,12 @@
     <% for (item of htmlWebpackPlugin.files.js) { %>
         <script src="{% static '<%= item %>' %}" type='text/javascript'></script>
     <% } %>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
 <body>
     <div id='body'></div>
 </body>

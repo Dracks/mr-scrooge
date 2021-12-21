@@ -1,15 +1,9 @@
 import useAxios, { UseAxiosResult } from "axios-hooks"
-import { useCallback } from "react"
+import { GetSessionResponse, LoginParams } from "./types"
 
-export interface LoginParams {
-    user: string, 
-    password: string
-}
-
-export const usePostLogin = (): UseAxiosResult<{isAuthenticated: boolean}, LoginParams> => {
+export const usePostLogin = (): UseAxiosResult<GetSessionResponse, LoginParams> => {
     return useAxios({
         url: '/session/',
         method: 'POST'
     }, { manual: true })
-
 }

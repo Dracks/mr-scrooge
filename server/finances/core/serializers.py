@@ -1,4 +1,6 @@
 from rest_framework import serializers
+#from drf_yasg.utils import swagger_serializer_method
+from typing import List
 
 from .models import RawDataSource
 from finances.management.models import ValuesToTag, Tag
@@ -7,7 +9,7 @@ from finances.management.models import ValuesToTag, Tag
 class RawDataSerializer(serializers.ModelSerializer):
     tags = serializers.SerializerMethodField()
 
-    def get_tags(self, rds):
+    def get_tags(self, rds)-> List[int]:
         data = ValuesToTag.objects.filter(raw_data_source=rds, enable=1)
         return [ e.tag.pk for e in data ]
 

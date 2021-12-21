@@ -2,7 +2,7 @@ import React from 'react'
 
 export interface UserSession {
     email: string
-    user: string
+    username: string
     firstName?: string
     lastName?: string
     logout: () => Promise<void>

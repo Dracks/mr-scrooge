@@ -1,16 +1,17 @@
-from rest_framework import status, viewsets
+from rest_framework import status, views, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from drf_spectacular.utils import extend_schema_view
+
 from finances.core.models import RawDataSource
-from finances.management.models import Tag, ValuesToTag
-from finances.management.serializers import ValuesToTagSerializer
+from rest_framework.serializers import ListSerializer
 
 from .importers import FORMAT_LIST
 from .models import StatusReport, StatusReportRow
-from .serializers import StatusReportRowSerializer, StatusReportSerializer
+from .serializers import StatusReportRowSerializer, StatusReportSerializer, KindSerializer
 
 
 class ImportViewSet(viewsets.ViewSet):
@@ -80,3 +81,24 @@ class StatusReportRowViewSet(viewsets.ReadOnlyModelViewSet):
         info.raw_data = rds
         info.save()
         return Response(status=status.HTTP_201_CREATED)
+
+
+
+@extend_schema_view(
+    serializer = KindSerializer
+)
+class KindEndpoint(views.APIView):
+    resource_name = 'kind'
+
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request):
+        data = [
+            {
+                "name": key,
+                "regex": value.file_regex,
+            }
+            for (key, value) in FORMAT_LIST.items()
+        ]
+        return Response(KindSerializer(data, many=True ,context={'request': request, 'resource_name': 'kind'}).data)
+

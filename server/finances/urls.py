@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
+from rest_framework.schemas import get_schema_view
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+
 
 
 from .core import urls as core_urls
@@ -23,7 +26,6 @@ from .importer import urls as importer_urls
 from .management import urls as management_urls
 from .session import urls as session_urls
 from .graphs import urls as graphs_urls
-from finances.swagger import schema_view
 from .views import react_view
 
 router = DefaultRouter()
@@ -34,13 +36,14 @@ management_urls.api_views(router)
 session_urls.api_views(router)
 graphs_urls.api_views(router)
 
-print(react_view)
-
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/swagger/', schema_view.with_ui('swagger', cache_timeout=0)),
-    re_path(r'^api/swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    path('api/',include(router.urls)),
-    re_path('^.*$', react_view),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    path('api/', include(router.urls)),
 ]
 urlpatterns.extend(session_urls.urlpatterns)
+urlpatterns.extend(importer_urls.urlpatterns)
+
+urlpatterns.append(re_path('^.*$', react_view))

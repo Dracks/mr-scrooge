@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios'
-import { Box, Heading, TextInput, Button } from 'grommet'
+import { Box, Heading, TextInput, Button, Keyboard } from 'grommet'
 import React from 'react'
 
 import { ErrorsCode } from '../../utils/errors'
@@ -33,13 +33,15 @@ const Login = ({ login, isLoading }: LoginProps) => {
                     value={username}
                     onChange={(event) => setUsername(event.target.value)}
                 />
-                <TextInput
-                    placeholder="password"
-                    title="Password"
-                    type="password"
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                />
+                <Keyboard onEnter={()=> login(username, password)}>
+                    <TextInput
+                        placeholder="password"
+                        title="Password"
+                        type="password"
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
+                    />
+                </Keyboard>
                 <Button
                     onClick={() => login(username, password)}
                     disabled={isLoading}
