@@ -11,12 +11,14 @@ interface IDescriptionCellProps {
 }
 
 const getOnChange = (set: SetType)=>
-    (event:ChangeEvent<HTMLTextAreaElement>)=>
-        set(event.target.value)
+    (event:ChangeEvent<HTMLTextAreaElement>)=>{
+        const { value } = event.target
+        set(value === ''? undefined : value)
+    }
 
 
 const DescriptionCell = (props: IDescriptionCellProps)=>(
-    <TextArea style={{width:"100%"}} value={props.description} onBlur={getOnChange(props.set)}/>
+    <TextArea style={{width:"100%"}} defaultValue={props.description ?? ''} onBlur={getOnChange(props.set)}/>
 )
 
 
