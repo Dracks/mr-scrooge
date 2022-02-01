@@ -27,8 +27,6 @@ const App: React.FC<{}> = () => {
         loading: sessionRequest.loading,
     })
     React.useEffect(() => {
-        console.log(sessionRequest.data)
-
         setSession({
             loading: sessionRequest.loading,
             data: sessionRequest.data,

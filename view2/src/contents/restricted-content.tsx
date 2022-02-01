@@ -6,13 +6,14 @@ import NotFound from './extra/not-found'
 import Headers from './headers'
 import { RawDataList } from './raw-data-list/raw-data-list'
 import { DataProvider } from './common/data-provider'
+import { Imports } from './imports/imports'
 
 const RestrictedContent: React.FC = () => (
     <DataProvider>
         <Headers />
         <Main>
             <Routes>
-                <Route path="/import" element={} />
+                <Route path="/import/*" element={<Imports />} />
                 <Route path="/movement" element={<RawDataList />} /> 
                 <Route path="*" element={<NotFound />} />
             </Routes>
