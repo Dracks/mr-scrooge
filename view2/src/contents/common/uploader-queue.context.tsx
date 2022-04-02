@@ -1,5 +1,6 @@
 import React from 'react';
 import { usePostUploadFile } from '../../api/client/imports/use-post-upload-file';
+import { EventTypes, useEventEmitter } from '../../utils/providers/event-emitter.provider';
 
 import { FileStatus, IFileData } from '../imports/types';
 
@@ -23,6 +24,7 @@ export const useUploadQueue = ()=>React.useContext(UploadQueueContext)
 
 export const ProvideUploadQueue: React.FC = ({children})=> {
     const {sendFile} = usePostUploadFile()
+    const eventEmitter = useEventEmitter()
     const [counter, setCounter] = React.useState<number>(0)
     const [files, setFiles] = React.useState<Array<IFileData>>([])
     const [uploading, setUploading] = React.useState(false)
@@ -34,19 +36,22 @@ export const ProvideUploadQueue: React.FC = ({children})=> {
                 setFiles([...files])
             }
     }
-    console.log(sendFile)
 
 
     const context: UploadQueueType = {
         files,
         onAdd: (newFiles)=> {
+            if (uploading){
+                throw new Error('You cannot add files while uploading others')
+            }
+
             const newObjFiles = newFiles.map((fileData, idx) => ({
                 ...fileData,
                 status: FileStatus.load,
                 id: idx+counter
             }))
             setCounter(counter + newObjFiles.length)
-            setFiles([...files, ...newObjFiles])
+            setFiles([...files.filter(({status})=>status === FileStatus.load), ...newObjFiles])
         },
         onChangeKind: (fileId, kind) => {
             change(fileId, {kind})
@@ -56,13 +61,16 @@ export const ProvideUploadQueue: React.FC = ({children})=> {
             for await (const fileData of files){
                 change(fileData.id, {status: FileStatus.uploading})
                 const response = await sendFile(fileData.kind, fileData.file)
+
                 if (response.status === 200){
                     change(fileData.id, {status: FileStatus.upload})
+                    eventEmitter.emit(EventTypes.OnFileUploaded)
                 } else {
                     change(fileData.id, {status: FileStatus.error})
                 }
             }
             setUploading(false)
+            eventEmitter.emit(EventTypes.OnQueueUploadFinish)
         },
         uploading
     }

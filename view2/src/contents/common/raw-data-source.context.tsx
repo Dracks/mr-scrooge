@@ -3,6 +3,7 @@ import { RawDataSource } from "../../api/client/raw-data-source/types"
 import { useGetPaginatedRawDataSource } from "../../api/client/raw-data-source/use-get-paginated-rawdatasource"
 import { Tag } from "../../api/client/tag/types"
 import ErrorHandler from "../../api/helpers/request-error.handler"
+import { EventTypes, useEventEmitter } from "../../utils/providers/event-emitter.provider"
 import { useTagContext } from "./tag.context"
 
 export type RdsEnriched = Omit<RawDataSource, 'tags'> & {
@@ -31,9 +32,11 @@ const replaceOrAdd = (state: RdsEnriched[], stateIndexes: number[])=>(rds: RdsEn
 
 export const ProvideRdsData : React.FC= ({children})=>{
     const [state, setState] = React.useState<{data: RdsEnriched[], index: number[]}>({data: [], index: []})
+    const eventEmitter = useEventEmitter()
     const tags = useTagContext()
     const query = useGetPaginatedRawDataSource()
     const enrichRds = (rds: RawDataSource) => ({...rds, tags: rds.tags.map(tagId => tags.find(({id}) => id === tagId) as Tag)})
+
     React.useEffect(()=>{
         if (!query.loading && query.results && !query.error){
             const newState = [...state.data]
@@ -47,6 +50,13 @@ export const ProvideRdsData : React.FC= ({children})=>{
             }
         } 
     }, [query.loading, query.results])
+
+    React.useEffect(()=>{
+        const unSubscribe = eventEmitter.subscribe(EventTypes.OnQueueUploadFinish, ()=>{query.reset()})
+
+        return unSubscribe
+    })
+    
     if (query.error){
         return <ErrorHandler error={query.error} />
     } else {

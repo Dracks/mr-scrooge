@@ -6,7 +6,7 @@ import { useGetKinds } from '../../../api/client/imports/use-get-kind';
 import { FileUploadQueue } from '../../../utils/ui/upload-queue';
 import { FileStatus, IFileData } from '../types';
 import { ImportFileRow } from './import-file-row';
-import { useUploadQueue } from '../../common/uploader-queue'
+import { useUploadQueue } from '../../common/uploader-queue.context'
 
 
 
