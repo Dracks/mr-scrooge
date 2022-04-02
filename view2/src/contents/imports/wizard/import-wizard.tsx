@@ -6,41 +6,40 @@ import { useGetKinds } from '../../../api/client/imports/use-get-kind';
 import { FileUploadQueue } from '../../../utils/ui/upload-queue';
 import { FileStatus, IFileData } from '../types';
 import { ImportFileRow } from './import-file-row';
+import { useUploadQueue } from '../../common/uploader-queue'
 
 
-const useUploadFileQueue = ( kind: Kind[])=>{
-    const regexCompiled = React.useMemo(()=>kind.map(k=>({name: k.name, regex: new RegExp(k.regex)})),[kind])
-    const [files, setFiles] = React.useState<Array<IFileData>>([])
 
-    const onAdd = (newFiles : File[])=> {
-        const newFilesCompiled = newFiles.map(file=>({
-            file, 
-            kind: regexCompiled.find(rx => rx.regex.test(file.name))?.name ?? 'Unknown', 
-            status: FileStatus.load
-        }))
-        setFiles([...files, ...newFilesCompiled])
-    }
-
+const useKindWithRegex = ()=>{
+    const [kindResponse] = useGetKinds()
+    const kindList = kindResponse.data ?? []
+    const regexCompiled = React.useMemo(()=>kindList.map(k=>({name: k.name, regex: new RegExp(k.regex)})),[kindList])
     return {
-        files, 
-        onAdd,
+        kindList,
+        findKind: (fileName: string) => regexCompiled.find(rx => rx.regex.test(fileName))?.name ?? 'Unknown'
     }
 }
 
 export const ImportWizard: React.FC = ()=> {
-    const [kindResponse] = useGetKinds()
-    const kindList = kindResponse.data ?? []
-    const {files, onAdd} = useUploadFileQueue(kindList)
+    const {files, onAdd, onChangeKind, submit, uploading} = useUploadQueue()
+    const {kindList, findKind} = useKindWithRegex()
+    console.log(files)
+
     return <Box fill align="center" justify="center">
         <Heading level='2'>
             Import Files
         </Heading>
-        <FileUploadQueue label='Upload files' onAdd={onAdd}/>
+        {!uploading && <FileUploadQueue label='Upload files' onAdd={(files) => onAdd(files.map(file => ({file, kind: findKind(file.name)})))}/>}
         <Box >
             {files.map((data, idx)=>
-                <ImportFileRow fileData={data} onRemove={()=>undefined} onKindSwitch={(kind)=>console.log(kind)} kindsList={kindList}/>
+                <ImportFileRow 
+                    key={idx}
+                    fileData={data} 
+                    onRemove={()=>undefined} 
+                    onKindSwitch={(kind)=>onChangeKind(data.id, kind)} 
+                    kindsList={kindList}/>
             )}
         </Box>
-        <Button><DocumentUpload/></Button>
+        <Button disabled={uploading} onClick={submit}><DocumentUpload/></Button>
     </Box>
 }

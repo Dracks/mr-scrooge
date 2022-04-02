@@ -10,7 +10,7 @@ export const usePostUploadFile = () => {
         }
     }, {manual: true})
     return {
-        submit: (kind: string, file: File):Promise<AxiosResponse> => {
+        sendFile: (kind: string, file: File):Promise<AxiosResponse> => {
             const form = new FormData();
             form.append('kind', kind)
             form.append('file', file, file.name)

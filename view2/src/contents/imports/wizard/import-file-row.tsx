@@ -28,7 +28,7 @@ export const ImportFileRow: React.FC<ImportFileRowArgs> = ({fileData, kindsList,
         <Select
             options={kindsList.map(kind=>kind.name)}
             value={fileData.kind}
-            onChange={onKindSwitch}
+            onChange={(event) => onKindSwitch(event.value)}
             />
         
         <Status />

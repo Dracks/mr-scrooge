@@ -6,6 +6,7 @@ export enum FileStatus {
 }
 
 export interface IFileData {
+    id: number
     kind: string
     file: File
     status: FileStatus
