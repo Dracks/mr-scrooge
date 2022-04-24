@@ -7,12 +7,14 @@ import Headers from './headers'
 import { RawDataList } from './raw-data-list/raw-data-list'
 import { DataProvider } from './common/data-provider'
 import { Imports } from './imports/imports'
+import { Graphs } from './graphs/graphs'
 
 const RestrictedContent: React.FC = () => (
     <DataProvider>
         <Headers />
         <Main>
             <Routes>
+                <Route path="" element={<Graphs />} />
                 <Route path="/import/*" element={<Imports />} />
                 <Route path="/movement" element={<RawDataList />} /> 
                 <Route path="*" element={<NotFound />} />
