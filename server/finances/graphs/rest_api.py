@@ -4,9 +4,12 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
+from drf_spectacular.utils import extend_schema_view
+
 import json
 
-from .models import Graph
+from .serializers import GraphV2Serializer
+from .models import Graph, GraphV2
 
 def graphSerializer(data):
     options = json.loads(data.options)
@@ -34,8 +37,6 @@ class GraphViewSet(viewsets.ViewSet):
     """
 
     permission_classes = (IsAuthenticated,)
-
-    #serializer_class = SessionSerializer
 
     def list(self, request):
         data = [ graphSerializer(e) for e in Graph.objects.all()]
@@ -65,3 +66,8 @@ class GraphViewSet(viewsets.ViewSet):
         g = get_object_or_404(queryset, pk=pk)
         g.delete()
         return Response( status=status.HTTP_204_NO_CONTENT)
+
+class GraphV2ViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = GraphV2Serializer
+    queryset = GraphV2.objects.all()

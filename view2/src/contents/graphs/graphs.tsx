@@ -6,7 +6,6 @@ import { GraphWrapper } from "./graph/graph"
 
 export const Graphs: React.FC = ()=>{
     const  [graphsResponse] = useGetGraphs()
-    console.log("DALEKS!")
     if (graphsResponse.loading){
         return <LoadingPage />
     } else if (graphsResponse.data){
