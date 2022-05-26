@@ -149,25 +149,23 @@ export interface components {
       kind: components["schemas"]["KindEnum"];
       tag_filter?: number | null;
       date_range: string;
-      old_graph: number;
+      old_graph?: number;
       group: components["schemas"]["Group"];
-      horizontal_group: components["schemas"]["HorizontalGroup"];
+      horizontal_group?: components["schemas"]["HorizontalGroup"];
     };
     Group: {
-      id: number;
       group: components["schemas"]["GroupEnum"];
       hide_others?: boolean | null;
-      grouptags: components["schemas"]["GroupTags"][];
+      grouptags?: components["schemas"]["GroupTags"][];
     };
     GroupEnum: "day" | "month" | "tags" | "sign";
     GroupTags: {
       tag: number;
     };
     HorizontalGroup: {
-      id: number;
       group: components["schemas"]["GroupEnum"];
       hide_others?: boolean | null;
-      horizontalgrouptags: components["schemas"]["HorizontalGroupTags"][];
+      horizontalgrouptags?: components["schemas"]["HorizontalGroupTags"][];
     };
     HorizontalGroupTags: {
       tag: number;

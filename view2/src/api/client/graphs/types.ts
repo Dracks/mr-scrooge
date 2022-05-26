@@ -1,3 +1,5 @@
+import { CamelCasedProperties, CamelCasedPropertiesDeep } from "type-fest"
+import { components } from "../../generated-models"
 
 
 export enum GraphKind {
@@ -40,3 +42,7 @@ export interface BarGraph extends Graph{
 }
 
 export type GetGraphsResponse = Graph[]
+
+export type GraphV2 = CamelCasedPropertiesDeep<components['schemas']['GraphV2']>
+
+export type GetGraphsV2Response = GraphV2[]
