@@ -1,10 +1,10 @@
 import { Box } from 'grommet'
 import React from 'react'
-import { Graph } from '../../../api/client/graphs/types'
+import { GraphV2 } from '../../../api/client/graphs/types'
 import { GraphViewer } from './view'
 
 interface GraphWrapperArgs {
-    graph: Graph
+    graph: GraphV2
 }
 
 export const GraphWrapper : React.FC<GraphWrapperArgs> = ({graph}) => {
