@@ -1,18 +1,20 @@
 import React from 'react'
 import { Box } from "grommet"
 import { useGetGraphs } from "../../api/client/graphs/use-get-graphs"
-import { graphV1V2Mapper } from "../../api/client/graphs/graph-v1-v2.mapper"
+import { useJoinedGraphs } from "../../api/client/graphs/use-joined-graphs"
 import { LoadingPage } from "../../utils/ui/loading"
 import { GraphWrapper } from "./graph/graph"
-import { GraphV2 } from '../../api/client/graphs/types'
+import { useGetGraphsV2 } from '../../api/client/graphs/use-get-graphs-v2'
 
 export const Graphs: React.FC = ()=>{
     const  [graphsResponse] = useGetGraphs()
-    if (graphsResponse.loading){
+    const [ graphsV2Response ] = useGetGraphsV2()
+    const joinedGraphsResponse = useJoinedGraphs(graphsV2Response, graphsResponse);
+    if (joinedGraphsResponse.loading){
         return <LoadingPage />
-    } else if (graphsResponse.data){
+    } else if (joinedGraphsResponse.data){
         return <Box direction='row'>
-            {graphsResponse.data.map((graph, idx)=><GraphWrapper key={idx} graph={graphV1V2Mapper(graph) as GraphV2} />)}
+            {joinedGraphsResponse.data.map((graph, idx)=><GraphWrapper key={idx} graph={graph} />)}
         </Box>
     }
     return <div>Daleks</div>

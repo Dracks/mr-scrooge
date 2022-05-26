@@ -8,7 +8,6 @@ interface GraphViewerArgs{
 }
 
 export const GraphViewer : React.FC<GraphViewerArgs>= ({graph})=>{
-    console.log(graph)
     return <Box direction='column'>
         <Heading level={3}>
             {graph.name}
