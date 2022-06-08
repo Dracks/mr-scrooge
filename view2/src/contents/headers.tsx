@@ -28,6 +28,11 @@ const Headers: React.FC<{}> = () => {
                     label='Movements'
                     color='light-1'
                     />
+                <AnchorLink
+                    href='/tag'
+                    label='Tags'
+                    color='light-1'
+                    />
             </Nav>
             <Box flex />
             <Menu
