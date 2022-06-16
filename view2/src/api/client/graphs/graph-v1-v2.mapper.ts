@@ -6,14 +6,15 @@ export const graphV1V2Mapper = (graph: Graph | BarGraph): Omit<GraphV2, 'id'> =>
     kind: graph.kind,
     dateRange: graph.dateRange,
     oldGraph: graph.id,
+    accumulate: graph.acumulative,
     group: {
         group: graph.group,
         hideOthers: graph.groupHideOthers,
-        grouptags: graph.groupValue?.map(tag => ({ tag})),
+        groupTags: graph.groupValue?.map(tag => ({ tag})),
     },
     horizontalGroup: (graph.kind === GraphKind.bar || graph.kind === GraphKind.line) ? {
         group: (graph as BarGraph).horizontal,
         hideOthers: (graph as BarGraph).horizontalHideOthers,
-        horizontalgrouptags: (graph as BarGraph).horizontalValue?.map((tag: any) => ({ tag})),
+        groupTags: (graph as BarGraph).horizontalValue?.map((tag: any) => ({ tag})),
     } : undefined
 })

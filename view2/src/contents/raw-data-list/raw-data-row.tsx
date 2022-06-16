@@ -17,11 +17,12 @@ export
 const RawDataRow: React.FC<RawDataRowProps> = ({rds, tags, onChange})=> {
     const linkTags = useRdsAddTag()
     const setComment = useRdsSetDescription()
-    const tagsIds = rds.tags.map(tag => tag.id)
+    const tagsIds = rds.tags
     const updateRdsTag = async (action: RdsLinkTagAction, tagId: number) => {
         
         onChange({
             ...rds, 
+            date: rds.date.toISOString(),
             tags: action === RdsLinkTagAction.Remove ? 
                 tagsIds.filter(id=>id!=tagId) : 
                 [...tagsIds, tagId]
@@ -34,6 +35,7 @@ const RawDataRow: React.FC<RawDataRowProps> = ({rds, tags, onChange})=> {
         onChange({
             ...rds,
             tags: tagsIds,
+            date: rds.date.toISOString(),
             description: desc
         })
         const request = await setComment(rds.id, desc)
@@ -41,7 +43,7 @@ const RawDataRow: React.FC<RawDataRowProps> = ({rds, tags, onChange})=> {
     }
     return <TableRow>
                 <TableCell>{rds.kind}</TableCell>
-                <TableCell><InputTag value={rds.tags} onAdd={tag => updateRdsTag(RdsLinkTagAction.Add, tag.id)} onRemove={tag => updateRdsTag(RdsLinkTagAction.Remove, tag.id)} suggestions={tags.filter(tag => !rds.tags.includes(tag))}/></TableCell>
+                <TableCell><InputTag value={rds.tagsComplete} onAdd={tag => updateRdsTag(RdsLinkTagAction.Add, tag.id)} onRemove={tag => updateRdsTag(RdsLinkTagAction.Remove, tag.id)} suggestions={tags.filter(tag => !rds.tagsComplete.includes(tag))}/></TableCell>
                 <TableCell>{rds.movementName}</TableCell>
                 <TableCell>{rds.value}</TableCell>
                 <TableCell>{rds.date}</TableCell>

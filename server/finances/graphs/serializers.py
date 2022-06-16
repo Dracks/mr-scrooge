@@ -9,10 +9,10 @@ class GroupTagsSerializer(serializers.ModelSerializer):
 
 
 class GroupSerializer(serializers.ModelSerializer):
-    grouptags = GroupTagsSerializer(many=True, required=False)
+    group_tags = GroupTagsSerializer(many=True, required=False)
     class Meta:
         model = Group
-        fields = ('group', 'hide_others', 'grouptags')
+        fields = ('group', 'hide_others', 'group_tags')
 
 class HorizontalGroupTagsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,10 +20,10 @@ class HorizontalGroupTagsSerializer(serializers.ModelSerializer):
         fields = ('tag', )
 
 class HorizontalGroupSerializer(serializers.ModelSerializer):
-    horizontalgrouptags = HorizontalGroupTagsSerializer(many=True, required=False)
+    group_tags = HorizontalGroupTagsSerializer(many=True, required=False)
     class Meta:
         model = HorizontalGroup
-        fields = ('group', 'hide_others', 'horizontalgrouptags')
+        fields = ('group', 'hide_others', 'group_tags')
 
 class GraphV2Serializer(serializers.ModelSerializer):
     old_graph = serializers.PrimaryKeyRelatedField(queryset=Graph.objects.all(), required=False)
@@ -31,4 +31,4 @@ class GraphV2Serializer(serializers.ModelSerializer):
     horizontal_group = HorizontalGroupSerializer(required=False)
     class Meta:
         model = GraphV2
-        fields = ('id', 'name', 'kind', 'tag_filter', 'date_range', 'old_graph', 'group', 'horizontal_group')
+        fields = ('id', 'name', 'kind', 'tag_filter', 'date_range', 'old_graph', 'group', 'horizontal_group', 'accumulate')

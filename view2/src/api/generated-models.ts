@@ -152,11 +152,12 @@ export interface components {
       old_graph?: number;
       group: components["schemas"]["Group"];
       horizontal_group?: components["schemas"]["HorizontalGroup"];
+      accumulate?: boolean;
     };
     Group: {
       group: components["schemas"]["GroupEnum"];
       hide_others?: boolean | null;
-      grouptags?: components["schemas"]["GroupTags"][];
+      group_tags?: components["schemas"]["GroupTags"][];
     };
     GroupEnum: "day" | "month" | "tags" | "sign";
     GroupTags: {
@@ -165,7 +166,7 @@ export interface components {
     HorizontalGroup: {
       group: components["schemas"]["GroupEnum"];
       hide_others?: boolean | null;
-      horizontalgrouptags?: components["schemas"]["HorizontalGroupTags"][];
+      group_tags?: components["schemas"]["HorizontalGroupTags"][];
     };
     HorizontalGroupTags: {
       tag: number;
@@ -191,6 +192,7 @@ export interface components {
       old_graph?: number;
       group?: components["schemas"]["Group"];
       horizontal_group?: components["schemas"]["HorizontalGroup"];
+      accumulate?: boolean;
     };
     PatchedTag: {
       id?: number;
