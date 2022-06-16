@@ -6,8 +6,9 @@ import ErrorHandler from "../../api/helpers/request-error.handler"
 import { EventTypes, useEventEmitter } from "../../utils/providers/event-emitter.provider"
 import { useTagContext } from "./tag.context"
 
-export type RdsEnriched = Omit<RawDataSource, 'tags'> & {
-    tags: Tag[]
+export type RdsEnriched = Omit<RawDataSource, "date"> & {
+    tagsComplete: Tag[]
+    date: Date
 }
 
 export interface RdsContextType {
@@ -35,7 +36,7 @@ export const ProvideRdsData : React.FC= ({children})=>{
     const eventEmitter = useEventEmitter()
     const tags = useTagContext()
     const query = useGetPaginatedRawDataSource()
-    const enrichRds = (rds: RawDataSource) => ({...rds, tags: rds.tags.map(tagId => tags.find(({id}) => id === tagId) as Tag)})
+    const enrichRds = (rds: RawDataSource) => ({...rds, date: new Date(rds.date), tagsComplete: rds.tags.map(tagId => tags.find(({id}) => id === tagId) as Tag)})
 
     React.useEffect(()=>{
         if (!query.loading && query.results && !query.error){

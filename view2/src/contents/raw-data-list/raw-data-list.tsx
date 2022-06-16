@@ -24,7 +24,7 @@ export const RawDataList : React.FC = ()=>{
     }
 
     if (filters.tag){
-        filteredResults = filteredResults.filter(({tags})=> tags.map(({id})=>id).includes(filters.tag as number))
+        filteredResults = filteredResults.filter(({tags})=> tags.includes(filters.tag as number))
     }
 
     if (filters.movement){

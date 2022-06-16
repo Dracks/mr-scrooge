@@ -39,11 +39,11 @@ class DataManagerDoubleGrouped<T1 extends string | number, T2 extends string | n
     constructor(private data: Record<T1, Record<T2, DMData[]>>){}
 
     public reduceGroups(callback: DMReduceFn){
-        const newData = {}
+        const newData = {} as  Record<T1, Record<T2, number>>
         const data = this.data;
-        Object.keys(data).forEach(keyFirst => {
+        (Object.keys(data) as T1[]).forEach(keyFirst => {
             const subGroup : Record<T2, DMData[]>= data[keyFirst];
-            newData[keyFirst] = Object.keys(subGroup).reduce((acc, keySecond)=>{
+            newData[keyFirst] = (Object.keys(subGroup) as T2[]).reduce((acc, keySecond)=>{
                 acc[keySecond] = callback(subGroup[keySecond]);
                 return acc;
             }, {} as Record<T2, number>)
@@ -67,7 +67,7 @@ export class DataManage {
 
     public groupForGraph<T1 extends string | number, T2 extends string | number>(firstLambda: DMGroupFn<T1>, secondLambda: DMGroupFn<T2>){
         const firstGroup = getGroupByLambda(this.data, firstLambda);
-        const grouped = Object.keys(firstGroup).reduce((ac, key)=>{
+        const grouped = (Object.keys(firstGroup) as T1[]).reduce((ac, key)=>{
             const values = firstGroup[key];
             ac[key] = getGroupByLambda(values, secondLambda);
             return ac;

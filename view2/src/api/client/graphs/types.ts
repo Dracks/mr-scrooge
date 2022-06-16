@@ -1,7 +1,10 @@
 import { CamelCasedProperties, CamelCasedPropertiesDeep } from "type-fest"
 import { components } from "../../generated-models"
+import { Tag } from "../tag/types"
 
-
+/*
+    Old graphs for retro compatibility
+    */
 export enum GraphKind {
     bar='bar',
     pie='pie',
@@ -28,6 +31,7 @@ export interface Graph {
     name: string,
     tag: number,
     kind: GraphKind,
+    acumulative: boolean,
     dateRange: DateRange,
     group: GraphGroupEnum
     groupValue?: number[],
@@ -41,8 +45,23 @@ export interface BarGraph extends Graph{
     horizontalHideOthers?: boolean
 }
 
+/*
+New graphs coming from Api Rest
+ */
+
 export type GetGraphsResponse = Graph[]
 
 export type GraphV2 = CamelCasedPropertiesDeep<components['schemas']['GraphV2']>
 
 export type GetGraphsV2Response = GraphV2[]
+
+export interface EnrichedGroup extends Omit<CamelCasedPropertiesDeep<components['schemas']['Group']>, 'groupTags'> {
+    groupTags: Tag[]
+}
+
+export type GraphGroup = CamelCasedPropertiesDeep<components['schemas']['Group']>
+
+export interface EnrichedGraph extends Omit<GraphV2, 'group' | 'horizontalGroup'>  {
+    group: EnrichedGroup,
+    horizontalGroup?: EnrichedGroup,
+}

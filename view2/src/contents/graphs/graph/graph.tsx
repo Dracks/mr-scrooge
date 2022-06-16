@@ -1,10 +1,10 @@
 import { Box } from 'grommet'
 import React from 'react'
-import { GraphV2 } from '../../../api/client/graphs/types'
+import { EnrichedGraph, GraphV2 } from '../../../api/client/graphs/types'
 import { GraphViewer } from './view'
 
 interface GraphWrapperArgs {
-    graph: GraphV2
+    graph: EnrichedGraph
 }
 
 export const GraphWrapper : React.FC<GraphWrapperArgs> = ({graph}) => {
