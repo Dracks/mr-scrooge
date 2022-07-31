@@ -1,10 +1,17 @@
-import { Box, Nav, Sidebar, Text } from "grommet"
 import React from "react"
 import { Routes, Route } from "react-router"
-import { AnchorLink } from "../../utils/ui/anchor-link"
+import { useTagsContext } from "../common/tag.context"
 import { TagEdit } from "./edit-tag"
-import { NewTag } from "./new-tag"
+import { TagsList } from "./list-tags"
 
+export const Tags : React.FC<{}> = ()=>{
+    return  <Routes>
+        <Route path='' element={<TagsList />}/>
+        <Route path=':id' element={<TagEdit />} />
+    </Routes>  
+}
+
+/*
 export const Tags : React.FC<{}> = ()=>{
     return <Box direction='row'>
          <Sidebar 
@@ -18,10 +25,9 @@ export const Tags : React.FC<{}> = ()=>{
             </Nav>
         </Sidebar>
         <Box fill>
-            <Routes>
-                <Route path='' element={<NewTag />}/>
-                <Route path=':id' element={<TagEdit />} />
-            </Routes>  
+
         </Box>
     </Box>
 }
+
+*/

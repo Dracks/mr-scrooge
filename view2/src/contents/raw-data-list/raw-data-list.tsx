@@ -3,7 +3,7 @@ import React, { useState } from "react"
 import { useGetKinds } from "../../api/client/imports/use-get-kind"
 
 import { RdsEnriched, useRdsData } from "../common/raw-data-source.context"
-import { useTagContext } from "../common/tag.context"
+import { useTagsListContext } from "../common/tag.context"
 import { RawDataRow } from "./raw-data-row"
 
 interface RawDataListFilters {
@@ -15,7 +15,7 @@ interface RawDataListFilters {
 export const RawDataList : React.FC = ()=>{
     const {data:results, replace} = useRdsData()
     const [ kindRequest ] = useGetKinds()
-    const tags = useTagContext()
+    const tags = useTagsListContext()
     const [ filters, setFilters ] = useState<RawDataListFilters>({})
 
     let filteredResults = results
