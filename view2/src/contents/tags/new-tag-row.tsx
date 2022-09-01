@@ -1,7 +1,7 @@
 import { Button, Form, FormField, TableCell, TableRow, TextInput } from "grommet"
 import React from "react"
 import { Tag } from "../../api/client/tag/types"
-import { usePostTags } from "../../api/client/tag/use-post-tags"
+import { usePostTags } from "../../api/client/tag/use-post-tag"
 
 interface NewTagRowProps {
     close: (newTag?: Tag) => Promise<void> | void

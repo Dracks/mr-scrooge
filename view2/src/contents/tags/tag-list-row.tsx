@@ -2,6 +2,7 @@ import { Button, TableCell, TableRow } from "grommet";
 import React from 'react';
 
 import { Tag } from "../../api/client/tag/types";
+import { AnchorLink } from "../../utils/ui/anchor-link";
 
 export const TagListRow : React.FC<{tag: Tag, tagHash: Record<number, Tag>}> = ({tag, tagHash})=>{
     const parentTag = tag.parent ? tagHash[tag.parent] : {name: undefined}
@@ -19,7 +20,7 @@ export const TagListRow : React.FC<{tag: Tag, tagHash: Record<number, Tag>}> = (
             {tag.filters.length}
         </TableCell>
         <TableCell>
-            <Button label="Edit"/>
+            <AnchorLink label="Edit" to={`${tag.id}`}/>
             <Button label="Delete" secondary/>
         </TableCell>
     </TableRow>

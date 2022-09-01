@@ -8,7 +8,7 @@ import { TagListRow } from './tag-list-row';
 
 export const TagsList: React.FC = ()=>{
     const [isAdding, setIsAdding] = React.useState(false) 
-    const {tags, tagsHash, refresh} = useTagsContext()
+    const {tags, tagsMap: tagsHash, refresh} = useTagsContext()
 
     const onClose = React.useCallback(async (newTag?: Tag)=>{
         if (newTag){

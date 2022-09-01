@@ -8,13 +8,13 @@ import { LoadingPage } from "../../utils/ui/loading";
 
 interface ITagContext {
     tags: Tag[],
-    tagsHash: Record<number, Tag>
+    tagsMap: Record<number, Tag>
     refresh: ()=> Promise<void>
 }
 
 const TagContext = React.createContext<ITagContext>({
     tags: [],
-    tagsHash: {},
+    tagsMap: {},
     refresh: ()=>Promise.resolve(),
 })
 
@@ -37,12 +37,12 @@ const useGenerateHash = (tags: Tag[]):Record<number, Tag>=> {
 
 export const ProvideTagsData : React.FC = ({children}) => {
     const [query, refresh] = useGetTags()
-    const tagsHash = useGenerateHash(query.data ?? [])
+    const tagsMap = useGenerateHash(query.data ?? [])
 
     if (query.data && !query.error){
         const context : ITagContext = {
             tags: query.data,
-            tagsHash,
+            tagsMap,
             refresh: async ()=>{await refresh()}
         }
         return <TagContext.Provider value={context}>{children}</TagContext.Provider>
