@@ -1,7 +1,7 @@
 import React from "react"
 import { Routes, Route } from "react-router"
 import { useTagsContext } from "../common/tag.context"
-import { TagEdit } from "./edit-tag"
+import { TagEdit } from "./edit-tag/edit-tag"
 import { TagsList } from "./list-tags"
 
 export const Tags : React.FC<{}> = ()=>{
