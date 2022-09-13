@@ -10,6 +10,7 @@
         "jsx": "react",
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
+        "experimentalDecorators": true,
         "esModuleInterop": true
     }
 }

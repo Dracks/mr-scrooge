@@ -4,7 +4,7 @@ import { useGetPaginatedRawDataSource } from "../../api/client/raw-data-source/u
 import { Tag } from "../../api/client/tag/types"
 import ErrorHandler from "../../api/helpers/request-error.handler"
 import { EventTypes, useEventEmitter } from "../../utils/providers/event-emitter.provider"
-import { useTagContext } from "./tag.context"
+import { useTagsListContext } from "./tag.context"
 
 export type RdsEnriched = Omit<RawDataSource, 'tags'> & {
     tags: Tag[]
@@ -33,7 +33,7 @@ const replaceOrAdd = (state: RdsEnriched[], stateIndexes: number[])=>(rds: RdsEn
 export const ProvideRdsData : React.FC= ({children})=>{
     const [state, setState] = React.useState<{data: RdsEnriched[], index: number[]}>({data: [], index: []})
     const eventEmitter = useEventEmitter()
-    const tags = useTagContext()
+    const tags = useTagsListContext()
     const query = useGetPaginatedRawDataSource()
     const enrichRds = (rds: RawDataSource) => ({...rds, tags: rds.tags.map(tagId => tags.find(({id}) => id === tagId) as Tag)})
 

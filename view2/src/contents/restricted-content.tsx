@@ -7,6 +7,7 @@ import Headers from './headers'
 import { RawDataList } from './raw-data-list/raw-data-list'
 import { DataProvider } from './common/data-provider'
 import { Imports } from './imports/imports'
+import { Tags } from './tags/tags'
 
 const RestrictedContent: React.FC = () => (
     <DataProvider>
@@ -14,6 +15,7 @@ const RestrictedContent: React.FC = () => (
         <Main>
             <Routes>
                 <Route path="/import/*" element={<Imports />} />
+                <Route path="/tag/*" element={<Tags />} />
                 <Route path="/movement" element={<RawDataList />} /> 
                 <Route path="*" element={<NotFound />} />
             </Routes>
@@ -27,6 +29,7 @@ const RestrictedContent: React.FC = () => (
             </Box>
         </Footer>
     </DataProvider>
+
         
 )
 
