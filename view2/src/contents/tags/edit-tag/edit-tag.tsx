@@ -66,7 +66,6 @@ export const TagEdit: React.FC = () => {
                 // We need the Object.assign to preserve the metadata of the class-transformer
                 onChange={nextValue => setTagUiValue(Object.assign(tagUiValue,nextValue))}
                 onSubmit={async ({ value }) => {
-                    // console.log('onSubmit', instanceToPlain(value, {version: 1}))
                     await request({
                         data: {
                             // Not tested...

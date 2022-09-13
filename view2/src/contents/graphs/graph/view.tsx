@@ -3,6 +3,8 @@ import { Box, DataChart, Heading } from "grommet"
 import { EnrichedGraph, GraphKind, GraphV2 } from "../../../api/client/graphs/types"
 import { useGraphDataGenerator } from '../use-graph-data'
 import { DSDoubleGroup } from '../data-transform/types'
+import { useLogger } from '../../../utils/logger/logger.context'
+import { Logger } from '../../../utils/logger/logger.class'
 
 interface GraphRenderArgs {
     graphData: DSDoubleGroup<string, string>[]
@@ -44,6 +46,8 @@ const BarGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
 }
 
 const LineGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
+    const logger = useLogger()
+    logger.info('Line Graph Render', {graphData})
     const { keys, firstKey, data } = GenericToGrommetChart<string, string>(graphData)
     return <Box direction='column'>
         <DataChart
@@ -67,9 +71,9 @@ const ComponentHash: Record<GraphKind, React.FC<GraphRenderArgs>> = {
 }
 
 export const GraphViewer: React.FC<GraphViewerArgs> = ({ graph }) => {
-    console.log(graph.name)
+    const logger = useLogger()
     const data = useGraphDataGenerator(graph)
-    console.log(data)
+    logger.info(graph.name, {data})
     const Component = ComponentHash[graph.kind]
     return <Box direction='column'>
         <Heading level={3}>

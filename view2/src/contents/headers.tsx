@@ -19,11 +19,6 @@ const Headers: React.FC<{}> = () => {
                     color="light-1"
                 />
                 <AnchorLink
-                    href='/tags'
-                    label="Tags"
-                    color="light-1"
-                />
-                <AnchorLink
                     href='/import'
                     label='Imports'
                     color='light-1'
