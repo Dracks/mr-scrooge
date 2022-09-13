@@ -14,7 +14,12 @@ export const FiltersList : React.FC<FiltersListArgs> = ({tagId})=>{
     const [tagFiltersRequest, request] = useGetTagFilters(tagId)
     const [conditionalsRequest] = useGetFilterConditionals()
     if (tagFiltersRequest.data && conditionalsRequest.data){
-        return <FiltersTableList filters={tagFiltersRequest.data} conditions={conditionalsRequest.data} reloadFilters={async ()=>{await request()}} />
+        return <FiltersTableList 
+            filters={tagFiltersRequest.data} 
+            conditions={conditionalsRequest.data} 
+            reloadFilters={async ()=>{await request()}} 
+            tagId={tagId}
+            />
     } else if (tagFiltersRequest.loading || conditionalsRequest.loading){
         return <LoadingPage />
     } else {

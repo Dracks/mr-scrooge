@@ -41,7 +41,7 @@ export const TagsList: React.FC = ()=>{
         { isAdding ? <NewTagRow close={onClose} /> : undefined}
         <InfiniteScroll items={tags}>
             {(result: Tag)=>(
-                <TagListRow key={result.id} tag={result} tagHash={tagsHash}/>
+                <TagListRow key={result.id} tag={result} tagHash={tagsHash} refresh={refresh}/>
             )}
         </InfiniteScroll>
     </TableBody>

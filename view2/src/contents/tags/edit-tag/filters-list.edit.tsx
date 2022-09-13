@@ -2,15 +2,17 @@ import { Button, Table, TableBody, TableCell, TableHeader, TableRow } from "grom
 import { Add } from "grommet-icons"
 import React from "react"
 import { FilterConditional, TagFilter } from "../../../api/client/tag-filter/types"
+import { FilterListAddArgs } from "./filter-list-add"
 import { FilterListRow } from "./filter-list-row"
 
 interface FiltersTableListArgs {
+    tagId: number
     filters: TagFilter[],
     conditions: Record<FilterConditional, string>,
     reloadFilters: ()=>Promise<void>
 }
 
-export const FiltersTableList : React.FC<FiltersTableListArgs> = ({filters, conditions})=>{
+export const FiltersTableList : React.FC<FiltersTableListArgs> = ({filters, conditions, tagId, reloadFilters})=>{
     const [isAdding, setIsAdding] = React.useState(false)
     const conditionsList = Object.entries(conditions).map(([key, value]) => ({
         key: key as FilterConditional,
@@ -26,13 +28,18 @@ export const FiltersTableList : React.FC<FiltersTableListArgs> = ({filters, cond
                     condition
                 </TableCell>
                 <TableCell>
-                    Actions <Button icon={<Add size="small"/>} />
+                    Actions <Button icon={<Add size="small"/>} onClick={()=>setIsAdding(!isAdding)}/>
                 </TableCell>
             </TableRow>
         </TableHeader>
         <TableBody>
-            {isAdding ? "Adding" : undefined}
-            {filters.map(filter =><FilterListRow key={filter.id} filter={filter} conditions={conditionsList}/>)}
+            {filters.map(filter =><FilterListRow key={filter.id} filter={filter} conditions={conditionsList} reloadFilters={reloadFilters}/>)}
+            {isAdding ? <FilterListAddArgs 
+                conditions={conditionsList} 
+                reloadFilters={reloadFilters} 
+                tagId={tagId}
+                close={()=>setIsAdding(false)}
+                /> : undefined}
         </TableBody>
     </Table>
 }

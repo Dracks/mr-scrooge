@@ -1,10 +1,21 @@
 import { Button, TableCell, TableRow } from "grommet";
 import React from 'react';
+import { useNavigate} from 'react-router'
 
 import { Tag } from "../../api/client/tag/types";
+import { useDeleteTag } from "../../api/client/tag/use-delete-tag";
 import { AnchorLink } from "../../utils/ui/anchor-link";
+import { ConfirmationButton } from "../../utils/ui/confirmation-button";
 
-export const TagListRow : React.FC<{tag: Tag, tagHash: Record<number, Tag>}> = ({tag, tagHash})=>{
+interface TagListRowArgs {
+    tag: Tag
+    tagHash: Record<number, Tag>
+    refresh: ()=>void
+}
+
+export const TagListRow : React.FC<TagListRowArgs> = ({tag, tagHash, refresh})=>{
+    const [, deleteRequest] = useDeleteTag(tag.id)
+    const navigate = useNavigate()
     const parentTag = tag.parent ? tagHash[tag.parent] : {name: undefined}
     return <TableRow>
         <TableCell>
@@ -20,8 +31,14 @@ export const TagListRow : React.FC<{tag: Tag, tagHash: Record<number, Tag>}> = (
             {tag.filters.length}
         </TableCell>
         <TableCell>
-            <AnchorLink label="Edit" to={`${tag.id}`}/>
-            <Button label="Delete" secondary/>
+            <Button primary label="Edit" onClick={()=>{
+
+                navigate(`${tag.id}`)
+            }
+            }/>
+            <ConfirmationButton label="Delete" color="accent-4" onConfirm={()=>{
+                deleteRequest().then(refresh)
+            }}/>
         </TableCell>
     </TableRow>
 

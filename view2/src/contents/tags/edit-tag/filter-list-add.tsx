@@ -1,30 +1,21 @@
 import { Button, Select, TableCell, TableRow, TextInput } from "grommet"
 import React from "react"
 import { TagFilter } from "../../../api/client/tag-filter/types"
-import { useDeleteTagFilter } from "../../../api/client/tag-filter/use-delete-tag-filter"
-import { usePutTagFilter } from "../../../api/client/tag-filter/use-put-tag-filter"
+import { usePostTagFilter } from "../../../api/client/tag-filter/use-post-tag-filter"
 import { ConfirmationButton } from "../../../utils/ui/confirmation-button"
 import { ConditionsType } from "./filter-tag.types"
 
-
-interface FilterListRowArgs {
-    filter: TagFilter,
+interface FilterListAddArgs {
+    tagId: number
     conditions: Array<ConditionsType>
     reloadFilters: ()=>Promise<void>
+    close: ()=>void
 }
 
-export const FilterListRow: React.FC<FilterListRowArgs> = ({ filter, conditions, reloadFilters }) => {
-    const [, request] = usePutTagFilter(filter.id)
-    const [, deleteRequest] = useDeleteTagFilter(filter.id)
-    const [viewFilter, setViewFilter] = React.useState<TagFilter>(filter)
-    const update = (data: TagFilter)=>request({
-        data
-    }).then(()=>reloadFilters())
-
-    React.useEffect(()=>{
-        setViewFilter(filter)
-    }, [filter.id])
-    
+export const FilterListAddArgs: React.FC<FilterListAddArgs> = ({conditions, tagId, reloadFilters, close})=>{
+    const [, request] = usePostTagFilter()
+    const [viewFilter, setViewFilter] = React.useState<Partial<TagFilter>>({tag: tagId})
+    React.useEffect(()=>{setViewFilter({tag: tagId})}, [tagId])
     return <TableRow>
         <TableCell>
             <Select
@@ -37,7 +28,6 @@ export const FilterListRow: React.FC<FilterListRowArgs> = ({ filter, conditions,
                 onChange= {({option}: {option: ConditionsType}) => {
                     const newData = {...viewFilter, typeConditional:option.key}
                     setViewFilter(newData)
-                    update(newData)
                 }}
             />
         </TableCell>
@@ -49,15 +39,18 @@ export const FilterListRow: React.FC<FilterListRowArgs> = ({ filter, conditions,
                 onChange={(ev)=>{
                     setViewFilter({...viewFilter, conditional: ev.target.value})
                 }}
-                onBlur={(ev)=>{
-                    update(viewFilter)
-                }}
                 />
         </TableCell>
         <TableCell>
-            <ConfirmationButton label="Delete" color="accent-4" onConfirm={()=>{
-                deleteRequest().then(reloadFilters)
-            }} />
+            <Button label="Save" primary disabled={!viewFilter.conditional || !viewFilter.typeConditional} onClick={()=>{
+                request({
+                    data: viewFilter
+                }).then(()=>{
+                    close()
+                    reloadFilters()
+                })
+            }}/>
+            <ConfirmationButton label="Cancel" onConfirm={close} color="accent-4"/>
         </TableCell>
     </TableRow>
 }
