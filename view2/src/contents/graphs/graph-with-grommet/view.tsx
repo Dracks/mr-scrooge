@@ -28,12 +28,15 @@ const GenericToGrommetChart = <K extends string, SK extends string>(inputData: D
     return { keys: Array.from(keys), firstKey: first?.groupName ?? 'unknown', data }
 }
 
+const GraphSize = {width: 'fill', height: 'medium'}
+
 const BarGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
     const { keys, firstKey, data } = GenericToGrommetChart<string, string>(graphData)
     return <Box direction='column'>
         <DataChart
             data={data}
             series={[firstKey, ...keys]}
+            size={GraphSize}
             detail
             legend
             offset={{ gap: 'xxsmall' }}
@@ -42,6 +45,7 @@ const BarGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
                 type: 'bar',
                 thickness: 'small',
             }))}
+            axis={{ x: { property: 'date', granularity: 'medium' } }}
         /></Box>
 }
 
@@ -53,14 +57,16 @@ const LineGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
         <DataChart
             data={data}
             series={[firstKey, ...keys]}
+            size={GraphSize}
             detail
             legend
             offset={{ gap: 'xxsmall' }}
             chart={keys.map(property => ({
                 property,
                 type: 'line',
-                thickness: 'small',
+                thickness: 'xsmall',
             }))}
+            axis={{ x: { property: 'date', granularity: 'medium' } }}
         /></Box>
 }
 

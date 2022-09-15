@@ -1,5 +1,5 @@
 import React from 'react'
-import { Header, Button, Nav, Menu, Box } from 'grommet'
+import { Header, Nav, Menu, Box } from 'grommet'
 import { Home, Logout } from 'grommet-icons'
 
 import useSessionContext from './session/context'

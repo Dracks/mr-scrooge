@@ -4,6 +4,8 @@ import { createGroupWithSubGroup } from "./data-transform/create-groups";
 import { getRangeFilter, groupLambdas, sortLambdas } from './data-transform/lambdas'
 import { sumGroups } from "./data-transform/sum-groups";
 import {accumulateFn} from './data-transform/accumulate'
+import { useLogger } from "../../utils/logger/logger.context";
+import { Tag } from "../../api/client/tag/types";
 
 const hashDateRange : Record<DateRange, number | undefined> = {
     month: 1,
@@ -16,7 +18,7 @@ const hashDateRange : Record<DateRange, number | undefined> = {
 export const useGraphDataGenerator = ({tagFilter, dateRange, horizontalGroup, group, accumulate}: EnrichedGraph) =>{
     const {data} = useRdsData()
     const monthRange = hashDateRange[dateRange as DateRange] 
-    let rdsList = tagFilter ? data.filter(rds=> rds.tags.indexOf(tagFilter)>0) : data
+    let rdsList = tagFilter ? data.filter(rds=> rds.tags.indexOf(tagFilter)>=0) : data
     rdsList = monthRange ? rdsList.filter(getRangeFilter(monthRange, new Date())) : rdsList
 
     const groupLambda = groupLambdas[group.group](group.groupTags, group.hideOthers ?? false)
@@ -25,7 +27,9 @@ export const useGraphDataGenerator = ({tagFilter, dateRange, horizontalGroup, gr
     const rdsGrouped = createGroupWithSubGroup(rdsList, {name: horizontalGroup?.group ?? 'identity', callback: horizontalGroupLambda}, {name: group.group, callback:groupLambda})
     const rdsGroupedSum = sumGroups(rdsGrouped)
 
-    const sortLambda = sortLambdas[group.group](group.groupTags.map(({name})=>name))
+    const tagMap = ({name}: Tag)=>name
+
+    const sortLambda = horizontalGroup ? sortLambdas[horizontalGroup.group](horizontalGroup.groupTags.map(tagMap)) :sortLambdas[group.group](group.groupTags.map(tagMap))
     let  rdsSorted = rdsGroupedSum.sort((a,b)=> sortLambda(a.label,b.label))
 
     if (accumulate){
