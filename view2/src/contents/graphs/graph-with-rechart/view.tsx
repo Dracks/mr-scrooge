@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, DataChart, Heading } from "grommet"
+import { Box, Button, DataChart, Heading } from "grommet"
 import { EnrichedGraph, GraphKind, GraphV2 } from "../../../api/client/graphs/types"
 import { useGraphDataGenerator } from '../use-graph-data'
 import { DSDoubleGroup } from '../data-transform/types'
@@ -7,6 +7,8 @@ import { useLogger } from '../../../utils/logger/logger.context'
 import { Logger } from '../../../utils/logger/logger.class'
 import {schemeTableau10} from 'd3-scale-chromatic';
 import {ResponsiveContainer, LineChart, Line, CartesianGrid, Bar, XAxis,YAxis, Tooltip, Legend, BarChart} from 'recharts'
+import { Edit, Trash } from 'grommet-icons'
+import { ConfirmationButton } from '../../../utils/ui/confirmation-button'
 
 interface GraphRenderArgs {
     graphData: DSDoubleGroup<string, string>[]
@@ -29,16 +31,38 @@ const GenericToGrommetChart = <K extends string, SK extends string>(inputData: D
     return { keys: Array.from(keys), firstKey: first?.groupName ?? 'unknown', data }
 }
 
+const useHideLogic: ()=>[string[], (d: string)=>void]=()=>{
+    const [hidenElements, setHidenElements] = React.useState<string[]>([])
+    const touch = (dataKey: string)=>{
+        if (hidenElements.includes(dataKey)){
+            setHidenElements(hidenElements.filter(key => key!=dataKey))
+        }  else {
+            setHidenElements([...hidenElements, dataKey])
+        }
+    }
+    return [
+        hidenElements,
+        touch,
+    ]
+}
+
 const BarGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
     const { keys, firstKey, data } = GenericToGrommetChart<string, string>(graphData)
+    const [hidenElements, touch] = useHideLogic()
     return <ResponsiveContainer width="100%" height={400}>
     <BarChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
     <CartesianGrid strokeDasharray="3 3" />
     <XAxis dataKey={firstKey} />
     <YAxis />
     <Tooltip />
-    <Legend />
-    {keys.map((key, idx)=><Bar type="monotone" dataKey={key} key={key} fill={schemeTableau10[idx]} />)}
+    <Legend onClick={({dataKey})=>touch(dataKey)} />
+    {keys.map((key, idx)=><Bar 
+        type="monotone" 
+        dataKey={key} 
+        key={key} 
+        fill={schemeTableau10[idx]} 
+        hide={hidenElements.includes(key)}
+        />)}
 </BarChart>
 </ResponsiveContainer>
 }
@@ -46,6 +70,8 @@ const BarGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
 const LineGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
     const logger = useLogger()
     const { keys, firstKey, data } = GenericToGrommetChart<string, string>(graphData)
+    const [hidenElements, touch] = useHideLogic()
+    
     logger.info('Line Graph Render', {graphData, keys, firstKey, data})
     return <ResponsiveContainer width="100%" height={400}>
             <LineChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
@@ -53,8 +79,14 @@ const LineGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
             <XAxis dataKey={firstKey} />
             <YAxis />
             <Tooltip />
-            <Legend />
-            {keys.map((key, idx)=><Line type="monotone" dataKey={key} key={key} stroke={schemeTableau10[idx]} />)}
+            <Legend onClick={({dataKey})=>touch(dataKey)} />
+            {keys.map((key, idx)=><Line 
+                type="monotone" 
+                dataKey={key} 
+                key={key} 
+                stroke={schemeTableau10[idx]} 
+                hide={hidenElements.includes(key)}
+                />)}
         </LineChart>
     </ResponsiveContainer>
 }
@@ -75,5 +107,11 @@ export const GraphViewer: React.FC<GraphViewerArgs> = ({ graph }) => {
             {graph.name}
         </Heading>
         <Component graphData={data} />
+        <Box direction='row' justify='center'>
+            <Button icon={<Edit />} />
+            <ConfirmationButton color="accent-4" icon={<Trash />} onConfirm={ () => {
+                throw new Error('Function not implemented.')
+            } } />
+        </Box>
     </Box>
 }
