@@ -2,7 +2,7 @@ import { BarGraph, Graph, GraphKind, GraphV2 } from "./types";
 
 export const graphV1V2Mapper = (graph: Graph | BarGraph): Omit<GraphV2, 'id'> => ({
     name: graph.name,
-    tagFilter: graph.tag,
+    tagFilter: graph.tag ? graph.tag : null,
     kind: graph.kind,
     dateRange: graph.dateRange,
     oldGraph: graph.id,

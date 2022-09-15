@@ -13,6 +13,7 @@ import { GraphWrapper } from './graph-with-grommet/graph'
 import { EnrichedGraph } from '../../api/client/graphs/types'
 import { GraphWrapperWithRechart } from './graph-with-rechart/graph'
 import { AddGraphPlaceholder } from './graph-with-rechart/add-graph-placeholder'
+import { usePostGraphsV2 } from '../../api/client/graphs/use-post-graphs-v2'
 
 export const GraphTester: React.FC<{ graphs: EnrichedGraph[] }> = ({ graphs }) => {
     const [index, setIndex] = React.useState(2);
@@ -41,17 +42,31 @@ export const GraphTester: React.FC<{ graphs: EnrichedGraph[] }> = ({ graphs }) =
 }
 
 export const Graphs: React.FC = () => {
-    const size = React.useContext(ResponsiveContext);
+    const logger = useLogger()
     const [graphsResponse] = useGetGraphs()
-    const [graphsV2Response] = useGetGraphsV2()
+    const [graphsV2Response, refresh] = useGetGraphsV2()
+    const [, createNewGraphs] = usePostGraphsV2()
     const { tags } = useTagsContext()
     const joinedGraphsResponse = useJoinedGraphs(graphsV2Response, graphsResponse);
-    const logger = useLogger()
+    const responseGraphList = joinedGraphsResponse.data
+    const oldGraphs = responseGraphList?.filter(graph => !graph.id && graph.oldGraph)
+    React.useEffect(()=>{
+        if (oldGraphs && oldGraphs.length>0){
+            (async ()=>{
+                console.log(oldGraphs)
+                for await (const graph of oldGraphs){
+                    const response = await createNewGraphs({data: graph})
+                    logger.info(`Update graph ${graph.name}`, {response})
+                }
+                    
+                await refresh()
+            })()
+        }
+    }, [oldGraphs ? true : false])
     if (joinedGraphsResponse.loading) {
         return <LoadingPage />
-    } else if (joinedGraphsResponse.data) {
-        logger.info('size', { size })
-        const graphs = joinedGraphsResponse.data.map(graph => enrichGraph(graph, tags))
+    } else if (responseGraphList) {
+        const graphs = responseGraphList.map(graph => enrichGraph(graph, tags))
         return <Grid columns={'450px'} gap="small">
             {graphs.map((graph, idx) => <GraphWrapperWithRechart key={idx} graph={graph} />)}
             {graphs.map((graph, idx) => <GraphWrapperWithRechart key={idx} graph={graph} />)}
