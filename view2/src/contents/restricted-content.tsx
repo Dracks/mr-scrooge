@@ -8,6 +8,7 @@ import { RawDataList } from './raw-data-list/raw-data-list'
 import { DataProvider } from './common/data-provider'
 import { Imports } from './imports/imports'
 import { Tags } from './tags/tags'
+import { GraphRouter } from './graphs/graph-router'
 import { Graphs } from './graphs/graphs'
 
 const RestrictedContent: React.FC = () => (
@@ -16,6 +17,7 @@ const RestrictedContent: React.FC = () => (
         <Main>
             <Routes>
                 <Route path="" element={<Graphs />} />
+                <Route path="/graph/*" element={<GraphRouter />} />
                 <Route path="/import/*" element={<Imports />} />
                 <Route path="/tag/*" element={<Tags />} />
                 <Route path="/movement" element={<RawDataList />} /> 

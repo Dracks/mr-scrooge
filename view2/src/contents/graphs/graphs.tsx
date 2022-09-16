@@ -53,7 +53,6 @@ export const Graphs: React.FC = () => {
     React.useEffect(()=>{
         if (oldGraphs && oldGraphs.length>0){
             (async ()=>{
-                console.log(oldGraphs)
                 for await (const graph of oldGraphs){
                     const response = await createNewGraphs({data: graph})
                     logger.info(`Update graph ${graph.name}`, {response})

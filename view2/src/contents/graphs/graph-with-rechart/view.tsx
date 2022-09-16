@@ -102,16 +102,5 @@ export const GraphViewer: React.FC<GraphViewerArgs> = ({ graph }) => {
     const data = useGraphDataGenerator(graph)
     logger.info(graph.name, {data})
     const Component = ComponentHash[graph.kind]
-    return <Box direction='column'>
-        <Heading level={3}>
-            {graph.name}
-        </Heading>
-        <Component graphData={data} />
-        <Box direction='row' justify='center'>
-            <Button icon={<Edit />} />
-            <ConfirmationButton color="accent-4" icon={<Trash />} onConfirm={ () => {
-                throw new Error('Function not implemented.')
-            } } />
-        </Box>
-    </Box>
+    return <Component graphData={data} />
 }

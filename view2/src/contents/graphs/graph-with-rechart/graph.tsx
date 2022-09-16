@@ -1,6 +1,8 @@
-import { Box } from 'grommet'
+import { Box, Button, Heading } from 'grommet'
+import { Edit, Trash } from 'grommet-icons'
 import React from 'react'
-import { EnrichedGraph, GraphV2 } from '../../../api/client/graphs/types'
+import { EnrichedGraph } from '../../../api/client/graphs/types'
+import { ConfirmationButton } from '../../../utils/ui/confirmation-button'
 import { GraphViewer } from './view'
 
 interface GraphWrapperArgs {
@@ -9,6 +11,15 @@ interface GraphWrapperArgs {
 
 export const GraphWrapperWithRechart : React.FC<GraphWrapperArgs> = ({graph}) => {
     return <Box direction='column'>
+        <Heading level={3}>
+            {graph.name}
+        </Heading>
         <GraphViewer graph={graph}/>
+        <Box direction='row' justify='center'>
+            <Button icon={<Edit />} />
+            <ConfirmationButton color="accent-4" icon={<Trash />} onConfirm={ () => {
+                throw new Error('Function not implemented.')
+            } } />
+        </Box>
     </Box>
 }
