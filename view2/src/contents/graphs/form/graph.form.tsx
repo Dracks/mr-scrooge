@@ -1,18 +1,20 @@
+import { instanceToPlain, plainToClass, plainToInstance } from "class-transformer";
 import { Box, CheckBox, Form, FormField, Heading, ResponsiveContext, Select, TextInput } from "grommet";
 import { Add, Analytics } from "grommet-icons";
 import React from "react";
-import { GraphKind, GraphV2 } from "../../../api/client/graphs/types";
+import { DateRange, GraphGroupEnum, GraphKind, GraphV2 } from "../../../api/client/graphs/types";
+import { useLogger } from "../../../utils/logger/logger.context";
+import { InputTag } from "../../../utils/ui/tag/input-tag";
 import { useTagsContext } from "../../common/tag.context";
 import { enrichGraph } from "../graph-with-rechart/enrich-graph";
 import { GraphViewer } from "../graph-with-rechart/view";
+import { graphToUi, GraphUiRepresentation, uiToGraph } from "./graph.transformer";
 
 interface GraphFormProps<T extends Partial<GraphV2>> {
     graphData: T,
     save: ()=>Promise<void>
     update: (graphData:T)=>void
 }
-
-type GraphFormType <T extends Partial<GraphV2>> = React.FC<GraphFormProps<T>>
 
 const GraphPlaceholder: React.FC<{}> = ()=>{
     return <Box direction='column' pad='small' width={{min: "450px"}}>
@@ -22,16 +24,30 @@ const GraphPlaceholder: React.FC<{}> = ()=>{
     </Box>
 }
 
-export const GraphFormPartial: GraphFormType<Partial<GraphV2>>= ({graphData, update, save})=>{
-    const {tags} = useTagsContext()
+const DateRangeOptions : Array<{id: DateRange, label: string}> =[
+    {id: DateRange.oneMonth, label: 'One month'},
+    {id: DateRange.halfYear, label: 'Half year'},
+    {id: DateRange.oneYear, label: 'One year'},
+    {id: DateRange.twoYears, label: 'Two years'},
+    {id: DateRange.all, label: 'all'}
+]
+
+
+export const GraphForm: <T extends Partial<GraphV2>>(p: GraphFormProps<T>)=>React.ReactElement<GraphFormProps<T>> = <T extends Partial<GraphV2>>({graphData, update, save}: GraphFormProps<T>)=>{
+    const {tags, tagsMap} = useTagsContext()
     const tagsPair = tags.map(({id, name})=>({id, name}))
 
     const size = React.useContext(ResponsiveContext)
     const hasHorizontal = graphData.kind === GraphKind.bar || graphData.kind === GraphKind.line
     const graphEnabled = graphData.kind && graphData.group && (!hasHorizontal) || graphData.horizontalGroup
-    return <Form 
-        value={graphData}
-        onChange={newValue => update(newValue)}
+    const graphUi = graphToUi(graphData)
+    const updateGraph = (data: GraphUiRepresentation)=> {
+        update(uiToGraph(data) as T)
+    }
+    useLogger().info('Graph Form', {graphData, graphUi})
+    return <Form<GraphUiRepresentation> 
+        value={graphUi}
+        onChange={(newValue) => updateGraph(newValue)}
         onSubmit={async ()=>{
             await save()
         }}
@@ -39,36 +55,116 @@ export const GraphFormPartial: GraphFormType<Partial<GraphV2>>= ({graphData, upd
         <Box direction={size ==='small' ? 'column' : 'row'} width="fill">
             {graphEnabled ? <GraphViewer graph={enrichGraph(graphData as GraphV2, tags)}/> :<GraphPlaceholder />}
             <Box>
-                <FormField name='name' htmlFor="text-input-name" label="Graph name">
-                    <TextInput id='text-input-name' name='name' />
-                </FormField>
-                <FormField name='kind' htmlFor="select-kind" label='Graph kind'>
-                    <Select id='select-kind' options={Object.values(GraphKind)} name='kind'/>
-                </FormField>
-                <FormField name='kind' htmlFor="select-kind" label='Graph kind'>
-                    <Select id='select-kind' options={Object.values(GraphKind)} name='kind'/>
-                </FormField>
-                <FormField name='tag' htmlFor="select-for-tag-filter" label='Tag filter'>
+                <FormField 
+                    name='name'
+                    label="Graph name"
+                    component={TextInput}
+                    />
+                <FormField
+                    label="Graph kind"
+                    name="kind"
+                    component={Select}
+                    options={Object.values(GraphKind)}
+                />
+                <FormField 
+                    name='tag' 
+                    htmlFor="select-for-tag-filter" 
+                    label='Tag filter'>
                     <Select 
                         id='select-for-tag-filter' 
                         name="tagFilter" 
                         options={tagsPair}
+                        placeholder="No tag filter selected"
                         labelKey="name"
+                        valueKey={{key: 'id', reduce: true}}
+                        clear={{label: 'No filter'}}
+                        />
+                </FormField>
+                <FormField 
+                    name='dateRange'
+                    htmlFor="select-date-range"
+                    label='Date range'>
+                    <Select 
+                        id='select-date-range' 
+                        options={DateRangeOptions}
+                        name='dateRange'
+                        labelKey="label"
                         valueKey={{key: 'id', reduce: true}}
                         />
                 </FormField>
-                <FormField>
-                    <Select 
-                        id='select-date-range' 
-                        options={[]}
+                {/* this is in a wrong place, it should be in x-axis group */}
+                <FormField 
+                    label='Acumulate values'
+                    name='accumulate'
+                    component={CheckBox}
+                    />
+                <Box>
+                    <Heading level={5}>
+                        Group data
+                    </Heading>
+                    <FormField 
+                        label='Group type' 
+                        name='groupKind'
+                        options={Object.values(GraphGroupEnum)}
+                        component={Select}
                         />
-                </FormField>
-                <FormField>
-                    <CheckBox name='accumulate'/>
-                </FormField>
+                    {graphUi.groupKind === GraphGroupEnum.tags && <React.Fragment>
+                        <FormField label='Tags to group' htmlFor="select-group-tags">
+                            <InputTag 
+                                value={graphUi.groupTags?.map(tagId=>tagsMap[tagId]) ?? []}
+                                onAdd={(tag)=> updateGraph({
+                                    ...graphUi,
+                                    groupTags: [...(graphUi.groupTags as []), tag.id]
+                                })}
+                                onRemove={(tag)=> updateGraph({
+                                    ...graphUi,
+                                    groupTags: (graphUi.groupTags as[]).filter(tagId => tagId!=tag.id)
+                                })}
+                                suggestions={tags}
+                                />
+                        </FormField>
+                        <FormField
+                            label='Hide other tags'
+                            name='groupHideOthers'
+                            component={CheckBox}
+                            />
+                        </React.Fragment>}
+                </Box>
+                {hasHorizontal && 
+                    <Box>
+                        <Heading level={5}>
+                            X axis
+                        </Heading>
+                        <FormField
+                            label='Group type'
+                            name='horizontalGroupKind'
+                            options={Object.values(GraphGroupEnum)}
+                            component={Select}
+                        />
+                        {graphUi.horizontalGroupKind === GraphGroupEnum.tags && <React.Fragment>
+                            <FormField label='Tags to group' htmlFor="select-x-group-tags">
+                                <InputTag 
+                                    value={graphUi.horizontalGroupTags?.map(tagId=>tagsMap[tagId]) ?? []}
+                                    onAdd={(tag)=> updateGraph({
+                                        ...graphUi,
+                                        horizontalGroupTags: [...(graphUi.horizontalGroupTags as []), tag.id]
+                                    })}
+                                    onRemove={(tag)=> updateGraph({
+                                        ...graphUi,
+                                        horizontalGroupTags: (graphUi.horizontalGroupTags as[]).filter(tagId => tagId!=tag.id)
+                                    })}
+                                    suggestions={tags}
+                                    />
+                            </FormField>
+                            <FormField
+                                label='Hide other tags'
+                                name='horizontalGroupHideOthers'
+                                component={CheckBox}
+                                />
+                            </React.Fragment>}
+                    </Box>
+                    }
             </Box>
         </Box>
     </Form>
 }
-
-export const GraphFormComplete = GraphFormPartial as GraphFormType<GraphV2>

@@ -1,14 +1,11 @@
 import React from 'react'
-import { Box, Button, DataChart, Heading } from "grommet"
-import { EnrichedGraph, GraphKind, GraphV2 } from "../../../api/client/graphs/types"
+import { Box } from "grommet"
+import { EnrichedGraph, GraphKind } from "../../../api/client/graphs/types"
 import { useGraphDataGenerator } from '../use-graph-data'
 import { DSDoubleGroup } from '../data-transform/types'
 import { useLogger } from '../../../utils/logger/logger.context'
-import { Logger } from '../../../utils/logger/logger.class'
 import {schemeTableau10} from 'd3-scale-chromatic';
 import {ResponsiveContainer, LineChart, Line, CartesianGrid, Bar, XAxis,YAxis, Tooltip, Legend, BarChart} from 'recharts'
-import { Edit, Trash } from 'grommet-icons'
-import { ConfirmationButton } from '../../../utils/ui/confirmation-button'
 
 interface GraphRenderArgs {
     graphData: DSDoubleGroup<string, string>[]

@@ -55,6 +55,8 @@ export type GraphV2 = CamelCasedPropertiesDeep<components['schemas']['GraphV2']>
 
 export type GetGraphsV2Response = GraphV2[]
 
+export type GetGraphV2Response = GraphV2
+
 export interface EnrichedGroup extends Omit<CamelCasedPropertiesDeep<components['schemas']['Group']>, 'groupTags'> {
     groupTags: Tag[]
 }
