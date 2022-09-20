@@ -1,9 +1,11 @@
 import { instanceToPlain, plainToClass, plainToInstance } from "class-transformer";
-import { Box, CheckBox, Form, FormField, Heading, ResponsiveContext, Select, TextInput } from "grommet";
+import { Box, Button, CheckBox, Form, FormField, Heading, ResponsiveContext, Select, TextInput } from "grommet";
 import { Add, Analytics } from "grommet-icons";
 import React from "react";
+import { useNavigate } from "react-router";
 import { DateRange, GraphGroupEnum, GraphKind, GraphV2 } from "../../../api/client/graphs/types";
 import { useLogger } from "../../../utils/logger/logger.context";
+import { ConfirmationButton } from "../../../utils/ui/confirmation-button";
 import { InputTag } from "../../../utils/ui/tag/input-tag";
 import { useTagsContext } from "../../common/tag.context";
 import { enrichGraph } from "../graph-with-rechart/enrich-graph";
@@ -36,6 +38,7 @@ const DateRangeOptions : Array<{id: DateRange, label: string}> =[
 export const GraphForm: <T extends Partial<GraphV2>>(p: GraphFormProps<T>)=>React.ReactElement<GraphFormProps<T>> = <T extends Partial<GraphV2>>({graphData, update, save}: GraphFormProps<T>)=>{
     const {tags, tagsMap} = useTagsContext()
     const tagsPair = tags.map(({id, name})=>({id, name}))
+    const navigate = useNavigate()
 
     const size = React.useContext(ResponsiveContext)
     const hasHorizontal = graphData.kind === GraphKind.bar || graphData.kind === GraphKind.line
@@ -92,12 +95,6 @@ export const GraphForm: <T extends Partial<GraphV2>>(p: GraphFormProps<T>)=>Reac
                         valueKey={{key: 'id', reduce: true}}
                         />
                 </FormField>
-                {/* this is in a wrong place, it should be in x-axis group */}
-                <FormField 
-                    label='Acumulate values'
-                    name='accumulate'
-                    component={CheckBox}
-                    />
                 <Box>
                     <Heading level={5}>
                         Group data
@@ -114,11 +111,11 @@ export const GraphForm: <T extends Partial<GraphV2>>(p: GraphFormProps<T>)=>Reac
                                 value={graphUi.groupTags?.map(tagId=>tagsMap[tagId]) ?? []}
                                 onAdd={(tag)=> updateGraph({
                                     ...graphUi,
-                                    groupTags: [...(graphUi.groupTags as []), tag.id]
+                                    groupTags: [...(graphUi.groupTags ?? []), tag.id]
                                 })}
                                 onRemove={(tag)=> updateGraph({
                                     ...graphUi,
-                                    groupTags: (graphUi.groupTags as[]).filter(tagId => tagId!=tag.id)
+                                    groupTags: (graphUi.groupTags ?? []).filter(tagId => tagId!=tag.id)
                                 })}
                                 suggestions={tags}
                                 />
@@ -141,17 +138,22 @@ export const GraphForm: <T extends Partial<GraphV2>>(p: GraphFormProps<T>)=>Reac
                             options={Object.values(GraphGroupEnum)}
                             component={Select}
                         />
+                        {graphUi.kind === GraphKind.line &&  <FormField 
+                            label='Acumulate values'
+                            name='horizontalAccumulate'
+                            component={CheckBox}
+                            />}
                         {graphUi.horizontalGroupKind === GraphGroupEnum.tags && <React.Fragment>
                             <FormField label='Tags to group' htmlFor="select-x-group-tags">
                                 <InputTag 
                                     value={graphUi.horizontalGroupTags?.map(tagId=>tagsMap[tagId]) ?? []}
                                     onAdd={(tag)=> updateGraph({
                                         ...graphUi,
-                                        horizontalGroupTags: [...(graphUi.horizontalGroupTags as []), tag.id]
+                                        horizontalGroupTags: [...(graphUi.horizontalGroupTags ?? []), tag.id]
                                     })}
                                     onRemove={(tag)=> updateGraph({
                                         ...graphUi,
-                                        horizontalGroupTags: (graphUi.horizontalGroupTags as[]).filter(tagId => tagId!=tag.id)
+                                        horizontalGroupTags: (graphUi.horizontalGroupTags ?? []).filter(tagId => tagId!=tag.id)
                                     })}
                                     suggestions={tags}
                                     />
@@ -164,6 +166,12 @@ export const GraphForm: <T extends Partial<GraphV2>>(p: GraphFormProps<T>)=>Reac
                             </React.Fragment>}
                     </Box>
                     }
+                    <Box direction='row' gap='small' justify="center">
+                        <Button primary label='Save' type='submit' />
+                        <ConfirmationButton color='accent-4' label='discard' onConfirm={()=>{
+                            navigate('/')
+                        }}/>
+                    </Box>
             </Box>
         </Box>
     </Form>

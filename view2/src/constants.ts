@@ -1,32 +1,24 @@
-export const getDataFromScript = <T extends {}>(scriptName: string): T => {
+import { ClassConstructor, plainToInstance } from "class-transformer"
+
+export const getDataFromScript = <T extends {}>(scriptName: string, schema: ClassConstructor<T>): T => {
     const element = document.getElementById(scriptName) || ({} as any)
-    return JSON.parse(element.textContent || '{}')
+    const obj = JSON.parse(element.textContent || '{}')
+    return plainToInstance(schema, obj)
 }
 
 export enum Environment {
     local = 'local',
 }
 
-interface JsContants {
-    environment: Environment
-    version: string
-    debug: boolean
-    static_url: string
-    pageLoadTraceId: string
-    pageLoadSpanId: string
-    pageLoadSampled: boolean
+class JsConstants {
+    environment!: Environment
+    version!: string
+    debug!: boolean
 }
 
-const constants = getDataFromScript<JsContants>('js-constants')
+const constants = getDataFromScript('js-constants', JsConstants)
 
 export const DEBUG = constants.debug || false
 export const GRAPHQL_URL = '/graphql/'
-export const STATIC_URL = constants.static_url
 export const ENVIRONMENT = constants.environment
-
-export const APM = {
-    version: constants.version,
-    pageLoadTraceId: constants.pageLoadTraceId,
-    pageLoadSpanId: constants.pageLoadSpanId,
-    pageLoadSampled: constants.pageLoadSampled,
-}
+export const VERSION = constants.version

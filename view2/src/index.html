@@ -20,6 +20,13 @@
         <% } %>
     </head>
 
+    <!-- React config -->
+    <script id='js-constants' type="application/json">{
+        "environment": "{{environment}}",
+        "version": "{{version}}",
+        "debug": {% if debug %} true {% else %} false {% endif %}
+    }</script>
+
     <!-- WIP: Webpack -->
     <script>
         __webpack_public_path__ = "{% static '' %}";

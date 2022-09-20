@@ -17,10 +17,6 @@
     "test:watch": "jest --config config/jest.json --watch"
   },
   "dependencies": {
-    "@nivo/bar": "^0.80.0",
-    "@nivo/colors": "^0.80.0",
-    "@nivo/core": "^0.80.0",
-    "@nivo/line": "^0.80.0",
     "axios": "^0.24.0",
     "axios-case-converter": "^0.9.0",
     "axios-hooks": "^3.0.0",

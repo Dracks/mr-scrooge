@@ -13,6 +13,7 @@ export enum GraphKind {
 
 export enum DateRange {
     all = 'all',
+    sixYears='sixYears',
     twoYears='twoYears',
     oneYear='year',
     halfYear='six',
@@ -22,6 +23,7 @@ export enum DateRange {
 export enum GraphGroupEnum {
     day='day',
     month='month',
+    year='year',
     tags='tags',
     sign='sign',
 }
@@ -61,9 +63,14 @@ export interface EnrichedGroup extends Omit<CamelCasedPropertiesDeep<components[
     groupTags: Tag[]
 }
 
+export interface EnrichedHorizontalGroup extends EnrichedGroup {
+    accumulate?: boolean
+}
+
+
 export type GraphGroup = CamelCasedPropertiesDeep<components['schemas']['Group']>
 
 export interface EnrichedGraph extends Omit<GraphV2, 'group' | 'horizontalGroup'>  {
     group: EnrichedGroup,
-    horizontalGroup?: EnrichedGroup,
+    horizontalGroup?: EnrichedHorizontalGroup,
 }

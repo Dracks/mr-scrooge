@@ -1,15 +1,14 @@
 import React from "react"
 import { Routes, Route, useParams } from "react-router"
 import NotFound from "../extra/not-found"
-import { GraphEdit } from "./form/graph-edit.form"
-import { GraphNew } from "./form/graph-new.form"
-import { Graphs } from "./graphs"
+import { EditGraph } from "./form/edit-graph.form"
+import { GraphNew } from "./form/new-graph.form"
 
 const EditGraphWithRoute = ()=>{
     const { id } = useParams<{ id: string }>()
     const idNumber = parseInt(id ?? '0', 10)
     if (id && !Number.isNaN(idNumber)){
-        return <GraphEdit id={idNumber} />
+        return <EditGraph id={idNumber} />
     } else {
         return <NotFound />
     }

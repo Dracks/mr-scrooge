@@ -5,7 +5,7 @@ import { useGraphDataGenerator } from '../use-graph-data'
 import { DSDoubleGroup } from '../data-transform/types'
 import { useLogger } from '../../../utils/logger/logger.context'
 import {schemeTableau10} from 'd3-scale-chromatic';
-import {ResponsiveContainer, LineChart, Line, CartesianGrid, Bar, XAxis,YAxis, Tooltip, Legend, BarChart} from 'recharts'
+import {ResponsiveContainer, LineChart, Line, CartesianGrid, Bar, XAxis,YAxis, Tooltip, Legend, BarChart, PieChart, Pie, Cell} from 'recharts'
 
 interface GraphRenderArgs {
     graphData: DSDoubleGroup<string, string>[]
@@ -15,7 +15,7 @@ interface GraphViewerArgs {
     graph: EnrichedGraph
 }
 
-const GenericToGrommetChart = <K extends string, SK extends string>(inputData: DSDoubleGroup<K, SK>[]): { keys: SK[], firstKey: string, data: Array<Record<string, number>> } => {
+const GenericToRecharts = <K extends string, SK extends string>(inputData: DSDoubleGroup<K, SK>[]): { keys: SK[], firstKey: string, data: Array<Record<string, number>> } => {
     const keys: Set<SK> = new Set()
     const [first] = inputData
     const data = inputData.map(group => ({
@@ -44,7 +44,7 @@ const useHideLogic: ()=>[string[], (d: string)=>void]=()=>{
 }
 
 const BarGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
-    const { keys, firstKey, data } = GenericToGrommetChart<string, string>(graphData)
+    const { keys, firstKey, data } = GenericToRecharts<string, string>(graphData)
     const [hidenElements, touch] = useHideLogic()
     return <ResponsiveContainer width="100%" height={400}>
     <BarChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
@@ -66,7 +66,7 @@ const BarGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
 
 const LineGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
     const logger = useLogger()
-    const { keys, firstKey, data } = GenericToGrommetChart<string, string>(graphData)
+    const { keys, firstKey, data } = GenericToRecharts<string, string>(graphData)
     const [hidenElements, touch] = useHideLogic()
     
     logger.info('Line Graph Render', {graphData, keys, firstKey, data})
@@ -88,10 +88,38 @@ const LineGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
     </ResponsiveContainer>
 }
 
+const PieGraphRender: React.FC<GraphRenderArgs> = ({graphData})=>{
+    const logger = useLogger()
+    
+    logger.info('Pie Graph Render', {graphData})
+    const [firstGroup] = graphData
+    const keys = firstGroup?.value.map(pair => pair.label) ?? []
+
+    return <ResponsiveContainer width="100%" height={400}>
+        <PieChart >
+            <Legend />
+            <Tooltip />
+            <Pie 
+               data={firstGroup?.value} 
+               dataKey="value"
+               nameKey="label"
+               cx="50%" 
+               cy="50%" 
+               label
+               >
+                {keys.map((_, index) => <Cell
+                    key={`cell-${index}`} 
+                    fill={schemeTableau10[index]}
+                />)}
+               </Pie>
+        </PieChart>
+    </ResponsiveContainer>
+}
+
 const ComponentHash: Record<GraphKind, React.FC<GraphRenderArgs>> = {
     'line': LineGraphRender,
     'bar': BarGraphRender,
-    'pie': ({ graphData }) => <Box direction='column' >pie</Box>,
+    'pie': PieGraphRender,
 }
 
 export const GraphViewer: React.FC<GraphViewerArgs> = ({ graph }) => {

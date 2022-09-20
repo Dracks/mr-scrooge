@@ -21,12 +21,14 @@ GraphKind.CHOICES=(
 class GraphGroup:
     Day='day'
     Month='month'
+    Year='year'
     Tags='tags'
     Sign='sign'  
 
 GraphGroup.CHOICES=(
     (GraphGroup.Day,'day'),
     (GraphGroup.Month,'month'),
+    (GraphGroup.Year,'year'),
     (GraphGroup.Tags,'tags'),
     (GraphGroup.Sign,'sign' ), 
 )
@@ -39,7 +41,6 @@ class GraphV2(models.Model):
     date_range = models.CharField(max_length=255)
     # To keep track of the relation with old keys
     old_graph = models.ForeignKey(Graph, null=True, blank=True, on_delete=models.SET_NULL)
-    accumulate = models.BooleanField(default=False)
 
 class AbstractGroup(models.Model):
     group = models.CharField(max_length=10, choices = GraphGroup.CHOICES)
@@ -56,6 +57,7 @@ class GroupTags(models.Model):
 
 class HorizontalGroup(AbstractGroup):
     graph = models.OneToOneField(GraphV2, on_delete=models.CASCADE, related_name='horizontal_group')
+    accumulate = models.BooleanField(default=False)
 
 class HorizontalGroupTags(models.Model):
     group = models.ForeignKey(HorizontalGroup, on_delete=models.CASCADE, related_name='group_tags')

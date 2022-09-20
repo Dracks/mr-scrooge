@@ -6,7 +6,6 @@ export const graphV1V2Mapper = (graph: Graph | BarGraph): Omit<GraphV2, 'id'> =>
     kind: graph.kind,
     dateRange: graph.dateRange,
     oldGraph: graph.id,
-    accumulate: graph.acumulative,
     group: {
         group: graph.group,
         hideOthers: graph.groupHideOthers,
@@ -16,5 +15,6 @@ export const graphV1V2Mapper = (graph: Graph | BarGraph): Omit<GraphV2, 'id'> =>
         group: (graph as BarGraph).horizontal,
         hideOthers: (graph as BarGraph).horizontalHideOthers,
         groupTags: (graph as BarGraph).horizontalValue?.map((tag: any) => ({ tag})),
+        accumulate: graph.acumulative,
     } : undefined
 })

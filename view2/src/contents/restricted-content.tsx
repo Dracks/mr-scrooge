@@ -10,6 +10,7 @@ import { Imports } from './imports/imports'
 import { Tags } from './tags/tags'
 import { GraphRouter } from './graphs/graph-router'
 import { Graphs } from './graphs/graphs'
+import { VERSION } from '../constants'
 
 const RestrictedContent: React.FC = () => (
     <DataProvider>
@@ -27,8 +28,11 @@ const RestrictedContent: React.FC = () => (
 
         <Footer background="light-2" pad="medium">
             <Box fill align="center">
-                <Text size="xsmall" textAlign="center">
+                <Text size="small" textAlign="center">
                     Mr Scrooge by Jaume Singla Valls
+                </Text>
+                <Text size="small" textAlign="center">
+                    version {VERSION}
                 </Text>
             </Box>
         </Footer>

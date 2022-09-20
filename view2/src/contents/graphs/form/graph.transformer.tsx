@@ -1,4 +1,5 @@
 import { GraphGroupEnum, GraphKind, GraphV2 } from "../../../api/client/graphs/types";
+import { accumulateFn } from "../data-transform/accumulate";
 
 export interface GraphUiRepresentation {
     id?: number;
@@ -15,6 +16,7 @@ export interface GraphUiRepresentation {
     horizontalGroupKind?: GraphGroupEnum
     horizontalGroupHideOthers?: boolean | null;
     horizontalGroupTags?: number[]
+    horizontalAccumulate?: boolean
 }
 
 export const graphToUi = ({group, horizontalGroup, kind, tagFilter, ...graph}: Partial<GraphV2>): GraphUiRepresentation =>({
@@ -26,7 +28,8 @@ export const graphToUi = ({group, horizontalGroup, kind, tagFilter, ...graph}: P
     groupTags: group?.groupTags?.map(({tag})=>tag),
     horizontalGroupKind: horizontalGroup?.group as GraphGroupEnum,
     horizontalGroupHideOthers: horizontalGroup?.hideOthers,
-    horizontalGroupTags: horizontalGroup?.groupTags?.map(({tag})=>tag)
+    horizontalGroupTags: horizontalGroup?.groupTags?.map(({tag})=>tag),
+    horizontalAccumulate: horizontalGroup?.accumulate
 })
 
 export const uiToGraph = ({
@@ -36,17 +39,21 @@ export const uiToGraph = ({
     horizontalGroupHideOthers,
     horizontalGroupKind,
     horizontalGroupTags,
+    horizontalAccumulate,
+    oldGraph,
     ...graphUi
 }: GraphUiRepresentation): Partial<GraphV2>=> ({
     ...graphUi,
+    oldGraph: oldGraph ?? undefined,
     group: groupKind ? {
         group: groupKind,
         hideOthers: groupHideOthers,
         groupTags: groupTags?.map(tag => ({tag}))
     } : undefined,
-    horizontalGroup: horizontalGroupKind ? {
+    horizontalGroup: (horizontalGroupKind && graphUi.kind !== GraphKind.bar) ? {
         group: horizontalGroupKind,
         hideOthers: horizontalGroupHideOthers,
-        groupTags: horizontalGroupTags?.map(tag => ({tag}))
+        groupTags: horizontalGroupTags?.map(tag => ({tag})),
+        accumulate: horizontalAccumulate
     }: undefined
 })

@@ -1,6 +1,7 @@
 import { format, lastDayOfMonth, sub } from "date-fns";
 import {DTGroupFn, DTInputData} from './types'
 import {Tag} from '../../../api/client/tag/types'
+import { GraphGroupEnum } from "../../../api/client/graphs/types";
 
 export const getRangeFilter: (months: number, reference: Date)=> (record: DTInputData) =>boolean =(months:number, reference: Date)=>{
     const start = sub(reference, {months});
@@ -10,16 +11,17 @@ export const getRangeFilter: (months: number, reference: Date)=> (record: DTInpu
     return record=>record.date >= start && record.date <= end
 }
 
-type GroupKeys = "month" | "day" | "sign" | "tags"
+type GroupKeys = GraphGroupEnum
 
 type LabelSign = "expenses" | "income"
 
 export const groupLambdas :Record<GroupKeys | "identity", (tagsList?: Tag[], others?: boolean)=>DTGroupFn<string>>= {
     month:()=>(record) => format(record.date, "yyyy-MM"),
     day:()=>(record)=>`${record.date.getDate()}`,
+    year:()=>(record)=>`${record.date.getFullYear()}`,
     sign:()=>(record):LabelSign=> record.value<0? "expenses":"income",
-    tags: (tagsList=[], others=false)=>{
-        const othersKey = others ? "Others" : false
+    tags: (tagsList=[], hideOthers=false)=>{
+        const othersKey = hideOthers ? false : "Others"
         return (record)=>{
             const tags = record.tags ?? [];
             return tagsList.reduce((ac, {id, name})=>{
@@ -52,9 +54,10 @@ const customSort = (data: string[])=>{
     }
 }
 
-export const sortLambdas = {
+export const sortLambdas :Record<GroupKeys, (p:string[])=>(a: string, b: string)=>number>= {
     month: ()=>(a: string,b: string) => a.localeCompare(b),
     day: ()=>(a: string,b: string)=> parseInt(a, 10)-parseInt(b, 10),
+    year: ()=>(a: string, b: string)=> a.localeCompare(b),
     sign: ()=>customSort(["expenses", "income"]),
     tags: customSort,
 }
