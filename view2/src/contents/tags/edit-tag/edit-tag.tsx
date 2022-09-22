@@ -17,21 +17,14 @@ class UITag implements Omit<Tag, 'negateConditional' | 'parent'> {
 
     filters!: number[]
 
-    @Transform(({value})=>value ? value : -1, {toClassOnly: true})
-    @Transform(({value})=>  value === -1 ? null : value, {toPlainOnly: true})
-    parent!:  number
+    @Transform(({value})=>value ?? undefined, {toClassOnly: true})
+    parent?:  number
 
     @Transform(({value})=> value ? 1 : 0, {toClassOnly: true})
     @Transform(({value})=> value === 1, {toPlainOnly: true})
     negateConditional!: number
 }
 type SelectTagOption = Pick<UITag, 'id' | 'name'>
-
-const NO_PARENT_SELECTED : SelectTagOption = {
-    id: -1, 
-    name: 'No parent',
-}
-
 
 export const TagEdit: React.FC = () => {
     const { tagsMap, tags, refresh } = useTagsContext()
@@ -55,18 +48,17 @@ export const TagEdit: React.FC = () => {
             const firstChild = tagsMap[firstChildId]
             firstChild.children.forEach(child => tmpChildrenList.push(child));
         }
-        return [NO_PARENT_SELECTED, ...tags.filter(({id})=> !childrenList.includes(id)).map(({id, name})=>({id, name}))]
+        return tags.filter(({id})=> !childrenList.includes(id)).map(({id, name})=>({id, name}))
     }, [tag, tag?.parent, tagsMap, tags])
 
 
     if (tagUiValue) {
         return <React.Fragment>
-                <Form
+                <Form<UITag>
                 value={tagUiValue}
                 // We need the Object.assign to preserve the metadata of the class-transformer
                 onChange={nextValue => setTagUiValue(Object.assign(tagUiValue,nextValue))}
                 onSubmit={async ({ value }) => {
-                    // console.log('onSubmit', instanceToPlain(value, {version: 1}))
                     await request({
                         data: {
                             // Not tested...
@@ -76,16 +68,20 @@ export const TagEdit: React.FC = () => {
                     refresh()
                 }}>
                 <Grid columns="medium" gap="small">
-                    <FormField name="name" htmlFor="text-input-name" label="Name">
-                        <TextInput id="text-input-name" name="name" />
-                    </FormField>
+                    <FormField 
+                        name="name" 
+                        label="Name"
+                        component={TextInput}
+                        />                    
                     <FormField name="parent" htmlFor="select-parent" label="Parent">
                         <Select 
                         options={possibleParents} 
+                        placeholder='Select parent'
                         id='select-parent' 
                         name='parent' 
                         labelKey="name"
                         valueKey={{ key: 'id', reduce: true }}
+                        clear={{label: 'Without parent'}}
                     />
                     </FormField>
                     <FormField name="negateConditional" htmlFor="negate-conditional" label="Management of conditions">

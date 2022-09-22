@@ -7,6 +7,7 @@ import { FileUploadQueue } from '../../../utils/ui/upload-queue';
 import { FileStatus, IFileData } from '../types';
 import { ImportFileRow } from './import-file-row';
 import { useUploadQueue } from '../../common/uploader-queue.context'
+import { useLogger } from '../../../utils/logger/logger.context';
 
 
 
@@ -23,7 +24,8 @@ const useKindWithRegex = ()=>{
 export const ImportWizard: React.FC = ()=> {
     const {files, onAdd, onChangeKind, submit, uploading} = useUploadQueue()
     const {kindList, findKind} = useKindWithRegex()
-    console.log(files)
+    const logger = useLogger()
+    logger.info("Import wizard", {files})
 
     return <Box fill align="center" justify="center">
         <Heading level='2'>

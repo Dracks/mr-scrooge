@@ -32,7 +32,6 @@ export const TagListRow : React.FC<TagListRowArgs> = ({tag, tagHash, refresh})=>
         </TableCell>
         <TableCell>
             <Button primary label="Edit" onClick={()=>{
-
                 navigate(`${tag.id}`)
             }
             }/>

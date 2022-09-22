@@ -7,6 +7,7 @@ import { ProvideLogger } from '../logger/logger.context'
 import { LoggerConsole } from '../logger/logger-console'
 import { LogLevel } from '../logger/logger.types'
 import { LoggerUi } from '../logger/logger-ui'
+import { DEBUG } from '../../constants'
 
 const AllProviders: React.FC<{}> = ({ children }) => {
     return (
@@ -15,8 +16,8 @@ const AllProviders: React.FC<{}> = ({ children }) => {
                     <ProvideEventEmitter>
                         <ProvideLogger>
                             <React.Fragment>
-                                <LoggerUi/>
-                                <LoggerConsole logLevel={LogLevel.info} />
+                                { DEBUG ? <LoggerUi/> : undefined}
+                                <LoggerConsole logLevel={DEBUG ? LogLevel.info : LogLevel.warn} />
                                 {children}
                             </React.Fragment>
                         </ProvideLogger>

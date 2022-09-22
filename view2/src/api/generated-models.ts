@@ -10,6 +10,16 @@ export interface paths {
     /** It's a custom api to parse all the information of the graph to the database. */
     post: operations["graph_create"];
   };
+  "/api/graph-v2/": {
+    get: operations["graph_v2_list"];
+    post: operations["graph_v2_create"];
+  };
+  "/api/graph-v2/{id}/": {
+    get: operations["graph_v2_retrieve"];
+    put: operations["graph_v2_update"];
+    delete: operations["graph_v2_destroy"];
+    patch: operations["graph_v2_partial_update"];
+  };
   "/api/graph/{id}/": {
     /** It's a custom api to parse all the information of the graph to the database. */
     get: operations["graph_retrieve_2"];
@@ -133,6 +143,35 @@ export interface components {
       type_conditional: components["schemas"]["TypeConditionalEnum"];
       conditional: string;
     };
+    GraphV2: {
+      id: number;
+      name: string;
+      kind: components["schemas"]["KindEnum"];
+      tag_filter?: number | null;
+      date_range: string;
+      old_graph?: number;
+      group: components["schemas"]["Group"];
+      horizontal_group?: components["schemas"]["HorizontalGroup"];
+    };
+    Group: {
+      group: components["schemas"]["GroupEnum"];
+      hide_others?: boolean | null;
+      group_tags?: components["schemas"]["GroupTags"][];
+    };
+    GroupEnum: "day" | "month" | "year" | "tags" | "sign";
+    GroupTags: {
+      tag: number;
+    };
+    HorizontalGroup: {
+      group: components["schemas"]["GroupEnum"];
+      hide_others?: boolean | null;
+      group_tags?: components["schemas"]["HorizontalGroupTags"][];
+      accumulate?: boolean;
+    };
+    HorizontalGroupTags: {
+      tag: number;
+    };
+    KindEnum: "bar" | "pie" | "line";
     PaginatedRawDataList: {
       next?: string | null;
       previous?: string | null;
@@ -143,6 +182,16 @@ export interface components {
       tag?: number;
       type_conditional?: components["schemas"]["TypeConditionalEnum"];
       conditional?: string;
+    };
+    PatchedGraphV2: {
+      id?: number;
+      name?: string;
+      kind?: components["schemas"]["KindEnum"];
+      tag_filter?: number | null;
+      date_range?: string;
+      old_graph?: number;
+      group?: components["schemas"]["Group"];
+      horizontal_group?: components["schemas"]["HorizontalGroup"];
     };
     PatchedTag: {
       id?: number;
@@ -213,6 +262,102 @@ export interface operations {
     responses: {
       /** No response body */
       201: unknown;
+    };
+  };
+  graph_v2_list: {
+    responses: {
+      200: {
+        content: {
+          "application/json": components["schemas"]["GraphV2"][];
+        };
+      };
+    };
+  };
+  graph_v2_create: {
+    responses: {
+      201: {
+        content: {
+          "application/json": components["schemas"]["GraphV2"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GraphV2"];
+        "application/x-www-form-urlencoded": components["schemas"]["GraphV2"];
+        "multipart/form-data": components["schemas"]["GraphV2"];
+      };
+    };
+  };
+  graph_v2_retrieve: {
+    parameters: {
+      path: {
+        /** A unique integer value identifying this graph v2. */
+        id: number;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          "application/json": components["schemas"]["GraphV2"];
+        };
+      };
+    };
+  };
+  graph_v2_update: {
+    parameters: {
+      path: {
+        /** A unique integer value identifying this graph v2. */
+        id: number;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          "application/json": components["schemas"]["GraphV2"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GraphV2"];
+        "application/x-www-form-urlencoded": components["schemas"]["GraphV2"];
+        "multipart/form-data": components["schemas"]["GraphV2"];
+      };
+    };
+  };
+  graph_v2_destroy: {
+    parameters: {
+      path: {
+        /** A unique integer value identifying this graph v2. */
+        id: number;
+      };
+    };
+    responses: {
+      /** No response body */
+      204: never;
+    };
+  };
+  graph_v2_partial_update: {
+    parameters: {
+      path: {
+        /** A unique integer value identifying this graph v2. */
+        id: number;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          "application/json": components["schemas"]["GraphV2"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PatchedGraphV2"];
+        "application/x-www-form-urlencoded": components["schemas"]["PatchedGraphV2"];
+        "multipart/form-data": components["schemas"]["PatchedGraphV2"];
+      };
     };
   };
   /** It's a custom api to parse all the information of the graph to the database. */

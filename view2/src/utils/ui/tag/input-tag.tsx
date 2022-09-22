@@ -1,6 +1,6 @@
 import React, { ChangeEventHandler, LegacyRef } from 'react'
 
-import { Box, Keyboard, TextInput } from 'grommet'
+import { Box, TextInput } from 'grommet'
 import { ITagModel, Tag } from './tag'
 
 interface TagInputProps {
@@ -22,7 +22,7 @@ export const InputTag: React.FC<TagInputProps> = ({
     const [currentTag, setCurrentTag] = React.useState('')
     const boxRef = React.useRef<HTMLDivElement>()
 
-    const updateCurrentTag = (event: ChangeEventHandler<HTMLInputElement>) => {
+    const updateCurrentTag = (event: ChangeEventHandler<HTMLInputElement>&{target: {value: string}}) => {
         setCurrentTag(event.target.value)
         if (onChange) {
             onChange(event)

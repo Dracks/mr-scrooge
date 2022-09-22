@@ -2,6 +2,7 @@ import { Button, Form, FormField, TableCell, TableRow, TextInput } from "grommet
 import React from "react"
 import { Tag } from "../../api/client/tag/types"
 import { usePostTags } from "../../api/client/tag/use-post-tag"
+import { useLogger } from "../../utils/logger/logger.context"
 
 interface NewTagRowProps {
     close: (newTag?: Tag) => Promise<void> | void
@@ -9,6 +10,7 @@ interface NewTagRowProps {
 export const NewTagRow: React.FC<NewTagRowProps> = ({close})=>{
     const [, useCreateTag] = usePostTags()
     const [name, setName] = React.useState("")
+    const logger = useLogger()
 
     return <TableRow>
         <TableCell>
@@ -29,7 +31,7 @@ export const NewTagRow: React.FC<NewTagRowProps> = ({close})=>{
                 if (response.status === 201) {
                     await close(response.data)
                 } else {
-                    console.log(response.status, response.data)
+                    logger.warn('Error Saving new Tag', {status: response.status, data: response.data})
                 }
                 
                 }}/>
