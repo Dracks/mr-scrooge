@@ -6,7 +6,7 @@ import './api/client/axios'
 import { useGetSession } from './api/client/session/use-get-session'
 import { usePostLogin } from './api/client/session/use-post-login'
 import { AxiosError } from 'axios'
-import Login from './contents/session/login'
+import Login, { LoginCredentials } from './contents/session/login'
 import RestrictedContent from './contents/restricted-content'
 import { UserSession } from './api/client/session/types'
 import { UserSessionContext } from './contents/session/context'
@@ -15,7 +15,7 @@ import { useDeleteLogout } from './api/client/session/use-delete-logout'
 interface SessionStatus {
     loading: boolean
     error?: AxiosError | null
-    data?: Partial<UserSession>
+    data?: Partial<UserSession>,
 }
 
 const App: React.FC<{}> = () => {
@@ -34,8 +34,8 @@ const App: React.FC<{}> = () => {
         })
     }, [sessionRequest])
 
-    const login = (user: string, password: string) => {
-        useLogin({data: { user, password }}).then((response) => {
+    const login = ({username, password}: LoginCredentials) => {
+        useLogin({data: { user: username, password}}).then((response) => {
             setSession({
                 ...sessionStatus,
                 data: response.data,
@@ -63,6 +63,7 @@ const App: React.FC<{}> = () => {
                     isLoading={loginStatus.loading}
                     login={login}
                     error={loginStatus.error}
+                    invalidCredentials={loginStatus.data ? !loginStatus.data.isAuthenticated : false}
                 />
         }
     } else {
