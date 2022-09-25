@@ -105,6 +105,7 @@ jobs:
           # push: ${{ github.event_name != 'pull_request' }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: "${{ steps.meta.outputs.tags }}"
+          build-arg: TAG_NAME=${{  github.ref_name }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Build and push Docker postgres image

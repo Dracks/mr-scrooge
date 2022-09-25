@@ -33,6 +33,7 @@ COPY config/sqlite/supervisor-app.conf /etc/supervisor/conf.d/
 # copy uswgi config
 COPY config/uwsgi* /home/django/
 
+ENV BUILD_VERSION=${TAG_NAME:-NOT_DEFINED}
 
 EXPOSE 80
 COPY config/sqlite/start.sh /usr/bin
