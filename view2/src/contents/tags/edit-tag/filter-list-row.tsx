@@ -14,10 +14,10 @@ interface FilterListRowArgs {
 }
 
 export const FilterListRow: React.FC<FilterListRowArgs> = ({ filter, conditions, reloadFilters }) => {
-    const [, request] = usePutTagFilter(filter.id)
+    const [, updateFilter] = usePutTagFilter(filter.id)
     const [, deleteRequest] = useDeleteTagFilter(filter.id)
     const [viewFilter, setViewFilter] = React.useState<TagFilter>(filter)
-    const update = (data: TagFilter)=>request({
+    const update = (data: TagFilter)=>updateFilter({
         data
     }).then(()=>reloadFilters())
 

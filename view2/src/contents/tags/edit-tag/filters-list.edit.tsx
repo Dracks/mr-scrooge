@@ -14,10 +14,10 @@ interface FiltersTableListArgs {
 
 export const FiltersTableList : React.FC<FiltersTableListArgs> = ({filters, conditions, tagId, reloadFilters})=>{
     const [isAdding, setIsAdding] = React.useState(false)
-    const conditionsList = Object.entries(conditions).map(([key, value]) => ({
+    const conditionsList = React.useMemo(()=>Object.entries(conditions).map(([key, value]) => ({
         key: key as FilterConditional,
         value
-    }))
+    })), [conditions])
     return <Table >
         <TableHeader>
             <TableRow>
