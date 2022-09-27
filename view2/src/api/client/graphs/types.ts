@@ -1,76 +1,85 @@
-import { CamelCasedProperties, CamelCasedPropertiesDeep } from "type-fest"
-import { components } from "../../generated-models"
-import { Tag } from "../tag/types"
+import { CamelCasedProperties, CamelCasedPropertiesDeep } from "type-fest";
+
+import { components } from "../../generated-models";
+import { Tag } from "../tag/types";
 
 /*
-    Old graphs for retro compatibility
-    */
+ *Old graphs for retro compatibility
+ */
 export enum GraphKind {
-    bar='bar',
-    pie='pie',
-    line='line'
+    bar = "bar",
+    line = "line",
+    pie = "pie"
 }
 
 export enum DateRange {
-    all = 'all',
-    sixYears='sixYears',
-    twoYears='twoYears',
-    oneYear='year',
-    halfYear='six',
-    oneMonth='month',
+    all = "all",
+    halfYear = "six",
+    oneMonth = "month",
+    oneYear = "year",
+    sixYears = "sixYears",
+    twoYears = "twoYears"
 }
 
 export enum GraphGroupEnum {
-    day='day',
-    month='month',
-    year='year',
-    tags='tags',
-    sign='sign',
+    day = "day",
+    month = "month",
+    sign = "sign",
+    tags = "tags",
+    year = "year"
 }
 
 export interface Graph {
-    id: number,
-    name: string,
-    tag: number,
-    kind: GraphKind,
-    acumulative: boolean,
-    dateRange: DateRange,
-    group: GraphGroupEnum
-    groupValue?: number[],
-    groupHideOthers?: boolean,
+    acumulative: boolean;
+    dateRange: DateRange;
+    group: GraphGroupEnum;
+    groupHideOthers?: boolean;
+    groupValue?: number[];
+    id: number;
+    kind: GraphKind;
+    name: string;
+    tag: number;
 }
 
-export interface BarGraph extends Graph{
-    kind: GraphKind.bar | GraphKind.line,
-    horizontal: GraphGroupEnum,
-    horizontalValue?: number[],
-    horizontalHideOthers?: boolean
+export interface BarGraph extends Graph {
+    horizontal: GraphGroupEnum;
+    horizontalHideOthers?: boolean;
+    horizontalValue?: number[];
+    kind: GraphKind.bar | GraphKind.line;
 }
 
 /*
-New graphs coming from Api Rest
+ *New graphs coming from Api Rest
  */
 
-export type GetGraphsResponse = Graph[]
+export type GetGraphsResponse = Graph[];
 
-export type GraphV2 = CamelCasedPropertiesDeep<components['schemas']['GraphV2']>
+export type GraphV2 = CamelCasedPropertiesDeep<
+    components["schemas"]["GraphV2"]
+>;
 
-export type GetGraphsV2Response = GraphV2[]
+export type GetGraphsV2Response = GraphV2[];
 
-export type GetGraphV2Response = GraphV2
+export type GetGraphV2Response = GraphV2;
 
-export interface EnrichedGroup extends Omit<CamelCasedPropertiesDeep<components['schemas']['Group']>, 'groupTags'> {
-    groupTags: Tag[]
+export interface EnrichedGroup
+    extends Omit<
+        CamelCasedPropertiesDeep<components["schemas"]["Group"]>,
+        "groupTags"
+    > {
+    groupTags: Tag[];
 }
 
 export interface EnrichedHorizontalGroup extends EnrichedGroup {
-    accumulate?: boolean
+    accumulate?: boolean;
 }
 
+export type GraphGroup = CamelCasedPropertiesDeep<
+    components["schemas"]["Group"]
+>;
 
-export type GraphGroup = CamelCasedPropertiesDeep<components['schemas']['Group']>
-
-export interface EnrichedGraph extends Omit<GraphV2, 'group' | 'horizontalGroup'>  {
-    group: EnrichedGroup,
-    horizontalGroup?: EnrichedHorizontalGroup,
+export interface EnrichedGraph
+    extends Omit<GraphV2, "group" | "horizontalGroup"> {
+    group: EnrichedGroup;
+    horizontalGroup?: EnrichedHorizontalGroup;
 }

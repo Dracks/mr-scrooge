@@ -1,17 +1,16 @@
-import React from 'react'
+import React from "react";
 
-import { getMetaTag } from './utils'
+import { getMetaTag } from "./utils";
 
 interface HeaderContentProp {
-    name: string
+    name: string;
 }
 const HeaderContent: React.FC<HeaderContentProp> = ({ name }) => {
-    const versionTag = getMetaTag(name)
+    const versionTag = getMetaTag(name);
     if (versionTag) {
-        return <React.Fragment>{versionTag.content}</React.Fragment>
-    } else {
-        return <React.Fragment>unknown</React.Fragment>
+        return <React.Fragment>{versionTag.content}</React.Fragment>;
     }
-}
+    return <React.Fragment>unknown</React.Fragment>;
+};
 
-export default HeaderContent
+export default HeaderContent;

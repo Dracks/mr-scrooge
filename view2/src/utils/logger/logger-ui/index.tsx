@@ -1,1 +1,1 @@
-export {LoggerUi} from './logger-ui'
+export { LoggerUi } from "./logger-ui";

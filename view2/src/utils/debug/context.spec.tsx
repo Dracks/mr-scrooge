@@ -1,30 +1,30 @@
-import { shallow } from 'enzyme'
-import React from 'react'
+import { shallow } from "enzyme";
+import React from "react";
 
-import DebugContext, { DebugProvider } from './context'
+import DebugContext, { DebugProvider } from "./context";
 
 const Debug = () => {
-    const isDebug = React.useContext(DebugContext)
-    return <div>{isDebug ? 'yes' : 'No'}</div>
-}
+    const isDebug = React.useContext(DebugContext);
+    return <div>{isDebug ? "yes" : "No"}</div>;
+};
 
-describe('[DebugContext]', () => {
+describe("[DebugContext]", () => {
     const mount = () => {
         const wrapper = shallow(
             <DebugProvider>
                 <Debug />
             </DebugProvider>
-        )
-        const child = wrapper.childAt(0).shallow()
-        return { parent: wrapper, child }
-    }
+        );
+        const child = wrapper.childAt(0).shallow();
+        return { parent: wrapper, child };
+    };
 
-    it('When constants is not debug', () => {
-        const { parent, child: subject } = mount()
-        expect(subject.text()).toEqual('No')
+    it("When constants is not debug", () => {
+        const { parent, child: subject } = mount();
+        expect(subject.text()).toEqual("No");
 
-        window.debug()
+        window.debug();
 
-        expect(parent.html()).toEqual('<div>yes</div>')
-    })
-})
+        expect(parent.html()).toEqual("<div>yes</div>");
+    });
+});

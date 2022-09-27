@@ -1,10 +1,10 @@
-import { Box, Button, Text } from 'grommet'
-import { FormClose } from 'grommet-icons'
-import React from 'react'
+import { Box, Button, Text } from "grommet";
+import { FormClose } from "grommet-icons";
+import React from "react";
 
 export interface ITagModel {
-    id: number
-    name: string
+    id: number;
+    name: string;
 }
 
 export const Tag: React.FC<{ onRemove?: () => void }> = ({
@@ -16,11 +16,11 @@ export const Tag: React.FC<{ onRemove?: () => void }> = ({
             direction="row"
             align="center"
             background="brand"
-            pad={{ horizontal: 'xsmall', vertical: 'xxsmall' }}
-            margin={{ vertical: 'xxsmall' }}
+            pad={{ horizontal: "xsmall", vertical: "xxsmall" }}
+            margin={{ vertical: "xxsmall" }}
             round="medium"
         >
-            <Text size="xsmall" margin={{ right: 'xxsmall' }}>
+            <Text size="xsmall" margin={{ right: "xxsmall" }}>
                 {children}
             </Text>
             {onRemove && (
@@ -29,5 +29,5 @@ export const Tag: React.FC<{ onRemove?: () => void }> = ({
                 </Button>
             )}
         </Box>
-    )
-}
+    );
+};

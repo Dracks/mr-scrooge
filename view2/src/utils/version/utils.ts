@@ -1,8 +1,8 @@
 export const getMetaTag = (name: string) => {
-    const tagsList = document.getElementsByName(name)
+    const tagsList = document.getElementsByName(name);
     if (tagsList.length > 0) {
-        return tagsList[0] as HTMLMetaElement
-    } else {
-        return null
-    }
-}
+        return tagsList[0] as HTMLMetaElement;
+    } 
+        return null;
+    
+};

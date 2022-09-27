@@ -1,1 +1,1 @@
-export const graphV2Url = '/graph-v2/'
+export const graphV2Url = "/graph-v2/";

@@ -4,1031 +4,1033 @@
  */
 
 export interface paths {
-  "/api/graph/": {
+    "/api/graph-v2/": {
+        get: operations["graph_v2_list"];
+        post: operations["graph_v2_create"];
+    };
+    "/api/graph-v2/{id}/": {
+        delete: operations["graph_v2_destroy"];
+        get: operations["graph_v2_retrieve"];
+        patch: operations["graph_v2_partial_update"];
+        put: operations["graph_v2_update"];
+    };
+    "/api/graph/": {
+        /** It's a custom api to parse all the information of the graph to the database. */
+        get: operations["graph_retrieve"];
+        /** It's a custom api to parse all the information of the graph to the database. */
+        post: operations["graph_create"];
+    };
+    "/api/graph/{id}/": {
+        /** It's a custom api to parse all the information of the graph to the database. */
+        delete: operations["graph_destroy"];
+        /** It's a custom api to parse all the information of the graph to the database. */
+        get: operations["graph_retrieve_2"];
+        /** It's a custom api to parse all the information of the graph to the database. */
+        put: operations["graph_update"];
+    };
+    "/api/import/upload/": {
+        post: operations["import_upload_create"];
+    };
+    "/api/kind/": {
+        get: operations["kind_retrieve"];
+    };
+    "/api/me/": {
+        /**
+         * Manage my profile, it requires less permissions to manage that User, but the modifications should be limited
+         * @todo Limit and control the modifications, (change e-mail or password should require the old password
+         */
+        get: operations["me_retrieve"];
+        /**
+         * Manage my profile, it requires less permissions to manage that User, but the modifications should be limited
+         * @todo Limit and control the modifications, (change e-mail or password should require the old password
+         */
+        patch: operations["me_partial_update"];
+        /**
+         * Manage my profile, it requires less permissions to manage that User, but the modifications should be limited
+         * @todo Limit and control the modifications, (change e-mail or password should require the old password
+         */
+        put: operations["me_update"];
+    };
+    "/api/raw-data/": {
+        get: operations["raw_data_list"];
+        post: operations["raw_data_create"];
+    };
+    "/api/raw-data/{id}/": {
+        get: operations["raw_data_retrieve"];
+    };
+    "/api/raw-data/{id}/description/": {
+        delete: operations["raw_data_description_destroy"];
+        post: operations["raw_data_description_create"];
+    };
+    "/api/raw-data/{id}/link/": {
+        delete: operations["raw_data_link_destroy"];
+        post: operations["raw_data_link_create"];
+    };
+    "/api/schema/": {
+        /**
+         * OpenApi3 schema for this API. Format can be selected via content negotiation.
+         *
+         * - YAML: application/vnd.oai.openapi
+         * - JSON: application/vnd.oai.openapi+json
+         */
+        get: operations["schema_retrieve"];
+    };
+    "/api/session/": {
+        /** It's a custom api to identify a user, and set the session via cookie */
+        get: operations["session_list"];
+        /** It's a custom api to identify a user, and set the session via cookie */
+        post: operations["session_create"];
+    };
+    "/api/session/logout/": {
+        /** It's a custom api to identify a user, and set the session via cookie */
+        delete: operations["session_logout_destroy"];
+    };
+    "/api/status-row/": {
+        get: operations["status_row_list"];
+    };
+    "/api/status-row/{id}/": {
+        get: operations["status_row_retrieve"];
+    };
+    "/api/status-row/{id}/generate/": {
+        post: operations["status_row_generate_create"];
+    };
+    "/api/status/": {
+        get: operations["status_list"];
+    };
+    "/api/status/file_regex/": {
+        get: operations["status_file_regex_retrieve"];
+    };
+    "/api/status/kinds/": {
+        get: operations["status_kinds_retrieve"];
+    };
+    "/api/status/{id}/": {
+        delete: operations["status_destroy"];
+        get: operations["status_retrieve"];
+    };
+    "/api/tag-filter/": {
+        get: operations["tag_filter_list"];
+        post: operations["tag_filter_create"];
+    };
+    "/api/tag-filter/types/": {
+        get: operations["tag_filter_types_retrieve"];
+    };
+    "/api/tag-filter/{id}/": {
+        delete: operations["tag_filter_destroy"];
+        get: operations["tag_filter_retrieve"];
+        patch: operations["tag_filter_partial_update"];
+        put: operations["tag_filter_update"];
+    };
+    "/api/tag/": {
+        get: operations["tag_list"];
+        post: operations["tag_create"];
+    };
+    "/api/tag/{id}/": {
+        delete: operations["tag_destroy"];
+        get: operations["tag_retrieve"];
+        patch: operations["tag_partial_update"];
+        put: operations["tag_update"];
+    };
+    "/api/tag/{id}/apply_filters/": {
+        post: operations["tag_apply_filters_create"];
+    };
+}
+
+export interface components {
+    schemas: {
+        Filter: {
+            conditional: string;
+            id: number;
+            tag: number;
+            type_conditional: components["schemas"]["TypeConditionalEnum"];
+        };
+        GraphV2: {
+            date_range: string;
+            group: components["schemas"]["Group"];
+            horizontal_group?: components["schemas"]["HorizontalGroup"];
+            id: number;
+            kind: components["schemas"]["KindEnum"];
+            name: string;
+            old_graph?: number;
+            tag_filter?: number | null;
+        };
+        Group: {
+            group: components["schemas"]["GroupEnum"];
+            group_tags?: components["schemas"]["GroupTags"][];
+            hide_others?: boolean | null;
+        };
+        GroupEnum: "day" | "month" | "year" | "tags" | "sign";
+        GroupTags: {
+            tag: number;
+        };
+        HorizontalGroup: {
+            accumulate?: boolean;
+            group: components["schemas"]["GroupEnum"];
+            group_tags?: components["schemas"]["HorizontalGroupTags"][];
+            hide_others?: boolean | null;
+        };
+        HorizontalGroupTags: {
+            tag: number;
+        };
+        KindEnum: "bar" | "pie" | "line";
+        PaginatedRawDataList: {
+            next?: string | null;
+            previous?: string | null;
+            results?: components["schemas"]["RawData"][];
+        };
+        PatchedFilter: {
+            conditional?: string;
+            id?: number;
+            tag?: number;
+            type_conditional?: components["schemas"]["TypeConditionalEnum"];
+        };
+        PatchedGraphV2: {
+            date_range?: string;
+            group?: components["schemas"]["Group"];
+            horizontal_group?: components["schemas"]["HorizontalGroup"];
+            id?: number;
+            kind?: components["schemas"]["KindEnum"];
+            name?: string;
+            old_graph?: number;
+            tag_filter?: number | null;
+        };
+        PatchedTag: {
+            children?: number[];
+            filters?: number[];
+            id?: number;
+            name?: string;
+            negate_conditional?: boolean;
+            parent?: number | null;
+        };
+        RawData: {
+            date: string;
+            date_value?: string | null;
+            description?: string | null;
+            details?: string | null;
+            id: number;
+            kind: string;
+            movement_name: string;
+            tags: number[];
+            value: number;
+        };
+        StatusEnum: "o" | "w" | "e";
+        StatusReport: {
+            date: string;
+            description: string;
+            file_name: string;
+            id: number;
+            kind: string;
+            rows: number[];
+            status: components["schemas"]["StatusEnum"];
+        };
+        StatusReportRow: {
+            date: string;
+            date_value?: string | null;
+            details?: string | null;
+            id: number;
+            message: string;
+            movement_name: string;
+            raw_data?: number | null;
+            value: number;
+        };
+        Tag: {
+            children: number[];
+            filters: number[];
+            id: number;
+            name: string;
+            negate_conditional?: boolean;
+            parent?: number | null;
+        };
+        TypeConditionalEnum: "c" | "p" | "s" | "r" | "g" | "G" | "L" | "l";
+        UserSession: {
+            email: string;
+            is_authenticated: boolean;
+            username: string;
+        };
+    };
+}
+
+export interface operations {
     /** It's a custom api to parse all the information of the graph to the database. */
-    get: operations["graph_retrieve"];
+    graph_create: {
+        responses: {
+            /** No response body */
+            201: unknown;
+        };
+    };
     /** It's a custom api to parse all the information of the graph to the database. */
-    post: operations["graph_create"];
-  };
-  "/api/graph-v2/": {
-    get: operations["graph_v2_list"];
-    post: operations["graph_v2_create"];
-  };
-  "/api/graph-v2/{id}/": {
-    get: operations["graph_v2_retrieve"];
-    put: operations["graph_v2_update"];
-    delete: operations["graph_v2_destroy"];
-    patch: operations["graph_v2_partial_update"];
-  };
-  "/api/graph/{id}/": {
+    graph_destroy: {
+        parameters: {
+            path: {
+                id: string;
+            };
+        };
+        responses: {
+            /** No response body */
+            204: never;
+        };
+    };
     /** It's a custom api to parse all the information of the graph to the database. */
-    get: operations["graph_retrieve_2"];
+    graph_retrieve: {
+        responses: {
+            /** No response body */
+            200: unknown;
+        };
+    };
     /** It's a custom api to parse all the information of the graph to the database. */
-    put: operations["graph_update"];
+    graph_retrieve_2: {
+        parameters: {
+            path: {
+                id: string;
+            };
+        };
+        responses: {
+            /** No response body */
+            200: unknown;
+        };
+    };
     /** It's a custom api to parse all the information of the graph to the database. */
-    delete: operations["graph_destroy"];
-  };
-  "/api/import/upload/": {
-    post: operations["import_upload_create"];
-  };
-  "/api/kind/": {
-    get: operations["kind_retrieve"];
-  };
-  "/api/me/": {
+    graph_update: {
+        parameters: {
+            path: {
+                id: string;
+            };
+        };
+        responses: {
+            /** No response body */
+            200: unknown;
+        };
+    };
+    graph_v2_create: {
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GraphV2"];
+                "application/x-www-form-urlencoded": components["schemas"]["GraphV2"];
+                "multipart/form-data": components["schemas"]["GraphV2"];
+            };
+        };
+        responses: {
+            201: {
+                content: {
+                    "application/json": components["schemas"]["GraphV2"];
+                };
+            };
+        };
+    };
+    graph_v2_destroy: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this graph v2. */
+                id: number;
+            };
+        };
+        responses: {
+            /** No response body */
+            204: never;
+        };
+    };
+    graph_v2_list: {
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["GraphV2"][];
+                };
+            };
+        };
+    };
+    graph_v2_partial_update: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this graph v2. */
+                id: number;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PatchedGraphV2"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchedGraphV2"];
+                "multipart/form-data": components["schemas"]["PatchedGraphV2"];
+            };
+        };
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["GraphV2"];
+                };
+            };
+        };
+    };
+    graph_v2_retrieve: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this graph v2. */
+                id: number;
+            };
+        };
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["GraphV2"];
+                };
+            };
+        };
+    };
+    graph_v2_update: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this graph v2. */
+                id: number;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GraphV2"];
+                "application/x-www-form-urlencoded": components["schemas"]["GraphV2"];
+                "multipart/form-data": components["schemas"]["GraphV2"];
+            };
+        };
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["GraphV2"];
+                };
+            };
+        };
+    };
+    import_upload_create: {
+        responses: {
+            /** No response body */
+            200: unknown;
+        };
+    };
+    kind_retrieve: {
+        responses: {
+            /** No response body */
+            200: unknown;
+        };
+    };
     /**
      * Manage my profile, it requires less permissions to manage that User, but the modifications should be limited
      * @todo Limit and control the modifications, (change e-mail or password should require the old password
      */
-    get: operations["me_retrieve"];
+    me_partial_update: {
+        responses: {
+            /** No response body */
+            200: unknown;
+        };
+    };
     /**
      * Manage my profile, it requires less permissions to manage that User, but the modifications should be limited
      * @todo Limit and control the modifications, (change e-mail or password should require the old password
      */
-    put: operations["me_update"];
+    me_retrieve: {
+        responses: {
+            /** No response body */
+            200: unknown;
+        };
+    };
     /**
      * Manage my profile, it requires less permissions to manage that User, but the modifications should be limited
      * @todo Limit and control the modifications, (change e-mail or password should require the old password
      */
-    patch: operations["me_partial_update"];
-  };
-  "/api/raw-data/": {
-    get: operations["raw_data_list"];
-    post: operations["raw_data_create"];
-  };
-  "/api/raw-data/{id}/": {
-    get: operations["raw_data_retrieve"];
-  };
-  "/api/raw-data/{id}/description/": {
-    post: operations["raw_data_description_create"];
-    delete: operations["raw_data_description_destroy"];
-  };
-  "/api/raw-data/{id}/link/": {
-    post: operations["raw_data_link_create"];
-    delete: operations["raw_data_link_destroy"];
-  };
-  "/api/schema/": {
+    me_update: {
+        responses: {
+            /** No response body */
+            200: unknown;
+        };
+    };
+    raw_data_create: {
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RawData"];
+                "application/x-www-form-urlencoded": components["schemas"]["RawData"];
+                "multipart/form-data": components["schemas"]["RawData"];
+            };
+        };
+        responses: {
+            201: {
+                content: {
+                    "application/json": components["schemas"]["RawData"];
+                };
+            };
+        };
+    };
+    raw_data_description_create: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this raw data source. */
+                id: number;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RawData"];
+                "application/x-www-form-urlencoded": components["schemas"]["RawData"];
+                "multipart/form-data": components["schemas"]["RawData"];
+            };
+        };
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["RawData"];
+                };
+            };
+        };
+    };
+    raw_data_description_destroy: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this raw data source. */
+                id: number;
+            };
+        };
+        responses: {
+            /** No response body */
+            204: never;
+        };
+    };
+    raw_data_link_create: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this raw data source. */
+                id: number;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RawData"];
+                "application/x-www-form-urlencoded": components["schemas"]["RawData"];
+                "multipart/form-data": components["schemas"]["RawData"];
+            };
+        };
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["RawData"];
+                };
+            };
+        };
+    };
+    raw_data_link_destroy: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this raw data source. */
+                id: number;
+            };
+        };
+        responses: {
+            /** No response body */
+            204: never;
+        };
+    };
+    raw_data_list: {
+        parameters: {
+            query: {
+                /** The pagination cursor value. */
+                cursor?: number;
+                /** Number of results to return per page. */
+                page_size?: number;
+            };
+        };
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["PaginatedRawDataList"];
+                };
+            };
+        };
+    };
+    raw_data_retrieve: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this raw data source. */
+                id: number;
+            };
+        };
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["RawData"];
+                };
+            };
+        };
+    };
     /**
      * OpenApi3 schema for this API. Format can be selected via content negotiation.
      *
      * - YAML: application/vnd.oai.openapi
      * - JSON: application/vnd.oai.openapi+json
      */
-    get: operations["schema_retrieve"];
-  };
-  "/api/session/": {
+    schema_retrieve: {
+        parameters: {
+            query: {
+                format?: "json" | "yaml";
+                lang?:
+                    | "af"
+                    | "ar"
+                    | "ar-dz"
+                    | "ast"
+                    | "az"
+                    | "be"
+                    | "bg"
+                    | "bn"
+                    | "br"
+                    | "bs"
+                    | "ca"
+                    | "cs"
+                    | "cy"
+                    | "da"
+                    | "de"
+                    | "dsb"
+                    | "el"
+                    | "en"
+                    | "en-au"
+                    | "en-gb"
+                    | "eo"
+                    | "es"
+                    | "es-ar"
+                    | "es-co"
+                    | "es-mx"
+                    | "es-ni"
+                    | "es-ve"
+                    | "et"
+                    | "eu"
+                    | "fa"
+                    | "fi"
+                    | "fr"
+                    | "fy"
+                    | "ga"
+                    | "gd"
+                    | "gl"
+                    | "he"
+                    | "hi"
+                    | "hr"
+                    | "hsb"
+                    | "hu"
+                    | "hy"
+                    | "ia"
+                    | "id"
+                    | "ig"
+                    | "io"
+                    | "is"
+                    | "it"
+                    | "ja"
+                    | "ka"
+                    | "kab"
+                    | "kk"
+                    | "km"
+                    | "kn"
+                    | "ko"
+                    | "ky"
+                    | "lb"
+                    | "lt"
+                    | "lv"
+                    | "mk"
+                    | "ml"
+                    | "mn"
+                    | "mr"
+                    | "my"
+                    | "nb"
+                    | "ne"
+                    | "nl"
+                    | "nn"
+                    | "os"
+                    | "pa"
+                    | "pl"
+                    | "pt"
+                    | "pt-br"
+                    | "ro"
+                    | "ru"
+                    | "sk"
+                    | "sl"
+                    | "sq"
+                    | "sr"
+                    | "sr-latn"
+                    | "sv"
+                    | "sw"
+                    | "ta"
+                    | "te"
+                    | "tg"
+                    | "th"
+                    | "tk"
+                    | "tr"
+                    | "tt"
+                    | "udm"
+                    | "uk"
+                    | "ur"
+                    | "uz"
+                    | "vi"
+                    | "zh-hans"
+                    | "zh-hant";
+            };
+        };
+        responses: {
+            200: {
+                content: {
+                    "application/json": { [key: string]: unknown };
+                    "application/vnd.oai.openapi": { [key: string]: unknown };
+                    "application/vnd.oai.openapi+json": {
+                        [key: string]: unknown;
+                    };
+                    "application/yaml": { [key: string]: unknown };
+                };
+            };
+        };
+    };
     /** It's a custom api to identify a user, and set the session via cookie */
-    get: operations["session_list"];
+    session_create: {
+        responses: {
+            201: {
+                content: {
+                    "application/json": components["schemas"]["UserSession"][];
+                };
+            };
+        };
+    };
     /** It's a custom api to identify a user, and set the session via cookie */
-    post: operations["session_create"];
-  };
-  "/api/session/logout/": {
+    session_list: {
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["UserSession"][];
+                };
+            };
+        };
+    };
     /** It's a custom api to identify a user, and set the session via cookie */
-    delete: operations["session_logout_destroy"];
-  };
-  "/api/status/": {
-    get: operations["status_list"];
-  };
-  "/api/status-row/": {
-    get: operations["status_row_list"];
-  };
-  "/api/status-row/{id}/": {
-    get: operations["status_row_retrieve"];
-  };
-  "/api/status-row/{id}/generate/": {
-    post: operations["status_row_generate_create"];
-  };
-  "/api/status/{id}/": {
-    get: operations["status_retrieve"];
-    delete: operations["status_destroy"];
-  };
-  "/api/status/file_regex/": {
-    get: operations["status_file_regex_retrieve"];
-  };
-  "/api/status/kinds/": {
-    get: operations["status_kinds_retrieve"];
-  };
-  "/api/tag/": {
-    get: operations["tag_list"];
-    post: operations["tag_create"];
-  };
-  "/api/tag-filter/": {
-    get: operations["tag_filter_list"];
-    post: operations["tag_filter_create"];
-  };
-  "/api/tag-filter/{id}/": {
-    get: operations["tag_filter_retrieve"];
-    put: operations["tag_filter_update"];
-    delete: operations["tag_filter_destroy"];
-    patch: operations["tag_filter_partial_update"];
-  };
-  "/api/tag-filter/types/": {
-    get: operations["tag_filter_types_retrieve"];
-  };
-  "/api/tag/{id}/": {
-    get: operations["tag_retrieve"];
-    put: operations["tag_update"];
-    delete: operations["tag_destroy"];
-    patch: operations["tag_partial_update"];
-  };
-  "/api/tag/{id}/apply_filters/": {
-    post: operations["tag_apply_filters_create"];
-  };
-}
-
-export interface components {
-  schemas: {
-    Filter: {
-      id: number;
-      tag: number;
-      type_conditional: components["schemas"]["TypeConditionalEnum"];
-      conditional: string;
-    };
-    GraphV2: {
-      id: number;
-      name: string;
-      kind: components["schemas"]["KindEnum"];
-      tag_filter?: number | null;
-      date_range: string;
-      old_graph?: number;
-      group: components["schemas"]["Group"];
-      horizontal_group?: components["schemas"]["HorizontalGroup"];
-    };
-    Group: {
-      group: components["schemas"]["GroupEnum"];
-      hide_others?: boolean | null;
-      group_tags?: components["schemas"]["GroupTags"][];
-    };
-    GroupEnum: "day" | "month" | "year" | "tags" | "sign";
-    GroupTags: {
-      tag: number;
-    };
-    HorizontalGroup: {
-      group: components["schemas"]["GroupEnum"];
-      hide_others?: boolean | null;
-      group_tags?: components["schemas"]["HorizontalGroupTags"][];
-      accumulate?: boolean;
-    };
-    HorizontalGroupTags: {
-      tag: number;
-    };
-    KindEnum: "bar" | "pie" | "line";
-    PaginatedRawDataList: {
-      next?: string | null;
-      previous?: string | null;
-      results?: components["schemas"]["RawData"][];
-    };
-    PatchedFilter: {
-      id?: number;
-      tag?: number;
-      type_conditional?: components["schemas"]["TypeConditionalEnum"];
-      conditional?: string;
-    };
-    PatchedGraphV2: {
-      id?: number;
-      name?: string;
-      kind?: components["schemas"]["KindEnum"];
-      tag_filter?: number | null;
-      date_range?: string;
-      old_graph?: number;
-      group?: components["schemas"]["Group"];
-      horizontal_group?: components["schemas"]["HorizontalGroup"];
-    };
-    PatchedTag: {
-      id?: number;
-      parent?: number | null;
-      children?: number[];
-      name?: string;
-      filters?: number[];
-      negate_conditional?: boolean;
-    };
-    RawData: {
-      kind: string;
-      id: number;
-      movement_name: string;
-      date: string;
-      date_value?: string | null;
-      details?: string | null;
-      description?: string | null;
-      value: number;
-      tags: number[];
-    };
-    StatusEnum: "o" | "w" | "e";
-    StatusReport: {
-      kind: string;
-      id: number;
-      date: string;
-      file_name: string;
-      status: components["schemas"]["StatusEnum"];
-      description: string;
-      rows: number[];
-    };
-    StatusReportRow: {
-      id: number;
-      movement_name: string;
-      date: string;
-      date_value?: string | null;
-      details?: string | null;
-      value: number;
-      message: string;
-      raw_data?: number | null;
-    };
-    Tag: {
-      id: number;
-      parent?: number | null;
-      children: number[];
-      name: string;
-      filters: number[];
-      negate_conditional?: boolean;
-    };
-    TypeConditionalEnum: "c" | "p" | "s" | "r" | "g" | "G" | "L" | "l";
-    UserSession: {
-      username: string;
-      email: string;
-      is_authenticated: boolean;
-    };
-  };
-}
-
-export interface operations {
-  /** It's a custom api to parse all the information of the graph to the database. */
-  graph_retrieve: {
-    responses: {
-      /** No response body */
-      200: unknown;
-    };
-  };
-  /** It's a custom api to parse all the information of the graph to the database. */
-  graph_create: {
-    responses: {
-      /** No response body */
-      201: unknown;
-    };
-  };
-  graph_v2_list: {
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["GraphV2"][];
+    session_logout_destroy: {
+        responses: {
+            /** No response body */
+            204: never;
         };
-      };
     };
-  };
-  graph_v2_create: {
-    responses: {
-      201: {
-        content: {
-          "application/json": components["schemas"]["GraphV2"];
+    status_destroy: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this status report. */
+                id: number;
+            };
         };
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["GraphV2"];
-        "application/x-www-form-urlencoded": components["schemas"]["GraphV2"];
-        "multipart/form-data": components["schemas"]["GraphV2"];
-      };
-    };
-  };
-  graph_v2_retrieve: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this graph v2. */
-        id: number;
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["GraphV2"];
+        responses: {
+            /** No response body */
+            204: never;
         };
-      };
     };
-  };
-  graph_v2_update: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this graph v2. */
-        id: number;
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["GraphV2"];
+    status_file_regex_retrieve: {
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["StatusReport"];
+                };
+            };
         };
-      };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["GraphV2"];
-        "application/x-www-form-urlencoded": components["schemas"]["GraphV2"];
-        "multipart/form-data": components["schemas"]["GraphV2"];
-      };
-    };
-  };
-  graph_v2_destroy: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this graph v2. */
-        id: number;
-      };
-    };
-    responses: {
-      /** No response body */
-      204: never;
-    };
-  };
-  graph_v2_partial_update: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this graph v2. */
-        id: number;
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["GraphV2"];
+    status_kinds_retrieve: {
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["StatusReport"];
+                };
+            };
         };
-      };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["PatchedGraphV2"];
-        "application/x-www-form-urlencoded": components["schemas"]["PatchedGraphV2"];
-        "multipart/form-data": components["schemas"]["PatchedGraphV2"];
-      };
-    };
-  };
-  /** It's a custom api to parse all the information of the graph to the database. */
-  graph_retrieve_2: {
-    parameters: {
-      path: {
-        id: string;
-      };
-    };
-    responses: {
-      /** No response body */
-      200: unknown;
-    };
-  };
-  /** It's a custom api to parse all the information of the graph to the database. */
-  graph_update: {
-    parameters: {
-      path: {
-        id: string;
-      };
-    };
-    responses: {
-      /** No response body */
-      200: unknown;
-    };
-  };
-  /** It's a custom api to parse all the information of the graph to the database. */
-  graph_destroy: {
-    parameters: {
-      path: {
-        id: string;
-      };
-    };
-    responses: {
-      /** No response body */
-      204: never;
-    };
-  };
-  import_upload_create: {
-    responses: {
-      /** No response body */
-      200: unknown;
-    };
-  };
-  kind_retrieve: {
-    responses: {
-      /** No response body */
-      200: unknown;
-    };
-  };
-  /**
-   * Manage my profile, it requires less permissions to manage that User, but the modifications should be limited
-   * @todo Limit and control the modifications, (change e-mail or password should require the old password
-   */
-  me_retrieve: {
-    responses: {
-      /** No response body */
-      200: unknown;
-    };
-  };
-  /**
-   * Manage my profile, it requires less permissions to manage that User, but the modifications should be limited
-   * @todo Limit and control the modifications, (change e-mail or password should require the old password
-   */
-  me_update: {
-    responses: {
-      /** No response body */
-      200: unknown;
-    };
-  };
-  /**
-   * Manage my profile, it requires less permissions to manage that User, but the modifications should be limited
-   * @todo Limit and control the modifications, (change e-mail or password should require the old password
-   */
-  me_partial_update: {
-    responses: {
-      /** No response body */
-      200: unknown;
-    };
-  };
-  raw_data_list: {
-    parameters: {
-      query: {
-        /** The pagination cursor value. */
-        cursor?: number;
-        /** Number of results to return per page. */
-        page_size?: number;
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["PaginatedRawDataList"];
+    status_list: {
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["StatusReport"][];
+                };
+            };
         };
-      };
     };
-  };
-  raw_data_create: {
-    responses: {
-      201: {
-        content: {
-          "application/json": components["schemas"]["RawData"];
+    status_retrieve: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this status report. */
+                id: number;
+            };
         };
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["RawData"];
-        "application/x-www-form-urlencoded": components["schemas"]["RawData"];
-        "multipart/form-data": components["schemas"]["RawData"];
-      };
-    };
-  };
-  raw_data_retrieve: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this raw data source. */
-        id: number;
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["RawData"];
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["StatusReport"];
+                };
+            };
         };
-      };
     };
-  };
-  raw_data_description_create: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this raw data source. */
-        id: number;
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["RawData"];
+    status_row_generate_create: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this status report row. */
+                id: number;
+            };
         };
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["RawData"];
-        "application/x-www-form-urlencoded": components["schemas"]["RawData"];
-        "multipart/form-data": components["schemas"]["RawData"];
-      };
-    };
-  };
-  raw_data_description_destroy: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this raw data source. */
-        id: number;
-      };
-    };
-    responses: {
-      /** No response body */
-      204: never;
-    };
-  };
-  raw_data_link_create: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this raw data source. */
-        id: number;
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["RawData"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StatusReportRow"];
+                "application/x-www-form-urlencoded": components["schemas"]["StatusReportRow"];
+                "multipart/form-data": components["schemas"]["StatusReportRow"];
+            };
         };
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["RawData"];
-        "application/x-www-form-urlencoded": components["schemas"]["RawData"];
-        "multipart/form-data": components["schemas"]["RawData"];
-      };
-    };
-  };
-  raw_data_link_destroy: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this raw data source. */
-        id: number;
-      };
-    };
-    responses: {
-      /** No response body */
-      204: never;
-    };
-  };
-  /**
-   * OpenApi3 schema for this API. Format can be selected via content negotiation.
-   *
-   * - YAML: application/vnd.oai.openapi
-   * - JSON: application/vnd.oai.openapi+json
-   */
-  schema_retrieve: {
-    parameters: {
-      query: {
-        format?: "json" | "yaml";
-        lang?:
-          | "af"
-          | "ar"
-          | "ar-dz"
-          | "ast"
-          | "az"
-          | "be"
-          | "bg"
-          | "bn"
-          | "br"
-          | "bs"
-          | "ca"
-          | "cs"
-          | "cy"
-          | "da"
-          | "de"
-          | "dsb"
-          | "el"
-          | "en"
-          | "en-au"
-          | "en-gb"
-          | "eo"
-          | "es"
-          | "es-ar"
-          | "es-co"
-          | "es-mx"
-          | "es-ni"
-          | "es-ve"
-          | "et"
-          | "eu"
-          | "fa"
-          | "fi"
-          | "fr"
-          | "fy"
-          | "ga"
-          | "gd"
-          | "gl"
-          | "he"
-          | "hi"
-          | "hr"
-          | "hsb"
-          | "hu"
-          | "hy"
-          | "ia"
-          | "id"
-          | "ig"
-          | "io"
-          | "is"
-          | "it"
-          | "ja"
-          | "ka"
-          | "kab"
-          | "kk"
-          | "km"
-          | "kn"
-          | "ko"
-          | "ky"
-          | "lb"
-          | "lt"
-          | "lv"
-          | "mk"
-          | "ml"
-          | "mn"
-          | "mr"
-          | "my"
-          | "nb"
-          | "ne"
-          | "nl"
-          | "nn"
-          | "os"
-          | "pa"
-          | "pl"
-          | "pt"
-          | "pt-br"
-          | "ro"
-          | "ru"
-          | "sk"
-          | "sl"
-          | "sq"
-          | "sr"
-          | "sr-latn"
-          | "sv"
-          | "sw"
-          | "ta"
-          | "te"
-          | "tg"
-          | "th"
-          | "tk"
-          | "tr"
-          | "tt"
-          | "udm"
-          | "uk"
-          | "ur"
-          | "uz"
-          | "vi"
-          | "zh-hans"
-          | "zh-hant";
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          "application/vnd.oai.openapi": { [key: string]: unknown };
-          "application/yaml": { [key: string]: unknown };
-          "application/vnd.oai.openapi+json": { [key: string]: unknown };
-          "application/json": { [key: string]: unknown };
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["StatusReportRow"];
+                };
+            };
         };
-      };
     };
-  };
-  /** It's a custom api to identify a user, and set the session via cookie */
-  session_list: {
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["UserSession"][];
+    status_row_list: {
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["StatusReportRow"][];
+                };
+            };
         };
-      };
     };
-  };
-  /** It's a custom api to identify a user, and set the session via cookie */
-  session_create: {
-    responses: {
-      201: {
-        content: {
-          "application/json": components["schemas"]["UserSession"][];
+    status_row_retrieve: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this status report row. */
+                id: number;
+            };
         };
-      };
-    };
-  };
-  /** It's a custom api to identify a user, and set the session via cookie */
-  session_logout_destroy: {
-    responses: {
-      /** No response body */
-      204: never;
-    };
-  };
-  status_list: {
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["StatusReport"][];
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["StatusReportRow"];
+                };
+            };
         };
-      };
     };
-  };
-  status_row_list: {
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["StatusReportRow"][];
+    tag_apply_filters_create: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this tag. */
+                id: number;
+            };
         };
-      };
-    };
-  };
-  status_row_retrieve: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this status report row. */
-        id: number;
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["StatusReportRow"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Tag"];
+                "application/x-www-form-urlencoded": components["schemas"]["Tag"];
+                "multipart/form-data": components["schemas"]["Tag"];
+            };
         };
-      };
-    };
-  };
-  status_row_generate_create: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this status report row. */
-        id: number;
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["StatusReportRow"];
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["Tag"];
+                };
+            };
         };
-      };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["StatusReportRow"];
-        "application/x-www-form-urlencoded": components["schemas"]["StatusReportRow"];
-        "multipart/form-data": components["schemas"]["StatusReportRow"];
-      };
-    };
-  };
-  status_retrieve: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this status report. */
-        id: number;
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["StatusReport"];
+    tag_create: {
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Tag"];
+                "application/x-www-form-urlencoded": components["schemas"]["Tag"];
+                "multipart/form-data": components["schemas"]["Tag"];
+            };
         };
-      };
-    };
-  };
-  status_destroy: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this status report. */
-        id: number;
-      };
-    };
-    responses: {
-      /** No response body */
-      204: never;
-    };
-  };
-  status_file_regex_retrieve: {
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["StatusReport"];
+        responses: {
+            201: {
+                content: {
+                    "application/json": components["schemas"]["Tag"];
+                };
+            };
         };
-      };
     };
-  };
-  status_kinds_retrieve: {
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["StatusReport"];
+    tag_destroy: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this tag. */
+                id: number;
+            };
         };
-      };
-    };
-  };
-  tag_list: {
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["Tag"][];
+        responses: {
+            /** No response body */
+            204: never;
         };
-      };
     };
-  };
-  tag_create: {
-    responses: {
-      201: {
-        content: {
-          "application/json": components["schemas"]["Tag"];
+    tag_filter_create: {
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Filter"];
+                "application/x-www-form-urlencoded": components["schemas"]["Filter"];
+                "multipart/form-data": components["schemas"]["Filter"];
+            };
         };
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["Tag"];
-        "application/x-www-form-urlencoded": components["schemas"]["Tag"];
-        "multipart/form-data": components["schemas"]["Tag"];
-      };
-    };
-  };
-  tag_filter_list: {
-    parameters: {
-      query: {
-        tag?: number;
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["Filter"][];
+        responses: {
+            201: {
+                content: {
+                    "application/json": components["schemas"]["Filter"];
+                };
+            };
         };
-      };
     };
-  };
-  tag_filter_create: {
-    responses: {
-      201: {
-        content: {
-          "application/json": components["schemas"]["Filter"];
+    tag_filter_destroy: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this filter. */
+                id: number;
+            };
         };
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["Filter"];
-        "application/x-www-form-urlencoded": components["schemas"]["Filter"];
-        "multipart/form-data": components["schemas"]["Filter"];
-      };
-    };
-  };
-  tag_filter_retrieve: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this filter. */
-        id: number;
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["Filter"];
+        responses: {
+            /** No response body */
+            204: never;
         };
-      };
     };
-  };
-  tag_filter_update: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this filter. */
-        id: number;
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["Filter"];
+    tag_filter_list: {
+        parameters: {
+            query: {
+                tag?: number;
+            };
         };
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["Filter"];
-        "application/x-www-form-urlencoded": components["schemas"]["Filter"];
-        "multipart/form-data": components["schemas"]["Filter"];
-      };
-    };
-  };
-  tag_filter_destroy: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this filter. */
-        id: number;
-      };
-    };
-    responses: {
-      /** No response body */
-      204: never;
-    };
-  };
-  tag_filter_partial_update: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this filter. */
-        id: number;
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["Filter"];
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["Filter"][];
+                };
+            };
         };
-      };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["PatchedFilter"];
-        "application/x-www-form-urlencoded": components["schemas"]["PatchedFilter"];
-        "multipart/form-data": components["schemas"]["PatchedFilter"];
-      };
-    };
-  };
-  tag_filter_types_retrieve: {
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["Filter"];
+    tag_filter_partial_update: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this filter. */
+                id: number;
+            };
         };
-      };
-    };
-  };
-  tag_retrieve: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this tag. */
-        id: number;
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["Tag"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PatchedFilter"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchedFilter"];
+                "multipart/form-data": components["schemas"]["PatchedFilter"];
+            };
         };
-      };
-    };
-  };
-  tag_update: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this tag. */
-        id: number;
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["Tag"];
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["Filter"];
+                };
+            };
         };
-      };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["Tag"];
-        "application/x-www-form-urlencoded": components["schemas"]["Tag"];
-        "multipart/form-data": components["schemas"]["Tag"];
-      };
-    };
-  };
-  tag_destroy: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this tag. */
-        id: number;
-      };
-    };
-    responses: {
-      /** No response body */
-      204: never;
-    };
-  };
-  tag_partial_update: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this tag. */
-        id: number;
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["Tag"];
+    tag_filter_retrieve: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this filter. */
+                id: number;
+            };
         };
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["PatchedTag"];
-        "application/x-www-form-urlencoded": components["schemas"]["PatchedTag"];
-        "multipart/form-data": components["schemas"]["PatchedTag"];
-      };
-    };
-  };
-  tag_apply_filters_create: {
-    parameters: {
-      path: {
-        /** A unique integer value identifying this tag. */
-        id: number;
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          "application/json": components["schemas"]["Tag"];
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["Filter"];
+                };
+            };
         };
-      };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["Tag"];
-        "application/x-www-form-urlencoded": components["schemas"]["Tag"];
-        "multipart/form-data": components["schemas"]["Tag"];
-      };
+    tag_filter_types_retrieve: {
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["Filter"];
+                };
+            };
+        };
     };
-  };
+    tag_filter_update: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this filter. */
+                id: number;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Filter"];
+                "application/x-www-form-urlencoded": components["schemas"]["Filter"];
+                "multipart/form-data": components["schemas"]["Filter"];
+            };
+        };
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["Filter"];
+                };
+            };
+        };
+    };
+    tag_list: {
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["Tag"][];
+                };
+            };
+        };
+    };
+    tag_partial_update: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this tag. */
+                id: number;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PatchedTag"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchedTag"];
+                "multipart/form-data": components["schemas"]["PatchedTag"];
+            };
+        };
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["Tag"];
+                };
+            };
+        };
+    };
+    tag_retrieve: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this tag. */
+                id: number;
+            };
+        };
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["Tag"];
+                };
+            };
+        };
+    };
+    tag_update: {
+        parameters: {
+            path: {
+                /** A unique integer value identifying this tag. */
+                id: number;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Tag"];
+                "application/x-www-form-urlencoded": components["schemas"]["Tag"];
+                "multipart/form-data": components["schemas"]["Tag"];
+            };
+        };
+        responses: {
+            200: {
+                content: {
+                    "application/json": components["schemas"]["Tag"];
+                };
+            };
+        };
+    };
 }
 
 export interface external {}

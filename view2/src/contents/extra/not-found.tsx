@@ -1,10 +1,10 @@
-import { Box, Text, Heading } from 'grommet'
-import React from 'react'
+import { Box, Heading, Text } from "grommet";
+import React from "react";
 
 const NotFound = () => (
     <Box
         direction="column"
-        border={{ color: 'brand', size: 'small' }}
+        border={{ color: "brand", size: "small" }}
         pad="medium"
     >
         <Heading>Not Found</Heading>
@@ -12,6 +12,6 @@ const NotFound = () => (
             <Text></Text>
         </Box>
     </Box>
-)
+);
 
-export default NotFound
+export default NotFound;

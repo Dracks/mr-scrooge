@@ -1,5 +1,3 @@
-import {EventEmitter} from 'events';
+import { EventEmitter } from "events";
 
-export class LoggerService extends EventEmitter{
-    
-}
+export class LoggerService extends EventEmitter {}

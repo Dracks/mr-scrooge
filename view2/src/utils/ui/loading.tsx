@@ -1,7 +1,7 @@
-import { Spinner, Box } from 'grommet'
-import React from 'react'
+import { Box, Spinner } from "grommet";
+import React from "react";
 
-const Loading = () => <Spinner size="xl" />
+const Loading = () => <Spinner size="xl" />;
 
 export const LoadingPage = () => (
     <Box align="center">
@@ -9,5 +9,5 @@ export const LoadingPage = () => (
             <Loading />
         </Box>
     </Box>
-)
-export default Loading
+);
+export default Loading;

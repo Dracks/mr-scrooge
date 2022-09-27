@@ -1,10 +1,8 @@
 import useAxios, { UseAxiosResult } from "axios-hooks";
 
 export interface UserInfo {
-    user: string,
-    email: string,
+    email: string;
+    user: string;
 }
 
-export const useGetUserInfo = (): UseAxiosResult<UserInfo> => {
-    return useAxios('/me/')
-}
+export const useGetUserInfo = (): UseAxiosResult<UserInfo> => useAxios("/me/")

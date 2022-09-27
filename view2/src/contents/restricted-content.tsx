@@ -1,16 +1,16 @@
-import React from 'react'
-import { Footer, Text, Main, Box } from 'grommet'
-import { Route, Routes } from 'react-router-dom'
+import { Box, Footer, Main, Text } from "grommet";
+import React from "react";
+import { Route, Routes } from "react-router-dom";
 
-import NotFound from './extra/not-found'
-import Headers from './headers'
-import { RawDataList } from './raw-data-list/raw-data-list'
-import { DataProvider } from './common/data-provider'
-import { Imports } from './imports/imports'
-import { Tags } from './tags/tags'
-import { GraphRouter } from './graphs/graph-router'
-import { Graphs } from './graphs/graphs'
-import { VERSION } from '../constants'
+import { VERSION } from "../constants";
+import { DataProvider } from "./common/data-provider";
+import NotFound from "./extra/not-found";
+import { GraphRouter } from "./graphs/graph-router";
+import { Graphs } from "./graphs/graphs";
+import Headers from "./headers";
+import { Imports } from "./imports/imports";
+import { RawDataList } from "./raw-data-list/raw-data-list";
+import { Tags } from "./tags/tags";
 
 const RestrictedContent: React.FC = () => (
     <DataProvider>
@@ -21,7 +21,7 @@ const RestrictedContent: React.FC = () => (
                 <Route path="/graph/*" element={<GraphRouter />} />
                 <Route path="/import/*" element={<Imports />} />
                 <Route path="/tag/*" element={<Tags />} />
-                <Route path="/movement" element={<RawDataList />} /> 
+                <Route path="/movement" element={<RawDataList />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </Main>
@@ -37,10 +37,6 @@ const RestrictedContent: React.FC = () => (
             </Box>
         </Footer>
     </DataProvider>
-
-        
-)
+);
 
 export default RestrictedContent;
-
-

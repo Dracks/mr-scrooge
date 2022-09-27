@@ -1,27 +1,27 @@
-import { EventEmitter } from 'events'
+import { EventEmitter } from "events"
 
-import { LogFn, ILogger, LogLevel, LogEvent } from "./logger.types"
+import { ILogger, LogEvent, LogFn, LogLevel } from "./logger.types"
 
 export class Logger implements ILogger {
-    info: LogFn
+    info: LogFn;
 
-    warn: LogFn
+    warn: LogFn;
 
-    error: LogFn
+    error: LogFn;
 
-    constructor(emitter: EventEmitter){
-        const buildLog : (logLevel: LogLevel)=>LogFn= (level) => (msg, data) => {
-            const event: LogEvent = {
-                ts: new Date(),
-                level,
-                msg,
-                data
+    constructor(emitter: EventEmitter) {
+        const buildLog: (logLevel: LogLevel) => LogFn =
+            (level) => (msg, data) => {
+                const event: LogEvent = {
+                    ts: new Date(),
+                    level,
+                    msg,
+                    data,
+                };
+                emitter.emit(level, event);
             }
-            emitter.emit(level, event)
-        }
-        this.info = buildLog(LogLevel.info)
-        this.warn = buildLog(LogLevel.warn)
-        this.error = buildLog(LogLevel.error)
+        this.info = buildLog(LogLevel.info);
+        this.warn = buildLog(LogLevel.warn);
+        this.error = buildLog(LogLevel.error);
     }
 }
-

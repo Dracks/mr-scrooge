@@ -1,27 +1,27 @@
-import React from 'react'
+import React from "react";
 
-import { DEBUG } from '../../constants'
+import { DEBUG } from "../../constants";
 
 declare global {
     interface Window {
-        debug: () => void
+        debug: () => void;
     }
 }
 
-const DebugContext = React.createContext<boolean>(DEBUG)
+const DebugContext = React.createContext<boolean>(DEBUG);
 
 export const DebugProvider: React.FC<{}> = ({ children }) => {
-    const [isDebug, setDebug] = React.useState(DEBUG)
+    const [isDebug, setDebug] = React.useState(DEBUG);
     if (window) {
         window.debug = () => {
-            setDebug(true)
-        }
+            setDebug(true);
+        };
     }
     return (
         <DebugContext.Provider value={isDebug}>
             {children}
         </DebugContext.Provider>
-    )
-}
+    );
+};
 
-export default DebugContext
+export default DebugContext;

@@ -1,9 +1,9 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React from "react";
+import ReactDOM from "react-dom";
 
-import App from './app'
-import ErrorBoundary from './utils/error-boundary/error-boundary'
-import AllProviders from './utils/providers'
+import App from "./app";
+import ErrorBoundary from "./utils/error-boundary/error-boundary";
+import AllProviders from "./utils/providers";
 
 // Render react
 window.onload = (): void => {
@@ -13,6 +13,6 @@ window.onload = (): void => {
                 <App />
             </ErrorBoundary>
         </AllProviders>,
-        document.getElementById('body')
-    )
-}
+        document.getElementById("body")
+    );
+};

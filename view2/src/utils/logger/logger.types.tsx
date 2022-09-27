@@ -1,32 +1,30 @@
-
 export type extraData = unknown;
 
-export type LogFn = (msg: string, obj?:extraData) => void
+export type LogFn = (msg: string, obj?: extraData) => void;
 
 export enum LogLevel {
-    info= 'info',
-    warn= 'warn',
-    error='error',
+    error = "error",
+    info = "info",
+    warn = "warn",
 }
 
 export interface LogEvent {
-    ts: Date,
-    level: LogLevel,
-    msg: string,
-    data?:extraData
+    data?: extraData;
+    level: LogLevel;
+    msg: string;
+    ts: Date;
 }
 
 export interface ILogger {
-    info: LogFn
-    warn: LogFn
-    error: LogFn
+    error: LogFn;
+    info: LogFn;
+    warn: LogFn;
 }
 
 export interface LoggerOutput {
     onLog(ev: LogEvent): void;
 }
 
-
 export interface LoggerArguments {
-    logLevel: LogLevel
+    logLevel: LogLevel;
 }
