@@ -1,11 +1,12 @@
-import useAxios, { UseAxiosResult } from "axios-hooks";
+import useAxios, { UseAxiosResult } from 'axios-hooks';
 
-import { PostTagResponse } from "./types";
+import { PostTagResponse } from './types';
 
-export const usePostTags = (): UseAxiosResult<PostTagResponse> => useAxios(
+export const usePostTags = (): UseAxiosResult<PostTagResponse> =>
+    useAxios(
         {
-            url: "/tag/",
-            method: "POST",
+            url: '/tag/',
+            method: 'POST',
         },
-        { manual: true }
-    )
+        { manual: true },
+    );

@@ -1,9 +1,9 @@
-import { CamelCasedProperties } from "type-fest";
+import { CamelCasedProperties } from 'type-fest';
 
-import { components } from "../../generated-models";
+import { components } from '../../generated-models';
 
-export type TagFilter = CamelCasedProperties<components["schemas"]["Filter"]>;
+export type TagFilter = CamelCasedProperties<components['schemas']['Filter']>;
 export type GetTagFilterResponse = TagFilter[];
 export type PostTagFilterResponse = TagFilter;
 
-export type FilterConditional = components["schemas"]["TypeConditionalEnum"];
+export type FilterConditional = components['schemas']['TypeConditionalEnum'];

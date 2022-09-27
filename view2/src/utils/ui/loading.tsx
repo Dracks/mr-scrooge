@@ -1,5 +1,5 @@
-import { Box, Spinner } from "grommet";
-import React from "react";
+import { Box, Spinner } from 'grommet';
+import React from 'react';
 
 const Loading = () => <Spinner size="xl" />;
 

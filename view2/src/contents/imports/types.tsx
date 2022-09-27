@@ -1,8 +1,8 @@
 export enum FileStatus {
-    error = "error",
-    load = "load",
-    upload = "upload",
-    uploading = "uploading",
+    error = 'error',
+    load = 'load',
+    upload = 'upload',
+    uploading = 'uploading',
 }
 
 export interface IFileData {

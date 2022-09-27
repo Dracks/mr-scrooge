@@ -1,16 +1,16 @@
-import { AxiosError } from "axios";
-import React from "react";
+import { AxiosError } from 'axios';
+import React from 'react';
 
-import { UserSession } from "./api/client/session/types";
-import { useDeleteLogout } from "./api/client/session/use-delete-logout";
-import { useGetSession } from "./api/client/session/use-get-session";
-import { usePostLogin } from "./api/client/session/use-post-login";
-import RestrictedContent from "./contents/restricted-content";
-import { UserSessionContext } from "./contents/session/context";
-import Login, { LoginCredentials } from "./contents/session/login";
-import { LoadingPage } from "./utils/ui/loading";
+import { UserSession } from './api/client/session/types';
+import { useDeleteLogout } from './api/client/session/use-delete-logout';
+import { useGetSession } from './api/client/session/use-get-session';
+import { usePostLogin } from './api/client/session/use-post-login';
+import RestrictedContent from './contents/restricted-content';
+import { UserSessionContext } from './contents/session/context';
+import Login, { LoginCredentials } from './contents/session/login';
+import { LoadingPage } from './utils/ui/loading';
 
-import "./api/client/axios";
+import './api/client/axios';
 
 interface SessionStatus {
     data?: Partial<UserSession>;
@@ -35,25 +35,29 @@ const App: React.FC<{}> = () => {
     }, [sessionRequest]);
 
     const login = ({ username, password }: LoginCredentials) => {
-        useLogin({ data: { user: username, password } }).then((response) => {
+        useLogin({ data: { user: username, password } }).then(response => {
             setSession({
                 ...sessionStatus,
                 data: response.data,
             });
         });
     };
+    const isAuthenticated = sessionStatus.data && sessionStatus.data.isAuthenticated;
 
-    if (sessionStatus.loading) {
+    if (sessionStatus.loading && !isAuthenticated) {
         return <LoadingPage />;
     } else if (!sessionStatus.error) {
-        if (sessionStatus.data && sessionStatus.data.isAuthenticated) {
+        if (isAuthenticated) {
             return (
                 <UserSessionContext.Provider
                     value={{
-                        ...(sessionStatus.data as UserSession),
+                        data: sessionStatus.data as UserSession,
                         logout: async () => {
                             await logout();
-                            reloadSession();
+                            await reloadSession();
+                        },
+                        reload: async () => {
+                            await reloadSession();
                         },
                     }}
                 >
@@ -66,9 +70,7 @@ const App: React.FC<{}> = () => {
                 isLoading={loginStatus.loading}
                 login={login}
                 error={loginStatus.error}
-                invalidCredentials={
-                    loginStatus.data ? !loginStatus.data.isAuthenticated : false
-                }
+                invalidCredentials={loginStatus.data ? !loginStatus.data.isAuthenticated : false}
             />
         );
     }

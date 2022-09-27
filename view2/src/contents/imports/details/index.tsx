@@ -1,1 +1,1 @@
-export { ImportDetails } from "./details";
+export { ImportDetails } from './details';

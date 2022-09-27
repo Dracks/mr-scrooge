@@ -1,12 +1,13 @@
-import useAxios, { UseAxiosResult } from "axios-hooks";
+import useAxios, { UseAxiosResult } from 'axios-hooks';
 
-import { TagFilterUrl } from "./constants";
-import { PostTagFilterResponse } from "./types";
+import { TagFilterUrl } from './constants';
+import { PostTagFilterResponse } from './types';
 
-export const usePostTagFilter = (): UseAxiosResult<PostTagFilterResponse> => useAxios(
+export const usePostTagFilter = (): UseAxiosResult<PostTagFilterResponse> =>
+    useAxios(
         {
             url: TagFilterUrl,
-            method: "POST",
+            method: 'POST',
         },
-        { manual: true }
-    )
+        { manual: true },
+    );

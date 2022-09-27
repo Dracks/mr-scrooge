@@ -1,17 +1,8 @@
-import { AxiosError } from "axios";
-import {
-    Box,
-    Button,
-    Form,
-    FormField,
-    Heading,
-    Keyboard,
-    Text,
-    TextInput,
-} from "grommet";
-import React from "react";
+import { AxiosError } from 'axios';
+import { Box, Button, Form, FormField, Heading, Keyboard, Text, TextInput } from 'grommet';
+import React from 'react';
 
-import { useLogger } from "../../utils/logger/logger.context";
+import { useLogger } from '../../utils/logger/logger.context';
 
 export interface LoginCredentials {
     password: string;
@@ -27,10 +18,10 @@ interface LoginProps {
 
 const Login = ({ login, isLoading, error, invalidCredentials }: LoginProps) => {
     const [credentials, setCredentials] = React.useState<LoginCredentials>({
-        username: "",
-        password: "",
+        username: '',
+        password: '',
     });
-    useLogger().info("loggin", { error, invalidCredentials });
+    useLogger().info('loggin', { error, invalidCredentials });
 
     return (
         <Box fill align="center" justify="center">
@@ -41,28 +32,15 @@ const Login = ({ login, isLoading, error, invalidCredentials }: LoginProps) => {
                     onChange={setCredentials}
                     onSubmit={() => login(credentials)}
                 >
-                    <FormField
-                        label="User"
-                        name="username"
-                        required
-                        component={TextInput}
-                    />
+                    <FormField label="User" name="username" required component={TextInput} />
 
                     <Keyboard onEnter={() => login(credentials)}>
-                        <FormField
-                            label="Password"
-                            name="password"
-                            required
-                            component={TextInput}
-                            type="password"
-                        />
+                        <FormField label="Password" name="password" required component={TextInput} type="password" />
                     </Keyboard>
 
                     {(invalidCredentials || error) && (
-                        <Box pad={{ horizontal: "small" }}>
-                            <Text color="status-error">
-                                {error ? error.message : "Invalid credentials"}
-                            </Text>
+                        <Box pad={{ horizontal: 'small' }}>
+                            <Text color="status-error">{error ? error.message : 'Invalid credentials'}</Text>
                         </Box>
                     )}
 

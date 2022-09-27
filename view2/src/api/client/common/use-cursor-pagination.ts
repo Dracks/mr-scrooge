@@ -1,5 +1,5 @@
-import { AxiosError, AxiosPromise, AxiosRequestConfig } from "axios";
-import useAxios, { Options } from "axios-hooks";
+import { AxiosError, AxiosPromise, AxiosRequestConfig } from 'axios';
+import useAxios, { Options } from 'axios-hooks';
 
 export interface CursorPaginationResult<T> {
     error?: AxiosError<unknown, unknown> | null;
@@ -16,36 +16,22 @@ interface CursorPagination<T> {
     results: T[];
 }
 
-export const useCursorPaginationAxios = <
-    TResponse = any,
-    TBody = any,
-    TError = any
->(
+export const useCursorPaginationAxios = <TResponse = any, TBody = any, TError = any>(
     config: AxiosRequestConfig<TBody>,
-    options?: Options
+    options?: Options,
 ): CursorPaginationResult<TResponse> => {
-    const [response, request] = useAxios<
-        CursorPagination<TResponse>,
-        TBody,
-        TError
-    >(config, options);
+    const [response, request] = useAxios<CursorPagination<TResponse>, TBody, TError>(config, options);
 
     const { data, loading, error } = response;
-    const getNewConfig: (cursor?: string) => AxiosRequestConfig<TBody> = (
-        cursor
-    ) => ({
+    const getNewConfig: (cursor?: string) => AxiosRequestConfig<TBody> = cursor => ({
         ...config,
         params: {
             ...config.params,
             cursor,
         },
     });
-    const next = data?.next
-        ? () => request(getNewConfig(data.next))
-        : undefined;
-    const previous = data?.next
-        ? () => request(getNewConfig(data.previous))
-        : undefined;
+    const next = data?.next ? () => request(getNewConfig(data.next)) : undefined;
+    const previous = data?.next ? () => request(getNewConfig(data.previous)) : undefined;
 
     return {
         loading,
@@ -55,4 +41,4 @@ export const useCursorPaginationAxios = <
         next,
         previous,
     };
-}
+};

@@ -1,8 +1,8 @@
-import EventEmitter from "events";
-import React from "react";
+import EventEmitter from 'events';
+import React from 'react';
 
-import { Logger } from "./logger.class";
-import { ILogger } from "./logger.types";
+import { Logger } from './logger.class';
+import { ILogger } from './logger.types';
 
 interface LoggerContext {
     eventEmitter: EventEmitter;
@@ -17,8 +17,7 @@ const loggerContext = React.createContext<LoggerContext>({
 });
 
 export const useLogger = () => React.useContext(loggerContext).logger;
-export const useLoggerEmitter = () =>
-    React.useContext(loggerContext).eventEmitter;
+export const useLoggerEmitter = () => React.useContext(loggerContext).eventEmitter;
 
 interface LoggerProvider {
     // useConsole?: boolean
@@ -28,9 +27,5 @@ export const ProvideLogger: React.FC<LoggerProvider> = ({ children }) => {
     const { Provider } = loggerContext;
     const logger = new Logger(loggerEmitter);
 
-    return (
-        <Provider value={{ logger, eventEmitter: loggerEmitter }}>
-            {children}
-        </Provider>
-    );
+    return <Provider value={{ logger, eventEmitter: loggerEmitter }}>{children}</Provider>;
 };

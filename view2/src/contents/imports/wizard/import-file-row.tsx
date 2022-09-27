@@ -1,14 +1,9 @@
-import { Box, Select, Text } from "grommet";
-import {
-    Attachment,
-    CircleAlert,
-    StatusCritical,
-    Upgrade,
-} from "grommet-icons";
-import React from "react";
+import { Box, Select, Text } from 'grommet';
+import { Attachment, CircleAlert, StatusCritical, Upgrade } from 'grommet-icons';
+import React from 'react';
 
-import { Kind } from "../../../api/client/imports/types";
-import { FileStatus, IFileData } from "../types";
+import { Kind } from '../../../api/client/imports/types';
+import { FileStatus, IFileData } from '../types';
 
 interface ImportFileRowArgs {
     fileData: IFileData;
@@ -24,11 +19,7 @@ const STATUS_HASH: Record<FileStatus, React.FC<{}>> = {
     [FileStatus.uploading]: () => <Upgrade color="yellow" />,
 };
 
-export const ImportFileRow: React.FC<ImportFileRowArgs> = ({
-    fileData,
-    kindsList,
-    onKindSwitch,
-}) => {
+export const ImportFileRow: React.FC<ImportFileRowArgs> = ({ fileData, kindsList, onKindSwitch }) => {
     const Status = STATUS_HASH[fileData.status];
     return (
         <Box direction="row">
@@ -37,9 +28,9 @@ export const ImportFileRow: React.FC<ImportFileRowArgs> = ({
                 <Text truncate="tip">{fileData.file.name}</Text>
             </Box>
             <Select
-                options={kindsList.map((kind) => kind.name)}
+                options={kindsList.map(kind => kind.name)}
                 value={fileData.kind}
-                onChange={(event) => onKindSwitch(event.value)}
+                onChange={event => onKindSwitch(event.value)}
             />
 
             <Status />

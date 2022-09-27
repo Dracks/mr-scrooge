@@ -1,6 +1,6 @@
-import { CamelCasedProperties } from "type-fest";
+import { CamelCasedProperties } from 'type-fest';
 
-import { components } from "../../generated-models";
+import { components } from '../../generated-models';
 
 export interface Kind {
     name: string;
@@ -8,8 +8,6 @@ export interface Kind {
 }
 export type GetKindResponse = Kind[];
 
-export type StatusReport = CamelCasedProperties<
-    components["schemas"]["StatusReport"]
->;
+export type StatusReport = CamelCasedProperties<components['schemas']['StatusReport']>;
 
 export type GetImportsResponse = StatusReport[];

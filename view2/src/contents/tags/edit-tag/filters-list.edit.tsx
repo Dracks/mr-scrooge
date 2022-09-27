@@ -1,20 +1,10 @@
-import {
-    Button,
-    Table,
-    TableBody,
-    TableCell,
-    TableHeader,
-    TableRow,
-} from "grommet";
-import { Add } from "grommet-icons";
-import React from "react";
+import { Button, Table, TableBody, TableCell, TableHeader, TableRow } from 'grommet';
+import { Add } from 'grommet-icons';
+import React from 'react';
 
-import {
-    FilterConditional,
-    TagFilter,
-} from "../../../api/client/tag-filter/types";
-import { FilterListAddArgs } from "./filter-list-add";
-import { FilterListRow } from "./filter-list-row";
+import { FilterConditional, TagFilter } from '../../../api/client/tag-filter/types';
+import { FilterListAddArgs } from './filter-list-add';
+import { FilterListRow } from './filter-list-row';
 
 interface FiltersTableListArgs {
     conditions: Record<FilterConditional, string>;
@@ -23,12 +13,7 @@ interface FiltersTableListArgs {
     tagId: number;
 }
 
-export const FiltersTableList: React.FC<FiltersTableListArgs> = ({
-    filters,
-    conditions,
-    tagId,
-    reloadFilters,
-}) => {
+export const FiltersTableList: React.FC<FiltersTableListArgs> = ({ filters, conditions, tagId, reloadFilters }) => {
     const [isAdding, setIsAdding] = React.useState(false);
     const conditionsList = React.useMemo(
         () =>
@@ -36,7 +21,7 @@ export const FiltersTableList: React.FC<FiltersTableListArgs> = ({
                 key: key as FilterConditional,
                 value,
             })),
-        [conditions]
+        [conditions],
     );
     return (
         <Table>
@@ -49,16 +34,12 @@ export const FiltersTableList: React.FC<FiltersTableListArgs> = ({
                         condition
                     </TableCell>
                     <TableCell>
-                        Actions{" "}
-                        <Button
-                            icon={<Add size="small" />}
-                            onClick={() => setIsAdding(!isAdding)}
-                        />
+                        Actions <Button icon={<Add size="small" />} onClick={() => setIsAdding(!isAdding)} />
                     </TableCell>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {filters.map((filter) => (
+                {filters.map(filter => (
                     <FilterListRow
                         key={filter.id}
                         filter={filter}

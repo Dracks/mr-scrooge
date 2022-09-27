@@ -1,5 +1,5 @@
-import { Box, Heading } from "grommet";
-import React from "react";
+import { Box, Heading } from 'grommet';
+import React from 'react';
 
 const MainPage: React.FC<{}> = () => (
     <Box direction="row" pad="medium">

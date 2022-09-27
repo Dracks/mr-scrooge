@@ -1,19 +1,11 @@
-import {
-    Button,
-    InfiniteScroll,
-    Table,
-    TableBody,
-    TableCell,
-    TableHeader,
-    TableRow,
-} from "grommet";
-import { Add } from "grommet-icons";
-import React from "react";
+import { Button, InfiniteScroll, Table, TableBody, TableCell, TableHeader, TableRow } from 'grommet';
+import { Add } from 'grommet-icons';
+import React from 'react';
 
-import { Tag } from "../../api/client/tag/types";
-import { useTagsContext } from "../common/tag.context";
-import { NewTagRow } from "./new-tag-row";
-import { TagListRow } from "./tag-list-row";
+import { Tag } from '../../api/client/tag/types';
+import { useTagsContext } from '../common/tag.context';
+import { NewTagRow } from './new-tag-row';
+import { TagListRow } from './tag-list-row';
 
 export const TagsList: React.FC = () => {
     const [isAdding, setIsAdding] = React.useState(false);
@@ -26,7 +18,7 @@ export const TagsList: React.FC = () => {
             }
             setIsAdding(false);
         },
-        [setIsAdding, refresh]
+        [setIsAdding, refresh],
     );
 
     return (
@@ -42,25 +34,14 @@ export const TagsList: React.FC = () => {
                     <TableCell>condition handler</TableCell>
                     <TableCell># conditions</TableCell>
                     <TableCell>
-                        Actions{" "}
-                        <Button
-                            icon={<Add size="small" />}
-                            onClick={() => setIsAdding(true)}
-                        />
+                        Actions <Button icon={<Add size="small" />} onClick={() => setIsAdding(true)} />
                     </TableCell>
                 </TableRow>
             </TableHeader>
             <TableBody>
                 {isAdding ? <NewTagRow close={onClose} /> : undefined}
                 <InfiniteScroll items={tags}>
-                    {(result: Tag) => (
-                        <TagListRow
-                            key={result.id}
-                            tag={result}
-                            tagHash={tagsHash}
-                            refresh={refresh}
-                        />
-                    )}
+                    {(result: Tag) => <TagListRow key={result.id} tag={result} tagHash={tagsHash} refresh={refresh} />}
                 </InfiniteScroll>
             </TableBody>
         </Table>

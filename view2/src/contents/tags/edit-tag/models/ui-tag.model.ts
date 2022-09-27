@@ -1,8 +1,8 @@
-import { Transform } from "class-transformer";
+import { Transform } from 'class-transformer';
 
-import { Tag } from "../../../../api/client/tag/types";
+import { Tag } from '../../../../api/client/tag/types';
 
-export class UITag implements Omit<Tag, "negateConditional" | "parent"> {
+export class UITag implements Omit<Tag, 'negateConditional' | 'parent'> {
     id!: number;
 
     children!: number[];

@@ -1,16 +1,15 @@
-import useAxios, { UseAxiosResult } from "axios-hooks";
+import useAxios, { UseAxiosResult } from 'axios-hooks';
 
-import { TagFilterUrl } from "./constants";
-import { PostTagFilterResponse } from "./types";
+import { TagFilterUrl } from './constants';
+import { PostTagFilterResponse, TagFilter } from './types';
 
-export const usePutTagFilter = (
-    tagId: number
-): UseAxiosResult<PostTagFilterResponse> => useAxios(
+export const usePutTagFilter = (tagId: number): UseAxiosResult<PostTagFilterResponse, TagFilter> =>
+    useAxios(
         {
             url: `${TagFilterUrl}${tagId}/`,
-            method: "PUT",
+            method: 'PUT',
         },
         {
             manual: true,
-        }
-    )
+        },
+    );

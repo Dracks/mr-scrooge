@@ -1,9 +1,5 @@
-import {
-    GraphGroupEnum,
-    GraphKind,
-    GraphV2,
-} from "../../../api/client/graphs/types";
-import { accumulateFn } from "../data-transform/accumulate";
+import { GraphGroupEnum, GraphKind, GraphV2 } from '../../../api/client/graphs/types';
+import { accumulateFn } from '../data-transform/accumulate';
 
 export interface GraphUiRepresentation {
     dateRange?: string;
@@ -59,7 +55,7 @@ export const uiToGraph = ({
         ? {
               group: groupKind,
               hideOthers: groupHideOthers,
-              groupTags: groupTags?.map((tag) => ({ tag })),
+              groupTags: groupTags?.map(tag => ({ tag })),
           }
         : undefined,
     horizontalGroup:
@@ -67,7 +63,7 @@ export const uiToGraph = ({
             ? {
                   group: horizontalGroupKind,
                   hideOthers: horizontalGroupHideOthers,
-                  groupTags: horizontalGroupTags?.map((tag) => ({ tag })),
+                  groupTags: horizontalGroupTags?.map(tag => ({ tag })),
                   accumulate: horizontalAccumulate,
               }
             : undefined,

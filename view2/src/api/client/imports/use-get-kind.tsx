@@ -1,7 +1,7 @@
-import useAxios, { UseAxiosResult } from "axios-hooks";
+import useAxios, { UseAxiosResult } from 'axios-hooks';
 
-import { GetKindResponse } from "./types";
+import { GetKindResponse } from './types';
 
 export const useGetKinds = (): UseAxiosResult<GetKindResponse> => {
-    return useAxios("/kind/");
+    return useAxios('/kind/');
 };

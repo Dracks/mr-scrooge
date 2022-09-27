@@ -58,9 +58,13 @@ class MyProfileEndpoint(views.APIView):
 
     permission_classes = (IsAuthenticated,)
 
+
     def get_object(self, request):
         return request.user
 
+    @extend_schema(responses={
+        200: ProfileSerializer(many=False)
+    })
     def get(self, request, format=None):
         user = self.get_object(request)
         serializer = ProfileSerializer(user, context={'request': request, 'resource_name': 'profile'})

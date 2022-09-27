@@ -1,16 +1,13 @@
-import React, { useContext } from "react";
+import React, { useContext } from 'react';
 
-import { RawDataSource } from "../../api/client/raw-data-source/types";
-import { useGetPaginatedRawDataSource } from "../../api/client/raw-data-source/use-get-paginated-rawdatasource";
-import { Tag } from "../../api/client/tag/types";
-import ErrorHandler from "../../api/helpers/request-error.handler";
-import {
-    EventTypes,
-    useEventEmitter,
-} from "../../utils/providers/event-emitter.provider";
-import { useTagsListContext } from "./tag.context";
+import { RawDataSource } from '../../api/client/raw-data-source/types';
+import { useGetPaginatedRawDataSource } from '../../api/client/raw-data-source/use-get-paginated-rawdatasource';
+import { Tag } from '../../api/client/tag/types';
+import ErrorHandler from '../../api/helpers/request-error.handler';
+import { EventTypes, useEventEmitter } from '../../utils/providers/event-emitter.provider';
+import { useTagsListContext } from './tag.context';
 
-export type RdsEnriched = Omit<RawDataSource, "date"> & {
+export type RdsEnriched = Omit<RawDataSource, 'date'> & {
     date: Date;
     tagsComplete: Tag[];
 };
@@ -29,16 +26,15 @@ const RdsContext = React.createContext<RdsContextType>({
 
 export const useRdsData = (): RdsContextType => useContext(RdsContext);
 
-const replaceOrAdd =
-    (state: RdsEnriched[], stateIndexes: number[]) => (rds: RdsEnriched) => {
-        const index = stateIndexes.indexOf(rds.id);
-        if (index < 0) {
-            state.push(rds);
-            stateIndexes.push(rds.id);
-        } else {
-            state[index] = rds;
-        }
-    };
+const replaceOrAdd = (state: RdsEnriched[], stateIndexes: number[]) => (rds: RdsEnriched) => {
+    const index = stateIndexes.indexOf(rds.id);
+    if (index < 0) {
+        state.push(rds);
+        stateIndexes.push(rds.id);
+    } else {
+        state[index] = rds;
+    }
+};
 
 export const ProvideRdsData: React.FC = ({ children }) => {
     const [state, setState] = React.useState<{
@@ -51,9 +47,7 @@ export const ProvideRdsData: React.FC = ({ children }) => {
     const enrichRds = (rds: RawDataSource) => ({
         ...rds,
         date: new Date(rds.date),
-        tagsComplete: rds.tags.map(
-            (tagId) => tags.find(({ id }) => id === tagId) as Tag
-        ),
+        tagsComplete: rds.tags.map(tagId => tags.find(({ id }) => id === tagId) as Tag),
     });
 
     React.useEffect(() => {
@@ -61,9 +55,7 @@ export const ProvideRdsData: React.FC = ({ children }) => {
             const newState = [...state.data];
             const stateIndexes = state.index;
 
-            query.results
-                .map(enrichRds)
-                .forEach(replaceOrAdd(newState, stateIndexes));
+            query.results.map(enrichRds).forEach(replaceOrAdd(newState, stateIndexes));
             setState({ data: newState, index: stateIndexes });
             if (query.next) {
                 query.next();
@@ -72,12 +64,9 @@ export const ProvideRdsData: React.FC = ({ children }) => {
     }, [query.loading, query.results]);
 
     React.useEffect(() => {
-        const unSubscribe = eventEmitter.subscribe(
-            EventTypes.OnQueueUploadFinish,
-            () => {
-                query.reset();
-            }
-        );
+        const unSubscribe = eventEmitter.subscribe(EventTypes.OnQueueUploadFinish, () => {
+            query.reset();
+        });
 
         return unSubscribe;
     });
@@ -88,13 +77,11 @@ export const ProvideRdsData: React.FC = ({ children }) => {
     const context: RdsContextType = {
         data: state.data,
         reset: query.reset,
-        replace: (data) => {
+        replace: data => {
             const newState = [...state.data];
             replaceOrAdd(newState, state.index)(enrichRds(data));
             setState({ data: newState, index: state.index });
         },
     };
-    return (
-        <RdsContext.Provider value={context}>{children}</RdsContext.Provider>
-    );
+    return <RdsContext.Provider value={context}>{children}</RdsContext.Provider>;
 };

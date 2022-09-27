@@ -1,10 +1,10 @@
-import { Button, Select, TableCell, TableRow, TextInput } from "grommet";
-import React from "react";
+import { Button, Select, TableCell, TableRow, TextInput } from 'grommet';
+import React from 'react';
 
-import { TagFilter } from "../../../api/client/tag-filter/types";
-import { usePostTagFilter } from "../../../api/client/tag-filter/use-post-tag-filter";
-import { ConfirmationButton } from "../../../utils/ui/confirmation-button";
-import { ConditionsType } from "./filter-tag.types";
+import { TagFilter } from '../../../api/client/tag-filter/types';
+import { usePostTagFilter } from '../../../api/client/tag-filter/use-post-tag-filter';
+import { ConfirmationButton } from '../../../utils/ui/confirmation-button';
+import { ConditionsType } from './filter-tag.types';
 
 interface FilterListAddArgs {
     close: () => void;
@@ -13,12 +13,7 @@ interface FilterListAddArgs {
     tagId: number;
 }
 
-export const FilterListAddArgs: React.FC<FilterListAddArgs> = ({
-    conditions,
-    tagId,
-    reloadFilters,
-    close,
-}) => {
+export const FilterListAddArgs: React.FC<FilterListAddArgs> = ({ conditions, tagId, reloadFilters, close }) => {
     const [, request] = usePostTagFilter();
     const [viewFilter, setViewFilter] = React.useState<Partial<TagFilter>>({
         tag: tagId,
@@ -35,7 +30,7 @@ export const FilterListAddArgs: React.FC<FilterListAddArgs> = ({
                     name="parent"
                     value={viewFilter.typeConditional}
                     labelKey="value"
-                    valueKey={{ key: "key", reduce: true }}
+                    valueKey={{ key: 'key', reduce: true }}
                     onChange={({ option }: { option: ConditionsType }) => {
                         const newData = {
                             ...viewFilter,
@@ -50,7 +45,7 @@ export const FilterListAddArgs: React.FC<FilterListAddArgs> = ({
                     id="text-input-name"
                     name="conditional"
                     value={viewFilter.conditional}
-                    onChange={(ev) => {
+                    onChange={ev => {
                         setViewFilter({
                             ...viewFilter,
                             conditional: ev.target.value,
@@ -62,9 +57,7 @@ export const FilterListAddArgs: React.FC<FilterListAddArgs> = ({
                 <Button
                     label="Save"
                     primary
-                    disabled={
-                        !viewFilter.conditional || !viewFilter.typeConditional
-                    }
+                    disabled={!viewFilter.conditional || !viewFilter.typeConditional}
                     onClick={() => {
                         request({
                             data: viewFilter,
@@ -74,11 +67,7 @@ export const FilterListAddArgs: React.FC<FilterListAddArgs> = ({
                         });
                     }}
                 />
-                <ConfirmationButton
-                    label="Cancel"
-                    onConfirm={close}
-                    color="accent-4"
-                />
+                <ConfirmationButton label="Cancel" onConfirm={close} color="accent-4" />
             </TableCell>
         </TableRow>
     );

@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import { DEBUG } from "../../constants";
+import { DEBUG } from '../../constants';
 
 declare global {
     interface Window {
@@ -17,11 +17,7 @@ export const DebugProvider: React.FC<{}> = ({ children }) => {
             setDebug(true);
         };
     }
-    return (
-        <DebugContext.Provider value={isDebug}>
-            {children}
-        </DebugContext.Provider>
-    );
+    return <DebugContext.Provider value={isDebug}>{children}</DebugContext.Provider>;
 };
 
 export default DebugContext;

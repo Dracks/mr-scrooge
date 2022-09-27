@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import GraphV2, Group, Graph, GroupTags, HorizontalGroup, HorizontalGroupTags
+from finances.common.helper import update_instance
 
 class GroupTagsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,10 +25,6 @@ class HorizontalGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = HorizontalGroup
         fields = ('group', 'hide_others', 'group_tags', 'accumulate')
-
-def update_instance(instance, validated_data):
-    for attr, value in validated_data.items():
-        setattr(instance, attr, value)
 
 class GraphV2Serializer(serializers.ModelSerializer):
     old_graph = serializers.PrimaryKeyRelatedField(queryset=Graph.objects.all(), required=False, allow_null=True)

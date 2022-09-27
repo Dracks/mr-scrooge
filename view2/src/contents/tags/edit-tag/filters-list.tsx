@@ -1,11 +1,11 @@
-import { Button, Table, TableCell, TableHeader, TableRow } from "grommet";
-import { Add } from "grommet-icons";
-import React from "react";
+import { Button, Table, TableCell, TableHeader, TableRow } from 'grommet';
+import { Add } from 'grommet-icons';
+import React from 'react';
 
-import { useGetFilterConditionals } from "../../../api/client/tag-filter/use-get-conditionals-filters";
-import { useGetTagFilters } from "../../../api/client/tag-filter/use-get-tag-filters";
-import { LoadingPage } from "../../../utils/ui/loading";
-import { FiltersTableList } from "./filters-list.edit";
+import { useGetFilterConditionals } from '../../../api/client/tag-filter/use-get-conditionals-filters';
+import { useGetTagFilters } from '../../../api/client/tag-filter/use-get-tag-filters';
+import { LoadingPage } from '../../../utils/ui/loading';
+import { FiltersTableList } from './filters-list.edit';
 
 interface FiltersListArgs {
     tagId: number;

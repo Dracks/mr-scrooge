@@ -4,134 +4,134 @@
  */
 
 export interface paths {
-    "/api/graph-v2/": {
-        get: operations["graph_v2_list"];
-        post: operations["graph_v2_create"];
+    '/api/graph-v2/': {
+        get: operations['graph_v2_list'];
+        post: operations['graph_v2_create'];
     };
-    "/api/graph-v2/{id}/": {
-        delete: operations["graph_v2_destroy"];
-        get: operations["graph_v2_retrieve"];
-        patch: operations["graph_v2_partial_update"];
-        put: operations["graph_v2_update"];
+    '/api/graph-v2/{id}/': {
+        delete: operations['graph_v2_destroy'];
+        get: operations['graph_v2_retrieve'];
+        patch: operations['graph_v2_partial_update'];
+        put: operations['graph_v2_update'];
     };
-    "/api/graph/": {
+    '/api/graph/': {
         /** It's a custom api to parse all the information of the graph to the database. */
-        get: operations["graph_retrieve"];
+        get: operations['graph_retrieve'];
         /** It's a custom api to parse all the information of the graph to the database. */
-        post: operations["graph_create"];
+        post: operations['graph_create'];
     };
-    "/api/graph/{id}/": {
+    '/api/graph/{id}/': {
         /** It's a custom api to parse all the information of the graph to the database. */
-        delete: operations["graph_destroy"];
+        delete: operations['graph_destroy'];
         /** It's a custom api to parse all the information of the graph to the database. */
-        get: operations["graph_retrieve_2"];
+        get: operations['graph_retrieve_2'];
         /** It's a custom api to parse all the information of the graph to the database. */
-        put: operations["graph_update"];
+        put: operations['graph_update'];
     };
-    "/api/import/upload/": {
-        post: operations["import_upload_create"];
+    '/api/import/upload/': {
+        post: operations['import_upload_create'];
     };
-    "/api/kind/": {
-        get: operations["kind_retrieve"];
+    '/api/kind/': {
+        get: operations['kind_retrieve'];
     };
-    "/api/me/": {
+    '/api/me/': {
         /**
          * Manage my profile, it requires less permissions to manage that User, but the modifications should be limited
          * @todo Limit and control the modifications, (change e-mail or password should require the old password
          */
-        get: operations["me_retrieve"];
+        get: operations['me_retrieve'];
         /**
          * Manage my profile, it requires less permissions to manage that User, but the modifications should be limited
          * @todo Limit and control the modifications, (change e-mail or password should require the old password
          */
-        patch: operations["me_partial_update"];
+        patch: operations['me_partial_update'];
         /**
          * Manage my profile, it requires less permissions to manage that User, but the modifications should be limited
          * @todo Limit and control the modifications, (change e-mail or password should require the old password
          */
-        put: operations["me_update"];
+        put: operations['me_update'];
     };
-    "/api/raw-data/": {
-        get: operations["raw_data_list"];
-        post: operations["raw_data_create"];
+    '/api/raw-data/': {
+        get: operations['raw_data_list'];
+        post: operations['raw_data_create'];
     };
-    "/api/raw-data/{id}/": {
-        get: operations["raw_data_retrieve"];
+    '/api/raw-data/{id}/': {
+        get: operations['raw_data_retrieve'];
     };
-    "/api/raw-data/{id}/description/": {
-        delete: operations["raw_data_description_destroy"];
-        post: operations["raw_data_description_create"];
+    '/api/raw-data/{id}/description/': {
+        delete: operations['raw_data_description_destroy'];
+        post: operations['raw_data_description_create'];
     };
-    "/api/raw-data/{id}/link/": {
-        delete: operations["raw_data_link_destroy"];
-        post: operations["raw_data_link_create"];
+    '/api/raw-data/{id}/link/': {
+        delete: operations['raw_data_link_destroy'];
+        post: operations['raw_data_link_create'];
     };
-    "/api/schema/": {
+    '/api/schema/': {
         /**
          * OpenApi3 schema for this API. Format can be selected via content negotiation.
          *
          * - YAML: application/vnd.oai.openapi
          * - JSON: application/vnd.oai.openapi+json
          */
-        get: operations["schema_retrieve"];
+        get: operations['schema_retrieve'];
     };
-    "/api/session/": {
+    '/api/session/': {
         /** It's a custom api to identify a user, and set the session via cookie */
-        get: operations["session_list"];
+        get: operations['session_list'];
         /** It's a custom api to identify a user, and set the session via cookie */
-        post: operations["session_create"];
+        post: operations['session_create'];
     };
-    "/api/session/logout/": {
+    '/api/session/logout/': {
         /** It's a custom api to identify a user, and set the session via cookie */
-        delete: operations["session_logout_destroy"];
+        delete: operations['session_logout_destroy'];
     };
-    "/api/status-row/": {
-        get: operations["status_row_list"];
+    '/api/status-row/': {
+        get: operations['status_row_list'];
     };
-    "/api/status-row/{id}/": {
-        get: operations["status_row_retrieve"];
+    '/api/status-row/{id}/': {
+        get: operations['status_row_retrieve'];
     };
-    "/api/status-row/{id}/generate/": {
-        post: operations["status_row_generate_create"];
+    '/api/status-row/{id}/generate/': {
+        post: operations['status_row_generate_create'];
     };
-    "/api/status/": {
-        get: operations["status_list"];
+    '/api/status/': {
+        get: operations['status_list'];
     };
-    "/api/status/file_regex/": {
-        get: operations["status_file_regex_retrieve"];
+    '/api/status/file_regex/': {
+        get: operations['status_file_regex_retrieve'];
     };
-    "/api/status/kinds/": {
-        get: operations["status_kinds_retrieve"];
+    '/api/status/kinds/': {
+        get: operations['status_kinds_retrieve'];
     };
-    "/api/status/{id}/": {
-        delete: operations["status_destroy"];
-        get: operations["status_retrieve"];
+    '/api/status/{id}/': {
+        delete: operations['status_destroy'];
+        get: operations['status_retrieve'];
     };
-    "/api/tag-filter/": {
-        get: operations["tag_filter_list"];
-        post: operations["tag_filter_create"];
+    '/api/tag-filter/': {
+        get: operations['tag_filter_list'];
+        post: operations['tag_filter_create'];
     };
-    "/api/tag-filter/types/": {
-        get: operations["tag_filter_types_retrieve"];
+    '/api/tag-filter/types/': {
+        get: operations['tag_filter_types_retrieve'];
     };
-    "/api/tag-filter/{id}/": {
-        delete: operations["tag_filter_destroy"];
-        get: operations["tag_filter_retrieve"];
-        patch: operations["tag_filter_partial_update"];
-        put: operations["tag_filter_update"];
+    '/api/tag-filter/{id}/': {
+        delete: operations['tag_filter_destroy'];
+        get: operations['tag_filter_retrieve'];
+        patch: operations['tag_filter_partial_update'];
+        put: operations['tag_filter_update'];
     };
-    "/api/tag/": {
-        get: operations["tag_list"];
-        post: operations["tag_create"];
+    '/api/tag/': {
+        get: operations['tag_list'];
+        post: operations['tag_create'];
     };
-    "/api/tag/{id}/": {
-        delete: operations["tag_destroy"];
-        get: operations["tag_retrieve"];
-        patch: operations["tag_partial_update"];
-        put: operations["tag_update"];
+    '/api/tag/{id}/': {
+        delete: operations['tag_destroy'];
+        get: operations['tag_retrieve'];
+        patch: operations['tag_partial_update'];
+        put: operations['tag_update'];
     };
-    "/api/tag/{id}/apply_filters/": {
-        post: operations["tag_apply_filters_create"];
+    '/api/tag/{id}/apply_filters/': {
+        post: operations['tag_apply_filters_create'];
     };
 }
 
@@ -141,56 +141,56 @@ export interface components {
             conditional: string;
             id: number;
             tag: number;
-            type_conditional: components["schemas"]["TypeConditionalEnum"];
+            type_conditional: components['schemas']['TypeConditionalEnum'];
         };
         GraphV2: {
             date_range: string;
-            group: components["schemas"]["Group"];
-            horizontal_group?: components["schemas"]["HorizontalGroup"];
+            group: components['schemas']['Group'];
+            horizontal_group?: components['schemas']['HorizontalGroup'] | null;
             id: number;
-            kind: components["schemas"]["KindEnum"];
+            kind: components['schemas']['KindEnum'];
             name: string;
-            old_graph?: number;
+            old_graph?: number | null;
             tag_filter?: number | null;
         };
         Group: {
-            group: components["schemas"]["GroupEnum"];
-            group_tags?: components["schemas"]["GroupTags"][];
+            group: components['schemas']['GroupEnum'];
+            group_tags?: components['schemas']['GroupTags'][];
             hide_others?: boolean | null;
         };
-        GroupEnum: "day" | "month" | "year" | "tags" | "sign";
+        GroupEnum: 'day' | 'month' | 'year' | 'tags' | 'sign';
         GroupTags: {
             tag: number;
         };
         HorizontalGroup: {
             accumulate?: boolean;
-            group: components["schemas"]["GroupEnum"];
-            group_tags?: components["schemas"]["HorizontalGroupTags"][];
+            group: components['schemas']['GroupEnum'];
+            group_tags?: components['schemas']['HorizontalGroupTags'][];
             hide_others?: boolean | null;
         };
         HorizontalGroupTags: {
             tag: number;
         };
-        KindEnum: "bar" | "pie" | "line";
+        KindEnum: 'bar' | 'pie' | 'line';
         PaginatedRawDataList: {
             next?: string | null;
             previous?: string | null;
-            results?: components["schemas"]["RawData"][];
+            results?: components['schemas']['RawData'][];
         };
         PatchedFilter: {
             conditional?: string;
             id?: number;
             tag?: number;
-            type_conditional?: components["schemas"]["TypeConditionalEnum"];
+            type_conditional?: components['schemas']['TypeConditionalEnum'];
         };
         PatchedGraphV2: {
             date_range?: string;
-            group?: components["schemas"]["Group"];
-            horizontal_group?: components["schemas"]["HorizontalGroup"];
+            group?: components['schemas']['Group'];
+            horizontal_group?: components['schemas']['HorizontalGroup'] | null;
             id?: number;
-            kind?: components["schemas"]["KindEnum"];
+            kind?: components['schemas']['KindEnum'];
             name?: string;
-            old_graph?: number;
+            old_graph?: number | null;
             tag_filter?: number | null;
         };
         PatchedTag: {
@@ -200,6 +200,12 @@ export interface components {
             name?: string;
             negate_conditional?: boolean;
             parent?: number | null;
+        };
+        Profile: {
+            email: string;
+            first_name: string;
+            last_name: string;
+            username: string;
         };
         RawData: {
             date: string;
@@ -212,7 +218,7 @@ export interface components {
             tags: number[];
             value: number;
         };
-        StatusEnum: "o" | "w" | "e";
+        StatusEnum: 'o' | 'w' | 'e';
         StatusReport: {
             date: string;
             description: string;
@@ -220,7 +226,7 @@ export interface components {
             id: number;
             kind: string;
             rows: number[];
-            status: components["schemas"]["StatusEnum"];
+            status: components['schemas']['StatusEnum'];
         };
         StatusReportRow: {
             date: string;
@@ -240,10 +246,12 @@ export interface components {
             negate_conditional?: boolean;
             parent?: number | null;
         };
-        TypeConditionalEnum: "c" | "p" | "s" | "r" | "g" | "G" | "L" | "l";
+        TypeConditionalEnum: 'c' | 'p' | 's' | 'r' | 'g' | 'G' | 'L' | 'l';
         UserSession: {
             email: string;
+            first_name: string;
             is_authenticated: boolean;
+            last_name: string;
             username: string;
         };
     };
@@ -303,15 +311,15 @@ export interface operations {
     graph_v2_create: {
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GraphV2"];
-                "application/x-www-form-urlencoded": components["schemas"]["GraphV2"];
-                "multipart/form-data": components["schemas"]["GraphV2"];
+                'application/json': components['schemas']['GraphV2'];
+                'application/x-www-form-urlencoded': components['schemas']['GraphV2'];
+                'multipart/form-data': components['schemas']['GraphV2'];
             };
         };
         responses: {
             201: {
                 content: {
-                    "application/json": components["schemas"]["GraphV2"];
+                    'application/json': components['schemas']['GraphV2'];
                 };
             };
         };
@@ -332,7 +340,7 @@ export interface operations {
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["GraphV2"][];
+                    'application/json': components['schemas']['GraphV2'][];
                 };
             };
         };
@@ -346,15 +354,15 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PatchedGraphV2"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedGraphV2"];
-                "multipart/form-data": components["schemas"]["PatchedGraphV2"];
+                'application/json': components['schemas']['PatchedGraphV2'];
+                'application/x-www-form-urlencoded': components['schemas']['PatchedGraphV2'];
+                'multipart/form-data': components['schemas']['PatchedGraphV2'];
             };
         };
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["GraphV2"];
+                    'application/json': components['schemas']['GraphV2'];
                 };
             };
         };
@@ -369,7 +377,7 @@ export interface operations {
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["GraphV2"];
+                    'application/json': components['schemas']['GraphV2'];
                 };
             };
         };
@@ -383,15 +391,15 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GraphV2"];
-                "application/x-www-form-urlencoded": components["schemas"]["GraphV2"];
-                "multipart/form-data": components["schemas"]["GraphV2"];
+                'application/json': components['schemas']['GraphV2'];
+                'application/x-www-form-urlencoded': components['schemas']['GraphV2'];
+                'multipart/form-data': components['schemas']['GraphV2'];
             };
         };
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["GraphV2"];
+                    'application/json': components['schemas']['GraphV2'];
                 };
             };
         };
@@ -424,8 +432,11 @@ export interface operations {
      */
     me_retrieve: {
         responses: {
-            /** No response body */
-            200: unknown;
+            200: {
+                content: {
+                    'application/json': components['schemas']['Profile'];
+                };
+            };
         };
     };
     /**
@@ -441,15 +452,15 @@ export interface operations {
     raw_data_create: {
         requestBody: {
             content: {
-                "application/json": components["schemas"]["RawData"];
-                "application/x-www-form-urlencoded": components["schemas"]["RawData"];
-                "multipart/form-data": components["schemas"]["RawData"];
+                'application/json': components['schemas']['RawData'];
+                'application/x-www-form-urlencoded': components['schemas']['RawData'];
+                'multipart/form-data': components['schemas']['RawData'];
             };
         };
         responses: {
             201: {
                 content: {
-                    "application/json": components["schemas"]["RawData"];
+                    'application/json': components['schemas']['RawData'];
                 };
             };
         };
@@ -463,15 +474,15 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["RawData"];
-                "application/x-www-form-urlencoded": components["schemas"]["RawData"];
-                "multipart/form-data": components["schemas"]["RawData"];
+                'application/json': components['schemas']['RawData'];
+                'application/x-www-form-urlencoded': components['schemas']['RawData'];
+                'multipart/form-data': components['schemas']['RawData'];
             };
         };
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["RawData"];
+                    'application/json': components['schemas']['RawData'];
                 };
             };
         };
@@ -497,15 +508,15 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["RawData"];
-                "application/x-www-form-urlencoded": components["schemas"]["RawData"];
-                "multipart/form-data": components["schemas"]["RawData"];
+                'application/json': components['schemas']['RawData'];
+                'application/x-www-form-urlencoded': components['schemas']['RawData'];
+                'multipart/form-data': components['schemas']['RawData'];
             };
         };
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["RawData"];
+                    'application/json': components['schemas']['RawData'];
                 };
             };
         };
@@ -526,7 +537,7 @@ export interface operations {
         parameters: {
             query: {
                 /** The pagination cursor value. */
-                cursor?: number;
+                cursor?: string;
                 /** Number of results to return per page. */
                 page_size?: number;
             };
@@ -534,7 +545,7 @@ export interface operations {
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["PaginatedRawDataList"];
+                    'application/json': components['schemas']['PaginatedRawDataList'];
                 };
             };
         };
@@ -549,7 +560,7 @@ export interface operations {
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["RawData"];
+                    'application/json': components['schemas']['RawData'];
                 };
             };
         };
@@ -563,115 +574,113 @@ export interface operations {
     schema_retrieve: {
         parameters: {
             query: {
-                format?: "json" | "yaml";
+                format?: 'json' | 'yaml';
                 lang?:
-                    | "af"
-                    | "ar"
-                    | "ar-dz"
-                    | "ast"
-                    | "az"
-                    | "be"
-                    | "bg"
-                    | "bn"
-                    | "br"
-                    | "bs"
-                    | "ca"
-                    | "cs"
-                    | "cy"
-                    | "da"
-                    | "de"
-                    | "dsb"
-                    | "el"
-                    | "en"
-                    | "en-au"
-                    | "en-gb"
-                    | "eo"
-                    | "es"
-                    | "es-ar"
-                    | "es-co"
-                    | "es-mx"
-                    | "es-ni"
-                    | "es-ve"
-                    | "et"
-                    | "eu"
-                    | "fa"
-                    | "fi"
-                    | "fr"
-                    | "fy"
-                    | "ga"
-                    | "gd"
-                    | "gl"
-                    | "he"
-                    | "hi"
-                    | "hr"
-                    | "hsb"
-                    | "hu"
-                    | "hy"
-                    | "ia"
-                    | "id"
-                    | "ig"
-                    | "io"
-                    | "is"
-                    | "it"
-                    | "ja"
-                    | "ka"
-                    | "kab"
-                    | "kk"
-                    | "km"
-                    | "kn"
-                    | "ko"
-                    | "ky"
-                    | "lb"
-                    | "lt"
-                    | "lv"
-                    | "mk"
-                    | "ml"
-                    | "mn"
-                    | "mr"
-                    | "my"
-                    | "nb"
-                    | "ne"
-                    | "nl"
-                    | "nn"
-                    | "os"
-                    | "pa"
-                    | "pl"
-                    | "pt"
-                    | "pt-br"
-                    | "ro"
-                    | "ru"
-                    | "sk"
-                    | "sl"
-                    | "sq"
-                    | "sr"
-                    | "sr-latn"
-                    | "sv"
-                    | "sw"
-                    | "ta"
-                    | "te"
-                    | "tg"
-                    | "th"
-                    | "tk"
-                    | "tr"
-                    | "tt"
-                    | "udm"
-                    | "uk"
-                    | "ur"
-                    | "uz"
-                    | "vi"
-                    | "zh-hans"
-                    | "zh-hant";
+                    | 'af'
+                    | 'ar'
+                    | 'ar-dz'
+                    | 'ast'
+                    | 'az'
+                    | 'be'
+                    | 'bg'
+                    | 'bn'
+                    | 'br'
+                    | 'bs'
+                    | 'ca'
+                    | 'cs'
+                    | 'cy'
+                    | 'da'
+                    | 'de'
+                    | 'dsb'
+                    | 'el'
+                    | 'en'
+                    | 'en-au'
+                    | 'en-gb'
+                    | 'eo'
+                    | 'es'
+                    | 'es-ar'
+                    | 'es-co'
+                    | 'es-mx'
+                    | 'es-ni'
+                    | 'es-ve'
+                    | 'et'
+                    | 'eu'
+                    | 'fa'
+                    | 'fi'
+                    | 'fr'
+                    | 'fy'
+                    | 'ga'
+                    | 'gd'
+                    | 'gl'
+                    | 'he'
+                    | 'hi'
+                    | 'hr'
+                    | 'hsb'
+                    | 'hu'
+                    | 'hy'
+                    | 'ia'
+                    | 'id'
+                    | 'ig'
+                    | 'io'
+                    | 'is'
+                    | 'it'
+                    | 'ja'
+                    | 'ka'
+                    | 'kab'
+                    | 'kk'
+                    | 'km'
+                    | 'kn'
+                    | 'ko'
+                    | 'ky'
+                    | 'lb'
+                    | 'lt'
+                    | 'lv'
+                    | 'mk'
+                    | 'ml'
+                    | 'mn'
+                    | 'mr'
+                    | 'my'
+                    | 'nb'
+                    | 'ne'
+                    | 'nl'
+                    | 'nn'
+                    | 'os'
+                    | 'pa'
+                    | 'pl'
+                    | 'pt'
+                    | 'pt-br'
+                    | 'ro'
+                    | 'ru'
+                    | 'sk'
+                    | 'sl'
+                    | 'sq'
+                    | 'sr'
+                    | 'sr-latn'
+                    | 'sv'
+                    | 'sw'
+                    | 'ta'
+                    | 'te'
+                    | 'tg'
+                    | 'th'
+                    | 'tk'
+                    | 'tr'
+                    | 'tt'
+                    | 'udm'
+                    | 'uk'
+                    | 'ur'
+                    | 'uz'
+                    | 'vi'
+                    | 'zh-hans'
+                    | 'zh-hant';
             };
         };
         responses: {
             200: {
                 content: {
-                    "application/json": { [key: string]: unknown };
-                    "application/vnd.oai.openapi": { [key: string]: unknown };
-                    "application/vnd.oai.openapi+json": {
-                        [key: string]: unknown;
-                    };
-                    "application/yaml": { [key: string]: unknown };
+                    'application/json': { [key: string]: unknown };
+                    'application/vnd.oai.openapi': { [key: string]: unknown };
+                    'application/vnd.oai.openapi+json': { [key: string]: unknown };
+                    'application/yaml': { [key: string]: unknown };
                 };
             };
         };
@@ -681,7 +690,7 @@ export interface operations {
         responses: {
             201: {
                 content: {
-                    "application/json": components["schemas"]["UserSession"][];
+                    'application/json': components['schemas']['UserSession'][];
                 };
             };
         };
@@ -691,7 +700,7 @@ export interface operations {
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["UserSession"][];
+                    'application/json': components['schemas']['UserSession'][];
                 };
             };
         };
@@ -719,7 +728,7 @@ export interface operations {
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["StatusReport"];
+                    'application/json': components['schemas']['StatusReport'];
                 };
             };
         };
@@ -728,7 +737,7 @@ export interface operations {
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["StatusReport"];
+                    'application/json': components['schemas']['StatusReport'];
                 };
             };
         };
@@ -737,7 +746,7 @@ export interface operations {
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["StatusReport"][];
+                    'application/json': components['schemas']['StatusReport'][];
                 };
             };
         };
@@ -752,7 +761,7 @@ export interface operations {
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["StatusReport"];
+                    'application/json': components['schemas']['StatusReport'];
                 };
             };
         };
@@ -766,15 +775,15 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["StatusReportRow"];
-                "application/x-www-form-urlencoded": components["schemas"]["StatusReportRow"];
-                "multipart/form-data": components["schemas"]["StatusReportRow"];
+                'application/json': components['schemas']['StatusReportRow'];
+                'application/x-www-form-urlencoded': components['schemas']['StatusReportRow'];
+                'multipart/form-data': components['schemas']['StatusReportRow'];
             };
         };
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["StatusReportRow"];
+                    'application/json': components['schemas']['StatusReportRow'];
                 };
             };
         };
@@ -783,7 +792,7 @@ export interface operations {
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["StatusReportRow"][];
+                    'application/json': components['schemas']['StatusReportRow'][];
                 };
             };
         };
@@ -798,7 +807,7 @@ export interface operations {
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["StatusReportRow"];
+                    'application/json': components['schemas']['StatusReportRow'];
                 };
             };
         };
@@ -812,15 +821,15 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Tag"];
-                "application/x-www-form-urlencoded": components["schemas"]["Tag"];
-                "multipart/form-data": components["schemas"]["Tag"];
+                'application/json': components['schemas']['Tag'];
+                'application/x-www-form-urlencoded': components['schemas']['Tag'];
+                'multipart/form-data': components['schemas']['Tag'];
             };
         };
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["Tag"];
+                    'application/json': components['schemas']['Tag'];
                 };
             };
         };
@@ -828,15 +837,15 @@ export interface operations {
     tag_create: {
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Tag"];
-                "application/x-www-form-urlencoded": components["schemas"]["Tag"];
-                "multipart/form-data": components["schemas"]["Tag"];
+                'application/json': components['schemas']['Tag'];
+                'application/x-www-form-urlencoded': components['schemas']['Tag'];
+                'multipart/form-data': components['schemas']['Tag'];
             };
         };
         responses: {
             201: {
                 content: {
-                    "application/json": components["schemas"]["Tag"];
+                    'application/json': components['schemas']['Tag'];
                 };
             };
         };
@@ -856,15 +865,15 @@ export interface operations {
     tag_filter_create: {
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Filter"];
-                "application/x-www-form-urlencoded": components["schemas"]["Filter"];
-                "multipart/form-data": components["schemas"]["Filter"];
+                'application/json': components['schemas']['Filter'];
+                'application/x-www-form-urlencoded': components['schemas']['Filter'];
+                'multipart/form-data': components['schemas']['Filter'];
             };
         };
         responses: {
             201: {
                 content: {
-                    "application/json": components["schemas"]["Filter"];
+                    'application/json': components['schemas']['Filter'];
                 };
             };
         };
@@ -884,13 +893,13 @@ export interface operations {
     tag_filter_list: {
         parameters: {
             query: {
-                tag?: number;
+                tag?: string;
             };
         };
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["Filter"][];
+                    'application/json': components['schemas']['Filter'][];
                 };
             };
         };
@@ -904,15 +913,15 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PatchedFilter"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedFilter"];
-                "multipart/form-data": components["schemas"]["PatchedFilter"];
+                'application/json': components['schemas']['PatchedFilter'];
+                'application/x-www-form-urlencoded': components['schemas']['PatchedFilter'];
+                'multipart/form-data': components['schemas']['PatchedFilter'];
             };
         };
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["Filter"];
+                    'application/json': components['schemas']['Filter'];
                 };
             };
         };
@@ -927,7 +936,7 @@ export interface operations {
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["Filter"];
+                    'application/json': components['schemas']['Filter'];
                 };
             };
         };
@@ -936,7 +945,7 @@ export interface operations {
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["Filter"];
+                    'application/json': components['schemas']['Filter'];
                 };
             };
         };
@@ -950,15 +959,15 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Filter"];
-                "application/x-www-form-urlencoded": components["schemas"]["Filter"];
-                "multipart/form-data": components["schemas"]["Filter"];
+                'application/json': components['schemas']['Filter'];
+                'application/x-www-form-urlencoded': components['schemas']['Filter'];
+                'multipart/form-data': components['schemas']['Filter'];
             };
         };
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["Filter"];
+                    'application/json': components['schemas']['Filter'];
                 };
             };
         };
@@ -967,7 +976,7 @@ export interface operations {
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["Tag"][];
+                    'application/json': components['schemas']['Tag'][];
                 };
             };
         };
@@ -981,15 +990,15 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PatchedTag"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedTag"];
-                "multipart/form-data": components["schemas"]["PatchedTag"];
+                'application/json': components['schemas']['PatchedTag'];
+                'application/x-www-form-urlencoded': components['schemas']['PatchedTag'];
+                'multipart/form-data': components['schemas']['PatchedTag'];
             };
         };
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["Tag"];
+                    'application/json': components['schemas']['Tag'];
                 };
             };
         };
@@ -1004,7 +1013,7 @@ export interface operations {
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["Tag"];
+                    'application/json': components['schemas']['Tag'];
                 };
             };
         };
@@ -1018,15 +1027,15 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Tag"];
-                "application/x-www-form-urlencoded": components["schemas"]["Tag"];
-                "multipart/form-data": components["schemas"]["Tag"];
+                'application/json': components['schemas']['Tag'];
+                'application/x-www-form-urlencoded': components['schemas']['Tag'];
+                'multipart/form-data': components['schemas']['Tag'];
             };
         };
         responses: {
             200: {
                 content: {
-                    "application/json": components["schemas"]["Tag"];
+                    'application/json': components['schemas']['Tag'];
                 };
             };
         };

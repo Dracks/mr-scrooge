@@ -1,8 +1,8 @@
-import React from "react";
-import { Route, Routes } from "react-router";
+import React from 'react';
+import { Route, Routes } from 'react-router';
 
-import { TagEdit } from "./edit-tag/edit-tag";
-import { TagsList } from "./list-tags";
+import { TagEdit } from './edit-tag/edit-tag';
+import { TagsList } from './list-tags';
 
 export const Tags: React.FC<{}> = () => {
     return (

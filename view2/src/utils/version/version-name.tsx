@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import { getMetaTag } from "./utils";
+import { getMetaTag } from './utils';
 
 interface HeaderContentProp {
     name: string;

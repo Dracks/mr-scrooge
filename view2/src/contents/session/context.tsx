@@ -1,26 +1,22 @@
-import React from "react";
+import React from 'react';
 
-export interface UserSession {
-    email: string;
-    firstName?: string;
-    lastName?: string;
+import { UserSession } from '../../api/client/session/types';
+
+export interface UserSessionCtx {
+    data: UserSession;
     logout: () => Promise<void>;
-    username: string;
+    reload: () => Promise<void>;
 }
 
 export class NotUserSetException extends Error {
     constructor() {
-        super(
-            "Not user set in the context, you cannot use it without setting it before"
-        );
+        super('Not user set in the context, you cannot use it without setting it before');
     }
 }
 
-export const UserSessionContext = React.createContext<UserSession | undefined>(
-    undefined
-);
+export const UserSessionContext = React.createContext<UserSessionCtx | undefined>(undefined);
 
-const useSessionContext = (): UserSession => {
+const useSessionContext = (): UserSessionCtx => {
     const user = React.useContext(UserSessionContext);
 
     if (!user) {

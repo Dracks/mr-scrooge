@@ -1,38 +1,35 @@
-import { format, lastDayOfMonth, sub } from "date-fns";
+import { format, lastDayOfMonth, sub } from 'date-fns';
 
-import { GraphGroupEnum } from "../../../api/client/graphs/types";
-import { Tag } from "../../../api/client/tag/types";
-import { DTGroupFn, DTInputData } from "./types";
+import { GraphGroupEnum } from '../../../api/client/graphs/types';
+import { Tag } from '../../../api/client/tag/types';
+import { DTGroupFn, DTInputData } from './types';
 
-export const getRangeFilter: (
+export const getRangeFilter: (months: number, reference: Date) => (record: DTInputData) => boolean = (
     months: number,
-    reference: Date
-) => (record: DTInputData) => boolean = (months: number, reference: Date) => {
+    reference: Date,
+) => {
     const start = sub(reference, { months });
     start.setDate(1);
     const end = lastDayOfMonth(reference);
 
-    return (record) => record.date >= start && record.date <= end;
+    return record => record.date >= start && record.date <= end;
 };
 
 type GroupKeys = GraphGroupEnum;
 
-type LabelSign = "expenses" | "income";
+type LabelSign = 'expenses' | 'income';
 
-export const groupLambdas: Record<
-    GroupKeys | "identity",
-    (tagsList?: Tag[], others?: boolean) => DTGroupFn<string>
-> = {
-    month: () => (record) => format(record.date, "yyyy-MM"),
-    day: () => (record) => `${record.date.getDate()}`,
-    year: () => (record) => `${record.date.getFullYear()}`,
+export const groupLambdas: Record<GroupKeys | 'identity', (tagsList?: Tag[], others?: boolean) => DTGroupFn<string>> = {
+    month: () => record => format(record.date, 'yyyy-MM'),
+    day: () => record => `${record.date.getDate()}`,
+    year: () => record => `${record.date.getFullYear()}`,
     sign:
         () =>
         (record): LabelSign =>
-            record.value < 0 ? "expenses" : "income",
+            record.value < 0 ? 'expenses' : 'income',
     tags: (tagsList = [], hideOthers = false) => {
-        const othersKey = hideOthers ? false : "Others";
-        return (record) => {
+        const othersKey = hideOthers ? false : 'Others';
+        return record => {
             const tags = record.tags ?? [];
             return (
                 tagsList.reduce((ac, { id, name }) => {
@@ -45,7 +42,7 @@ export const groupLambdas: Record<
         };
     },
     identity: () => () => {
-        return "identity";
+        return 'identity';
     },
 };
 
@@ -66,13 +63,10 @@ const customSort = (data: string[]) => {
     };
 };
 
-export const sortLambdas: Record<
-    GroupKeys,
-    (p: string[]) => (a: string, b: string) => number
-> = {
+export const sortLambdas: Record<GroupKeys, (p: string[]) => (a: string, b: string) => number> = {
     month: () => (a: string, b: string) => a.localeCompare(b),
     day: () => (a: string, b: string) => parseInt(a, 10) - parseInt(b, 10),
     year: () => (a: string, b: string) => a.localeCompare(b),
-    sign: () => customSort(["expenses", "income"]),
+    sign: () => customSort(['expenses', 'income']),
     tags: customSort,
 };

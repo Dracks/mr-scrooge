@@ -1,13 +1,10 @@
-import React from "react";
+import React from 'react';
 
-import { useLoggerEmitter } from "./logger.context";
-import { LogEvent, LoggerArguments, LogLevel } from "./logger.types";
-import { LogLevelToNumber } from "./logger.utils";
+import { useLoggerEmitter } from './logger.context';
+import { LogEvent, LoggerArguments, LogLevel } from './logger.types';
+import { LogLevelToNumber } from './logger.utils';
 
-export const LoggerConsole: React.FC<LoggerArguments> = ({
-    children,
-    logLevel,
-}) => {
+export const LoggerConsole: React.FC<LoggerArguments> = ({ children, logLevel }) => {
     const eventEmitter = useLoggerEmitter();
     const levelNum = LogLevelToNumber[logLevel];
     if (levelNum <= LogLevelToNumber[LogLevel.info]) {

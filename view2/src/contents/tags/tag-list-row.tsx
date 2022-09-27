@@ -1,10 +1,10 @@
-import { Button, TableCell, TableRow } from "grommet";
-import React from "react";
-import { useNavigate } from "react-router";
+import { Button, TableCell, TableRow } from 'grommet';
+import React from 'react';
+import { useNavigate } from 'react-router';
 
-import { Tag } from "../../api/client/tag/types";
-import { useDeleteTag } from "../../api/client/tag/use-delete-tag";
-import { ConfirmationButton } from "../../utils/ui/confirmation-button";
+import { Tag } from '../../api/client/tag/types';
+import { useDeleteTag } from '../../api/client/tag/use-delete-tag';
+import { ConfirmationButton } from '../../utils/ui/confirmation-button';
 
 interface TagListRowArgs {
     refresh: () => void;
@@ -12,11 +12,7 @@ interface TagListRowArgs {
     tagHash: Record<number, Tag>;
 }
 
-export const TagListRow: React.FC<TagListRowArgs> = ({
-    tag,
-    tagHash,
-    refresh,
-}) => {
+export const TagListRow: React.FC<TagListRowArgs> = ({ tag, tagHash, refresh }) => {
     const [, deleteRequest] = useDeleteTag(tag.id);
     const navigate = useNavigate();
     const parentTag = tag.parent ? tagHash[tag.parent] : { name: undefined };
@@ -24,7 +20,7 @@ export const TagListRow: React.FC<TagListRowArgs> = ({
         <TableRow>
             <TableCell>{parentTag.name}</TableCell>
             <TableCell>{tag.name}</TableCell>
-            <TableCell>{tag.negateConditional ? "not and" : "or"}</TableCell>
+            <TableCell>{tag.negateConditional ? 'not and' : 'or'}</TableCell>
             <TableCell>{tag.filters.length}</TableCell>
             <TableCell>
                 <Button

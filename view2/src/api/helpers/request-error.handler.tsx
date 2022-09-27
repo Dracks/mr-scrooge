@@ -1,6 +1,6 @@
-import { AxiosError } from "axios";
-import { Heading, Main } from "grommet";
-import React from "react";
+import { AxiosError } from 'axios';
+import { Heading, Main } from 'grommet';
+import React from 'react';
 
 interface ErrorHandlerProps {
     error: AxiosError<unknown>;

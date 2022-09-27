@@ -1,16 +1,15 @@
-import useAxios, { UseAxiosResult } from "axios-hooks";
+import useAxios, { UseAxiosResult } from 'axios-hooks';
 
-import { TagFilterUrl } from "./constants";
-import { PostTagFilterResponse } from "./types";
+import { TagFilterUrl } from './constants';
+import { PostTagFilterResponse } from './types';
 
-export const useDeleteTagFilter = (
-    tagId: number
-): UseAxiosResult<PostTagFilterResponse> => useAxios(
+export const useDeleteTagFilter = (tagId: number): UseAxiosResult<PostTagFilterResponse> =>
+    useAxios(
         {
             url: `${TagFilterUrl}${tagId}/`,
-            method: "DELETE",
+            method: 'DELETE',
         },
         {
             manual: true,
-        }
-    )
+        },
+    );

@@ -1,6 +1,6 @@
-import React, { ErrorInfo } from "react";
+import React, { ErrorInfo } from 'react';
 
-import ShowError from "./show-error";
+import ShowError from './show-error';
 
 interface ErrorBoundaryState {
     error?: Error;

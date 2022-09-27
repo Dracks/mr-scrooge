@@ -1,7 +1,7 @@
-import { Box, TextInput } from "grommet";
-import React, { ChangeEventHandler, LegacyRef } from "react";
+import { Box, TextInput } from 'grommet';
+import React, { ChangeEventHandler, LegacyRef } from 'react';
 
-import { ITagModel, Tag } from "./tag";
+import { ITagModel, Tag } from './tag';
 
 interface TagInputProps {
     onAdd: (a: ITagModel) => void;
@@ -11,21 +11,14 @@ interface TagInputProps {
     value: ITagModel[];
 }
 
-export const InputTag: React.FC<TagInputProps> = ({
-    value = [],
-    onAdd,
-    onChange,
-    onRemove,
-    suggestions,
-    ...rest
-}) => {
-    const [currentTag, setCurrentTag] = React.useState("");
+export const InputTag: React.FC<TagInputProps> = ({ value = [], onAdd, onChange, onRemove, suggestions, ...rest }) => {
+    const [currentTag, setCurrentTag] = React.useState('');
     const boxRef = React.useRef<HTMLDivElement>();
 
     const updateCurrentTag = (
         event: ChangeEventHandler<HTMLInputElement> & {
             target: { value: string };
-        }
+        },
     ) => {
         setCurrentTag(event.target.value);
         if (onChange) {
@@ -50,13 +43,13 @@ export const InputTag: React.FC<TagInputProps> = ({
         <Box
             direction="row"
             align="center"
-            pad={{ horizontal: "xsmall" }}
+            pad={{ horizontal: 'xsmall' }}
             border="all"
             ref={boxRef as LegacyRef<HTMLDivElement>}
             wrap
         >
             {value.length > 0 && renderValue()}
-            <Box flex style={{ minWidth: "120px" }}>
+            <Box flex style={{ minWidth: '120px' }}>
                 <TextInput
                     type="search"
                     plain
@@ -64,23 +57,16 @@ export const InputTag: React.FC<TagInputProps> = ({
                     {...rest}
                     suggestions={
                         suggestions
-                            ?.filter((tag) =>
-                                tag.name
-                                    .toLowerCase()
-                                    .includes(currentTag.toLowerCase())
-                            )
-                            .map((tag) => ({
+                            ?.filter(tag => tag.name.toLowerCase().includes(currentTag.toLowerCase()))
+                            .map(tag => ({
                                 label: tag.name,
                                 value: tag.id,
                             })) ?? []
                     }
                     onChange={updateCurrentTag as any}
                     value={currentTag}
-                    onSuggestionSelect={(event) => {
-                        const {
-                            value,
-                            label,
-                        }: { label: string; value: number } = event.suggestion;
+                    onSuggestionSelect={event => {
+                        const { value, label }: { label: string; value: number } = event.suggestion;
                         onAddTag({ id: value, name: label });
                     }}
                 />

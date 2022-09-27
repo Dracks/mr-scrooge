@@ -1,8 +1,8 @@
-import { Box, Heading, Text } from "grommet";
-import React from "react";
-import { useParams } from "react-router";
+import { Box, Heading, Text } from 'grommet';
+import React from 'react';
+import { useParams } from 'react-router';
 
-import { StatusReport } from "../../../api/client/imports/types";
+import { StatusReport } from '../../../api/client/imports/types';
 
 interface ImportDetailsArgs {
     status: StatusReport;

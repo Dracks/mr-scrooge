@@ -1,15 +1,12 @@
-import React from "react";
+import React from 'react';
 
-import { usePostUploadFile } from "../../api/client/imports/use-post-upload-file";
-import {
-    EventTypes,
-    useEventEmitter,
-} from "../../utils/providers/event-emitter.provider";
-import { FileStatus, IFileData } from "../imports/types";
+import { usePostUploadFile } from '../../api/client/imports/use-post-upload-file';
+import { EventTypes, useEventEmitter } from '../../utils/providers/event-emitter.provider';
+import { FileStatus, IFileData } from '../imports/types';
 
 export interface UploadQueueType {
     files: IFileData[];
-    onAdd: (newFiles: Array<Omit<IFileData, "status" | "id">>) => void;
+    onAdd: (newFiles: Array<Omit<IFileData, 'status' | 'id'>>) => void;
     onChangeKind: (fileId: number, kind: string) => void;
     submit: () => void;
     uploading: boolean;
@@ -42,9 +39,9 @@ export const ProvideUploadQueue: React.FC = ({ children }) => {
 
     const context: UploadQueueType = {
         files,
-        onAdd: (newFiles) => {
+        onAdd: newFiles => {
             if (uploading) {
-                throw new Error("You cannot add files while uploading others");
+                throw new Error('You cannot add files while uploading others');
             }
 
             const newObjFiles = newFiles.map((fileData, idx) => ({
@@ -53,10 +50,7 @@ export const ProvideUploadQueue: React.FC = ({ children }) => {
                 id: idx + counter,
             }));
             setCounter(counter + newObjFiles.length);
-            setFiles([
-                ...files.filter(({ status }) => status === FileStatus.load),
-                ...newObjFiles,
-            ]);
+            setFiles([...files.filter(({ status }) => status === FileStatus.load), ...newObjFiles]);
         },
         onChangeKind: (fileId, kind) => {
             change(fileId, { kind });
@@ -80,9 +74,5 @@ export const ProvideUploadQueue: React.FC = ({ children }) => {
         uploading,
     };
 
-    return (
-        <UploadQueueContext.Provider value={context}>
-            {children}
-        </UploadQueueContext.Provider>
-    );
+    return <UploadQueueContext.Provider value={context}>{children}</UploadQueueContext.Provider>;
 };

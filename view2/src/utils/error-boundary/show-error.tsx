@@ -1,7 +1,7 @@
-import React, { ErrorInfo } from "react";
+import React, { ErrorInfo } from 'react';
 
-import DebugContext from "../debug/context";
-import ErrorScreen from "./error-screen";
+import DebugContext from '../debug/context';
+import ErrorScreen from './error-screen';
 
 interface ShowErrorProps {
     error: Error;

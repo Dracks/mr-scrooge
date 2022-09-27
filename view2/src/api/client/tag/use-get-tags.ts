@@ -1,5 +1,5 @@
-import useAxios, { UseAxiosResult } from "axios-hooks";
+import useAxios, { UseAxiosResult } from 'axios-hooks';
 
-import { GetTagsResponse } from "./types";
+import { GetTagsResponse } from './types';
 
-export const useGetTags = (): UseAxiosResult<GetTagsResponse> => useAxios("/tag/")
+export const useGetTags = (): UseAxiosResult<GetTagsResponse> => useAxios('/tag/');

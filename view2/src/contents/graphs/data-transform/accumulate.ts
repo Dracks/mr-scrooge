@@ -1,9 +1,9 @@
-import { km } from "date-fns/locale";
+import { km } from 'date-fns/locale';
 
-import { DSDoubleGroup } from "./types";
+import { DSDoubleGroup } from './types';
 
 export const accumulateFn = <K extends string, SK extends string>(
-    data: DSDoubleGroup<K, SK>[]
+    data: DSDoubleGroup<K, SK>[],
 ): DSDoubleGroup<K, SK>[] => {
     const accHash = {} as Record<SK, number>;
     return data.map(({ label, value, groupName }) => ({
@@ -15,4 +15,4 @@ export const accumulateFn = <K extends string, SK extends string>(
             value: (accHash[label] = (accHash[label] || 0) + value),
         })),
     }));
-}
+};

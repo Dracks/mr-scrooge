@@ -3,9 +3,9 @@ export type extraData = unknown;
 export type LogFn = (msg: string, obj?: extraData) => void;
 
 export enum LogLevel {
-    error = "error",
-    info = "info",
-    warn = "warn",
+    error = 'error',
+    info = 'info',
+    warn = 'warn',
 }
 
 export interface LogEvent {

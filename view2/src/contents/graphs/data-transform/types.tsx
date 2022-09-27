@@ -6,10 +6,7 @@ export interface GenericDSGroup<K extends string, T> {
 
 export type DSGroup<K extends string> = GenericDSGroup<K, number>;
 
-export type DSDoubleGroup<K extends string, SK extends string> = GenericDSGroup<
-    K,
-    DSGroup<SK>[]
->;
+export type DSDoubleGroup<K extends string, SK extends string> = GenericDSGroup<K, DSGroup<SK>[]>;
 
 export interface DTInputData {
     date: Date;

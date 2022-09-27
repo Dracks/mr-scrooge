@@ -1,11 +1,11 @@
-import { Select, TableCell, TableRow, TextInput } from "grommet";
-import React from "react";
+import { Select, TableCell, TableRow, TextInput } from 'grommet';
+import React from 'react';
 
-import { TagFilter } from "../../../api/client/tag-filter/types";
-import { useDeleteTagFilter } from "../../../api/client/tag-filter/use-delete-tag-filter";
-import { usePutTagFilter } from "../../../api/client/tag-filter/use-put-tag-filter";
-import { ConfirmationButton } from "../../../utils/ui/confirmation-button";
-import { ConditionsType } from "./filter-tag.types";
+import { TagFilter } from '../../../api/client/tag-filter/types';
+import { useDeleteTagFilter } from '../../../api/client/tag-filter/use-delete-tag-filter';
+import { usePutTagFilter } from '../../../api/client/tag-filter/use-put-tag-filter';
+import { ConfirmationButton } from '../../../utils/ui/confirmation-button';
+import { ConditionsType } from './filter-tag.types';
 
 interface FilterListRowArgs {
     conditions: Array<ConditionsType>;
@@ -13,11 +13,7 @@ interface FilterListRowArgs {
     reloadFilters: () => Promise<void>;
 }
 
-export const FilterListRow: React.FC<FilterListRowArgs> = ({
-    filter,
-    conditions,
-    reloadFilters,
-}) => {
+export const FilterListRow: React.FC<FilterListRowArgs> = ({ filter, conditions, reloadFilters }) => {
     const [, updateFilter] = usePutTagFilter(filter.id);
     const [, deleteRequest] = useDeleteTagFilter(filter.id);
     const [viewFilter, setViewFilter] = React.useState<TagFilter>(filter);
@@ -39,7 +35,7 @@ export const FilterListRow: React.FC<FilterListRowArgs> = ({
                     name="parent"
                     value={viewFilter.typeConditional}
                     labelKey="value"
-                    valueKey={{ key: "key", reduce: true }}
+                    valueKey={{ key: 'key', reduce: true }}
                     onChange={({ option }: { option: ConditionsType }) => {
                         const newData = {
                             ...viewFilter,
@@ -55,13 +51,13 @@ export const FilterListRow: React.FC<FilterListRowArgs> = ({
                     id="text-input-name"
                     name="conditional"
                     value={viewFilter.conditional}
-                    onChange={(ev) => {
+                    onChange={ev => {
                         setViewFilter({
                             ...viewFilter,
                             conditional: ev.target.value,
                         });
                     }}
-                    onBlur={(ev) => {
+                    onBlur={ev => {
                         update(viewFilter);
                     }}
                 />
