@@ -1,7 +1,7 @@
 # Ui tasks 
-* [ ] Adapt docker to use the new ui
+* [x] Adapt docker to use the new ui
 * [x] Add linting/prettier & fix
-* [ ] modify Github actions
+* [x] modify Github actions
 * [x] Add Error handling on login
 * [ ] Add Error handling on save graph
 * [ ] Add Error handling on save tag
