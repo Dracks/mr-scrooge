@@ -10,3 +10,5 @@
 * [ ] Add button to apply filters to old records (Maybe with some confirmation)
 * [ ] Extract logger into a separat package (with a better Ui implementation)
 * [ ] Add translations
+* [ ] Save of a new graph is not redirecting to the edition of the graph once get the new id
+* [ ] Imports missing the import raw data to get the errors
