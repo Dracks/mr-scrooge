@@ -9,6 +9,6 @@ def get_allowed_hosts():
 
 ALLOWED_HOSTS=get_allowed_hosts()
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+STATIC_ROOT = os.path.join(BASE_DIR, "static_files/")
 
 DEBUG=False

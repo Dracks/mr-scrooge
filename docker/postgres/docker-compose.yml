@@ -2,7 +2,8 @@ version: '3.1'
 
 services:
   mrscrooge:
-    image: dracks/mrscrooge:latest-postgres
+    image: dracks/mrscrooge
+    container_name: mrscrooge
     depends_on:
       - postgres
     environment:
@@ -10,7 +11,6 @@ services:
       DEMOPWD: "pwd"
     ports:
       - 3333:80
-      - 3334:8000
 
   postgres:
     image: postgres

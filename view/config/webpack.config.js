@@ -7,11 +7,11 @@ const path = require('path');
 const rootDir = __dirname + "/../.."
 
 const isProduction = process.env.NODE_ENV == "production" || false
-const hash = isProduction ? ".[hash]" : "";
+const hash = isProduction ? ".[chunkhash]" : "";
 
 module.exports = {
     entry:  {
-        main: path.resolve(rootDir, 'view2/src/index.tsx')
+        main: path.resolve(rootDir, 'view/src/index.tsx')
     },
     mode: isProduction? "production" : 'development',
     output: {
@@ -47,7 +47,7 @@ module.exports = {
                     {
                         loader: "ts-loader",
                         options: {
-                            configFile: path.resolve(rootDir, "view2/config/tsconfig.build.json"),
+                            configFile: path.resolve(rootDir, "view/config/tsconfig.build.json"),
                             transpileOnly: true,
                             experimentalWatchApi: true,
                         }
