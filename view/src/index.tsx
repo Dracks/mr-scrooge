@@ -1,31 +1,18 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-import { ConnectedRouter } from 'connected-react-router';
-import { createBrowserHistory } from 'history';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { createStore } from  'redux';
-// import './index.css';
+import App from './app';
+import ErrorBoundary from './utils/error-boundary/error-boundary';
+import AllProviders from './utils/providers';
 
-import App from './app/App';
-import ResponsiveProvider from "./utils/responsive/Provider";
-
-import middlewares from './middleware'
-import reducers from './reducers';
-
-const history = createBrowserHistory()
-
-const store=createStore(reducers(history), middlewares(history))
-
-import registerServiceWorker from './registerServiceWorker';
-
-ReactDOM.render(
-    <Provider store={store}>
-        <ConnectedRouter history={history}>
-            <ResponsiveProvider >
-                <App/>
-            </ResponsiveProvider>
-        </ConnectedRouter>
-    </Provider>
-    , document.getElementById('root'));
-registerServiceWorker();
+// Render react
+window.onload = (): void => {
+    ReactDOM.render(
+        <AllProviders>
+            <ErrorBoundary>
+                <App />
+            </ErrorBoundary>
+        </AllProviders>,
+        document.getElementById('body'),
+    );
+};
