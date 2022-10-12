@@ -1,19 +1,21 @@
-import * as moment from 'moment';
+import {parse} from 'date-fns';
 
-import { colorSelector, getRangeFilter, groupLambdas, sortLambdas } from './Lambdas';
+import { getRangeFilter, groupLambdas, sortLambdas } from './Lambdas';
+import { DTInputData } from './types';
+import { Tag } from '../../../api/client/tag/types';
 
 describe('[Lambdas]', () => {
     describe('Group Lambdas', () => {
-        let data = [];
+        let data = new Array<DTInputData &{name: string}>();
         const subject = groupLambdas;
 
         beforeEach(() => {
             data = [
-                { tags: [1, 32], name: 'Daleks' },
-                { tags: [12, 2], name: 'Pace keepers' },
-                { tags: [43], name: 'Cylons' },
-                { tags: [1, 2, 3], name: 'Prota' },
-                { tags: [3], name: 'Reapers' },
+                { tags: [1, 32], name: 'Daleks', value: 1, date: new Date()},
+                { tags: [12, 2], name: 'Pace keepers', value: 2, date: new Date() },
+                { tags: [43], name: 'Cylons', value: 3, date: new Date() },
+                { tags: [1, 2, 3], name: 'Prota', value: 4, date: new Date() },
+                { tags: [3], name: 'Reapers', value: 5, date: new Date() },
             ];
         });
 
@@ -22,85 +24,59 @@ describe('[Lambdas]', () => {
                 { id: 1, name: 'Dr Who' },
                 { id: 2, name: 'Farscape' },
                 { id: 3, name: 'Firefly' },
-            ];
+            ] as Partial<Tag>[] as Tag[];
 
-            let result = data.map(subject.tags(tags, true));
+            let result = data.map(subject.tags(tags, false));
 
             expect(result).toEqual(['Dr Who', 'Farscape', 'Others', 'Dr Who', 'Firefly']);
 
-            result = data.map(subject.tags(tags, false));
+            result = data.map(subject.tags(tags, true));
 
             expect(result).toEqual(['Dr Who', 'Farscape', false, 'Dr Who', 'Firefly']);
         });
     });
 
-    describe('ColorSelector', () => {
-        it('day', () => {
-            const subject = colorSelector.day;
-            expect(subject(0, '')).toBe(0);
-            expect(subject(1, '')).toBe(1);
-        });
-
-        it('month', () => {
-            let allMonth = Array(12)
-                .fill(null)
-                .map((_, index) => {
-                    const d = new Date();
-                    d.setMonth(index);
-                    return {
-                        label: moment(d).format('YYY-MM'),
-                        month: index + 1,
-                    };
-                });
-
-            allMonth = allMonth.reduce((ac, e) => {
-                const index = Math.floor(Math.random() * ac.length);
-                ac.splice(index, 0, e);
-                return ac;
-            }, []);
-
-            const subject = colorSelector.month;
-
-            allMonth.forEach((v, index) => {
-                const result = subject(index, v.label);
-                expect(result).toBe(v.month);
-            });
-        });
-        it('sign', () => {
-            const subject = colorSelector.sign;
-
-            expect(subject(0, 'income')).toBe(0);
-            expect(subject(0, 'expenses')).toBe(1);
-        });
-    });
 
     describe('Range filter', () => {
-        let subject;
-        const check = (date, value) => {
-            expect(subject({ date: moment(date).toDate() })).toBe(value);
+        let subject: (record: DTInputData)=>boolean;
+        const formatStr = "yyyy-MM-dd"
+        const check = (date: string, value: boolean) => {
+            expect(subject({ date: parse(date, formatStr, new Date('2022-01-01T12:00:00.000Z')), value: 1 })).toBe(value);
         };
-        it('One month', () => {
-            const ref = moment('2016-07-01').toDate();
-            subject = getRangeFilter(1, ref);
-            check('2016-07-31', true);
-            check('2016-07-01', true);
-            check('2016-06-30', false);
-            check('2016-08-01', false);
-        });
+        describe("less than one month from 2016-07-01", ()=>{
+            beforeEach(()=>{            
+                const ref = parse('2016-07-01', formatStr, new Date('2022-01-01T00:00:00.000Z'));
+                subject = getRangeFilter(1, ref);
+            })
 
-        it('three month', () => {
-            const ref = moment('2016-07-01').toDate();
-            subject = getRangeFilter(3, ref);
-            check('2016-07-31', true);
-            check('2016-05-01', true);
-            check('2016-04-30', false);
-            check('2016-08-01', false);
-        });
+            it.each([
+               ['2016-07-31', true],
+               ['2016-07-01', true],
+               ['2016-06-30', false],
+               ['2016-08-01', false]
+            ])("Check %s is %s", check);
+        })
+
+        describe("less than three month old from 2016-07-01", ()=>{
+            beforeEach(()=>{
+                const ref = parse('2016-07-01', formatStr, new Date('2022-01-01T00:00:00.000Z'));
+                subject = getRangeFilter(3, ref);
+            })
+            
+
+            it.each([
+                ['2016-07-31', true],
+                ['2016-05-01', true],
+                ['2016-04-30', false],
+                ['2016-08-01', false],
+            ])("Check %s is %s", check);
+        })
+
     });
 
     describe('Sort Lambdas', () => {
         const subject = sortLambdas;
-        const valuesToSort = ['pum', 'ping', 'pam'].map(e => ({ name: e }));
+        const valuesToSort = ['pum', 'ping', 'pam'];
 
         it('sort customized with all the same', () => {
             const data = ['ping', 'pam', 'pum'];

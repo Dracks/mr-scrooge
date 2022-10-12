@@ -8,11 +8,15 @@ export const getRangeFilter: (months: number, reference: Date) => (record: DTInp
     months: number,
     reference: Date,
 ) => {
-    const start = sub(reference, { months });
+    const start = sub(reference, { months: months-1 });
     start.setDate(1);
     const end = lastDayOfMonth(reference);
 
-    return record => record.date >= start && record.date <= end;
+    return record => {
+        console.log(start, end, record);
+
+        return record.date >= start && record.date <= end
+    }
 };
 
 type GroupKeys = GraphGroupEnum;

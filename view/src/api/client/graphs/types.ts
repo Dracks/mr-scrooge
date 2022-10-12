@@ -29,24 +29,35 @@ export enum GraphGroupEnum {
     year = 'year',
 }
 
-export interface Graph {
-    acumulative: boolean;
+interface BarLineGraph {
+    acumulative?: boolean;
     dateRange: DateRange;
     group: GraphGroupEnum;
     groupHideOthers?: boolean;
     groupValue?: number[];
     id: number;
-    kind: GraphKind;
+    kind: GraphKind.bar | GraphKind.line;
     name: string;
     tag: number;
-}
-
-export interface BarGraph extends Graph {
     horizontal: GraphGroupEnum;
     horizontalHideOthers?: boolean;
     horizontalValue?: number[];
-    kind: GraphKind.bar | GraphKind.line;
 }
+
+interface PieGraph {
+    dateRange: DateRange;
+    group: 'identity';
+    id: number;
+    kind: GraphKind.pie;
+    name: string;
+    tag: number;
+    horizontal: GraphGroupEnum;
+    horizontalHideOthers?: boolean;
+    horizontalValue?: number[];
+}
+
+export type Graph = BarLineGraph | PieGraph;
+
 
 /*
  *New graphs coming from Api Rest

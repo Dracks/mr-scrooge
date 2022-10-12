@@ -15,7 +15,7 @@ export interface GraphUiRepresentation {
 
     kind?: GraphKind;
     name?: string;
-    oldGraph?: number;
+    oldGraph?: number | null;
     tagFilter?: number | null;
 }
 
