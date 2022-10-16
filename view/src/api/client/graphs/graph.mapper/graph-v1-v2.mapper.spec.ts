@@ -1,6 +1,6 @@
 import { GraphV1Bar, GraphV1Line, GraphV1Pie } from '../mocks/graph-v1.mocks';
+import { GraphV2Bar,GraphV2Line,GraphV2Pie } from '../mocks/graph-v2.mocks';
 import { graphV1V2Mapper } from './graph-v1-v2.mapper';
-import { GraphV2Pie, GraphV2Bar,GraphV2Line } from '../mocks/graph-v2.mocks';
 
 describe('graph v1 to v2 mapper', () => {
 	it.each([

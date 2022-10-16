@@ -3,7 +3,6 @@ import React from 'react';
 
 import { graphV1V2Mapper } from './graph.mapper/graph-v1-v2.mapper';
 import { GetGraphsResponse, GetGraphsV2Response, GraphV2 } from './types';
-// import { useTagsContext } from '../../../contents/common/tag.context';
 
 export const useJoinedGraphs = (
     graphsV2: UseAxiosResult<GetGraphsV2Response>[0],
