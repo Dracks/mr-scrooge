@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import React from 'react';
 
 const RenderArray: React.FC<{ data: unknown[] }> = ({ data }) => <ul> "array({data.length})"</ul>;
@@ -9,7 +10,7 @@ const RenderObject: React.FC<{ data: object }> = ({ data }) => {
             {' '}
             "object" <button onClick={() => setShow(!show)}>show/hide</button>
             {show
-                ? Object.entries(data).map(([key, elem], idx) => (
+                ? Object.entries(data).map(([key, elem]) => (
                       <li key={key}>
                           "{key}" : <RenderUnknown data={elem} />
                       </li>

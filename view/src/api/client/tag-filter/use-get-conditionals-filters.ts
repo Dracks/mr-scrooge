@@ -4,4 +4,4 @@ import { TagFilterUrl } from './constants';
 import { FilterConditional } from './types';
 
 export const useGetFilterConditionals = (): UseAxiosResult<Record<FilterConditional, string>> =>
-    useAxios('/tag-filter/types/');
+    useAxios(`${TagFilterUrl}types/`);

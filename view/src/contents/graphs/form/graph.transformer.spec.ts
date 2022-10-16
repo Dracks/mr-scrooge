@@ -3,19 +3,16 @@ import { graphToUi, uiToGraph } from './graph.transformer';
 
 describe('[graph.transformer]', () => {
     const subjectDataMinimum: GraphV2 = {
-        id: 34,
-        name: 'minimum',
-        kind: GraphKind.pie,
         dateRange: 'six',
         group: {
             group: GraphGroupEnum.month,
         },
+        id: 34,
+        kind: GraphKind.pie,
+        name: 'minimum',
     };
 
     const subjectWithAllFields: GraphV2 = {
-        id: 34,
-        name: 'max',
-        kind: GraphKind.line,
         dateRange: 'twelve',
         group: {
             group: GraphGroupEnum.tags,
@@ -27,6 +24,9 @@ describe('[graph.transformer]', () => {
             hideOthers: true,
             groupTags: [{ tag: 3 }, { tag: 4 }],
         },
+        id: 34,
+        kind: GraphKind.line,
+        name: 'max',
     };
 
     it('graphData with minimum transforms', () => {

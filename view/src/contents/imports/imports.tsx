@@ -4,6 +4,7 @@ import { Route, Routes, useParams } from 'react-router';
 
 import { StatusReport } from '../../api/client/imports/types';
 import { useGetImports } from '../../api/client/imports/use-get-imports';
+import { useLogger } from '../../utils/logger/logger.context';
 import { EventTypes, useEventEmitter } from '../../utils/providers/event-emitter.provider';
 import { AnchorLink } from '../../utils/ui/anchor-link';
 import Loading from '../../utils/ui/loading';
@@ -13,19 +14,20 @@ import { ImportWizard } from './wizard/import-wizard';
 
 const ImportDetailsSwitcher: React.FC<{ importsList: StatusReport[] }> = ({ importsList }) => {
     const { id } = useParams();
-    const status = importsList.find(status => status.id === Number.parseInt(id ?? 'NaN', 10));
+    const statusList = importsList.find(status => status.id === Number.parseInt(id ?? 'NaN', 10));
 
-    return status ? <ImportDetails status={status} /> : <NotFound />;
+    return statusList ? <ImportDetails status={statusList} /> : <NotFound />;
 };
 
 export const Imports: React.FC = () => {
     const [response, request] = useGetImports();
     const eventEmitter = useEventEmitter();
+    const logger = useLogger();
     const importsList = response.data ?? [];
 
     React.useEffect(() => {
         const unsubscribe = eventEmitter.subscribe(EventTypes.OnFileUploaded, () => {
-            request();
+            request().catch(error => logger.error('Some error reloading the imports', { error }));
         });
 
         return unsubscribe;

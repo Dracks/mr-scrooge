@@ -10,10 +10,12 @@ export const createGroup = <K extends string>(
         if (key) {
             let group = hashMap[key];
             if (!group) {
-                group = hashMap[key] = [];
+                group = []
+                hashMap[key] = group;
             }
             group.push(record);
         } else {
+            // eslint-disable-next-line no-console
             console.warn(`Not generated key for ${record} with ${lambda}`);
         }
     });

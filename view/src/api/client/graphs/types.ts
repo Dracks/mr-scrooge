@@ -1,4 +1,4 @@
-import { CamelCasedProperties, CamelCasedPropertiesDeep } from 'type-fest';
+import { CamelCasedPropertiesDeep } from 'type-fest';
 
 import { components } from '../../generated-models';
 import { Tag } from '../tag/types';

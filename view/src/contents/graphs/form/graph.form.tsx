@@ -1,6 +1,5 @@
-import { instanceToPlain, plainToClass, plainToInstance } from 'class-transformer';
 import { Box, Button, CheckBox, Form, FormField, Heading, ResponsiveContext, Select, TextInput } from 'grommet';
-import { Add, Analytics } from 'grommet-icons';
+import { Analytics } from 'grommet-icons';
 import React from 'react';
 import { useNavigate } from 'react-router';
 
@@ -19,7 +18,7 @@ interface GraphFormProps<T extends Partial<GraphV2>> {
     update: (graphData: T) => void;
 }
 
-const GraphPlaceholder: React.FC<{}> = () => {
+const GraphPlaceholder: React.FC = () => {
     return (
         <Box direction="column" pad="small" width={{ min: '450px' }}>
             <Box height={'400px'} width="fill" background="light-2" justify="center" align="center">
@@ -37,6 +36,7 @@ const DateRangeOptions: Array<{ id: DateRange; label: string }> = [
     { id: DateRange.all, label: 'all' },
 ];
 
+// eslint-disable-next-line max-lines-per-function
 export const GraphForm: <T extends Partial<GraphV2>>(p: GraphFormProps<T>) => React.ReactElement<GraphFormProps<T>> = <
     T extends Partial<GraphV2>,
 >({
@@ -111,7 +111,7 @@ export const GraphForm: <T extends Partial<GraphV2>>(p: GraphFormProps<T>) => Re
                                         onRemove={tag =>
                                             updateGraph({
                                                 ...graphUi,
-                                                groupTags: (graphUi.groupTags ?? []).filter(tagId => tagId != tag.id),
+                                                groupTags: (graphUi.groupTags ?? []).filter(tagId => tagId !== tag.id),
                                             })
                                         }
                                         suggestions={tags}
@@ -151,7 +151,7 @@ export const GraphForm: <T extends Partial<GraphV2>>(p: GraphFormProps<T>) => Re
                                                 updateGraph({
                                                     ...graphUi,
                                                     horizontalGroupTags: (graphUi.horizontalGroupTags ?? []).filter(
-                                                        tagId => tagId != tag.id,
+                                                        tagId => tagId !== tag.id,
                                                     ),
                                                 })
                                             }

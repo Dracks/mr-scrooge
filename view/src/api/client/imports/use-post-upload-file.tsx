@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import useAxios, { ResponseValues } from 'axios-hooks';
+import useAxios from 'axios-hooks';
 
 export const usePostUploadFile = () => {
     const [, sendFile] = useAxios(

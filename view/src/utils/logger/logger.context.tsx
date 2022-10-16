@@ -19,11 +19,7 @@ const loggerContext = React.createContext<LoggerContext>({
 export const useLogger = () => React.useContext(loggerContext).logger;
 export const useLoggerEmitter = () => React.useContext(loggerContext).eventEmitter;
 
-interface LoggerProvider {
-    // useConsole?: boolean
-}
-
-export const ProvideLogger: React.FC<LoggerProvider> = ({ children }) => {
+export const ProvideLogger: React.FC = ({ children }) => {
     const { Provider } = loggerContext;
     const logger = new Logger(loggerEmitter);
 

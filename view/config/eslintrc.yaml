@@ -34,6 +34,7 @@ rules:
     max-params:
         - warn
         - 6
+    new-cap: 0
     no-console: warn
     no-undefined: 'off'
     no-warning-comments: 'off'
@@ -63,8 +64,9 @@ rules:
         - natural: true
           minKeys: 5
     no-useless-constructor: 'off'
+    no-shadow: off
     '@typescript-eslint/no-shadow':
-        - error
+        - warn
     '@typescript-eslint/prefer-nullish-coalescing': error
     '@typescript-eslint/no-explicit-any': error
     '@typescript-eslint/no-useless-constructor': 'off'

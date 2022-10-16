@@ -1,8 +1,8 @@
 import React, { ErrorInfo } from 'react';
 
-import ErrorScreen from './error-screen';
 import { DEBUG } from '../../constants';
 import { useLogger } from '../logger/logger.context';
+import ErrorScreen from './error-screen';
 
 interface ShowErrorProps {
     error: Error;
@@ -10,11 +10,10 @@ interface ShowErrorProps {
 }
 
 const ShowError: React.FC<ShowErrorProps> = ({ error, info }) => {
-
-    const logger = useLogger()
+    const logger = useLogger();
 
     logger.error({
-        msg: "React error",
+        msg: 'React error',
         error,
         info,
     });

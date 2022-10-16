@@ -10,7 +10,7 @@ import { LoggerConsole } from '../logger/logger-console';
 import { LoggerUi } from '../logger/logger-ui';
 import { ProvideEventEmitter } from './event-emitter.provider';
 
-const AllProviders: React.FC<{}> = ({ children }) => {
+const AllProviders: React.FC<> = ({ children }) => {
     return (
         <Router basename="/">
             <Grommet theme={MyTheme}>

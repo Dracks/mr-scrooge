@@ -7,10 +7,10 @@ const axios = applyCaseMiddleware(
         baseURL: '/api',
         withCredentials: true,
         // `xsrfCookieName` is the name of the cookie to use as a value for xsrf token
-        xsrfCookieName: 'csrftoken', // default
+        xsrfCookieName: 'csrftoken',
 
         // `xsrfHeaderName` is the name of the http header that carries the xsrf token value
-        xsrfHeaderName: 'X-CSRFToken', // default
+        xsrfHeaderName: 'X-CSRFToken',
     }),
 );
 

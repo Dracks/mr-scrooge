@@ -1,4 +1,4 @@
-import { DateRange, EnrichedGraph, GraphKind } from '../../api/client/graphs/types';
+import { DateRange, EnrichedGraph } from '../../api/client/graphs/types';
 import { Tag } from '../../api/client/tag/types';
 import { useRdsData } from '../common/raw-data-source.context';
 import { accumulateFn } from './data-transform/accumulate';
@@ -10,8 +10,11 @@ const hashDateRange: Record<DateRange, number | undefined> = {
     month: 1,
     six: 6,
     year: 12,
+    // eslint-disable-next-line sort-keys
     twoYears: 24,
+    // eslint-disable-next-line sort-keys
     sixYears: 12 * 6,
+    // eslint-disable-next-line sort-keys
     all: undefined,
 };
 
@@ -42,7 +45,7 @@ export const useGraphDataGenerator = ({ tagFilter, dateRange, horizontalGroup, g
     const sortLambda = horizontalGroup
         ? sortLambdas[horizontalGroup.group](horizontalGroup.groupTags.map(tagMap))
         : sortLambdas[group.group](group.groupTags.map(tagMap));
-    let rdsSorted = rdsGroupedSum.sort((a, b) => sortLambda(a.label, b.label));
+    let rdsSorted = rdsGroupedSum.sort((first, second) => sortLambda(first.label, second.label));
 
     const { accumulate } = horizontalGroup ?? { accumulate: false };
 

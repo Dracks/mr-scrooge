@@ -12,6 +12,7 @@ const useKindWithRegex = () => {
     const [kindResponse] = useGetKinds();
     const kindList = kindResponse.data ?? [];
     const regexCompiled = React.useMemo(
+        // eslint-disable-next-line require-unicode-regexp
         () => kindList.map(k => ({ name: k.name, regex: new RegExp(k.regex) })),
         [kindList],
     );
@@ -33,9 +34,9 @@ export const ImportWizard: React.FC = () => {
             {!uploading && (
                 <FileUploadQueue
                     label="Upload files"
-                    onAdd={files =>
+                    onAdd={newFiles =>
                         onAdd(
-                            files.map(file => ({
+                            newFiles.map(file => ({
                                 file,
                                 kind: findKind(file.name),
                             })),

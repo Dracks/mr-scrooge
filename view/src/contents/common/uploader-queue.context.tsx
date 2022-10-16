@@ -22,6 +22,7 @@ const UploadQueueContext = React.createContext<UploadQueueType>({
 
 export const useUploadQueue = () => React.useContext(UploadQueueContext);
 
+// eslint-disable-next-line max-lines-per-function
 export const ProvideUploadQueue: React.FC = ({ children }) => {
     const { sendFile } = usePostUploadFile();
     const eventEmitter = useEventEmitter();
@@ -29,10 +30,10 @@ export const ProvideUploadQueue: React.FC = ({ children }) => {
     const [files, setFiles] = React.useState<Array<IFileData>>([]);
     const [uploading, setUploading] = React.useState(false);
 
-    const change = (fileId: number, change: Partial<IFileData>) => {
+    const change = (fileId: number, changeFile: Partial<IFileData>) => {
         const pos = files.findIndex(({ id }) => fileId === id);
         if (pos >= 0) {
-            files[pos] = { ...files[pos], ...change };
+            files[pos] = { ...files[pos], ...changeFile };
             setFiles([...files]);
         }
     };

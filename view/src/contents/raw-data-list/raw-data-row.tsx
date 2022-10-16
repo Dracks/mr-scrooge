@@ -24,7 +24,7 @@ export const RawDataRow: React.FC<RawDataRowProps> = ({ rds, tags, onChange }) =
         onChange({
             ...rds,
             date: rds.date.toISOString(),
-            tags: action === RdsLinkTagAction.Remove ? tagsIds.filter(id => id != tagId) : [...tagsIds, tagId],
+            tags: action === RdsLinkTagAction.Remove ? tagsIds.filter(id => id !== tagId) : [...tagsIds, tagId],
         });
         const request = await linkTags(action, rds.id, tagId);
         onChange(request.data);

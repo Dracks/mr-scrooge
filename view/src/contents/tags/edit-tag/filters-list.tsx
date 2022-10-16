@@ -1,5 +1,3 @@
-import { Button, Table, TableCell, TableHeader, TableRow } from 'grommet';
-import { Add } from 'grommet-icons';
 import React from 'react';
 
 import { useGetFilterConditionals } from '../../../api/client/tag-filter/use-get-conditionals-filters';

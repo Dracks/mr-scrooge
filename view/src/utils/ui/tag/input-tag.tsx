@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, TextInput } from 'grommet';
 import React, { ChangeEventHandler, LegacyRef } from 'react';
 
@@ -11,6 +12,7 @@ interface TagInputProps {
     value: ITagModel[];
 }
 
+// eslint-disable-next-line max-lines-per-function
 export const InputTag: React.FC<TagInputProps> = ({ value = [], onAdd, onChange, onRemove, suggestions, ...rest }) => {
     const [currentTag, setCurrentTag] = React.useState('');
     const boxRef = React.useRef<HTMLDivElement>();
@@ -53,6 +55,7 @@ export const InputTag: React.FC<TagInputProps> = ({ value = [], onAdd, onChange,
                 <TextInput
                     type="search"
                     plain
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     dropTarget={boxRef.current!}
                     {...rest}
                     suggestions={
@@ -66,8 +69,8 @@ export const InputTag: React.FC<TagInputProps> = ({ value = [], onAdd, onChange,
                     onChange={updateCurrentTag as any}
                     value={currentTag}
                     onSuggestionSelect={event => {
-                        const { value, label }: { label: string; value: number } = event.suggestion;
-                        onAddTag({ id: value, name: label });
+                        const { value: suggestionId, label }: { label: string; value: number } = event.suggestion;
+                        onAddTag({ id: suggestionId, name: label });
                     }}
                 />
             </Box>

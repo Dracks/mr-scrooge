@@ -7,7 +7,7 @@ import { TagsList } from './tags-list';
 export const MainPage: React.FC = () => {
     const size = React.useContext(ResponsiveContext);
     return (
-        <Grid columns={size !== 'small' ? 'small' : '100%'} gap="small">
+        <Grid columns={size === 'small' ? '100%' : 'small'} gap="small">
             <TagsList />
             <LastFiles />
         </Grid>

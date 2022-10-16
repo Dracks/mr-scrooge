@@ -13,7 +13,8 @@ const EditGraphWithRoute = () => {
     }
     return <NotFound />;
 };
-export const GraphRouter: React.FC<{}> = () => {
+
+export const GraphRouter: React.FC = () => {
     return (
         <Routes>
             <Route path="new-graph" element={<GraphNew />} />

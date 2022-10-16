@@ -25,7 +25,8 @@ export const TagsList: React.FC<TagsListProps> = ({ onFilterChange }) => {
                             } else {
                                 filters.push(tag);
                             }
-                            onFilterChange(filters), setFilters(filters);
+                            onFilterChange(filters);
+                            setFilters(filters);
                         }}
                     >
                         <Tag>{tag.name}</Tag>

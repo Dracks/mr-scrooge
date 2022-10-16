@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import React, { ErrorInfo } from 'react';
 
 import ShowError from './show-error';

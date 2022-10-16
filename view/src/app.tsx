@@ -8,9 +8,36 @@ import { usePostLogin } from './api/client/session/use-post-login';
 import RestrictedContent from './contents/restricted-content';
 import { UserSessionContext } from './contents/session/context';
 import Login, { LoginCredentials } from './contents/session/login';
+import { useLogger } from './utils/logger/logger.context';
 import { LoadingPage } from './utils/ui/loading';
 
+// eslint-disable-next-line import/no-unassigned-import
 import './api/client/axios';
+
+interface IdentifiedPageProps {
+    reloadSession: () => void;
+    userData: UserSession;
+}
+
+const IdentifiedPage: React.FC<IdentifiedPageProps> = ({ userData, reloadSession }) => {
+    const [, logout] = useDeleteLogout();
+    return (
+        <UserSessionContext.Provider
+            value={{
+                data: userData,
+                logout: async () => {
+                    await logout();
+                    await reloadSession();
+                },
+                reload: async () => {
+                    await reloadSession();
+                },
+            }}
+        >
+            <RestrictedContent />
+        </UserSessionContext.Provider>
+    );
+};
 
 interface SessionStatus {
     data?: Partial<UserSession>;
@@ -18,14 +45,15 @@ interface SessionStatus {
     loading: boolean;
 }
 
-const App: React.FC<{}> = () => {
+const App: React.FC = () => {
     const [sessionRequest, reloadSession] = useGetSession();
-    const [loginStatus, useLogin] = usePostLogin();
-    const [, logout] = useDeleteLogout();
+    const [loginStatus, loginRequest] = usePostLogin();
 
     const [sessionStatus, setSession] = React.useState<SessionStatus>({
         loading: sessionRequest.loading,
     });
+
+    const logger = useLogger();
     React.useEffect(() => {
         setSession({
             loading: sessionRequest.loading,
@@ -35,12 +63,14 @@ const App: React.FC<{}> = () => {
     }, [sessionRequest]);
 
     const login = ({ username, password }: LoginCredentials) => {
-        useLogin({ data: { user: username, password } }).then(response => {
-            setSession({
-                ...sessionStatus,
-                data: response.data,
-            });
-        });
+        loginRequest({ data: { user: username, password } })
+            .then(response => {
+                setSession({
+                    ...sessionStatus,
+                    data: response.data,
+                });
+            })
+            .catch(error => logger.error('Error sending user credentials', { error }));
     };
     const isAuthenticated = sessionStatus.data && sessionStatus.data.isAuthenticated;
 
@@ -48,22 +78,7 @@ const App: React.FC<{}> = () => {
         return <LoadingPage />;
     } else if (!sessionStatus.error) {
         if (isAuthenticated) {
-            return (
-                <UserSessionContext.Provider
-                    value={{
-                        data: sessionStatus.data as UserSession,
-                        logout: async () => {
-                            await logout();
-                            await reloadSession();
-                        },
-                        reload: async () => {
-                            await reloadSession();
-                        },
-                    }}
-                >
-                    <RestrictedContent />
-                </UserSessionContext.Provider>
-            );
+            return <IdentifiedPage userData={sessionStatus.data as UserSession} reloadSession={reloadSession} />;
         }
         return (
             <Login

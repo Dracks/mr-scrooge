@@ -1,6 +1,5 @@
 import { Box, Heading, Text } from 'grommet';
 import React from 'react';
-import { useParams } from 'react-router';
 
 import { StatusReport } from '../../../api/client/imports/types';
 

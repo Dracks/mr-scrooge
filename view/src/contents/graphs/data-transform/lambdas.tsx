@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys */
 import { format, lastDayOfMonth, sub } from 'date-fns';
 
 import { GraphGroupEnum } from '../../../api/client/graphs/types';
@@ -37,7 +38,7 @@ export const groupLambdas: Record<GroupKeys | 'identity', (tagsList?: Tag[], oth
                         return name;
                     }
                     return ac;
-                }, null as null | string) || (othersKey as string)
+                }, null as null | string) ?? (othersKey as string)
             );
         };
     },

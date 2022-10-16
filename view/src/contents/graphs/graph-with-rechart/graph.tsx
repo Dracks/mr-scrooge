@@ -27,7 +27,7 @@ export const GraphWrapperWithRechart: React.FC<GraphWrapperArgs> = ({ graph, rel
                     icon={<Trash />}
                     onConfirm={async () => {
                         await deleteRequest();
-                        reload();
+                        await reload();
                     }}
                 />
             </Box>

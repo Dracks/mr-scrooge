@@ -12,6 +12,7 @@ interface RawDataListFilters {
     tag?: number;
 }
 
+// eslint-disable-next-line max-lines-per-function
 export const RawDataList: React.FC = () => {
     const { data: results, replace } = useRdsData();
     const [kindRequest] = useGetKinds();
@@ -24,7 +25,7 @@ export const RawDataList: React.FC = () => {
     }
 
     if (filters.tag) {
-        filteredResults = filteredResults.filter(({ tags }) => tags.includes(filters.tag as number));
+        filteredResults = filteredResults.filter(({ tags: rdsTags }) => rdsTags.includes(filters.tag as number));
     }
 
     if (filters.movement) {

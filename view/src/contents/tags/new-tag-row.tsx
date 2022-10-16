@@ -1,4 +1,4 @@
-import { Button, Form, FormField, TableCell, TableRow, TextInput } from 'grommet';
+import { Button, TableCell, TableRow, TextInput } from 'grommet';
 import React from 'react';
 
 import { Tag } from '../../api/client/tag/types';
@@ -8,6 +8,7 @@ import { useLogger } from '../../utils/logger/logger.context';
 interface NewTagRowProps {
     close: (newTag?: Tag) => Promise<void> | void;
 }
+
 export const NewTagRow: React.FC<NewTagRowProps> = ({ close }) => {
     const [, useCreateTag] = usePostTags();
     const [name, setName] = React.useState('');

@@ -11,6 +11,7 @@ interface EditTagFormProps {
 
 type SelectTagOption = Pick<UITag, 'id' | 'name'>;
 
+// eslint-disable-next-line max-lines-per-function
 export const EditTagForm: React.FC<EditTagFormProps> = ({ tag, save }) => {
     const { tagsMap, tags } = useTagsContext();
     const [tagUiValue, setTagUiValue] = React.useState<UITag>(tag);

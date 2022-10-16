@@ -4,7 +4,7 @@ import useAxios from 'axios-hooks';
 import { RawDataSource } from './types';
 
 export const useRdsSetDescription = () => {
-    const [_, request] = useAxios<RawDataSource>({}, { manual: true });
+    const [, request] = useAxios<RawDataSource>({}, { manual: true });
 
     return (rdsId: number, description: string): AxiosPromise<RawDataSource> => {
         const isdelete = description === '';

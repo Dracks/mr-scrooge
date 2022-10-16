@@ -1,6 +1,12 @@
 import { AxiosError, AxiosPromise, AxiosRequestConfig } from 'axios';
 import useAxios, { Options } from 'axios-hooks';
 
+interface CursorPagination<T> {
+    next?: string;
+    previous?: string;
+    results: T[];
+}
+
 export interface CursorPaginationResult<T> {
     error?: AxiosError<unknown, unknown> | null;
     loading: boolean;
@@ -10,13 +16,7 @@ export interface CursorPaginationResult<T> {
     results?: T[];
 }
 
-interface CursorPagination<T> {
-    next?: string;
-    previous?: string;
-    results: T[];
-}
-
-export const useCursorPaginationAxios = <TResponse = any, TBody = any, TError = any>(
+export const useCursorPaginationAxios = <TResponse = never, TBody = never, TError = never>(
     config: AxiosRequestConfig<TBody>,
     options?: Options,
 ): CursorPaginationResult<TResponse> => {
@@ -34,11 +34,11 @@ export const useCursorPaginationAxios = <TResponse = any, TBody = any, TError = 
     const previous = data?.next ? () => request(getNewConfig(data.previous)) : undefined;
 
     return {
-        loading,
         error,
-        results: data?.results,
-        reset: () => request(config),
+        loading,
         next,
         previous,
+        reset: () => request(config),
+        results: data?.results,
     };
 };

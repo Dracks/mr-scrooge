@@ -1,5 +1,4 @@
-import React, { useMemo } from 'react';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 
 import { Tag } from '../../api/client/tag/types';
 import { useGetTags } from '../../api/client/tag/use-get-tags';

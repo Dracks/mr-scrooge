@@ -2,6 +2,7 @@ export type extraData = unknown;
 
 export type LogFn = (msg: string, obj?: extraData) => void;
 
+// eslint-disable-next-line no-shadow
 export enum LogLevel {
     error = 'error',
     info = 'info',

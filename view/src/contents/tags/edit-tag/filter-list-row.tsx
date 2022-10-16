@@ -4,6 +4,7 @@ import React from 'react';
 import { TagFilter } from '../../../api/client/tag-filter/types';
 import { useDeleteTagFilter } from '../../../api/client/tag-filter/use-delete-tag-filter';
 import { usePutTagFilter } from '../../../api/client/tag-filter/use-put-tag-filter';
+import { useLogger } from '../../../utils/logger/logger.context';
 import { ConfirmationButton } from '../../../utils/ui/confirmation-button';
 import { ConditionsType } from './filter-tag.types';
 
@@ -13,9 +14,11 @@ interface FilterListRowArgs {
     reloadFilters: () => Promise<void>;
 }
 
+// eslint-disable-next-line max-lines-per-function
 export const FilterListRow: React.FC<FilterListRowArgs> = ({ filter, conditions, reloadFilters }) => {
     const [, updateFilter] = usePutTagFilter(filter.id);
     const [, deleteRequest] = useDeleteTagFilter(filter.id);
+    const logger = useLogger();
     const [viewFilter, setViewFilter] = React.useState<TagFilter>(filter);
     const update = (data: TagFilter) =>
         updateFilter({
@@ -42,7 +45,7 @@ export const FilterListRow: React.FC<FilterListRowArgs> = ({ filter, conditions,
                             typeConditional: option.key,
                         };
                         setViewFilter(newData);
-                        update(newData);
+                        update(newData).catch(error => logger.error('Error updating filter', { error }));
                     }}
                 />
             </TableCell>
@@ -57,8 +60,8 @@ export const FilterListRow: React.FC<FilterListRowArgs> = ({ filter, conditions,
                             conditional: ev.target.value,
                         });
                     }}
-                    onBlur={ev => {
-                        update(viewFilter);
+                    onBlur={() => {
+                        update(viewFilter).catch(error => logger.error('Error updating filter', { error }));
                     }}
                 />
             </TableCell>
@@ -67,7 +70,7 @@ export const FilterListRow: React.FC<FilterListRowArgs> = ({ filter, conditions,
                     label="Delete"
                     color="accent-4"
                     onConfirm={() => {
-                        deleteRequest().then(reloadFilters);
+                        deleteRequest().then(reloadFilters, error => logger.error('Error updating filter', { error }));
                     }}
                 />
             </TableCell>

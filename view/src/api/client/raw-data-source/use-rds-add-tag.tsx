@@ -9,7 +9,7 @@ export enum RdsLinkTagAction {
 }
 
 export const useRdsAddTag = () => {
-    const [_, request] = useAxios<RawDataSource>({}, { manual: true });
+    const [, request] = useAxios<RawDataSource>({}, { manual: true });
 
     return (action: RdsLinkTagAction, rdsId: number, tag: number): AxiosPromise<RawDataSource> => {
         return request({

@@ -4,6 +4,7 @@ import { RawDataSource } from '../../api/client/raw-data-source/types';
 import { useGetPaginatedRawDataSource } from '../../api/client/raw-data-source/use-get-paginated-rawdatasource';
 import { Tag } from '../../api/client/tag/types';
 import ErrorHandler from '../../api/helpers/request-error.handler';
+import { useLogger } from '../../utils/logger/logger.context';
 import { EventTypes, useEventEmitter } from '../../utils/providers/event-emitter.provider';
 import { useTagsListContext } from './tag.context';
 
@@ -44,6 +45,7 @@ export const ProvideRdsData: React.FC = ({ children }) => {
     const eventEmitter = useEventEmitter();
     const tags = useTagsListContext();
     const query = useGetPaginatedRawDataSource();
+    const logger = useLogger();
     const enrichRds = (rds: RawDataSource) => ({
         ...rds,
         date: new Date(rds.date),
@@ -58,14 +60,14 @@ export const ProvideRdsData: React.FC = ({ children }) => {
             query.results.map(enrichRds).forEach(replaceOrAdd(newState, stateIndexes));
             setState({ data: newState, index: stateIndexes });
             if (query.next) {
-                query.next();
+                query.next().catch(error => logger.error('Error loading rds next page', { error }));
             }
         }
     }, [query.loading, query.results]);
 
     React.useEffect(() => {
         const unSubscribe = eventEmitter.subscribe(EventTypes.OnQueueUploadFinish, () => {
-            query.reset();
+            query.reset().catch(error => logger.error('Error reloading rds', { error }));
         });
 
         return unSubscribe;

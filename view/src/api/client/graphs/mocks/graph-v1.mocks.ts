@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys */
 import { DateRange, Graph, GraphGroupEnum, GraphKind } from '../types';
 
 export const GraphV1Bar : Graph = {

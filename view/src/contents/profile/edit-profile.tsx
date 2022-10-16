@@ -6,9 +6,11 @@ import { usePatchUserInfo } from '../../api/client/me/use-patch-user-info';
 import { useLogger } from '../../utils/logger/logger.context';
 import useSessionContext from '../session/context';
 
+// eslint-disable-next-line max-lines-per-function
 export const EditProfile = () => {
     const {
         reload,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         data: { isAuthenticated, firstName, lastName, ...profile },
     } = useSessionContext();
     const [, updateProfile] = usePatchUserInfo();
@@ -28,6 +30,7 @@ export const EditProfile = () => {
                 value={uiProfile}
                 onChange={setUiProfile}
                 onSubmit={async () => {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     const { newPassword2, ...data } = uiProfile;
                     logger.info('New sent data', { data });
                     await updateProfile({

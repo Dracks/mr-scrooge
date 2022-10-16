@@ -1,5 +1,4 @@
 import { schemeTableau10 } from 'd3-scale-chromatic';
-import { Box } from 'grommet';
 import React from 'react';
 import {
     Bar,
@@ -30,7 +29,7 @@ interface GraphViewerArgs {
     graph: EnrichedGraph;
 }
 
-const GenericToRecharts = <K extends string, SK extends string>(
+const genericToRecharts = <K extends string, SK extends string>(
     inputData: DSDoubleGroup<K, SK>[],
 ): { data: Array<Record<string, number>>; firstKey: string; keys: SK[] } => {
     const keys: Set<SK> = new Set();
@@ -53,7 +52,7 @@ const useHideLogic: () => [string[], (d: string) => void] = () => {
     const [hidenElements, setHidenElements] = React.useState<string[]>([]);
     const touch = (dataKey: string) => {
         if (hidenElements.includes(dataKey)) {
-            setHidenElements(hidenElements.filter(key => key != dataKey));
+            setHidenElements(hidenElements.filter(key => key !== dataKey));
         } else {
             setHidenElements([...hidenElements, dataKey]);
         }
@@ -62,7 +61,7 @@ const useHideLogic: () => [string[], (d: string) => void] = () => {
 };
 
 const BarGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
-    const { keys, firstKey, data } = GenericToRecharts<string, string>(graphData);
+    const { keys, firstKey, data } = genericToRecharts<string, string>(graphData);
     const [hidenElements, touch] = useHideLogic();
     return (
         <ResponsiveContainer width="100%" height={400}>
@@ -88,7 +87,7 @@ const BarGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
 
 const LineGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
     const logger = useLogger();
-    const { keys, firstKey, data } = GenericToRecharts<string, string>(graphData);
+    const { keys, firstKey, data } = genericToRecharts<string, string>(graphData);
     const [hidenElements, touch] = useHideLogic();
 
     logger.info('Line Graph Render', { graphData, keys, firstKey, data });

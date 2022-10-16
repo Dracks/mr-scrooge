@@ -12,7 +12,7 @@ interface ImportFileRowArgs {
     onRemove: () => void;
 }
 
-const STATUS_HASH: Record<FileStatus, React.FC<{}>> = {
+const STATUS_HASH: Record<FileStatus, React.FC> = {
     [FileStatus.error]: () => <StatusCritical color="error" />,
     [FileStatus.load]: () => <CircleAlert color="blue" />,
     [FileStatus.upload]: () => <CircleAlert color="green" />,

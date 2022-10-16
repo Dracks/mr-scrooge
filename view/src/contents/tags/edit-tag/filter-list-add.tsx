@@ -3,6 +3,7 @@ import React from 'react';
 
 import { TagFilter } from '../../../api/client/tag-filter/types';
 import { usePostTagFilter } from '../../../api/client/tag-filter/use-post-tag-filter';
+import { useLogger } from '../../../utils/logger/logger.context';
 import { ConfirmationButton } from '../../../utils/ui/confirmation-button';
 import { ConditionsType } from './filter-tag.types';
 
@@ -13,6 +14,7 @@ interface FilterListAddArgs {
     tagId: number;
 }
 
+// eslint-disable-next-line max-lines-per-function
 export const FilterListAddArgs: React.FC<FilterListAddArgs> = ({ conditions, tagId, reloadFilters, close }) => {
     const [, request] = usePostTagFilter();
     const [viewFilter, setViewFilter] = React.useState<Partial<TagFilter>>({
@@ -21,6 +23,7 @@ export const FilterListAddArgs: React.FC<FilterListAddArgs> = ({ conditions, tag
     React.useEffect(() => {
         setViewFilter({ tag: tagId });
     }, [tagId]);
+    const logger = useLogger();
     return (
         <TableRow>
             <TableCell>
@@ -61,10 +64,15 @@ export const FilterListAddArgs: React.FC<FilterListAddArgs> = ({ conditions, tag
                     onClick={() => {
                         request({
                             data: viewFilter,
-                        }).then(() => {
-                            close();
-                            reloadFilters();
-                        });
+                        }).then(
+                            () => {
+                                close();
+                                return reloadFilters();
+                            },
+                            error => {
+                                logger.error('Error on saving the filter', { error });
+                            },
+                        );
                     }}
                 />
                 <ConfirmationButton label="Cancel" onConfirm={close} color="accent-4" />

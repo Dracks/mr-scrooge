@@ -1,9 +1,9 @@
-import { format, sub } from 'date-fns';
+import { sub } from 'date-fns';
 
 import { GraphV2Line,GraphV2Pie } from '../../api/client/graphs/mocks/graph-v2.mocks';
 import { Tag } from '../../api/client/tag/types';
 import { RdsEnriched } from '../common/raw-data-source.context';
-import { enrichGraph, enrichGroup } from './graph-with-rechart/enrich-graph';
+import { enrichGraph } from './graph-with-rechart/enrich-graph';
 import { useGraphDataGenerator } from './use-graph-data'
 
 jest.useFakeTimers().setSystemTime(new Date('2022-10-16'));
@@ -16,7 +16,14 @@ const getData = (): RdsEnriched[] => [
 	{ date: { days: 5 }, tags: [2, 8], movementName: 'five' },
 	{ date: { months: 10 }, tags: [2], movementName: 'sixt' },
 	{ date: { months: 4, days: 1 }, tags: [2], movementName: 'sixt' },
-].map(({ date, ...e }, idx) => ({ ...e, date: sub(new Date, date), id: idx, value: idx + 1, kind: 'test', tagsComplete: [] }))
+].map(({ date, ...element }, idx) => ({ 
+	...element, 
+	date: sub(new Date, date), 
+	id: idx, 
+	kind: 'test', 
+	tagsComplete: [],
+	value: idx + 1, 
+}))
 
 jest.mock('../common/raw-data-source.context', () => ({
 	__esModule: true,
@@ -32,7 +39,7 @@ describe('useGraphData', () => {
 			{ id: 4, name: 'tag_4' },
 			{ id: 5, name: 'tag_5' },
 			{ id: 8, name: 'tag_8' }
-		].map(e => ({ ...e, children: [], filters: [] }))
+		].map(element => ({ ...element, children: [], filters: [] }))
 	})
 	it('Check basic pie', () => {
 		expect(useGraphDataGenerator(enrichGraph({ ...GraphV2Pie, id: 2 }, tags))).toEqual([

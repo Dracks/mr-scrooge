@@ -4,7 +4,7 @@ import { useLoggerEmitter } from '../logger.context';
 import { LogEvent, LogLevel } from '../logger.types';
 import { RenderUnknown } from './renders';
 
-export const LoggerUi: React.FC<{}> = () => {
+export const LoggerUi: React.FC = () => {
     const loggerEmitter = useLoggerEmitter();
     const [showLogs, setShowLogs] = React.useState<boolean>(false);
     const [logs, setLogs] = React.useState<LogEvent[]>([]);
@@ -29,12 +29,12 @@ export const LoggerUi: React.FC<{}> = () => {
     return (
         <div
             style={{
-                position: 'absolute',
-                top: '0px',
-                left: '0px',
-                zIndex: 10,
                 backgroundColor: '#eeeeeeaa',
                 border: '1px solid #ccc',
+                left: '0px',
+                position: 'absolute',
+                top: '0px',
+                zIndex: 10,
             }}
         >
             {logs.length}
