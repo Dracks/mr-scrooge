@@ -1,17 +1,17 @@
-import {parse} from 'date-fns';
+import { parse } from 'date-fns';
 
-import { getRangeFilter, groupLambdas, sortLambdas } from './Lambdas';
-import { DTInputData } from './types';
 import { Tag } from '../../../api/client/tag/types';
+import { getRangeFilter, groupLambdas, sortLambdas } from './lambdas';
+import { DTInputData } from './types';
 
 describe('[Lambdas]', () => {
     describe('Group Lambdas', () => {
-        let data = new Array<DTInputData &{name: string}>();
+        let data = new Array<DTInputData & { name: string }>();
         const subject = groupLambdas;
 
         beforeEach(() => {
             data = [
-                { tags: [1, 32], name: 'Daleks', value: 1, date: new Date()},
+                { tags: [1, 32], name: 'Daleks', value: 1, date: new Date() },
                 { tags: [12, 2], name: 'Pace keepers', value: 2, date: new Date() },
                 { tags: [43], name: 'Cylons', value: 3, date: new Date() },
                 { tags: [1, 2, 3], name: 'Prota', value: 4, date: new Date() },
@@ -36,42 +36,41 @@ describe('[Lambdas]', () => {
         });
     });
 
-
     describe('Range filter', () => {
-        let subject: (record: DTInputData)=>boolean;
-        const formatStr = "yyyy-MM-dd"
+        let subject: (record: DTInputData) => boolean;
+        const formatStr = 'yyyy-MM-dd';
         const check = (date: string, value: boolean) => {
-            expect(subject({ date: parse(date, formatStr, new Date('2022-01-01T12:00:00.000Z')), value: 1 })).toBe(value);
+            expect(subject({ date: parse(date, formatStr, new Date('2022-01-01T12:00:00.000Z')), value: 1 })).toBe(
+                value,
+            );
         };
-        describe("less than one month from 2016-07-01", ()=>{
-            beforeEach(()=>{            
+        describe('less than one month from 2016-07-01', () => {
+            beforeEach(() => {
                 const ref = parse('2016-07-01', formatStr, new Date('2022-01-01T00:00:00.000Z'));
                 subject = getRangeFilter(1, ref);
-            })
+            });
 
             it.each([
-               ['2016-07-31', true],
-               ['2016-07-01', true],
-               ['2016-06-30', false],
-               ['2016-08-01', false]
-            ])("Check %s is %s", check);
-        })
+                ['2016-07-31', true],
+                ['2016-07-01', true],
+                ['2016-06-30', false],
+                ['2016-08-01', false],
+            ])('Check %s is %s', check);
+        });
 
-        describe("less than three month old from 2016-07-01", ()=>{
-            beforeEach(()=>{
+        describe('less than three month old from 2016-07-01', () => {
+            beforeEach(() => {
                 const ref = parse('2016-07-01', formatStr, new Date('2022-01-01T00:00:00.000Z'));
                 subject = getRangeFilter(3, ref);
-            })
-            
+            });
 
             it.each([
                 ['2016-07-31', true],
                 ['2016-05-01', true],
                 ['2016-04-30', false],
                 ['2016-08-01', false],
-            ])("Check %s is %s", check);
-        })
-
+            ])('Check %s is %s', check);
+        });
     });
 
     describe('Sort Lambdas', () => {

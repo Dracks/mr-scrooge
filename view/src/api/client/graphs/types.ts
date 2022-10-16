@@ -35,25 +35,25 @@ interface BarLineGraph {
     group: GraphGroupEnum;
     groupHideOthers?: boolean;
     groupValue?: number[];
+    horizontal: GraphGroupEnum;
+    horizontalHideOthers?: boolean;
+    horizontalValue?: number[];
     id: number;
     kind: GraphKind.bar | GraphKind.line;
     name: string;
     tag: number;
-    horizontal: GraphGroupEnum;
-    horizontalHideOthers?: boolean;
-    horizontalValue?: number[];
 }
 
 interface PieGraph {
     dateRange: DateRange;
     group: 'identity';
+    horizontal: GraphGroupEnum;
+    horizontalHideOthers?: boolean;
+    horizontalValue?: number[];
     id: number;
     kind: GraphKind.pie;
     name: string;
     tag: number;
-    horizontal: GraphGroupEnum;
-    horizontalHideOthers?: boolean;
-    horizontalValue?: number[];
 }
 
 export type Graph = BarLineGraph | PieGraph;

@@ -3,17 +3,49 @@
 
 name: Node.js Package
 
-on:
-  pull_request:
-    branches: [ master ]
+on: [pull_request]
+
+defaults:
+  run:
+    working-directory: view
+
+env:
+  NODE_VERSION: 16
 
 jobs:
-  build:
+  test:
+    name: Test View
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Cache node_modules
+        id: npm-cache
+        uses: actions/cache@v3
+        with:
+          path: ./node_modules
+          key: npm-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-${{ env.NODE_VERSION }}-
       - run: npm ci
+        if: steps.npm-cache.outputs.cache-hit != 'true'
       - run: npm test
+  lint:   
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v3
+        - uses: actions/setup-node@v3
+          with:
+            node-version: ${{ env.NODE_VERSION }}
+        - name: Cache node_modules
+          id: npm-cache
+          uses: actions/cache@v3
+          with:
+            path: ./node_modules
+            key: npm-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+            restore-keys: npm-${{ env.NODE_VERSION }}-
+        - run: npm install
+          if: steps.npm-cache.outputs.cache-hit != 'true'
+        - run: npm run lint

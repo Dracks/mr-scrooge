@@ -1,7 +1,8 @@
 import React, { ErrorInfo } from 'react';
 
-import DebugContext from '../debug/context';
 import ErrorScreen from './error-screen';
+import { DEBUG } from '../../constants';
+import { useLogger } from '../logger/logger.context';
 
 interface ShowErrorProps {
     error: Error;
@@ -9,17 +10,16 @@ interface ShowErrorProps {
 }
 
 const ShowError: React.FC<ShowErrorProps> = ({ error, info }) => {
-    const isDebug = React.useContext(DebugContext);
-    /*
-     *const logger = useLogger()
-     *
-     *logger.error({
-     *    msg: "React error",
-     *    error,
-     *    info,
-     *})
-     */
-    if (!isDebug) {
+
+    const logger = useLogger()
+
+    logger.error({
+        msg: "React error",
+        error,
+        info,
+    });
+
+    if (DEBUG) {
         return <ErrorScreen />;
     }
     return (

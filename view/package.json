@@ -9,7 +9,7 @@
     "build:watch": "node config/webpack.run.js",
     "build:watch-nodemon": "nodemon --config config/nodemon.json config/webpack.run.js",
     "build:api-models": "openapi-typescript http://localhost:8000/api/schema/ --output src/api/generated-models.ts",
-    "lint": "eslint src/**/*.{ts,tsx}",
+    "lint": "eslint --config config/eslintrc.yaml src/**/*.{ts,tsx}",
     "lint:fix": "eslint --config config/eslintrc.yaml --fix 'src/**/*.{ts,tsx}'",
     "format:fix": "prettier --config config/prettierrc --write 'src/**/*.{ts,tsx}'",
     "test": "jest --config config/jest.json",

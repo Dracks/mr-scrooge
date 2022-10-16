@@ -3,7 +3,6 @@ import React from 'react';
 
 import { graphV1V2Mapper } from './graph.mapper/graph-v1-v2.mapper';
 import { GetGraphsResponse, GetGraphsV2Response, GraphV2 } from './types';
-// import { useTagsContext } from '../../../contents/common/tag.context';
 
 export const useJoinedGraphs = (
     graphsV2: UseAxiosResult<GetGraphsV2Response>[0],
@@ -23,7 +22,7 @@ export const useJoinedGraphs = (
     );
     return {
         loading: graphsV2.loading || graphsV1.loading,
-        error: graphsV2.error || graphsV1.error,
+        error: graphsV2.error ?? graphsV1.error,
         data: graphsV2.data && graphsV1.data ? [...graphsV2.data, ...(oldGraphsMapped as GraphV2[])] : undefined,
     };
 };

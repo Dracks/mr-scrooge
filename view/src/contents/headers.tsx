@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router';
 import { AnchorLink } from '../utils/ui/anchor-link';
 import useSessionContext from './session/context';
 
-const Headers: React.FC<{}> = () => {
+const Headers: React.FC = () => {
     const { data: userInfo, logout } = useSessionContext();
     const navigate = useNavigate();
 

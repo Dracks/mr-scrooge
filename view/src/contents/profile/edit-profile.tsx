@@ -9,7 +9,7 @@ import useSessionContext from '../session/context';
 export const EditProfile = () => {
     const {
         reload,
-        data: { isAuthenticated, firstName, lastName,...profile },
+        data: { isAuthenticated, firstName, lastName, ...profile },
     } = useSessionContext();
     const [, updateProfile] = usePatchUserInfo();
     const logger = useLogger();

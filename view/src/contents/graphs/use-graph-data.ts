@@ -36,6 +36,7 @@ export const useGraphDataGenerator = ({ tagFilter, dateRange, horizontalGroup, g
     );
     const rdsGroupedSum = sumGroups(rdsGrouped);
 
+
     const tagMap = ({ name }: Tag) => name;
 
     const sortLambda = horizontalGroup

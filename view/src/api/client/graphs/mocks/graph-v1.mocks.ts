@@ -1,4 +1,4 @@
-import { Graph, DateRange, GraphGroupEnum, GraphKind } from '../types';
+import { DateRange, Graph, GraphGroupEnum, GraphKind } from '../types';
 
 export const GraphV1Bar : Graph = {
 	dateRange: DateRange.oneYear,
@@ -34,17 +34,6 @@ export const GraphV1Pie : Graph  = {
 		4,
 		5,
 		8,
-		12,
-		13,
-		17,
-		20,
-		19,
-		22,
-		23,
-		28,
-		31,
-		10,
-		15
 	],
 	id: 16,
 	name: "Percentatge"
