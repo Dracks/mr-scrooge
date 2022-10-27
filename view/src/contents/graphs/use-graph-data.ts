@@ -5,6 +5,7 @@ import { accumulateFn } from './data-transform/accumulate';
 import { createGroupWithSubGroup } from './data-transform/create-groups';
 import { getRangeFilter, groupLambdas, sortLambdas } from './data-transform/lambdas';
 import { sumGroups } from './data-transform/sum-groups';
+import {DSDoubleGroup} from './data-transform/types';
 
 const hashDateRange: Record<DateRange, number | undefined> = {
     month: 1,
@@ -17,6 +18,36 @@ const hashDateRange: Record<DateRange, number | undefined> = {
     // eslint-disable-next-line sort-keys
     all: undefined,
 };
+
+const normalizeSubGroups = (data: DSDoubleGroup<string, string>[]): DSDoubleGroup<string, string>[]=> {
+    const subGroupsKeys = new Set(data.flatMap(group=>group.value.map(subGroup => subGroup.label)));
+
+    const newData = data.map(group => {
+        const newValues = [...group.value]
+
+        const [{groupName}] = group.value
+        const existingSubGroupKeys = new Set(group.value.map(subGroup => subGroup.label))
+        subGroupsKeys.forEach(subKey=> {
+            if (!existingSubGroupKeys.has(subKey)){
+                newValues.push({
+                    label: subKey,
+                    groupName,
+                    value: 0
+                })
+            }
+        })
+
+
+        return {
+            ...group,
+            value: newValues
+        }
+    })
+
+    return newData;
+}
+
+const tagMap = ({ name }: Tag) => name;
 
 export const useGraphDataGenerator = ({ tagFilter, dateRange, horizontalGroup, group }: EnrichedGraph) => {
     const { data } = useRdsData();
@@ -38,14 +69,12 @@ export const useGraphDataGenerator = ({ tagFilter, dateRange, horizontalGroup, g
         { name: group.group, callback: groupLambda },
     );
     const rdsGroupedSum = sumGroups(rdsGrouped);
-
-
-    const tagMap = ({ name }: Tag) => name;
+    const normalizedRdsGroupedSum = horizontalGroup ? normalizeSubGroups(rdsGroupedSum): rdsGroupedSum;
 
     const sortLambda = horizontalGroup
         ? sortLambdas[horizontalGroup.group](horizontalGroup.groupTags.map(tagMap))
         : sortLambdas[group.group](group.groupTags.map(tagMap));
-    let rdsSorted = rdsGroupedSum.sort((first, second) => sortLambda(first.label, second.label));
+    let rdsSorted = normalizedRdsGroupedSum.sort((first, second) => sortLambda(first.label, second.label));
 
     const { accumulate } = horizontalGroup ?? { accumulate: false };
 

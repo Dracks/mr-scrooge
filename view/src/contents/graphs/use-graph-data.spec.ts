@@ -84,6 +84,11 @@ describe('useGraphData', () => {
 							label: "2022-10",
 							value: 5,
 						},
+						{
+							groupName: "month",
+							label: "2022-06",
+							value: 0,
+						},
 					],
 				},
 				{
@@ -95,6 +100,11 @@ describe('useGraphData', () => {
 							label: "2022-10",
 							value: 8,
 						},
+						{
+							groupName: "month",
+							label: "2022-06",
+							value: 0,
+						},
 					],
 				},
 				{
@@ -105,6 +115,11 @@ describe('useGraphData', () => {
 							groupName: "month",
 							label: "2022-10",
 							value: 10,
+						},
+						{
+							groupName: "month",
+							label: "2022-06",
+							value: 0,
 						},
 					],
 				},
