@@ -3,7 +3,7 @@ import React from 'react';
 
 interface ConfirmationButtonArgs
     extends Omit<DropButtonExtendedProps, 'onOpen' | 'onClose' | 'open' | 'dropContent' | 'dropProps'> {
-    confirmationText?: string;
+    confirmationText?: string | React.ElementType;
     onConfirm: () => void;
 }
 

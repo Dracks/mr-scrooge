@@ -1,6 +1,9 @@
 import { Box, Button, Form, FormField, Grid, Select, TextInput } from 'grommet';
 import React from 'react';
 
+import { useApplyTagFilters } from '../../../api/client/tag/use-apply-tag-filters';
+import { useLogger } from '../../../utils/logger/logger.context';
+import { ConfirmationButton } from '../../../utils/ui/confirmation-button';
 import { useTagsContext } from '../../common/tag.context';
 import { UITag } from './models/ui-tag.model';
 
@@ -13,7 +16,9 @@ type SelectTagOption = Pick<UITag, 'id' | 'name'>;
 
 // eslint-disable-next-line max-lines-per-function
 export const EditTagForm: React.FC<EditTagFormProps> = ({ tag, save }) => {
+    const logger = useLogger();
     const { tagsMap, tags } = useTagsContext();
+    const [, applyFiltersRequest] = useApplyTagFilters(tag.id);
     const [tagUiValue, setTagUiValue] = React.useState<UITag>(tag);
     const possibleParents = React.useMemo<SelectTagOption[]>(() => {
         const tmpChildrenList = [...tag.children];
@@ -62,6 +67,19 @@ export const EditTagForm: React.FC<EditTagFormProps> = ({ tag, save }) => {
                 <Box direction="row" gap="medium" align="center" justify="center">
                     <Button type="submit" primary label="Save" />
                     <Button type="reset" label="Reset" />
+                    <ConfirmationButton
+                        label="Apply rules"
+                        color="accent-4"
+                        confirmationText={
+                            <>
+                                This will regenerate all the tags that are assigned automatically,
+                                <br /> do you wish to continue?
+                            </>
+                        }
+                        onConfirm={() =>
+                            applyFiltersRequest().catch(error => logger.error('Error on apply filters', { error }))
+                        }
+                    />
                 </Box>
             </Grid>
         </Form>
