@@ -168,7 +168,7 @@ export const GraphForm: <T extends Partial<GraphV2>>(p: GraphFormProps<T>) => Re
                         </Box>
                     )}
                     <Box direction="row" gap="small" justify="center">
-                        <Button primary label="Save" type="submit" />
+                        <Button primary label="Save" type="submit" disabled={!graphEnabled} />
                         <ConfirmationButton
                             color="accent-4"
                             label="discard"
