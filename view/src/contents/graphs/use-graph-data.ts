@@ -25,7 +25,14 @@ const normalizeSubGroups = (data: DSDoubleGroup<string, string>[]): DSDoubleGrou
     const newData = data.map(group => {
         const newValues = [...group.value]
 
-        const [{groupName}] = group.value
+        const [first] = group.value
+        let {groupName} = first ?? {};
+        
+        if (!groupName){
+            console.trace(`No groupName for this list?¿`)
+            groupName='-- Unknown --'
+        }
+
         const existingSubGroupKeys = new Set(group.value.map(subGroup => subGroup.label))
         subGroupsKeys.forEach(subKey=> {
             if (!existingSubGroupKeys.has(subKey)){

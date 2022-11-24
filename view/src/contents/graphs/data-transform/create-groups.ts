@@ -14,9 +14,6 @@ export const createGroup = <K extends string>(
                 hashMap[key] = group;
             }
             group.push(record);
-        } else {
-            // eslint-disable-next-line no-console
-            console.warn(`Not generated key for ${record} with ${lambda}`);
         }
     });
     return (Object.keys(hashMap) as K[]).map(label => ({
@@ -36,5 +33,5 @@ export const createGroupWithSubGroup = <K extends string, SK extends string>(
         label,
         groupName,
         value: createGroup(value, subLambda),
-    }));
+    })).filter(group => group.value.length >0 );
 };

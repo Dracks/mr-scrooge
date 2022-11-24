@@ -1,6 +1,7 @@
 import { sub } from 'date-fns';
 
-import { GraphV2Line,GraphV2Pie } from '../../api/client/graphs/mocks/graph-v2.mocks';
+import { GraphV2Line, GraphV2Pie, GraphV2Bar } from '../../api/client/graphs/mocks/graph-v2.mocks';
+import { GraphV2 } from '../../api/client/graphs/types';
 import { Tag } from '../../api/client/tag/types';
 import { RdsEnriched } from '../common/raw-data-source.context';
 import { enrichGraph } from './graph-with-rechart/enrich-graph';
@@ -67,6 +68,41 @@ describe('useGraphData', () => {
 						label: 'Others',
 						value: 13
 					}
+				]
+			}
+		])
+	})
+
+	it('Check basic pie with hide others', () => {
+		const graph : GraphV2 = { 
+			...GraphV2Bar,
+			tagFilter: 2, 
+			group: { 
+				...GraphV2Pie.group,
+				hideOthers: true,
+			}, 
+			id: 2 
+		}
+		expect(useGraphDataGenerator(enrichGraph(graph, tags))).toEqual([
+			{
+        		groupName: "month",
+    	     	label: "2022-10",
+				value: [
+					{
+						groupName: 'tags',
+						label: 'tag_4',
+						value: 4,
+					},
+					{
+						groupName: "tags",
+						label: "tag_5",
+						value: 2,
+					},
+					{
+						groupName: 'tags',
+						label: "tag_8",
+						value: 5
+					},
 				]
 			}
 		])
