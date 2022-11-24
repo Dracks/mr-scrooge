@@ -8,6 +8,7 @@ export interface UploadQueueType {
     files: IFileData[];
     onAdd: (newFiles: Array<Omit<IFileData, 'status' | 'id'>>) => void;
     onChangeKind: (fileId: number, kind: string) => void;
+    onRemove: (fileId: number) => void;
     submit: () => void;
     uploading: boolean;
 }
@@ -16,6 +17,7 @@ const UploadQueueContext = React.createContext<UploadQueueType>({
     files: [],
     onAdd: () => undefined,
     onChangeKind: () => undefined,
+    onRemove: ()=>undefined,
     submit: () => undefined,
     uploading: false,
 });
@@ -31,11 +33,13 @@ export const ProvideUploadQueue: React.FC = ({ children }) => {
     const [uploading, setUploading] = React.useState(false);
 
     const change = (fileId: number, changeFile: Partial<IFileData>) => {
-        const pos = files.findIndex(({ id }) => fileId === id);
-        if (pos >= 0) {
-            files[pos] = { ...files[pos], ...changeFile };
-            setFiles([...files]);
-        }
+        setFiles(oldFiles => {
+            const pos = oldFiles.findIndex(({ id }) => fileId === id);
+            if (pos >= 0) {
+                oldFiles[pos] = { ...oldFiles[pos], ...changeFile };
+            }
+            return [...oldFiles];
+        })
     };
 
     const context: UploadQueueType = {
@@ -51,10 +55,13 @@ export const ProvideUploadQueue: React.FC = ({ children }) => {
                 id: idx + counter,
             }));
             setCounter(counter + newObjFiles.length);
-            setFiles([...files.filter(({ status }) => status === FileStatus.load), ...newObjFiles]);
+            setFiles(oldFiles => [...oldFiles.filter(({ status }) => status === FileStatus.load), ...newObjFiles]);
         },
         onChangeKind: (fileId, kind) => {
             change(fileId, { kind });
+        },
+        onRemove: (fileId) => {
+            setFiles(oldFiles => [...oldFiles.filter(({ id })=> fileId !==id)])
         },
         submit: async () => {
             setUploading(true);

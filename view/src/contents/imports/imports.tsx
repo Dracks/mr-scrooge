@@ -31,7 +31,7 @@ export const Imports: React.FC = () => {
         });
 
         return unsubscribe;
-    });
+    }, []);
 
     return (
         <Box direction="row">
@@ -40,7 +40,7 @@ export const Imports: React.FC = () => {
                     <Box pad="small">
                         <AnchorLink to="">Wizard</AnchorLink>
                     </Box>
-                    {response.loading ? (
+                    {importsList.length === 0 ? (
                         <Loading />
                     ) : (
                         importsList.map(impFile => (
