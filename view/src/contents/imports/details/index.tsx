@@ -1,0 +1,1 @@
+export { ImportDetails } from './details';

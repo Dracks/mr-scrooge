@@ -1,0 +1,125 @@
+root: true
+env:
+    es6: true
+    jest: true
+    node: true
+extends:
+    - 'eslint:all'
+    - 'plugin:@typescript-eslint/recommended'
+    - 'plugin:import/typescript'
+    - prettier
+parser: '@typescript-eslint/parser'
+parserOptions:
+    ecmaVersion: 2021
+    sourceType: module
+    createDefaultProgram: true
+    project: config/tsconfig.build.json
+plugins:
+    - eslint-plugin-unicorn
+    - eslint-plugin-import
+    - simple-import-sort
+    - '@typescript-eslint'
+    - typescript-sort-keys
+rules:
+    unicorn/prefer-type-error: 'off'
+    typescript-sort-keys/interface: warn
+    typescript-sort-keys/string-enum: warn
+    '@typescript-eslint/no-floating-promises':
+        - warn
+        -
+            ignoreIIFE: true
+    max-statements:
+        - error
+        - 30
+    max-params:
+        - warn
+        - 6
+    new-cap: 0
+    no-console: warn
+    no-undefined: 'off'
+    no-warning-comments: 'off'
+    simple-import-sort/exports:
+        - error
+    simple-import-sort/imports:
+        - error
+        - groups:
+                -
+                    - "^@?\\w"
+                -
+                    - "^(src|lib|test|\\.)"
+    max-classes-per-file: 'off'
+    no-underscore-dangle:
+        - error
+        -
+            allow:
+                - _id
+                - __v
+
+    import/no-unassigned-import: warn
+    import/order: 'off'
+    sort-imports: 'off'
+    sort-keys:
+        - error
+        - asc
+        - natural: true
+          minKeys: 5
+    no-useless-constructor: 'off'
+    no-shadow: off
+    '@typescript-eslint/no-shadow':
+        - warn
+    '@typescript-eslint/prefer-nullish-coalescing': error
+    '@typescript-eslint/no-explicit-any': error
+    '@typescript-eslint/no-useless-constructor': 'off'
+    no-magic-numbers: 'off'
+    no-ternary: 'off'
+    one-var: 'off'
+    capitalized-comments: 'off'
+    unicorn/filename-case:
+        - error
+        -
+            case: kebabCase
+    no-duplicate-imports: warn
+    unicorn/no-abusive-eslint-disable: warn
+    '@typescript-eslint/no-unnecessary-type-constraint': warn
+overrides:
+    -
+        files:
+            - '*.{e2e-spec,int-spec,test,spec}.{js,jsx,ts,tsx}'
+        rules:
+            max-lines: 'off'
+            init-declarations: 'off'
+            unicorn/consistent-function-scoping: 'off'
+            '@typescript-eslint/no-explicit-any': 'off'
+            max-lines-per-function: 'off'
+    -
+        files:
+            - '*.{jsx,tsx}'
+        extends:
+            - 'plugin:prettier/recommended'
+        plugins:
+            - react
+            - '@typescript-eslint'
+            - simple-import-sort
+            - typescript-sort-keys
+        env:
+            es6: true
+            jest: true
+            node: true
+            browser: true
+        rules:
+            id-length:
+                - error
+                -
+                    min: 1
+            typescript-sort-keys/interface: warn
+            typescript-sort-keys/string-enum: warn
+            '@typescript-eslint/no-unused-vars': error
+            prettier/prettier:
+                - error
+                -
+                    singleQuote: true
+                    tabWidth: 4
+                    printWidth: 120
+                    trailingComma: "all"
+                    arrowParens: "avoid"
+                    endOfLine: auto

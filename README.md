@@ -9,6 +9,7 @@ Currently this application supports the following bank file formats:
 
 - Caixabanc Account and card Excel
 - Caixa Enginyers Account and Credit Card
+- Commerce bank
 - N26 CSV file
 - MultiBank QIF File (Thanks to [Albert Sola](https://github.com/albertsola/))
 
