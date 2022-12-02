@@ -10,7 +10,7 @@ export const createGroup = <K extends string>(
         if (key) {
             let group = hashMap[key];
             if (!group) {
-                group = []
+                group = [];
                 hashMap[key] = group;
             }
             group.push(record);
@@ -29,9 +29,11 @@ export const createGroupWithSubGroup = <K extends string, SK extends string>(
     subLambda: { callback: DTGroupFn<SK>; name: string },
 ): GenericDSGroup<K, GenericDSGroup<SK, DTInputData[]>[]>[] => {
     const groupedData = createGroup(data, lambda);
-    return groupedData.map(({ label, value, groupName }) => ({
-        label,
-        groupName,
-        value: createGroup(value, subLambda),
-    })).filter(group => group.value.length >0 );
+    return groupedData
+        .map(({ label, value, groupName }) => ({
+            label,
+            groupName,
+            value: createGroup(value, subLambda),
+        }))
+        .filter(group => group.value.length > 0);
 };

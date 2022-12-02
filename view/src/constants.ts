@@ -1,7 +1,7 @@
 import { ClassConstructor, plainToInstance } from 'class-transformer';
 
 export const getDataFromScript = <T>(scriptName: string, schema: ClassConstructor<T>): T => {
-    const element = document.getElementById(scriptName) ?? ({textContent:'{}'});
+    const element = document.getElementById(scriptName) ?? { textContent: '{}' };
     const obj = JSON.parse(element.textContent ?? '{}');
     return plainToInstance(schema, obj);
 };

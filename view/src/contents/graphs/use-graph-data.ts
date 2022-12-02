@@ -5,7 +5,7 @@ import { accumulateFn } from './data-transform/accumulate';
 import { createGroupWithSubGroup } from './data-transform/create-groups';
 import { getRangeFilter, groupLambdas, sortLambdas } from './data-transform/lambdas';
 import { sumGroups } from './data-transform/sum-groups';
-import {DSDoubleGroup} from './data-transform/types';
+import { DSDoubleGroup } from './data-transform/types';
 
 const hashDateRange: Record<DateRange, number | undefined> = {
     month: 1,
@@ -19,40 +19,38 @@ const hashDateRange: Record<DateRange, number | undefined> = {
     all: undefined,
 };
 
-const normalizeSubGroups = (data: DSDoubleGroup<string, string>[]): DSDoubleGroup<string, string>[]=> {
-    const subGroupsKeys = new Set(data.flatMap(group=>group.value.map(subGroup => subGroup.label)));
+const normalizeSubGroups = (data: DSDoubleGroup<string, string>[]): DSDoubleGroup<string, string>[] => {
+    const subGroupsKeys = new Set(data.flatMap(group => group.value.map(subGroup => subGroup.label)));
 
     const newData = data.map(group => {
-        const newValues = [...group.value]
+        const newValues = [...group.value];
 
-        const [first] = group.value
-        let {groupName} = first ?? {};
-        
-        if (!groupName){
-            console.trace(`No groupName for this list?¿`)
-            groupName='-- Unknown --'
+        const [first] = group.value;
+        let { groupName } = first ?? {};
+
+        if (!groupName) {
+            groupName = '-- Unknown --';
         }
 
-        const existingSubGroupKeys = new Set(group.value.map(subGroup => subGroup.label))
-        subGroupsKeys.forEach(subKey=> {
-            if (!existingSubGroupKeys.has(subKey)){
+        const existingSubGroupKeys = new Set(group.value.map(subGroup => subGroup.label));
+        subGroupsKeys.forEach(subKey => {
+            if (!existingSubGroupKeys.has(subKey)) {
                 newValues.push({
                     label: subKey,
                     groupName,
-                    value: 0
-                })
+                    value: 0,
+                });
             }
-        })
-
+        });
 
         return {
             ...group,
-            value: newValues
-        }
-    })
+            value: newValues,
+        };
+    });
 
     return newData;
-}
+};
 
 const tagMap = ({ name }: Tag) => name;
 
@@ -76,7 +74,7 @@ export const useGraphDataGenerator = ({ tagFilter, dateRange, horizontalGroup, g
         { name: group.group, callback: groupLambda },
     );
     const rdsGroupedSum = sumGroups(rdsGrouped);
-    const normalizedRdsGroupedSum = horizontalGroup ? normalizeSubGroups(rdsGroupedSum): rdsGroupedSum;
+    const normalizedRdsGroupedSum = horizontalGroup ? normalizeSubGroups(rdsGroupedSum) : rdsGroupedSum;
 
     const sortLambda = horizontalGroup
         ? sortLambdas[horizontalGroup.group](horizontalGroup.groupTags.map(tagMap))

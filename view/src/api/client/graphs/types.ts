@@ -58,7 +58,6 @@ interface PieGraph {
 
 export type Graph = BarLineGraph | PieGraph;
 
-
 /*
  *New graphs coming from Api Rest
  */

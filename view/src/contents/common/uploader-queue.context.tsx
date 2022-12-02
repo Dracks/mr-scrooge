@@ -17,7 +17,7 @@ const UploadQueueContext = React.createContext<UploadQueueType>({
     files: [],
     onAdd: () => undefined,
     onChangeKind: () => undefined,
-    onRemove: ()=>undefined,
+    onRemove: () => undefined,
     submit: () => undefined,
     uploading: false,
 });
@@ -39,7 +39,7 @@ export const ProvideUploadQueue: React.FC = ({ children }) => {
                 oldFiles[pos] = { ...oldFiles[pos], ...changeFile };
             }
             return [...oldFiles];
-        })
+        });
     };
 
     const context: UploadQueueType = {
@@ -60,8 +60,8 @@ export const ProvideUploadQueue: React.FC = ({ children }) => {
         onChangeKind: (fileId, kind) => {
             change(fileId, { kind });
         },
-        onRemove: (fileId) => {
-            setFiles(oldFiles => [...oldFiles.filter(({ id })=> fileId !==id)])
+        onRemove: fileId => {
+            setFiles(oldFiles => [...oldFiles.filter(({ id }) => fileId !== id)]);
         },
         submit: async () => {
             setUploading(true);

@@ -32,11 +32,7 @@ export const ImportFileRow: React.FC<ImportFileRowArgs> = ({ fileData, kindsList
                 value={fileData.kind}
                 onChange={event => onKindSwitch(event.value)}
             />
-            <Button
-                icon={<Trash />}
-                disabled={fileData.status !== FileStatus.load}
-                onClick={() => onRemove()}
-            />
+            <Button icon={<Trash />} disabled={fileData.status !== FileStatus.load} onClick={() => onRemove()} />
 
             <Status />
         </Box>
