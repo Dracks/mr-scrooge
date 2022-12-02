@@ -3,9 +3,6 @@ This is the base repository, to clone and start it using docker.
 
 [![CodeFactor](https://www.codefactor.io/repository/github/dracks/mr-scrooge/badge)](https://www.codefactor.io/repository/github/dracks/mr-scrooge)
 
-## Status
-![https://travis-ci.org/Dracks/mr-scrooge.svg?branch=master](https://travis-ci.org/Dracks/mr-scrooge.svg?branch=master)
-
 ## File formats suported
 Currently this application supports the following bank file formats:
 
