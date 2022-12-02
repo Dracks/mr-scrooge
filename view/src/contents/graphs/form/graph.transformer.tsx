@@ -23,6 +23,7 @@ export const graphToUi = ({
     horizontalGroup,
     kind,
     tagFilter,
+    name,
     ...graph
 }: Partial<GraphV2>): GraphUiRepresentation => ({
     ...graph,
@@ -34,6 +35,7 @@ export const graphToUi = ({
     horizontalGroupKind: horizontalGroup?.group as GraphGroupEnum,
     horizontalGroupTags: horizontalGroup?.groupTags?.map(({ tag }) => tag),
     kind: kind as GraphKind,
+    name: name ?? '',
     tagFilter: tagFilter ?? undefined,
 });
 
@@ -58,7 +60,7 @@ export const uiToGraph = ({
           }
         : undefined,
     horizontalGroup:
-        horizontalGroupKind && graphUi.kind !== GraphKind.bar
+        horizontalGroupKind && graphUi.kind !== GraphKind.pie
             ? {
                   group: horizontalGroupKind,
                   hideOthers: horizontalGroupHideOthers,

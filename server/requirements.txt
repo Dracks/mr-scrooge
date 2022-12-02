@@ -4,7 +4,7 @@ django-mptt==0.13.4
 djangorestframework==3.14.0
 drf-spectacular==0.24.1
 xlrd==2.0.1
-lxml==4.7.0
+lxml==4.9.1
 pyquery==1.4.3
 qifparse
 dateparser==1.1.0
