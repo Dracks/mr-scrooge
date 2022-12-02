@@ -75,7 +75,7 @@ class StatusReportRowViewSet(viewsets.ReadOnlyModelViewSet):
         del data['raw_data_id']
         del data['id']
         del data['message']
-        data['kind']  = info.report.kind
+        data['kind'] = info.report.kind
         rds = RawDataSource(**data)
         rds.save()
         info.raw_data = rds
