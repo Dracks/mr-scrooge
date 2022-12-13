@@ -1,0 +1,37 @@
+{
+  "name": "mr-scrooge",
+  "version": "3.0.0",
+  "description": "This is the base repository, to clone and start it using docker.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start:dev": "ts-node src/main.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github:Dracks/mr-scrooge.git"
+  },
+  "author": "Jaume Singla Valls",
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "@nestjs/common": "^9.2.1",
+    "@nestjs/core": "^9.2.1",
+    "@nestjs/platform-fastify": "^9.2.1",
+    "@nestjs/sequelize": "^9.0.0",
+    "pg": "^8.8.0",
+    "sequelize": "^6.26.0",
+    "sequelize-typescript": "^2.1.5",
+    "sequelize-typescript-generator": "^9.0.2",
+    "sqlite": "^4.1.2",
+    "sqlite3": "^5.1.2"
+  },
+  "devDependencies": {
+    "@types/sequelize": "^4.28.14",
+    "ts-node": "^10.9.1",
+    "ts-watch": "^1.0.8",
+    "tsc-watch": "^6.0.0",
+    "webpack": "^5.75.0"
+  }
+}
