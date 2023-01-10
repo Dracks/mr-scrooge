@@ -1,10 +1,10 @@
 import {
-	Model, Table, Column, DataType, Index, Sequelize, ForeignKey 
-} from "sequelize-typescript";
+Column, DataType, ForeignKey, 
+Index, 	Model, Sequelize, Table} from "sequelize-typescript";
 
 export interface djangoSessionAttributes {
-    sessionKey: string;
     expireDate?: Date;
+    sessionKey: string;
 }
 
 @Table({

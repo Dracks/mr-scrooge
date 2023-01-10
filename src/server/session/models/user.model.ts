@@ -1,34 +1,34 @@
 import {
-	Model, Table, Column, DataType, Index, Sequelize, ForeignKey 
-} from "sequelize-typescript";
+Column, DataType, ForeignKey, 
+Index, 	Model, Sequelize, Table} from "sequelize-typescript";
 
-export interface authUserAttributes {
+export interface UserModelAttributes {
+    dateJoined: Date;
+    email: string;
+    firstName: string;
     id?: number;
-    password?: string;
-    lastLogin?: Date;
-    isSuperuser?: boolean;
-    username?: string;
-    firstName?: string;
-    lastName?: string;
-    email?: string;
+    isActive: boolean;
     isStaff?: boolean;
-    isActive?: boolean;
-    dateJoined?: Date;
+    isSuperuser: boolean;
+    lastLogin?: Date;
+    lastName: string;
+    password?: string;
+    username?: string;
 }
 
 @Table({
 	tableName: "auth_user",
 	timestamps: false 
 })
-export class UserModel extends Model<authUserAttributes, authUserAttributes> implements authUserAttributes {
+export class UserModel extends Model<UserModelAttributes, UserModelAttributes> implements UserModelAttributes {
 
     @Column({
     	primaryKey: true,
     	autoIncrement: true,
+		unique: true,
     	type: DataType.INTEGER,
-    	defaultValue: Sequelize.literal("nextval('auth_user_id_seq'::regclass)") 
     })
-    	id?: number;
+    	id!: number;
 
     @Column({
     	allowNull: true,
@@ -45,10 +45,10 @@ export class UserModel extends Model<authUserAttributes, authUserAttributes> imp
 
     @Column({
     	field: "is_superuser",
-    	allowNull: true,
+    	allowNull: false,
     	type: DataType.BOOLEAN 
     })
-    	isSuperuser?: boolean;
+    	isSuperuser!: boolean;
 
     @Column({
     	allowNull: true,
@@ -58,23 +58,23 @@ export class UserModel extends Model<authUserAttributes, authUserAttributes> imp
 
     @Column({
     	field: "first_name",
-    	allowNull: true,
+    	allowNull: false,
     	type: DataType.STRING(150) 
     })
-    	firstName?: string;
+    	firstName!: string;
 
     @Column({
     	field: "last_name",
-    	allowNull: true,
+    	allowNull: false,
     	type: DataType.STRING(150) 
     })
-    	lastName?: string;
+    	lastName!: string;
 
     @Column({
-    	allowNull: true,
+    	allowNull: false,
     	type: DataType.STRING(254) 
     })
-    	email?: string;
+    	email!: string;
 
     @Column({
     	field: "is_staff",
@@ -85,16 +85,16 @@ export class UserModel extends Model<authUserAttributes, authUserAttributes> imp
 
     @Column({
     	field: "is_active",
-    	allowNull: true,
+    	allowNull: false,
     	type: DataType.BOOLEAN 
     })
-    	isActive?: boolean;
+    	isActive!: boolean;
 
     @Column({
     	field: "date_joined",
-    	allowNull: true,
+    	allowNull: false,
     	type: DataType.DATE 
     })
-    	dateJoined?: Date;
+    	dateJoined!: Date;
 
 }
