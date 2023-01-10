@@ -5,16 +5,11 @@
         "ts",
         "tsx"
     ],
-    "rootDir": "../server",
+    "rootDir": "../src/server",
     "testRegex": ".spec.tsx?$",
     "transform": {
-        "^.+\\.tsx?$": "ts-jest"
+        "^.+\\.tsx?$": ["ts-jest", {"tsconfig": "./tsconfig.server.json"}]
     },
     "coverageDirectory": "<rootDir>/../coverage",
-    "testEnvironment": "node",
-    "globals": {
-        "ts-jest": {
-          "tsConfig": "./tsconfig.server.json"
-        }
-    }
+    "testEnvironment": "node"
 }
