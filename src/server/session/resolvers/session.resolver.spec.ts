@@ -11,7 +11,7 @@ import gql from 'graphql-tag'
 import { GraphQLModule } from '@nestjs/graphql';
 import { MercuriusDriver,MercuriusDriverConfig} from '@nestjs/mercurius'
 
-import { TestDbModule } from '../../common/test-db.module';
+import { TestDbModule } from '../../common/test-tools/test-db.module';
 import {mockPartial} from '../../common/test-tools/mock-partial'
 import { LoginArgs, SessionResolver } from './session.resolver';
 import { SessionModule } from '../session.module'
