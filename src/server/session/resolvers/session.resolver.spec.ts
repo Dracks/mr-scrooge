@@ -17,7 +17,7 @@ import { LoginArgs, SessionResolver } from './session.resolver';
 import { SessionModule } from '../session.module'
 import {UserProfileService} from '../user-profile.service'
 import {MyLoggerModule} from '../../core/logger.module'
-import { UserModel, UserModelAttributes } from '../models/user.model';
+import { UserEntity } from '../entities/user.entity';
 
 const myProfile = gql`query {
 	me {
@@ -76,7 +76,7 @@ describe(SessionResolver.name, ()=>{
 	})
 
 	describe('query MyProfile me', ()=>{
-		let user!: UserModelAttributes
+		let user!: UserEntity
 
 		beforeEach(async ()=>{
 			const profileService = app.get(UserProfileService);
@@ -100,8 +100,8 @@ describe(SessionResolver.name, ()=>{
 	})
 
 	describe('mutation Login', ()=>{
-		let userValid!: UserModelAttributes
-		let userDisabled!: UserModelAttributes
+		let userValid!: UserEntity
+		let userDisabled!: UserEntity
 
 		beforeEach(async ()=>{
 			const profileService = app.get(UserProfileService);

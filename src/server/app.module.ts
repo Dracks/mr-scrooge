@@ -3,7 +3,8 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MercuriusDriver,MercuriusDriverConfig} from '@nestjs/mercurius'
-import { SequelizeModule } from '@nestjs/sequelize';
+import {MikroOrmModule} from '@mikro-orm/nestjs';
+
 import {join} from 'path';
 
 import { getDatabaseModule } from './core/database'
@@ -14,13 +15,6 @@ import { SessionModule } from './session/session.module';
 
 @Module({
 	imports: [
-		SequelizeModule.forRoot({
-			...getDatabaseModule(),
-			models: [],
-      		autoLoadModels: true,
-      		synchronize: true,
-      		logging: (()=>{ const logger = new Logger('sequelize'); return (msg) => logger.debug(msg);})()
-		}),
 		GraphQLModule.forRoot<MercuriusDriverConfig>({
       		driver: MercuriusDriver,
       		graphiql: "graphiql",
@@ -29,6 +23,14 @@ import { SessionModule } from './session/session.module';
       				session: req.session
       			})
     	}),
+    	MikroOrmModule.forRoot({
+            // entities: ['build/**/entities'],
+            // entitiesTs: ['src/server/**/entities'],
+            autoLoadEntities: true,
+            type: "sqlite",
+            dbName: './db.sqlite'
+
+        }),
 		MyLoggerModule,
     	SessionModule,
 	],
