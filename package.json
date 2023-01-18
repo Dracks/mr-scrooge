@@ -54,6 +54,7 @@
     "@types/yargs": "^17.0.19",
     "@typescript-eslint/eslint-plugin": "^5.38.1",
     "@typescript-eslint/parser": "^5.38.1",
+    "sequelize-typescript-model-migration": "git+https://git@github.com/Dracks/sequelize-typescript-model-migration.git#6a55d737caeac0907d99bbc81f1822044e00e98c",
     "eslint": "^8.24.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",

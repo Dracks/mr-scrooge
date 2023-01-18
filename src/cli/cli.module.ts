@@ -7,6 +7,7 @@ import { MyLoggerModule } from "../server/core/logger.module";
 import { SessionModule } from "../server/session/session.module";
 import { DemoCommand } from "./demo.command";
 import { LogsCommands } from "./logs.command";
+import { MigrationsCommand } from "./migrations.command";
 
 @Module({
     imports: [
@@ -23,6 +24,7 @@ import { LogsCommands } from "./logs.command";
     providers: [
         DemoCommand,
         LogsCommands,
+        MigrationsCommand,
     ]
 })
 export class CliModule {}
