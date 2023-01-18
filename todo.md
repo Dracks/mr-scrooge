@@ -12,3 +12,7 @@
 * [ ] Add translations
 * [ ] Save of a new graph is not redirecting to the edition of the graph once get the new id
 * [x] Imports missing the import raw data to get the errors
+
+
+# nestjs tasks
+* [ ] handle session id duplicated in session.service

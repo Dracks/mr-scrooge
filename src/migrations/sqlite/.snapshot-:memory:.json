@@ -12,6 +12,42 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        }
+      },
+      "name": "auth_group",
+      "indexes": [
+        {
+          "keyName": "primary",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
         "password": {
           "name": "password",
           "type": "text",
@@ -116,6 +152,201 @@
       ],
       "checks": [],
       "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "session_id": {
+          "name": "session_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "datetime"
+        },
+        "last_activity": {
+          "name": "last_activity",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "nest_session",
+      "indexes": [
+        {
+          "columnNames": [
+            "user_id"
+          ],
+          "composite": false,
+          "keyName": "nest_session_user_id_index",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "created_at"
+          ],
+          "composite": false,
+          "keyName": "nest_session_created_at_index",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "last_activity"
+          ],
+          "composite": false,
+          "keyName": "nest_session_last_activity_index",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "primary",
+          "columnNames": [
+            "session_id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "nest_session_user_id_foreign": {
+          "constraintName": "nest_session_user_id_foreign",
+          "columnNames": [
+            "user_id"
+          ],
+          "localTableName": "nest_session",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "auth_user",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "group_id": {
+          "name": "group_id",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "auth_user_groups",
+      "indexes": [
+        {
+          "columnNames": [
+            "user_id"
+          ],
+          "composite": false,
+          "keyName": "auth_user_groups_user_id_6a12ed8b",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "group_id"
+          ],
+          "composite": false,
+          "keyName": "auth_user_groups_group_id_97559544",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "auth_user_groups_user_id_group_id_94350c0c_uniq",
+          "columnNames": [
+            "user_id",
+            "group_id"
+          ],
+          "composite": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "primary",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "auth_user_groups_user_id_foreign": {
+          "constraintName": "auth_user_groups_user_id_foreign",
+          "columnNames": [
+            "user_id"
+          ],
+          "localTableName": "auth_user_groups",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "auth_user",
+          "updateRule": "cascade"
+        },
+        "auth_user_groups_group_id_foreign": {
+          "constraintName": "auth_user_groups_group_id_foreign",
+          "columnNames": [
+            "group_id"
+          ],
+          "localTableName": "auth_user_groups",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "auth_group",
+          "updateRule": "cascade"
+        }
+      }
     }
   ]
 }

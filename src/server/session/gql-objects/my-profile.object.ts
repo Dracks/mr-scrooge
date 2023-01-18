@@ -1,17 +1,16 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
-
 @ObjectType()
 export class MyProfile {
-	@Field(()=>String)
+    @Field(() => String)
     email?: string;
 
-    @Field(()=>String)
+    @Field(() => String)
     firstName?: string;
 
-    @Field(()=>String)
+    @Field(() => String)
     lastName?: string;
 
-    @Field(()=>String)
+    @Field(() => String)
     username?: string;
-};
+}

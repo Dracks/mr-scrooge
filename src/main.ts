@@ -1,18 +1,18 @@
 // import './config/webpack.run'
 
-import { ChildProcess,fork } from 'child_process'
-import {TscWatchClient} from 'tsc-watch/client'
+import { ChildProcess, fork } from 'child_process';
+import { TscWatchClient } from 'tsc-watch/client';
 
-const tsc = new TscWatchClient()
+const tsc = new TscWatchClient();
 
-let serverInstance: ChildProcess | undefined
+let serverInstance: ChildProcess | undefined;
 
 tsc.on('success', () => {
-    console.log('Success')
+    console.log('Success');
     if (serverInstance) {
-        serverInstance.kill('SIGINT')
+        serverInstance.kill('SIGINT');
     }
-    serverInstance = fork('./build/main')
-})
+    serverInstance = fork('./build/main');
+});
 
-tsc.start('--project', './tsconfig.server.json')
+tsc.start('--project', './tsconfig.server.json');
