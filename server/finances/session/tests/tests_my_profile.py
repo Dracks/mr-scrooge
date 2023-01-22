@@ -19,11 +19,13 @@ class MyProfileTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data, {
             'email': self.user.email,
-            'username': self.user.username
+            'username': self.user.username,
+            'first_name': '',
+            'last_name': ''
         })
 
     def test_update(self):
-        data = {'email': 'dracks@dracks.drk', 'username': 'dalek'}
+        data = {'email': 'dracks@dracks.drk', 'first_name': 'peperoni', 'last_name': 'daleks', 'username': 'dalek'}
         response = self.client.put('/api/me/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
