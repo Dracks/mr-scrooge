@@ -1,31 +1,33 @@
-import {
-Column, DataType, ForeignKey, 
-Index, 	Model, Sequelize, Table} from "sequelize-typescript";
+import { Column, DataType, ForeignKey, BelongsTo, Index, Model, Sequelize, Table, PrimaryKey } from 'sequelize-typescript';
+import { CreationOptional, InferAttributes, InferCreationAttributes, Optional } from 'sequelize';
+import { UserModel } from './user.model';
 
-export interface djangoSessionAttributes {
-    expireDate?: Date;
-    sessionKey: string;
-}
+export type ISessionModel = InferAttributes<SessionModel>;
 
-@Table({
-	tableName: "user_session",
-	timestamps: false 
-})
-export class Session extends Model<djangoSessionAttributes, djangoSessionAttributes> implements djangoSessionAttributes {
+@Table({ tableName: 'nest_session' })
+export class SessionModel extends Model<ISessionModel, InferCreationAttributes<SessionModel>> {
+    @PrimaryKey
+    @Column
+    sessionId!: string;
 
+    @ForeignKey(()=> UserModel)
+    @Column
+    userId!: number;
+
+    //@BelongsTo(() => UserModel, { onDelete: 'CASCADE' })
+    //user!: UserModel;
+
+    @Index
     @Column({
-    	field: "session_key",
-    	primaryKey: true,
-    	type: DataType.STRING(40) 
+        allowNull: false,
+        type: DataType.DATE,
     })
-    	sessionKey!: string;
+    createdAt!: Date;
 
-
+    @Index
     @Column({
-    	field: "expire_date",
-    	allowNull: true,
-    	type: DataType.DATE 
+        allowNull: false,
+        type: DataType.DATE,
     })
-    	expireDate?: Date;
-
+    lastActivity!: Date;
 }

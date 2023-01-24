@@ -1,100 +1,85 @@
-import {
-Column, DataType, ForeignKey, 
-Index, 	Model, Sequelize, Table} from "sequelize-typescript";
+import { Column, DataType, ForeignKey, Index, Model, Sequelize, Table, PrimaryKey } from 'sequelize-typescript';
+import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 
-export interface UserModelAttributes {
-    dateJoined: Date;
-    email: string;
-    firstName: string;
-    id?: number;
-    isActive: boolean;
-    isStaff?: boolean;
-    isSuperuser: boolean;
-    lastLogin?: Date;
-    lastName: string;
-    password?: string;
-    username?: string;
-}
+export type IUserModel = InferAttributes<UserModel>;
 
 @Table({
-	tableName: "auth_user",
-	timestamps: false 
+    tableName: 'auth_user',
+    timestamps: false,
 })
-export class UserModel extends Model<UserModelAttributes, UserModelAttributes> implements UserModelAttributes {
+export class UserModel extends Model<IUserModel, InferCreationAttributes<UserModel>> {
+    @Column({
+        primaryKey: true,
+        autoIncrement: true,
+        unique: true,
+        type: DataType.INTEGER,
+    })
+    id!: CreationOptional<number>;
 
     @Column({
-    	primaryKey: true,
-    	autoIncrement: true,
-		unique: true,
-    	type: DataType.INTEGER,
+        allowNull: false,
+        type: DataType.STRING(128),
     })
-    	id!: number;
+    password!: string;
 
     @Column({
-    	allowNull: true,
-    	type: DataType.STRING(128) 
+        field: 'last_login',
+        allowNull: true,
+        type: DataType.DATE,
     })
-    	password?: string;
+    lastLogin?: Date;
 
     @Column({
-    	field: "last_login",
-    	allowNull: true,
-    	type: DataType.DATE 
+        field: 'is_superuser',
+        allowNull: false,
+        type: DataType.BOOLEAN,
     })
-    	lastLogin?: Date;
+    isSuperuser!: boolean;
 
     @Column({
-    	field: "is_superuser",
-    	allowNull: false,
-    	type: DataType.BOOLEAN 
+        allowNull: false,
+        type: DataType.STRING(150),
     })
-    	isSuperuser!: boolean;
+    username!: string;
 
     @Column({
-    	allowNull: true,
-    	type: DataType.STRING(150) 
+        field: 'first_name',
+        allowNull: false,
+        type: DataType.STRING(150),
     })
-    	username?: string;
+    firstName!: string;
 
     @Column({
-    	field: "first_name",
-    	allowNull: false,
-    	type: DataType.STRING(150) 
+        field: 'last_name',
+        allowNull: false,
+        type: DataType.STRING(150),
     })
-    	firstName!: string;
+    lastName!: string;
 
     @Column({
-    	field: "last_name",
-    	allowNull: false,
-    	type: DataType.STRING(150) 
+        allowNull: false,
+        type: DataType.STRING(254),
     })
-    	lastName!: string;
+    email!: string;
 
     @Column({
-    	allowNull: false,
-    	type: DataType.STRING(254) 
+        field: 'is_staff',
+        allowNull: false,
+        type: DataType.BOOLEAN,
     })
-    	email!: string;
+    isStaff!: boolean;
 
     @Column({
-    	field: "is_staff",
-    	allowNull: true,
-    	type: DataType.BOOLEAN 
+        field: 'is_active',
+        allowNull: false,
+        type: DataType.BOOLEAN,
     })
-    	isStaff?: boolean;
+    isActive!: boolean;
 
     @Column({
-    	field: "is_active",
-    	allowNull: false,
-    	type: DataType.BOOLEAN 
+        field: 'date_joined',
+        allowNull: false,
+        type: DataType.DATE,
     })
-    	isActive!: boolean;
-
-    @Column({
-    	field: "date_joined",
-    	allowNull: false,
-    	type: DataType.DATE 
-    })
-    	dateJoined!: Date;
-
+    dateJoined!: Date;
 }

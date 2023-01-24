@@ -4,6 +4,7 @@
         "src/server"
     ],
     "compilerOptions": {
-        "sourceRoot": ""
+        "sourceRoot": "",
+        "typeRoots": ["./node_modules/@types", "./src/@types"]
     }
 }

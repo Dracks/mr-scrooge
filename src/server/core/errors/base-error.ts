@@ -1,30 +1,31 @@
-import { BaseError } from "sequelize";
+import { BaseError } from 'sequelize';
 
-export type ErrorContext = Record<string, string | number | boolean| undefined>;
+export type ErrorContext = Record<string, string | number | boolean | undefined>;
 
 interface toJSON {
-    toJSON(): unknown
+    toJSON(): unknown;
 }
 
-const isToJSON = (value: unknown): value is toJSON => typeof value === 'object' && value!== null && typeof (value as toJSON).toJSON === 'function'
+const isToJSON = (value: unknown): value is toJSON =>
+    typeof value === 'object' && value !== null && typeof (value as toJSON).toJSON === 'function';
 
-export const errorToJson = (err: unknown| toJSON) => {
-    if (isToJSON(err)){
-        return err.toJSON()
+export const errorToJson = (err: unknown | toJSON) => {
+    if (isToJSON(err)) {
+        return err.toJSON();
     }
-    if (err instanceof Error){
+    if (err instanceof Error) {
         return {
             type: 'Error2',
             name: err.name,
             message: err.message,
             stack: err.stack,
-        }
+        };
     }
-    return err
-}
+    return err;
+};
 export class CustomError extends Error {
     constructor(readonly code: string, message: string, readonly context: ErrorContext, cause?: Error) {
-        super(`${code}: ${message}`, {cause});
+        super(`${code}: ${message}`, { cause });
     }
 
     toString() {
@@ -42,14 +43,14 @@ export class CustomError extends Error {
         };
     }
 
-    enrich(context: ErrorContext): CustomError{
-        return new CustomError(this.code, this.message, {...this.context, ...context}, this);
+    enrich(context: ErrorContext): CustomError {
+        return new CustomError(this.code, this.message, { ...this.context, ...context }, this);
     }
 }
 
-export const ensureOrThrow=<T extends object>(object: T | undefined, error: BaseError):T =>{
-    if (object === undefined){
+export const ensureOrThrow = <T extends object>(object: T | null | undefined, error: BaseError): T => {
+    if (object === undefined) {
         throw error;
     }
     return object as T;
-}
+};
