@@ -1,5 +1,9 @@
 name: Django CI
 
+defaults:
+  run:
+    working-directory: server
+
 on:
   push:
     branches: [ main ]
