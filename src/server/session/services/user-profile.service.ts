@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize';
 
-import { UserModel, IUserModel } from '../models/user.model';
+import { IUserModel, UserModel } from '../models/user.model';
 import { PasswordService } from './password.service';
 
 const SECRET_KEY = '2&_7krtq544)s^9=8i$om!u+9ump*)#-7rcrka9pjld2nnk6p=';

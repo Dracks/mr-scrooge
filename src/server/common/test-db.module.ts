@@ -5,4 +5,5 @@ export const TestDbModule = SequelizeModule.forRoot({
     autoLoadModels: true,
     synchronize: true,
     logging: false,
+    repositoryMode: true,
 });

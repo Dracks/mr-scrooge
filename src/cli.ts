@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
-import { Logger } from 'nestjs-pino';
 import { CommandModule, CommandService } from 'nestjs-command';
+import { Logger } from 'nestjs-pino';
 
 import { CliModule } from './cli/cli.module';
 

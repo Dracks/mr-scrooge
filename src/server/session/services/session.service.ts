@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import shortUuid from 'short-uuid';
-import { CustomError, ensureOrThrow } from '../../core/errors/base-error';
 
+import { CustomError, ensureOrThrow } from '../../core/errors/base-error';
 import { ISessionModel, SessionModel } from '../models/session.model';
 import { IUserModel, UserModel } from '../models/user.model';
 
@@ -31,15 +31,17 @@ export class SessionService {
     }
 
     public async getSession(sessionId: string): Promise<ISessionModel | undefined> {
-        const session = await this.sessionRepository.findOne({ where: {sessionId} });
+        const session = await this.sessionRepository.findOne({ where: { sessionId } });
         if (session) {
-            // console.log(await session.$get('user'))
-            // const user = ensureOrThrow(await session.$get('user'), new CustomError('SE0001', 'user id in session is invalid', {}))
-            return session.dataValues
+            /*
+             * console.log(await session.$get('user'))
+             * const user = ensureOrThrow(await session.$get('user'), new CustomError('SE0001', 'user id in session is invalid', {}))
+             */
+            return session.dataValues;
         }
     }
 
     public async dropSession(sessionId: string): Promise<void> {
-        await this.sessionRepository.destroy({where: { sessionId }});
+        await this.sessionRepository.destroy({ where: { sessionId } });
     }
 }

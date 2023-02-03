@@ -1,9 +1,9 @@
-import gql from "graphql-tag";
+import gql from 'graphql-tag';
 
 export const login = gql`
-mutation login($credentials: LoginArgs!) {
-    login(credentials: $credentials) {
-        __typename
+    mutation login($credentials: LoginArgs!) {
+        login(credentials: $credentials) {
+            __typename
+        }
     }
-}
 `;

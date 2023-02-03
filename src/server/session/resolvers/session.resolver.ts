@@ -65,10 +65,7 @@ const MyProfileResponse = createUnionType({
 export class SessionResolver {
     private readonly logger = new Logger(this.constructor.name);
 
-    constructor(
-        private readonly userService: UserProfileService,
-        private readonly sessionService: SessionService,
-        ) {}
+    constructor(private readonly userService: UserProfileService, private readonly sessionService: SessionService) {}
 
     @Query(returns => MyProfileResponse, {
         name: 'me',
@@ -93,7 +90,7 @@ export class SessionResolver {
         const user = await this.userService.validateUser(credentials.username, credentials.password);
         this.logger.log({ user }, 'user');
         if (user) {
-            const userSession = await this.sessionService.newSession(user)
+            const userSession = await this.sessionService.newSession(user);
             session.set('userId', user.id);
             session.set('sessionId', userSession.sessionId);
             return user;

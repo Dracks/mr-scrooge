@@ -1,9 +1,9 @@
-import { Model, Table, Column, DataType, Index, Sequelize, ForeignKey } from 'sequelize-typescript';
+import { Column, DataType, ForeignKey, Index, Model, Sequelize, Table } from 'sequelize-typescript';
 
 export interface authUserGroupsAttributes {
+    groupId: number;
     id?: number;
     userId: number;
-    groupId: number;
 }
 
 @Table({

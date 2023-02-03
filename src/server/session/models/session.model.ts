@@ -1,5 +1,6 @@
-import { Column, DataType, ForeignKey, BelongsTo, Index, Model, Sequelize, Table, PrimaryKey } from 'sequelize-typescript';
-import { CreationOptional, InferAttributes, InferCreationAttributes, Optional } from 'sequelize';
+import { InferAttributes, InferCreationAttributes } from 'sequelize';
+import { Column, DataType, ForeignKey, Index, Model, PrimaryKey, Table } from 'sequelize-typescript';
+
 import { UserModel } from './user.model';
 
 export type ISessionModel = InferAttributes<SessionModel>;
@@ -10,12 +11,14 @@ export class SessionModel extends Model<ISessionModel, InferCreationAttributes<S
     @Column
     sessionId!: string;
 
-    @ForeignKey(()=> UserModel)
+    @ForeignKey(() => UserModel)
     @Column
     userId!: number;
 
-    //@BelongsTo(() => UserModel, { onDelete: 'CASCADE' })
-    //user!: UserModel;
+    /*
+     * @BelongsTo(() => UserModel, { onDelete: 'CASCADE' })
+     * user!: UserModel;
+     */
 
     @Index
     @Column({

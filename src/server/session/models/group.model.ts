@@ -1,21 +1,19 @@
-import { Model, Table, Column, DataType, Index, Sequelize, ForeignKey } from 'sequelize-typescript';
+import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import { Column, DataType, ForeignKey, Index, Model, Sequelize, Table } from 'sequelize-typescript';
 
-export interface authGroupAttributes {
-    id?: number;
-    name: string;
-}
+export type IUserGroup = InferAttributes<UserGroupModel>
 
 @Table({
-    tableName: 'auth_group',
+    tableName: 'user_group',
     timestamps: false,
 })
-export class authGroup extends Model<authGroupAttributes, authGroupAttributes> implements authGroupAttributes {
+export class UserGroupModel extends Model<InferCreationAttributes<UserGroupModel>, IUserGroup> {
     @Column({
         primaryKey: true,
         autoIncrement: true,
         type: DataType.INTEGER,
     })
-    id?: number;
+    id!: CreationOptional<number>;
 
     @Column({
         allowNull: false,

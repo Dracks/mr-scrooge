@@ -8,8 +8,8 @@ import { Observable } from 'rxjs';
 import { Config } from '../../core/config/config';
 import { ISessionModel, SessionModel } from '../models/session.model';
 import { SessionService } from '../services/session.service';
-import { Role } from './roles.decorator';
 import { UserProfileService } from '../services/user-profile.service';
+import { Role } from './roles.decorator';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -17,7 +17,12 @@ export class AuthGuard implements CanActivate {
 
     readonly getDate: (session: ISessionModel) => Date;
 
-    constructor(private sessionService: SessionService, private userProfileService: UserProfileService, private reflector: Reflector, readonly config: Config) {
+    constructor(
+        private sessionService: SessionService,
+        private userProfileService: UserProfileService,
+        private reflector: Reflector,
+        readonly config: Config,
+    ) {
         if (config.sessionUseLastActivity) {
             this.getDate = session => session.lastActivity;
         } else {
@@ -35,11 +40,10 @@ export class AuthGuard implements CanActivate {
 
         const request = context.switchToHttp().getRequest();
 
-        let session: SecureSession.Session = request.session;
-        if (!session)
-            session = context.getArgByIndex(2).session;
+        let { session } = request;
+        if (!session) session = context.getArgByIndex(2).session;
         // const session = request.session;
-        const {sessionId = "-"} = session.data() ?? {}
+        const { sessionId = '-' } = session.data() ?? {};
 
         const sessionData = await this.sessionService.getSession(sessionId);
         // console.log(sessionData, sessionId);
@@ -55,7 +59,7 @@ export class AuthGuard implements CanActivate {
                     return true;
                 }
             } else {
-                await this.sessionService.dropSession(sessionId)
+                await this.sessionService.dropSession(sessionId);
             }
         }
         return false;

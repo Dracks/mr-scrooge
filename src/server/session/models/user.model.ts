@@ -1,5 +1,5 @@
-import { Column, DataType, ForeignKey, Index, Model, Sequelize, Table, PrimaryKey } from 'sequelize-typescript';
 import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import { Column, DataType, ForeignKey, Index, Model, PrimaryKey, Sequelize, Table } from 'sequelize-typescript';
 
 export type IUserModel = InferAttributes<UserModel>;
 

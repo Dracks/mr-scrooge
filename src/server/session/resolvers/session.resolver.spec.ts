@@ -1,20 +1,19 @@
 import * as secureSession from '@fastify/secure-session';
-import { Test, TestingModule } from '@nestjs/testing';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { Test, TestingModule } from '@nestjs/testing';
 import { FastifyInstance } from 'fastify';
 import request from 'supertest-graphql';
-import { GraphQLModule } from '@nestjs/graphql';
-import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius';
 
 import { TestDbModule } from '../../common/test-db.module';
+import { myProfile } from '../../common/test-graphql/get-my-profile';
+import { getGraphQLTestModule } from '../../common/test-graphql/graph-ql.module';
+import { login } from '../../common/test-graphql/login';
 import { mockPartial } from '../../common/test-tools/mock-partial';
-import { LoginArgs, SessionResolver } from './session.resolver';
-import { SessionModule } from '../session.module';
-import { UserProfileService } from '../services/user-profile.service';
 import { MyLoggerModule } from '../../core/logger.module';
 import { IUserModel } from '../models/user.model';
-import { myProfile } from '../../common/test-graphql/get-my-profile';
-import { login } from '../../common/test-graphql/login';
+import { UserProfileService } from '../services/user-profile.service';
+import { SessionModule } from '../session.module';
+import { LoginArgs, SessionResolver } from './session.resolver';
 
 describe(SessionResolver.name, () => {
     let app!: NestFastifyApplication;
@@ -27,19 +26,7 @@ describe(SessionResolver.name, () => {
             set: jest.fn(),
         });
         const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports: [
-                TestDbModule,
-                GraphQLModule.forRoot<MercuriusDriverConfig>({
-                    driver: MercuriusDriver,
-                    graphiql: false,
-                    autoSchemaFile: `/tmp/mr-scrooge-tests/${Math.random()}.gql`,
-                    context: () => ({
-                        session,
-                    }),
-                }),
-                MyLoggerModule,
-                SessionModule,
-            ],
+            imports: [TestDbModule, getGraphQLTestModule(() => ({ session })), MyLoggerModule, SessionModule],
         }).compile();
 
         app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
@@ -49,8 +36,8 @@ describe(SessionResolver.name, () => {
         server = app.getHttpAdapter().getHttpServer();
     });
 
-    afterEach(() => {
-        app.close();
+    afterEach(async () => {
+        await app.close();
     });
 
     it('Starts the service', () => {
