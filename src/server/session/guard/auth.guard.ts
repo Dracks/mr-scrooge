@@ -50,7 +50,7 @@ export class AuthGuard implements CanActivate {
         if (sessionData) {
             // const user = sessionData.$get('user');
             const user = await this.userProfileService.getUserProfile(sessionData.userId);
-            if (user) {
+            if (user && user.isActive && session.get('userId') === user.id) {
                 const dateToCheck = this.getDate(sessionData);
                 if (isFuture(add(dateToCheck, { days: this.config.sessionDaysActive })) && user.isActive) {
                     if (roles.length > 0 && roles.includes(Role.ADMIN)) {

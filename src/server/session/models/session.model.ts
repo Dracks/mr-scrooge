@@ -5,7 +5,7 @@ import { UserModel } from './user.model';
 
 export type ISessionModel = InferAttributes<SessionModel>;
 
-@Table({ tableName: 'nest_session' })
+@Table({ tableName: 'session_session' })
 export class SessionModel extends Model<ISessionModel, InferCreationAttributes<SessionModel>> {
     @PrimaryKey
     @Column

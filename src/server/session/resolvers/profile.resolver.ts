@@ -1,17 +1,23 @@
-/*
- *import {Args, Context, createUnionType, Field, InputType, Mutation, ObjectType,Query, Resolver } from '@nestjs/graphql';
- *
- *import { MyProfile } from '../gql-objects/my-profile.object';
- *import { UserProfileService } from '../user-profile.service';
- *
- *@Resolver()
- *export class ProfileResolver{
- *constructor(readonly userProfileService: UserProfileService){}
- *
- *@Query(()=>MyProfile)
- *getMyProfile(){
- *
- *}
- *
- *}
- */
+import {Args, Context, Field, InputType, Mutation, Resolver } from '@nestjs/graphql';
+
+import { WebSession } from '../../common/web-session.type';
+import { UserProfileService } from '../services/user-profile.service';
+
+@InputType()
+export class ChangePasswordArgs {
+    @Field(()=>String)
+    oldPassword!: string;
+
+    @Field(()=>String)
+    newPassword!: string;
+}
+
+@Resolver()
+export class ProfileResolver{
+	constructor(readonly userProfileService: UserProfileService){}
+
+    @Mutation(()=>Boolean)
+    changePassword(@Context('session') session: WebSession, @Args('change') {oldPassword, newPassword}: ChangePasswordArgs){
+        this.userProfileService.changePassword(session.get('userId'), oldPassword, newPassword)
+    }
+}

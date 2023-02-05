@@ -7,7 +7,7 @@ export interface authUserGroupsAttributes {
 }
 
 @Table({
-    tableName: 'auth_user_groups',
+    tableName: 'session_user_groups',
     timestamps: false,
 })
 export class authUserGroups

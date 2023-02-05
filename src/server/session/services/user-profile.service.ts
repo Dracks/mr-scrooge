@@ -49,13 +49,16 @@ export class UserProfileService {
             where: Sequelize.and(Sequelize.or({ username }, { email: username }), { isActive: true }),
         });
 
-        const user = await users.find(async ({ password: oldHash }) => {
+        const user = await users.find(async ({ password: oldHash, id }) => {
             let isValid = false;
             if (oldHash) {
                 if (oldHash[0] !== '$') {
                     this.logger.log({ user }, 'password is a django one');
 
                     isValid = await this.passwordService.validateDjango(password, oldHash);
+                    if (isValid){
+                        await this.setPassword(id, password)
+                    }
                 } else {
                     isValid = await this.passwordService.validate(password, oldHash);
                 }
@@ -64,6 +67,24 @@ export class UserProfileService {
             return isValid;
         });
         return user;
+    }
+
+    public async changePassword(
+        userId: number,
+        oldPassword: string,
+        newPassword: string
+    ): Promise<boolean> {
+        const user = await this.userModel.findOne({where: {id: userId}})
+        if (user && await this.passwordService.validate(oldPassword, user.password)){
+            await this.setPassword(userId, newPassword)
+            return true
+        }
+        return false;
+    }
+
+    private async setPassword(userId: number, password: string ){
+        const newHash = await this.passwordService.hash(password)
+        await this.userModel.update({password: newHash}, {where: {id: userId}})
     }
 
     public async addUser(
@@ -85,6 +106,8 @@ export class UserProfileService {
             name: username,
             ownerId: user.dataValues.id
         })
-        return {...user.dataValues, groupId: group.id};
+        user.defaultGroupId=group.dataValues.id
+        await user.save()
+        return {...user.dataValues, groupId: group.dataValues.id};
     }
 }
