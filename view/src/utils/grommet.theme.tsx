@@ -8,6 +8,7 @@ import { ThemeType } from 'grommet';
 export const MyTheme: ThemeType = {
     global: {
         colors: {
+            'accent-1': '#ccddff',
             brand: {
                 dark: '#0077cc',
                 light: '#0066cc',

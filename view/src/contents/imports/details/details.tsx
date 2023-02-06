@@ -24,7 +24,6 @@ export const ImportDetails: React.FC<ImportDetailsArgs> = ({ status }) => {
     return (
         <Box fill>
             <Heading level="2">Error loading: {status.fileName}</Heading>
-            Something happened
         </Box>
     );
 };
