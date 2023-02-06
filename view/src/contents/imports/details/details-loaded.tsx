@@ -1,4 +1,4 @@
-import { Box, Heading, Table, TableBody, TableCell, TableHeader, TableRow, Text } from 'grommet';
+import { Box, Heading, Notification, Table, TableBody, TableCell, TableHeader, TableRow, Text } from 'grommet';
 import React from 'react';
 
 import { StatusReport, StatusReportRow } from '../../../api/client/imports/types';
@@ -8,11 +8,23 @@ interface ImportDetailsArgs {
     status: StatusReport;
 }
 
+const DetailsMessage: React.FC<{ description: string; status: StatusReport['status'] }> = ({ description, status }) => {
+    switch (status) {
+        case 'e':
+            return <Notification status="critical" title="Error" message={description} />;
+        case 'w':
+            return <Notification status="warning" title="Warning" message={description} />;
+        default:
+            return <Notification title="" message={description} />;
+    }
+};
+
 export const DetailsLoaded: React.FC<ImportDetailsArgs> = ({ status, rows }) => {
     return (
-        <Box fill>
+        <Box fill pad="small">
             <Heading level="2">{status.fileName}</Heading>
             <Text>{status.date}</Text>
+            {status.description && <DetailsMessage description={status.description} status={status.status} />}
             <Table>
                 <TableHeader>
                     <TableRow>
