@@ -21,7 +21,7 @@ https://hub.docker.com/r/dracks/mrscrooge/
 
 To run, execute the following command:
 ```
-docker run --rm -p 3333:80 -e DEMODATA="true" dracks/mrscrooge:MVP
+docker run --rm -p 3333:80 -e DEMODATA="true" dracks/mrscrooge:latest
 ```
 
 It will open your port 3333 with user demo/demo
