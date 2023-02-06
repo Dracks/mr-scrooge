@@ -1,4 +1,5 @@
-import { Box, Nav, Sidebar, Text } from 'grommet';
+import { Box, Nav, Sidebar } from 'grommet';
+import { Icon, StatusCritical, StatusGood, StatusWarning } from 'grommet-icons';
 import React from 'react';
 import { Route, Routes, useParams } from 'react-router';
 
@@ -12,11 +13,38 @@ import NotFound from '../extra/not-found';
 import { ImportDetails } from './details/details';
 import { ImportWizard } from './wizard/import-wizard';
 
+const STATUS_MAP_ICON: Record<StatusReport['status'], { color: string; icon: Icon }> = {
+    e: { icon: StatusCritical, color: 'status-error' },
+    o: { icon: StatusGood, color: 'status-ok' },
+    w: { icon: StatusWarning, color: 'status-warning' },
+};
+
 const ImportDetailsSwitcher: React.FC<{ importsList: StatusReport[] }> = ({ importsList }) => {
     const { id } = useParams();
     const statusList = importsList.find(status => status.id === Number.parseInt(id ?? 'NaN', 10));
 
     return statusList ? <ImportDetails status={statusList} /> : <NotFound />;
+};
+
+const ImportsList: React.FC<{ importsList: StatusReport[] }> = ({ importsList }) => {
+    if (importsList.length === 0) {
+        return <Loading />;
+    }
+    return (
+        <React.Fragment>
+            {importsList.map(impFile => {
+                const { icon: StatusIcon, color: iconColor } = STATUS_MAP_ICON[impFile.status];
+                return (
+                    <Box pad="small" key={impFile.id} direction="row" align="center">
+                        <StatusIcon color={iconColor} />
+                        <AnchorLink to={`${impFile.id}`} style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {impFile.fileName}
+                        </AnchorLink>
+                    </Box>
+                );
+            })}
+        </React.Fragment>
+    );
 };
 
 export const Imports: React.FC = () => {
@@ -40,17 +68,7 @@ export const Imports: React.FC = () => {
                     <Box pad="small">
                         <AnchorLink to="">Wizard</AnchorLink>
                     </Box>
-                    {importsList.length === 0 ? (
-                        <Loading />
-                    ) : (
-                        importsList.map(impFile => (
-                            <Box pad="small" key={impFile.id}>
-                                <AnchorLink to={`${impFile.id}`}>
-                                    <Text truncate="tip">{impFile.fileName}</Text>
-                                </AnchorLink>
-                            </Box>
-                        ))
-                    )}
+                    <ImportsList importsList={importsList} />
                 </Nav>
             </Sidebar>
             <Box fill>

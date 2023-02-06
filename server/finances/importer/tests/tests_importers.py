@@ -109,6 +109,9 @@ class CaixaBankCardTests(TransactionTestCase):
         self.assertEqual(RawDataSource.objects.all().count(), 4)
         self.check_errors(IMPORT_STATUS.ERROR)
 
+        first_raw_data = RawDataSource.objects.all()[0]
+        self.assertEqual(first_raw_data.page_key, f"{first_raw_data.date};{first_raw_data.id}")
+
     def test_duplicated(self):
         RawDataSource(
             kind="test",
@@ -128,6 +131,7 @@ class CaixaBankCardTests(TransactionTestCase):
         self.subject.run()
 
         self.assertEqual(RawDataSource.objects.all().count(), 4)
+
         self.assertEqual(StatusReportRow.objects.all().filter(raw_data=None).count(), 2)
         self.check_errors(IMPORT_STATUS.ERROR)
 

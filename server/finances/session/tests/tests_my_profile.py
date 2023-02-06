@@ -19,11 +19,13 @@ class MyProfileTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data, {
             'email': self.user.email,
-            'username': self.user.username
+            'username': self.user.username,
+            'first_name': '',
+            'last_name': ''
         })
 
     def test_update(self):
-        data = {'email': 'dracks@dracks.drk', 'username': 'dalek'}
+        data = {'email': 'dracks@dracks.drk', 'first_name': 'peperoni', 'last_name': 'daleks', 'username': 'dalek'}
         response = self.client.put('/api/me/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -35,14 +37,16 @@ class MyProfileTest(TestCase):
         self.assertEqual(user.email, data['email'])
 
     def test_patch_password(self):
-        response = self.client.patch('/api/me/', {'new-password': '123456!a', 'password': '123'}, format='json')
+        response = self.client.patch('/api/me/', {'new_password': '123456!a', 'password': '123'}, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         user = User.objects.get(pk=self.user.pk)
+        self.assertTrue(user.check_password(PASSWORD_TEST), 'Check with the correct password')
         self.assertFalse(user.check_password('123456!ab'), "Check with incorrect password")
 
-        response = self.client.patch('/api/me/', {'new-password': '123456!ab', 'password': PASSWORD_TEST}, format='json')
+        response = self.client.patch('/api/me/', {'new_password': '123456!ab', 'password': PASSWORD_TEST}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         user = User.objects.get(pk=self.user.pk)
+        self.assertFalse(user.check_password(PASSWORD_TEST), 'Check with the old password')
         self.assertTrue(user.check_password('123456!ab'), "Check with correct password")
 
     def test_not_logged(self):
