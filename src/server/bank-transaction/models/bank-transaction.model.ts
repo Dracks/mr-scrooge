@@ -7,7 +7,7 @@ export type IBankTransaction = InferAttributes<BankTransaction>;
 
 
 @Table({
-    tableName: 'bank_transaction',
+    tableName: 'core_bank_transaction',
     timestamps: false,
     indexes: [
         { name: 'cursor', fields: ['group_owner_id', 'date', 'id']}

@@ -48,7 +48,8 @@
     "short-uuid": "^4.2.2",
     "sqlite": "^4.1.2",
     "sqlite3": "^5.1.2",
-    "ts-morph": "^17.0.1"
+    "ts-morph": "^17.0.1",
+    "ts-pattern": "^4.1.4"
   },
   "devDependencies": {
     "@nestjs/testing": "^9.2.1",

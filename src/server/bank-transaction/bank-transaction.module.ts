@@ -8,5 +8,6 @@ import { BankTransaction } from './models/bank-transaction.model';
 @Module({
     imports: [SequelizeModule.forFeature([BankTransaction])],
     providers: [BankTransactionService, BankTransactionResolver],
+    exports: [BankTransactionService]
 })
 export class BankMovementModule {}

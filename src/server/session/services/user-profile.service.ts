@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize';
+import { UserGroupModel } from '../models/group.model';
 
 import { IUserModel, UserModel } from '../models/user.model';
 import { PasswordService } from './password.service';
@@ -22,6 +23,7 @@ export class UserProfileService {
 
     constructor(
         @InjectModel(UserModel) private readonly userModel: typeof UserModel,
+        @InjectModel(UserGroupModel) private readonly userGroupModel: typeof UserGroupModel,
         readonly passwordService: PasswordService,
     ) {}
 
@@ -68,7 +70,7 @@ export class UserProfileService {
         username: string,
         password: string,
         options: Partial<Omit<IUserModel, 'username' | 'password'>> = {},
-    ): Promise<IUserModel> {
+    ): Promise<IUserModel &{groupId: number}> {
         this.logger.log({ username, password }, 'addUser');
         const hashedPassword = await this.passwordService.hash(password);
         const user = await this.userModel.create({
@@ -79,6 +81,10 @@ export class UserProfileService {
             ...options,
         });
         this.logger.log({ user }, 'Hey this is the user');
-        return user.dataValues;
+        const group = await this.userGroupModel.create({
+            name: username,
+            ownerId: user.dataValues.id
+        })
+        return {...user.dataValues, groupId: group.id};
     }
 }
