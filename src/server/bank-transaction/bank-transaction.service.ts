@@ -64,8 +64,8 @@ export class BankTransactionService {
         });
     }
 
-    async addTransaction(transaction: Omit<InferCreationAttributes<BankTransaction>, 'id'>){
-        const data = await this.bankMovementModel.create(transaction)
-        return data.dataValues
+    async addTransaction(transaction: Omit<InferCreationAttributes<BankTransaction>, 'id'>) {
+        const data = await this.bankMovementModel.create(transaction);
+        return data.dataValues;
     }
 }

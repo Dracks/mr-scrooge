@@ -8,7 +8,7 @@ import { BankTransaction } from './gql-objects/bank-transaction.objects';
 @ObjectType()
 export class GetBankTransactionsResponse {
     @Field(() => [BankTransaction])
-    movements!: BankTransaction[];
+    transactions!: BankTransaction[];
 
     @Field(() => String, { nullable: true })
     cursor?: string;
@@ -21,13 +21,13 @@ export class BankTransactionResolver {
     constructor(readonly bankMovementService: BankTransactionService) {}
 
     @Query(() => GetBankTransactionsResponse)
-    async bankMovements(
+    async bankTransaction(
         @Args('cursor', { nullable: true }) oldCursor: string,
         @Args('limit', { nullable: true, type: () => Int }) limit?: number,
     ): Promise<GetBankTransactionsResponse> {
         const { list: movements, cursor } = await this.bankMovementService.getAll(oldCursor, limit);
         return {
-            movements: movements.map(movement => ({
+            transactions: movements.map(movement => ({
                 ...movement,
                 date: new DateOnly(movement.date),
                 dateValue: movement.dateValue ? new DateOnly(movement.dateValue) : undefined,

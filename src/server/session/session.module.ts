@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { UserGroupModel } from './models/group.model';
 
+import { UserGroupModel } from './models/group.model';
 import { SessionModel } from './models/session.model';
 import { UserModel } from './models/user.model';
 import { SessionResolver } from './resolvers/session.resolver';

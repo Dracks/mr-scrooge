@@ -9,8 +9,11 @@ import { join } from 'path';
 import { BankMovementModule } from './bank-transaction/bank-transaction.module';
 import { DateOnly } from './common/custom-types/date-only';
 import { GQLDateOnly } from './common/custom-types/gql-date-only';
+import { ConfigModule } from './core/config/config.module';
 import { getDatabaseModule } from './core/database';
 import { MyLoggerModule } from './core/logger.module';
+import { GraphsModule } from './graphs/graphs.module';
+import { ReactModule } from './react/react.module';
 import { AuthGuard } from './session/guard/auth.guard';
 import { SessionModule } from './session/session.module';
 
@@ -38,8 +41,11 @@ import { SessionModule } from './session/session.module';
             },
         }),
         MyLoggerModule,
+        ConfigModule,
         SessionModule,
         BankMovementModule,
+        GraphsModule,
+        ReactModule,
     ],
     providers: [
         {

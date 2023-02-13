@@ -1,18 +1,19 @@
-import { CreationOptional, InferAttributes, InferCreationAttributes } from "sequelize";
-import { Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
-import { UserGroupModel } from "../../session/models/group.model";
+import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 
-export type IConditionAttributes = InferAttributes<ConditionModel>
+import { UserGroupModel } from '../../session/models/group.model';
 
-export enum FilterConditionals{
-    CONTAINS = "c",
-    PREFIX = "p",
-    SUFFIX = "s",
-    GREATER = "g",
-    GREATER_EQUAL = "G",
-    LOWER_EQUAL = "L",
-    LOWER = "l",
-    REGULAR_EXPRESION = "r",
+export type IConditionAttributes = InferAttributes<ConditionModel>;
+
+export enum FilterConditionals {
+    CONTAINS = 'c',
+    GREATER = 'g',
+    GREATER_EQUAL = 'G',
+    LOWER = 'l',
+    LOWER_EQUAL = 'L',
+    PREFIX = 'p',
+    REGULAR_EXPRESION = 'r',
+    SUFFIX = 's'
 }
 
 @Table({

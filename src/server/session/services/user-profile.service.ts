@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize';
-import { UserGroupModel } from '../models/group.model';
 
+import { UserGroupModel } from '../models/group.model';
 import { IUserModel, UserModel } from '../models/user.model';
 import { PasswordService } from './password.service';
 
@@ -56,8 +56,8 @@ export class UserProfileService {
                     this.logger.log({ user }, 'password is a django one');
 
                     isValid = await this.passwordService.validateDjango(password, oldHash);
-                    if (isValid){
-                        await this.setPassword(id, password)
+                    if (isValid) {
+                        await this.setPassword(id, password);
                     }
                 } else {
                     isValid = await this.passwordService.validate(password, oldHash);
@@ -69,29 +69,25 @@ export class UserProfileService {
         return user;
     }
 
-    public async changePassword(
-        userId: number,
-        oldPassword: string,
-        newPassword: string
-    ): Promise<boolean> {
-        const user = await this.userModel.findOne({where: {id: userId}})
-        if (user && await this.passwordService.validate(oldPassword, user.password)){
-            await this.setPassword(userId, newPassword)
-            return true
+    public async changePassword(userId: number, oldPassword: string, newPassword: string): Promise<boolean> {
+        const user = await this.userModel.findOne({ where: { id: userId } });
+        if (user && (await this.passwordService.validate(oldPassword, user.password))) {
+            await this.setPassword(userId, newPassword);
+            return true;
         }
         return false;
     }
 
-    private async setPassword(userId: number, password: string ){
-        const newHash = await this.passwordService.hash(password)
-        await this.userModel.update({password: newHash}, {where: {id: userId}})
+    private async setPassword(userId: number, password: string) {
+        const newHash = await this.passwordService.hash(password);
+        await this.userModel.update({ password: newHash }, { where: { id: userId } });
     }
 
     public async addUser(
         username: string,
         password: string,
         options: Partial<Omit<IUserModel, 'username' | 'password'>> = {},
-    ): Promise<IUserModel &{groupId: number}> {
+    ): Promise<IUserModel & { groupId: number }> {
         this.logger.log({ username, password }, 'addUser');
         const hashedPassword = await this.passwordService.hash(password);
         const user = await this.userModel.create({
@@ -104,10 +100,10 @@ export class UserProfileService {
         this.logger.log({ user }, 'Hey this is the user');
         const group = await this.userGroupModel.create({
             name: username,
-            ownerId: user.dataValues.id
-        })
-        user.defaultGroupId=group.dataValues.id
-        await user.save()
-        return {...user.dataValues, groupId: group.dataValues.id};
+            ownerId: user.dataValues.id,
+        });
+        user.defaultGroupId = group.dataValues.id;
+        await user.save();
+        return { ...user.dataValues, groupId: group.dataValues.id };
     }
 }

@@ -1,0 +1,11 @@
+query getBankTransactions($cursor: String, $limit: Int) {
+    bankTransaction(cursor: $cursor, limit: $limit) {
+        transactions {
+            id
+            value
+            movementName
+            date
+        }
+        cursor
+    }
+}

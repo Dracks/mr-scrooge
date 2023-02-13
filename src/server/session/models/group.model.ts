@@ -1,8 +1,9 @@
 import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import { Column, DataType, ForeignKey, Index, Model, Sequelize, Table } from 'sequelize-typescript';
+
 import { UserModel } from './user.model';
 
-export type IUserGroup = InferAttributes<UserGroupModel>
+export type IUserGroup = InferAttributes<UserGroupModel>;
 
 @Table({
     tableName: 'user_group',
@@ -24,8 +25,8 @@ export class UserGroupModel extends Model<IUserGroup, InferCreationAttributes<Us
 
     @Column({
         allowNull: false,
-        type: DataType.INTEGER
+        type: DataType.INTEGER,
     })
-    @ForeignKey(()=>UserModel)
+    @ForeignKey(() => UserModel)
     ownerId!: UserModel['id'];
 }

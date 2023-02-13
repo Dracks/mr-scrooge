@@ -1,19 +1,24 @@
-import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
-import { Column, DataType, ForeignKey, Index, Model, Table, IndexOptions, addFieldToIndex, IndexFieldOptions } from 'sequelize-typescript';
+import { Attributes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import {
+    addFieldToIndex,
+    Column,
+    DataType,
+    ForeignKey,
+    Index,
+    IndexFieldOptions,
+    IndexOptions,
+    Model,
+    Table,
+} from 'sequelize-typescript';
 
 import { UserGroupModel } from '../../session/models/group.model';
-
-export type IBankTransaction = InferAttributes<BankTransaction>;
-
 
 @Table({
     tableName: 'core_bank_transaction',
     timestamps: false,
-    indexes: [
-        { name: 'cursor', fields: ['group_owner_id', 'date', 'id']}
-    ]
+    indexes: [{ name: 'cursor', fields: ['group_owner_id', 'date', 'id'] }],
 })
-export class BankTransaction extends Model<IBankTransaction, InferCreationAttributes<BankTransaction>> {
+export class BankTransaction extends Model<InferAttributes<BankTransaction>, InferCreationAttributes<BankTransaction>> {
     @Column({
         primaryKey: true,
         autoIncrement: true,
@@ -21,9 +26,9 @@ export class BankTransaction extends Model<IBankTransaction, InferCreationAttrib
     })
     id!: CreationOptional<number>;
 
-    @ForeignKey(()=>UserGroupModel)
-    @Column({allowNull: false, field: 'group_owner_id', type: DataType.INTEGER})
-    groupOwnerId!: UserGroupModel['id']
+    @ForeignKey(() => UserGroupModel)
+    @Column({ allowNull: false, field: 'group_owner_id', type: DataType.INTEGER })
+    groupOwnerId!: UserGroupModel['id'];
 
     @Column({
         field: 'movement_name',
@@ -77,14 +82,5 @@ export class BankTransaction extends Model<IBankTransaction, InferCreationAttrib
     })
     pageKey!: string;
 }
-/*
-AddIndex({
-    name: 'pagination_index',
-}, BankTransaction, [
-    'groupOwnerId',
-    'date',
-    'id'
-])
-*/
-//CursorIndex(BankTransaction, 'groupOwnerId')
-//CursorIndex(BankTransaction, 'date')
+
+export type IBankTransaction = Attributes<BankTransaction>;

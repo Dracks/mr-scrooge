@@ -19,7 +19,7 @@ import { SessionService } from '../services/session.service';
 import { UserProfileService } from '../services/user-profile.service';
 
 @InputType()
-export class LoginArgs {
+export class Credentials {
     @Field(() => String)
     username!: string;
 
@@ -85,7 +85,7 @@ export class SessionResolver {
 
     @Mutation(() => LoginResponse)
     @AllowRoles(Role.GUEST)
-    async login(@Context('session') session: secureSession.Session, @Args('credentials') credentials: LoginArgs) {
+    async login(@Context('session') session: secureSession.Session, @Args('credentials') credentials: Credentials) {
         this.logger.log({ session, credentials }, 'session');
         const user = await this.userService.validateUser(credentials.username, credentials.password);
         this.logger.log({ user }, 'user');
