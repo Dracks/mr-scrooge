@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize';
 
 import { UserGroupModel } from '../models/group.model';
+import { UserGroupRelModel } from '../models/user-group-rel.model';
 import { IUserModel, UserModel } from '../models/user.model';
 import { PasswordService } from './password.service';
 
@@ -24,6 +25,7 @@ export class UserProfileService {
     constructor(
         @InjectModel(UserModel) private readonly userModel: typeof UserModel,
         @InjectModel(UserGroupModel) private readonly userGroupModel: typeof UserGroupModel,
+        @InjectModel(UserGroupRelModel) private readonly userGroupRelModel: typeof UserGroupRelModel,
         readonly passwordService: PasswordService,
     ) {}
 
@@ -98,12 +100,28 @@ export class UserProfileService {
             ...options,
         });
         this.logger.log({ user }, 'Hey this is the user');
-        const group = await this.userGroupModel.create({
-            name: username,
-            ownerId: user.dataValues.id,
-        });
-        user.defaultGroupId = group.dataValues.id;
+        const group = await this.addGroup(user.dataValues.id, username)
+        user.defaultGroupId = group.id;
         await user.save();
-        return { ...user.dataValues, groupId: group.dataValues.id };
+        return { ...user.dataValues, groupId: group.id };
+    }
+
+    public async addGroup(userId: number, groupName:string){
+        const group = await this.userGroupModel.create({
+            name: groupName,
+            ownerId: userId,
+        });
+
+        await this.userGroupRelModel.create({
+            userId,
+            userGroupId: group.id,
+        })
+
+        return group.dataValues;
+    }
+
+    public async getGroupsId(userId: number): Promise<number[]> {
+        const userGroupRels = await this.userGroupRelModel.findAll({where: {userId}})
+        return userGroupRels.map(userGroupRel => userGroupRel.dataValues.userGroupId);
     }
 }

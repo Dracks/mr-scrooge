@@ -3,6 +3,7 @@ import * as secureSession from '@fastify/secure-session';
 export interface SessionData {
     sessionId: string;
     userId: number;
+    groupsId: number[]
 }
 
 export interface WebSession {

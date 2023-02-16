@@ -42,7 +42,6 @@ export class AuthGuard implements CanActivate {
 
         let { session } = request;
         if (!session) session = context.getArgByIndex(2).session;
-        // const session = request.session;
         const { sessionId = '-' } = session.data() ?? {};
 
         const sessionData = await this.sessionService.getSession(sessionId);

@@ -1,5 +1,5 @@
 import * as secureSession from '@fastify/secure-session';
-import { Logger } from '@nestjs/common';
+import { Logger, Res } from '@nestjs/common';
 import {
     Args,
     Context,
@@ -11,6 +11,7 @@ import {
     Query,
     Resolver,
 } from '@nestjs/graphql';
+import { FastifyReply } from 'fastify';
 
 import { CustomError, ensureOrThrow } from '../../core/errors/base-error';
 import { MyProfile } from '../gql-objects/my-profile.object';
@@ -85,7 +86,7 @@ export class SessionResolver {
 
     @Mutation(() => LoginResponse)
     @AllowRoles(Role.GUEST)
-    async login(@Context('session') session: secureSession.Session, @Args('credentials') credentials: Credentials) {
+    async login(@Context('session') session: secureSession.Session,  @Args('credentials') credentials: Credentials) {
         this.logger.log({ session, credentials }, 'session');
         const user = await this.userService.validateUser(credentials.username, credentials.password);
         this.logger.log({ user }, 'user');

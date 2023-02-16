@@ -59,6 +59,12 @@ describe(BankTransactionResolver.name, () => {
                     date: '2023-01-30',
                 }),
             );
+
+            movements.push(
+                BankTransactionFactory.build({
+                    groupOwnerId: 2,
+                })
+            )
         });
 
         beforeEach(async () => {

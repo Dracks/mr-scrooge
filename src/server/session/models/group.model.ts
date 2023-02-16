@@ -28,5 +28,5 @@ export class UserGroupModel extends Model<IUserGroup, InferCreationAttributes<Us
         type: DataType.INTEGER,
     })
     @ForeignKey(() => UserModel)
-    ownerId!: UserModel['id'];
+    ownerId!: number;
 }
