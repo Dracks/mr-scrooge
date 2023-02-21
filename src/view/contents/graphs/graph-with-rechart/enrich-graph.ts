@@ -1,21 +1,21 @@
-import { EnrichedGraph, EnrichedGroup, GraphGroup, GraphV2 } from '../../../api/client/graphs/types';
-import { Tag } from '../../../api/client/tag/types';
+import { EnrichedGraph, EnrichedGroup } from '../../../api/client/graphs/types';
+import { GQLGraph, GQLGroup, GQLLabel } from '../../../api/graphql/generated';
 
-export const enrichGroup = ({ groupTags: oldGroupTags, ...group }: GraphGroup, tagsList: Tag[]): EnrichedGroup => {
-    const groupTagsId = oldGroupTags?.map(tag => tag.tag);
-    const groupTags = tagsList.filter(tag => groupTagsId?.includes(tag.id));
+export const enrichGroup = <T extends Omit<GQLGroup, '__typename'>>({ labels: oldLabels, ...group }: T, labelsList: GQLLabel[]): EnrichedGroup => {
+    const labels = labelsList.filter(label => oldLabels?.includes(label.id));
 
     return {
         ...group,
-        groupTags,
+        labels,
     };
 };
 
-export const enrichGraph = (graph: GraphV2, tagsList: Tag[]): EnrichedGraph => {
+export const enrichGraph = (graph: GQLGraph, labelsList: GQLLabel[]): EnrichedGraph => {
     const { horizontalGroup, group } = graph;
+    const ownedLabels = labelsList.filter(({groupOwnerId})=>groupOwnerId === graph.groupOwnerId)
     return {
         ...graph,
-        group: enrichGroup(group, tagsList),
-        horizontalGroup: horizontalGroup ? enrichGroup(horizontalGroup, tagsList) : undefined,
+        group: enrichGroup(group, ownedLabels),
+        horizontalGroup: horizontalGroup ? enrichGroup(horizontalGroup, ownedLabels) : undefined,
     };
 };

@@ -14,7 +14,8 @@ export enum GraphGroup {
     Day = 'day',
     Month = 'month',
     Sign = 'sign',
-    Tags = 'tags',
+    // Note this needs to be transformed from old tags
+    Labels = 'labels',
     Year = 'year'
 }
 
@@ -61,21 +62,18 @@ export class GraphModel extends Model<IGraphAttributes, InferCreationAttributes<
     @Column({
         type: DataType.STRING(255),
         field: 'date_range',
+        allowNull: false,
     })
-    dateRange?: string;
+    dateRange!: string;
 }
 
 export class AbstractGroupModel<A extends {}, C extends {}> extends Model<A, C> {
     @Column({
-        autoIncrement: true,
-        primaryKey: true,
-        type: DataType.INTEGER,
-    })
-    id!: CreationOptional<number>;
-
-    @Column({
         type: DataType.INTEGER,
         allowNull: false,
+        primaryKey: true,
+        unique: true,
+        field: 'graph_id',
     })
     @ForeignKey(() => GraphModel)
     graphId!: GraphModel['id'];
@@ -119,46 +117,50 @@ export class GraphHorizontalGroupModel extends AbstractGroupModel<
 }
 
 @Table({
-    tableName: 'graph_group_tags',
+    tableName: 'graph_group_labels',
     timestamps: false,
 })
-export class GraphGroupTagsModel extends Model<
-    InferAttributes<GraphGroupTagsModel>,
-    InferCreationAttributes<GraphGroupTagsModel>
+export class GraphGroupLabelsModel extends Model<
+    InferAttributes<GraphGroupLabelsModel>,
+    InferCreationAttributes<GraphGroupLabelsModel>
 > {
     @Column({
         type: DataType.INTEGER,
         primaryKey: true,
+        field: 'graph_id',
     })
     @ForeignKey(() => GraphGroupModel)
-    groupId!: GraphGroupModel['id'];
+    graphId!: GraphGroupModel['graphId'];
 
     @Column({
         type: DataType.INTEGER,
         primaryKey: true,
+        field: 'label_id',
     })
     @ForeignKey(() => LabelModel)
     labelId!: LabelModel['id'];
 }
 
 @Table({
-    tableName: 'graph_horizontal_group_tags',
+    tableName: 'graph_horizontal_group_labels',
     timestamps: false,
 })
-export class GraphHorizontalGroupTagsModel extends Model<
-    InferAttributes<GraphHorizontalGroupTagsModel>,
-    InferCreationAttributes<GraphGroupTagsModel>
+export class GraphHorizontalGroupLabelsModel extends Model<
+    InferAttributes<GraphHorizontalGroupLabelsModel>,
+    InferCreationAttributes<GraphGroupLabelsModel>
 > {
     @Column({
         type: DataType.INTEGER,
         primaryKey: true,
+        field: 'graph_id'
     })
     @ForeignKey(() => GraphHorizontalGroupModel)
-    groupId!: GraphHorizontalGroupModel['id'];
+    graphId!: GraphHorizontalGroupModel['graphId'];
 
     @Column({
         type: DataType.INTEGER,
         primaryKey: true,
+        field: 'label_id'
     })
     @ForeignKey(() => LabelModel)
     labelId!: LabelModel['id'];

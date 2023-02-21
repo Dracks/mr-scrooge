@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 
 import { usePostUploadFile } from '../../api/client/imports/use-post-upload-file';
 import { EventTypes, useEventEmitter } from '../../utils/providers/event-emitter.provider';
@@ -23,7 +23,7 @@ const UploadQueueContext = React.createContext<UploadQueueType>({
 export const useUploadQueue = () => React.useContext(UploadQueueContext);
 
 // eslint-disable-next-line max-lines-per-function
-export const ProvideUploadQueue: React.FC = ({ children }) => {
+export const ProvideUploadQueue: React.FC<PropsWithChildren> = ({ children }) => {
     const { sendFile } = usePostUploadFile();
     const eventEmitter = useEventEmitter();
     const [counter, setCounter] = React.useState<number>(0);

@@ -14,6 +14,8 @@ import { TestDbModule } from '../../common/test-db.module';
 import { login } from '../../common/test-graphql/login';
 import { WebSession } from '../../common/web-session.type';
 import { ConfigTestModule } from '../../core/config/config.test';
+import { GqlGroupsId } from '../decorators/gql-groups-id';
+import { GroupsId } from '../decorators/groups-id';
 import { AuthInterceptor } from '../interceptor/auth.interceptor';
 import { UserProfileService } from '../services/user-profile.service';
 import { SessionModule } from '../session.module';
@@ -40,8 +42,8 @@ class TestGuardController {
     }
 
     @Get('/getGroups')
-    getGroups(@Req() req: {groupsId: number[]}): number[] {
-        return req.groupsId ?? []
+    getGroups(@GroupsId() groupsId: number[]): number[] {
+        return groupsId;
     }
 }
 
@@ -53,7 +55,7 @@ export class TestGuardResolver {
     }
 
     @Query(()=> [Int], {name: 'groups'})
-    getGroups(@Context('groupsId') groupsId: number[]){
+    getGroups(@GqlGroupsId() groupsId: number[]){
         return groupsId;
     }
 }

@@ -58,7 +58,7 @@ export class DemoDataService {
                 date: new DateOnly(date).toString(),
                 groupOwnerId,
                 kind: 'demo',
-                movementName: `translaction ${label}`,
+                movementName: `transaction ${label}`,
                 value: getAmount(),
                 pageKey: '',
             });
@@ -79,18 +79,20 @@ export class DemoDataService {
             horizontalGroup: {
                 group: GraphGroup.Month,
             },
+            dateRange: "half year",
         });
         await this.graphService.createGraph({
             groupOwnerId,
             name: 'Compare labels',
             kind: GraphKind.Line,
             group: {
-                group: GraphGroup.Tags,
-                tags: [labelIdMap.groceries, labelIdMap.gasoline],
+                group: GraphGroup.Labels,
+                labels: [labelIdMap.groceries, labelIdMap.gasoline],
             },
             horizontalGroup: {
                 group: GraphGroup.Month,
             },
+            dateRange: 'two years'
         });
     }
 

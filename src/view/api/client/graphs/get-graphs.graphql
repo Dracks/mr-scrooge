@@ -1,0 +1,22 @@
+query getGraphs {
+    graphs {
+        id,
+        name,
+        kind,
+        tagFilter,
+        dateRange,
+        groupOwnerId,
+        group{
+            group,
+            hideOthers,
+            labels
+        },
+        horizontalGroup{
+            group,
+            hideOthers,
+            labels,
+            accumulate,
+        },
+
+    }
+}

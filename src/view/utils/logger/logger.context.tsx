@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 
 import { Logger } from './logger.class';
 import { ILogger } from './logger.types';
@@ -19,7 +19,7 @@ const loggerContext = React.createContext<LoggerContext>({
 export const useLogger = () => React.useContext(loggerContext).logger;
 export const useLoggerEmitter = () => React.useContext(loggerContext).eventEmitter;
 
-export const ProvideLogger: React.FC = ({ children }) => {
+export const ProvideLogger: React.FC<PropsWithChildren> = ({ children }) => {
     const { Provider } = loggerContext;
     const logger = new Logger(loggerEmitter);
 

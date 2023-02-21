@@ -17,6 +17,7 @@ import {
 } from 'recharts';
 
 import { EnrichedGraph, GraphKind } from '../../../api/client/graphs/types';
+import { GQLGraphKind } from '../../../api/graphql/generated';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { DSDoubleGroup } from '../data-transform/types';
 import { useGraphDataGenerator } from '../use-graph-data';
@@ -135,10 +136,10 @@ const PieGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
     );
 };
 
-const ComponentHash: Record<GraphKind, React.FC<GraphRenderArgs>> = {
-    line: LineGraphRender,
-    bar: BarGraphRender,
-    pie: PieGraphRender,
+const ComponentHash: Record<GQLGraphKind, React.FC<GraphRenderArgs>> = {
+    [GQLGraphKind.Line]: LineGraphRender,
+    [GQLGraphKind.Bar]: BarGraphRender,
+    [GQLGraphKind.Pie]: PieGraphRender,
 };
 
 export const GraphViewer: React.FC<GraphViewerArgs> = ({ graph }) => {

@@ -1,22 +1,22 @@
 import { InfiniteScroll, Select, Table, TableBody, TableCell, TableHeader, TableRow, TextInput } from 'grommet';
 import React, { useState } from 'react';
 
-import { useGetKinds } from '../../api/client/imports/use-get-kind';
-import { RdsEnriched, useRdsData } from '../common/raw-data-source.context';
-import { useTagsListContext } from '../common/tag.context';
+import { useGetImportKindsQuery } from '../../api/graphql/generated';
+import { useLabelsContext, useLabelsListContext } from '../common/label.context';
+import { TransactionsEnriched, useRdsData } from '../common/raw-data-source.context';
 import { RawDataRow } from './raw-data-row';
 
 interface RawDataListFilters {
     kind?: string;
     movement?: string;
-    tag?: number;
+    label?: number;
 }
 
 // eslint-disable-next-line max-lines-per-function
 export const RawDataList: React.FC = () => {
     const { data: results, replace } = useRdsData();
-    const [kindRequest] = useGetKinds();
-    const tags = useTagsListContext();
+    const [kindRequest] = useGetImportKindsQuery();
+    const tags = useLabelsListContext();
     const [filters, setFilters] = useState<RawDataListFilters>({});
 
     let filteredResults = results;
@@ -24,8 +24,8 @@ export const RawDataList: React.FC = () => {
         filteredResults = filteredResults.filter(({ kind }) => kind === filters.kind);
     }
 
-    if (filters.tag) {
-        filteredResults = filteredResults.filter(({ tags: rdsTags }) => rdsTags.includes(filters.tag as number));
+    if (filters.label) {
+        filteredResults = filteredResults.filter(({ labelIds: rdsLabels }) => rdsLabels.includes(filters.label as number));
     }
 
     if (filters.movement) {
@@ -42,12 +42,12 @@ export const RawDataList: React.FC = () => {
                     <TableCell scope="col" border="bottom">
                         Kind
                         <br />
-                        <Select
+                        {<Select
                             placeholder="Filter by importer"
-                            options={['', ...(kindRequest.data ?? []).map(kind => kind.name)]}
+                            options={['', ...(kindRequest.data?.importKinds ?? []).map(kind => kind.name)]}
                             value={filters.kind}
                             onChange={({ option }) => setFilters({ ...filters, kind: option })}
-                        />
+                        />}
                     </TableCell>
                     <TableCell scope="col" border="bottom">
                         Tags
@@ -57,8 +57,8 @@ export const RawDataList: React.FC = () => {
                             options={[{}, ...tags]}
                             labelKey="name"
                             valueKey={{ key: 'id', reduce: true }}
-                            value={filters.tag as unknown as string}
-                            onChange={({ value: tag }) => setFilters({ ...filters, tag })}
+                            value={filters.label as unknown as string}
+                            onChange={({ value: label }) => setFilters({ ...filters, label })}
                         />
                     </TableCell>
                     <TableCell scope="col" border="bottom">
@@ -87,7 +87,7 @@ export const RawDataList: React.FC = () => {
             </TableHeader>
             <TableBody>
                 <InfiniteScroll items={filteredResults}>
-                    {(result: RdsEnriched) => (
+                    {(result: TransactionsEnriched) => (
                         <RawDataRow rds={result} tags={tags} onChange={replace} key={result.id} />
                     )}
                 </InfiniteScroll>

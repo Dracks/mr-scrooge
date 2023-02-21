@@ -1,23 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { CreationAttributes, InferAttributes, InferCreationAttributes } from 'sequelize';
+import { CreationAttributes, InferAttributes, InferCreationAttributes, Op } from 'sequelize';
+import { listToDictionary, listToDictionaryList } from '../../common/list-to-dictionary';
+import { queryOwnerId } from '../../session/db-query';
 
 import {
     GraphGroupModel,
-    GraphGroupTagsModel,
+    GraphGroupLabelsModel,
     GraphHorizontalGroupModel,
-    GraphHorizontalGroupTagsModel,
+    GraphHorizontalGroupLabelsModel,
     GraphModel,
 } from '../models/graph.model';
 
 export interface NewGraph extends CreationAttributes<GraphModel> {
-    group: CreationAttributes<GraphGroupModel> & { tags?: number[] };
-    horizontalGroup?: CreationAttributes<GraphHorizontalGroupModel> & { tags?: number[] };
+    group: CreationAttributes<GraphGroupModel> & { labels?: number[] };
+    horizontalGroup?: CreationAttributes<GraphHorizontalGroupModel> & { labels?: number[] };
 }
 
 export interface Graph extends InferAttributes<GraphModel> {
-    group: Omit<InferAttributes<GraphGroupModel>, 'graphId'> & { tags?: number[] };
-    horizontalGroup?: Omit<InferAttributes<GraphHorizontalGroupModel>, 'graphId'> & { tags?: number[] };
+    group: Omit<InferAttributes<GraphGroupModel>, 'graphId'> & { labels?: number[] };
+    horizontalGroup?: Omit<InferAttributes<GraphHorizontalGroupModel>, 'graphId'> & { labels?: number[] };
 }
 
 class GraphBuilder {
@@ -32,19 +34,19 @@ class GraphBuilder {
         };
     }
 
-    setGroupTags(groupTags: InferAttributes<GraphGroupTagsModel>[]) {
-        this.graph.group.tags = groupTags.map(tag => tag.labelId);
+    setGroupTags(groupTags: InferAttributes<GraphGroupLabelsModel>[]) {
+        this.graph.group.labels = groupTags.map(tag => tag.labelId);
     }
 
     setHorizontalGroup(horizontalGroup: InferAttributes<GraphHorizontalGroupModel>) {
         this.graph.horizontalGroup = horizontalGroup;
     }
 
-    setHorizontalGroupTags(groupTags: InferAttributes<GraphHorizontalGroupTagsModel>[]) {
+    setHorizontalGroupTags(groupTags: InferAttributes<GraphHorizontalGroupLabelsModel>[]) {
         if (!this.graph.horizontalGroup) {
             throw new Error(`Graph horizontal group should be defined before setting group tags`);
         }
-        this.graph.horizontalGroup.tags = groupTags.map(tag => tag.labelId);
+        this.graph.horizontalGroup.labels = groupTags.map(tag => tag.labelId);
     }
 }
 
@@ -53,28 +55,28 @@ export class GraphService {
     constructor(
         @InjectModel(GraphModel) private readonly graphModel: typeof GraphModel,
         @InjectModel(GraphGroupModel) private readonly graphGroupModel: typeof GraphGroupModel,
-        @InjectModel(GraphGroupTagsModel) private readonly graphGroupTagsModel: typeof GraphGroupTagsModel,
+        @InjectModel(GraphGroupLabelsModel) private readonly graphGroupLabelsModel: typeof GraphGroupLabelsModel,
         @InjectModel(GraphHorizontalGroupModel)
         private readonly graphHorizontalGroupModel: typeof GraphHorizontalGroupModel,
-        @InjectModel(GraphHorizontalGroupTagsModel)
-        private readonly graphHorizontalGroupTagsModel: typeof GraphHorizontalGroupTagsModel,
+        @InjectModel(GraphHorizontalGroupLabelsModel)
+        private readonly graphHorizontalGroupLabelsModel: typeof GraphHorizontalGroupLabelsModel,
     ) {}
 
     packGraph(
         graph: InferAttributes<GraphModel>,
         group: InferAttributes<GraphGroupModel>,
-        groupTags?: InferAttributes<GraphGroupTagsModel>[],
+        groupTags?: InferAttributes<GraphGroupLabelsModel>[],
     ): Graph {
         return {
             ...graph,
             group: {
                 ...group,
-                tags: groupTags ? groupTags.map(tag => tag.labelId) : undefined,
+                labels: groupTags ? groupTags.map(tag => tag.labelId) : undefined,
             },
         };
     }
 
-    async createGraph({ group: { tags: groupTags, ...group }, horizontalGroup, ...graph }: NewGraph) {
+    async createGraph({ group: { labels: groupTags, ...group }, horizontalGroup, ...graph }: NewGraph) {
         const graphData = await this.graphModel.create(graph);
         const graphId = graphData.dataValues.id;
         const groupData = await this.graphGroupModel.create({
@@ -85,14 +87,13 @@ export class GraphService {
         const returnData = new GraphBuilder(graphData.dataValues, groupData.dataValues);
 
         if (groupTags) {
-            const groupId = groupData.dataValues.id;
             const groupTagsData = await Promise.all(
-                groupTags.map(tag => this.graphGroupTagsModel.create({ groupId, labelId: tag })),
+                groupTags.map(tag => this.graphGroupLabelsModel.create({ graphId, labelId: tag })),
             );
             returnData.setGroupTags(groupTagsData.map(tag => tag.dataValues));
         }
         if (horizontalGroup) {
-            const { tags: horizontalTags, ...newHorizontalGroup } = horizontalGroup;
+            const { labels: horizontalTags, ...newHorizontalGroup } = horizontalGroup;
             const horizontalGroupData = await this.graphHorizontalGroupModel.create({
                 ...newHorizontalGroup,
                 graphId,
@@ -100,13 +101,47 @@ export class GraphService {
             returnData.setHorizontalGroup(horizontalGroupData.dataValues);
 
             if (horizontalTags) {
-                const groupId = groupData.dataValues.id;
                 const horizontalTagsData = await Promise.all(
-                    horizontalTags.map(tag => this.graphHorizontalGroupTagsModel.create({ groupId, labelId: tag })),
+                    horizontalTags.map(tag => this.graphHorizontalGroupLabelsModel.create({ graphId, labelId: tag })),
                 );
                 returnData.setHorizontalGroupTags(horizontalTagsData.map(tag => tag.dataValues));
             }
         }
         return returnData.graph;
     }
+
+    async getGraphs(groupsId: number[]): Promise<Graph[]>{
+        const graphsList = await this.graphModel.findAll({where: queryOwnerId(groupsId)})
+        const graphsIds = graphsList.map(graph => graph.id)
+        // Retrieve all related data for the graphs
+        const where = {graphId: {[Op.in]: graphsIds}}
+        const groupsList = await this.graphGroupModel.findAll({where})
+        const groupsTagsList = await this.graphGroupLabelsModel.findAll({where})
+        const horizontalList = await this.graphHorizontalGroupModel.findAll({where})
+        const horizontalTagsList = await this.graphHorizontalGroupLabelsModel.findAll({where})
+
+        // Generate some dictionaries to found the data for every graphId
+        const groupsMap = listToDictionary(groupsList.map(elem => elem.dataValues), 'graphId')
+        const groupsTagsMap = listToDictionaryList(groupsTagsList.map(elem => elem.dataValues), 'graphId')
+        const horizontalMap = listToDictionary(horizontalList.map(elem => elem.dataValues), 'graphId')
+        const horizontalTagsMap = listToDictionaryList(horizontalTagsList.map(elem => elem.dataValues), 'graphId')
+
+        return Promise.all(graphsList.map(graph =>{
+            const graphId = graph.id
+
+            const graphBuilder = new GraphBuilder(graph.dataValues, groupsMap[graphId]);
+            if (groupsTagsMap[graphId]){
+                graphBuilder.setGroupTags(groupsTagsMap[graphId])
+            }
+            if (horizontalMap[graphId]){
+                graphBuilder.setHorizontalGroup(horizontalMap[graphId])
+                if (horizontalTagsMap[graphId]){
+                    graphBuilder.setHorizontalGroupTags(horizontalTagsMap[graphId])
+                }
+            }
+            return graphBuilder.graph
+        }))
+    }
+
+
 }

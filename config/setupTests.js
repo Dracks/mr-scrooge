@@ -5,7 +5,7 @@ Enzyme.configure({ adapter: new EnzymeAdapter() })
 //*/
 require('reflect-metadata')
 
-jest.mock("../src/constants", () => ({
+jest.mock("../src/view/constants", () => ({
     LOGOUT_URL: "/logout",
     STATIC_URL: "",
 }))

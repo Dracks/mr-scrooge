@@ -1,28 +1,29 @@
 import { sub } from 'date-fns';
 
 import { GraphV2Line, GraphV2Pie } from '../../api/client/graphs/mocks/graph-v2.mocks';
-import { Tag } from '../../api/client/tag/types';
-import { RdsEnriched } from '../common/raw-data-source.context';
+import { GQLLabel } from '../../api/graphql/generated';
+import { TransactionsEnriched } from '../common/raw-data-source.context';
 import { enrichGraph } from './graph-with-rechart/enrich-graph';
 import { useGraphDataGenerator } from './use-graph-data';
 
 jest.useFakeTimers().setSystemTime(new Date('2022-10-16'));
 
-const getData = (): RdsEnriched[] =>
+const getData = (): TransactionsEnriched[] =>
     [
-        { date: { days: 1 }, tags: [2, 4], movementName: 'first' },
-        { date: { days: 2 }, tags: [2, 5], movementName: 'second' },
-        { date: { days: 3 }, tags: [2, 4, 8], movementName: 'third' },
-        { date: { days: 4 }, tags: [9], movementName: 'four' },
-        { date: { days: 5 }, tags: [2, 8], movementName: 'five' },
-        { date: { months: 10 }, tags: [2], movementName: 'sixt' },
-        { date: { months: 4, days: 1 }, tags: [2], movementName: 'sixt' },
+        { date: { days: 1 }, labelIds: [2, 4], movementName: 'first' },
+        { date: { days: 2 }, labelIds: [2, 5], movementName: 'second' },
+        { date: { days: 3 }, labelIds: [2, 4, 8], movementName: 'third' },
+        { date: { days: 4 }, labelIds: [9], movementName: 'four' },
+        { date: { days: 5 }, labelIds: [2, 8], movementName: 'five' },
+        { date: { months: 10 }, labelIds: [2], movementName: 'sixt' },
+        { date: { months: 4, days: 1 }, labelIds: [2], movementName: 'sixt' },
     ].map(({ date, ...element }, idx) => ({
         ...element,
         date: sub(new Date(), date),
         id: idx,
         kind: 'test',
-        tagsComplete: [],
+        labelsComplete: [],
+        groupOwnerId: 1,
         value: idx + 1,
     }));
 
@@ -34,37 +35,37 @@ jest.mock('../common/raw-data-source.context', () => ({
 }));
 
 describe('useGraphData', () => {
-    let tags: Tag[];
+    let labels: GQLLabel[];
     beforeEach(() => {
-        tags = [
+        labels = [
             { id: 4, name: 'tag_4' },
             { id: 5, name: 'tag_5' },
             { id: 8, name: 'tag_8' },
-        ].map(element => ({ ...element, children: [], filters: [] }));
+        ].map(element => ({ ...element, groupOwnerId: 1}));
     });
     it('Check basic pie', () => {
-        expect(useGraphDataGenerator(enrichGraph({ ...GraphV2Pie, id: 2 }, tags))).toEqual([
+        expect(useGraphDataGenerator(enrichGraph({ ...GraphV2Pie, id: 2 }, labels))).toEqual([
             {
                 groupName: 'identity',
                 label: 'identity',
                 value: [
                     {
-                        groupName: 'tags',
+                        groupName: 'Labels',
                         label: 'tag_4',
                         value: 4,
                     },
                     {
-                        groupName: 'tags',
+                        groupName: 'Labels',
                         label: 'tag_5',
                         value: 2,
                     },
                     {
-                        groupName: 'tags',
+                        groupName: 'Labels',
                         label: 'tag_8',
                         value: 5,
                     },
                     {
-                        groupName: 'tags',
+                        groupName: 'Labels',
                         label: 'Others',
                         value: 13,
                     },
@@ -74,66 +75,66 @@ describe('useGraphData', () => {
     });
 
     it('Check the Graph line', () => {
-        expect(useGraphDataGenerator(enrichGraph({ ...GraphV2Line, id: 2 }, tags))).toEqual([
+        expect(useGraphDataGenerator(enrichGraph({ ...GraphV2Line, id: 2 }, labels))).toEqual([
             {
-                groupName: 'day',
+                groupName: 'Day',
                 label: '11',
                 value: [
                     {
-                        groupName: 'month',
+                        groupName: 'Month',
                         label: '2022-10',
                         value: 5,
                     },
                     {
-                        groupName: 'month',
+                        groupName: 'Month',
                         label: '2022-06',
                         value: 0,
                     },
                 ],
             },
             {
-                groupName: 'day',
+                groupName: 'Day',
                 label: '13',
                 value: [
                     {
-                        groupName: 'month',
+                        groupName: 'Month',
                         label: '2022-10',
                         value: 8,
                     },
                     {
-                        groupName: 'month',
+                        groupName: 'Month',
                         label: '2022-06',
                         value: 0,
                     },
                 ],
             },
             {
-                groupName: 'day',
+                groupName: 'Day',
                 label: '14',
                 value: [
                     {
-                        groupName: 'month',
+                        groupName: 'Month',
                         label: '2022-10',
                         value: 10,
                     },
                     {
-                        groupName: 'month',
+                        groupName: 'Month',
                         label: '2022-06',
                         value: 0,
                     },
                 ],
             },
             {
-                groupName: 'day',
+                groupName: 'Day',
                 label: '15',
                 value: [
                     {
-                        groupName: 'month',
+                        groupName: 'Month',
                         label: '2022-10',
                         value: 11,
                     },
                     {
-                        groupName: 'month',
+                        groupName: 'Month',
                         label: '2022-06',
                         value: 7,
                     },

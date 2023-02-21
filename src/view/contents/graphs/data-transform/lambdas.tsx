@@ -1,8 +1,7 @@
 /* eslint-disable sort-keys */
 import { format, lastDayOfMonth, sub } from 'date-fns';
 
-import { GraphGroupEnum } from '../../../api/client/graphs/types';
-import { Tag } from '../../../api/client/tag/types';
+import { GQLGraphGroup, GQLLabel } from '../../../api/graphql/generated';
 import { DTGroupFn, DTInputData } from './types';
 
 export const getRangeFilter: (months: number, reference: Date) => (record: DTInputData) => boolean = (
@@ -16,24 +15,24 @@ export const getRangeFilter: (months: number, reference: Date) => (record: DTInp
     return record => record.date >= start && record.date <= end;
 };
 
-type GroupKeys = GraphGroupEnum;
+type GroupKeys = GQLGraphGroup;
 
 type LabelSign = 'expenses' | 'income';
 
-export const groupLambdas: Record<GroupKeys | 'identity', (tagsList?: Tag[], others?: boolean) => DTGroupFn<string>> = {
-    month: () => record => format(record.date, 'yyyy-MM'),
-    day: () => record => `${record.date.getDate()}`,
-    year: () => record => `${record.date.getFullYear()}`,
-    sign:
+export const groupLambdas: Record<GroupKeys | 'identity', (labelsList?: GQLLabel[], others?: boolean) => DTGroupFn<string>> = {
+    [GQLGraphGroup.Month]: () => record => format(record.date, 'yyyy-MM'),
+    [GQLGraphGroup.Day]: () => record => `${record.date.getDate()}`,
+    [GQLGraphGroup.Year]: () => record => `${record.date.getFullYear()}`,
+    [GQLGraphGroup.Sign]:
         () =>
         (record): LabelSign =>
             record.value < 0 ? 'expenses' : 'income',
-    tags: (tagsList = [], hideOthers = false) => {
+    [GQLGraphGroup.Labels]: (labelsList = [], hideOthers = false) => {
         const othersKey = hideOthers ? false : 'Others';
         return record => {
-            const tags = record.tags ?? [];
+            const tags = record.labelIds ?? [];
             return (
-                tagsList.reduce((ac, { id, name }) => {
+                labelsList.reduce((ac, { id, name }) => {
                     if (!ac && tags.indexOf(id) >= 0) {
                         return name;
                     }
@@ -65,9 +64,9 @@ const customSort = (data: string[]) => {
 };
 
 export const sortLambdas: Record<GroupKeys, (p: string[]) => (a: string, b: string) => number> = {
-    month: () => (a: string, b: string) => a.localeCompare(b),
-    day: () => (a: string, b: string) => parseInt(a, 10) - parseInt(b, 10),
-    year: () => (a: string, b: string) => a.localeCompare(b),
-    sign: () => customSort(['expenses', 'income']),
-    tags: customSort,
+    [GQLGraphGroup.Month]: () => (a: string, b: string) => a.localeCompare(b),
+    [GQLGraphGroup.Day]: () => (a: string, b: string) => parseInt(a, 10) - parseInt(b, 10),
+    [GQLGraphGroup.Year]: () => (a: string, b: string) => a.localeCompare(b),
+    [GQLGraphGroup.Sign]: () => customSort(['expenses', 'income']),
+    [GQLGraphGroup.Labels]: customSort,
 };

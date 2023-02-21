@@ -8,11 +8,11 @@ import { useRdsSetDescription } from '../../api/client/raw-data-source/use-rds-s
 import { Tag } from '../../api/client/tag/types';
 import { useLogger } from '../../utils/logger/logger.context';
 import { InputTag } from '../../utils/ui/tag/input-tag';
-import { RdsEnriched } from '../common/raw-data-source.context';
+import { TransactionsEnriched } from '../common/raw-data-source.context';
 
 interface RawDataRowProps {
     onChange: (newData: RawDataSource) => void;
-    rds: RdsEnriched;
+    rds: TransactionsEnriched;
     tags: Tag[];
 }
 
@@ -46,10 +46,10 @@ export const RawDataRow: React.FC<RawDataRowProps> = ({ rds, tags, onChange }) =
             <TableCell>{rds.kind}</TableCell>
             <TableCell>
                 <InputTag
-                    value={rds.tagsComplete}
+                    value={rds.labelsComplete}
                     onAdd={tag => updateRdsTag(RdsLinkTagAction.Add, tag.id)}
                     onRemove={tag => updateRdsTag(RdsLinkTagAction.Remove, tag.id)}
-                    suggestions={tags.filter(tag => !rds.tagsComplete.includes(tag))}
+                    suggestions={tags.filter(tag => !rds.labelsComplete.includes(tag))}
                 />
             </TableCell>
             <TableCell>{rds.movementName}</TableCell>

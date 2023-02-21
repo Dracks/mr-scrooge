@@ -11,7 +11,7 @@ import {
 } from '../common/test-graphql/generated';
 import { getGraphQLTestModule } from '../common/test-graphql/graph-ql.module';
 import { BankMovementModule } from './bank-transaction.module';
-import { BankTransactionResolver, GetBankTransactionsResponse } from './bank-transaction.resolver';
+import { BankTransactionResolver } from './bank-transaction.resolver';
 import { BankTransactionService } from './bank-transaction.service';
 import { IBankTransaction } from './models/bank-transaction.model';
 import { BankTransactionFactory } from './test-data/bank-transaction.factory';
@@ -22,7 +22,9 @@ describe(BankTransactionResolver.name, () => {
 
     beforeEach(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports: [TestDbModule, getGraphQLTestModule(() => ({})), BankMovementModule],
+            imports: [TestDbModule, getGraphQLTestModule(() => ({
+                groupsId: [1],
+            })), BankMovementModule],
         }).compile();
 
         app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
@@ -77,12 +79,12 @@ describe(BankTransactionResolver.name, () => {
             ).query(GetBankTransactionsDocument, { limit: 5 });
             console.log(response.data);
             expect(response.errors).toEqual(undefined);
-            const { transactions, cursor } = response.data?.bankTransaction ?? {};
-            expect(transactions).toBeTruthy();
-            expect(transactions).toHaveLength(5);
-            const [firstMovement] = transactions ?? [];
+            const { results, next } = response.data?.bankTransaction ?? {};
+            expect(results).toBeTruthy();
+            expect(results).toHaveLength(5);
+            const [firstMovement] = results ?? [];
             expect(firstMovement.date).toEqual('2023-01-30');
-            expect(cursor).toEqual('2022-02-02:1');
+            expect(next).toEqual('2022-02-02:1');
         });
 
         it('Testing cursor with duplicated date', async () => {
@@ -91,13 +93,13 @@ describe(BankTransactionResolver.name, () => {
             ).query(GetBankTransactionsDocument, { limit: 5, cursor: '2022-02-02:1' });
             console.log(response.data);
             expect(response.errors).toEqual(undefined);
-            const { transactions, cursor } = response.data?.bankTransaction ?? {};
-            expect(transactions).toBeTruthy();
-            expect(transactions).toHaveLength(3);
-            const [firstMovement] = transactions ?? [];
+            const { results, next } = response.data?.bankTransaction ?? {};
+            expect(results).toBeTruthy();
+            expect(results).toHaveLength(3);
+            const [firstMovement] = results ?? [];
             expect(firstMovement.date).toEqual('2022-02-02');
             expect(firstMovement.id).toEqual(0);
-            expect(cursor).toEqual('2022-01-30:6');
+            expect(next).toEqual('2022-01-30:6');
         });
     });
 });

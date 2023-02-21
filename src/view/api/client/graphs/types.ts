@@ -1,6 +1,7 @@
 import { CamelCasedPropertiesDeep } from 'type-fest';
 
 import { components } from '../../generated-models';
+import { GQLGraph, GQLGroup, GQLLabel } from '../../graphql/generated';
 import { Tag } from '../tag/types';
 
 /*
@@ -70,8 +71,8 @@ export type GetGraphsV2Response = GraphV2[];
 
 export type GetGraphV2Response = GraphV2;
 
-export interface EnrichedGroup extends Omit<CamelCasedPropertiesDeep<components['schemas']['Group']>, 'groupTags'> {
-    groupTags: Tag[];
+export interface EnrichedGroup extends Omit<GQLGroup, 'labels'> {
+    labels: GQLLabel[];
 }
 
 export interface EnrichedHorizontalGroup extends EnrichedGroup {
@@ -80,7 +81,7 @@ export interface EnrichedHorizontalGroup extends EnrichedGroup {
 
 export type GraphGroup = CamelCasedPropertiesDeep<components['schemas']['Group']>;
 
-export interface EnrichedGraph extends Omit<GraphV2, 'group' | 'horizontalGroup'> {
+export interface EnrichedGraph extends Omit<GQLGraph, 'group' | 'horizontalGroup'> {
     group: EnrichedGroup;
     horizontalGroup?: EnrichedHorizontalGroup;
 }

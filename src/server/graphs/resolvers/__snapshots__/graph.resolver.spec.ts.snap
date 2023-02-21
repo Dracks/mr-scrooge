@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GraphResolver testing with some data Testing the query 1`] = `
+{
+  "dateRange": "6 months",
+  "group": {
+    "group": "Month",
+    "hideOthers": null,
+    "labels": null,
+  },
+  "horizontalGroup": null,
+  "id": 1,
+  "kind": "Pie",
+  "name": "first",
+  "tagFilter": null,
+}
+`;
+
+exports[`GraphResolver testing with some data Testing the query 2`] = `
+{
+  "dateRange": "twelve",
+  "group": {
+    "group": "Tags",
+    "hideOthers": false,
+    "labels": [
+      1,
+      2,
+    ],
+  },
+  "horizontalGroup": {
+    "accumulate": false,
+    "group": "Tags",
+    "hideOthers": true,
+    "labels": [
+      3,
+      4,
+    ],
+  },
+  "id": 34,
+  "kind": "Line",
+  "name": "huge graph",
+  "tagFilter": null,
+}
+`;

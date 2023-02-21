@@ -18,7 +18,9 @@ describe(LabelResolver.name, () => {
 
     beforeEach(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports: [TestDbModule, getGraphQLTestModule(() => ({})), GraphsModule],
+            imports: [TestDbModule, getGraphQLTestModule(() => ({
+                groupsId: [1]
+            })), GraphsModule],
         }).compile();
 
         app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
@@ -40,14 +42,15 @@ describe(LabelResolver.name, () => {
         beforeEach(async () => {
             await app.get(LabelService).createLabel(LabelFactory.build({ name: 'ping' }));
             await app.get(LabelService).createLabel(LabelFactory.build({ name: 'pong' }));
+            await app.get(LabelService).createLabel(LabelFactory.build({ name: 'not-in-list', groupOwnerId: 2 }));
         });
 
         it('Testing the query', async () => {
             const response = await request<GQLGetLabelsQuery, GQLGetLabelsQueryVariables>(server).query(
                 GetLabelsDocument,
             );
-            console.log(response.data);
             expect(response.errors).toEqual(undefined);
+            expect(response.data?.labels.map(label => label.name)).toEqual(['ping', 'pong'])
         });
     });
 });

@@ -1,13 +1,13 @@
 import React, { PropsWithChildren } from 'react';
 
+import { ProvideLabelsData } from './label.context';
 import { ProvideRdsData } from './raw-data-source.context';
-import { ProvideTagsData } from './tag.context';
 import { ProvideUploadQueue } from './uploader-queue.context';
 
 export const DataProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => (
-    <ProvideTagsData>
+    <ProvideLabelsData>
         <ProvideRdsData>
             <ProvideUploadQueue>{children}</ProvideUploadQueue>
         </ProvideRdsData>
-    </ProvideTagsData>
+    </ProvideLabelsData>
 );

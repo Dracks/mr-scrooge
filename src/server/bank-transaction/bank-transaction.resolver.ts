@@ -1,38 +1,50 @@
 import { Logger } from '@nestjs/common';
-import { Args, Field, Int, ObjectType, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Field, Int, ObjectType, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 
 import { DateOnly } from '../common/custom-types/date-only';
+import { LabelService } from '../graphs/services/label.service';
+import { GqlGroupsId } from '../session/decorators/gql-groups-id';
 import { BankTransactionService } from './bank-transaction.service';
 import { BankTransaction } from './gql-objects/bank-transaction.objects';
 
 @ObjectType()
 export class GetBankTransactionsResponse {
     @Field(() => [BankTransaction])
-    transactions!: BankTransaction[];
+    results!: BankTransaction[];
 
     @Field(() => String, { nullable: true })
-    cursor?: string;
+    next?: string;
 }
 
 @Resolver(() => BankTransaction)
 export class BankTransactionResolver {
     private readonly logger = new Logger(BankTransactionResolver.name);
 
-    constructor(readonly bankMovementService: BankTransactionService) {}
+    constructor(
+        readonly bankMovementService: BankTransactionService,
+        readonly labelService: LabelService,
+    ) {}
 
     @Query(() => GetBankTransactionsResponse)
     async bankTransaction(
+        @GqlGroupsId() groupIds: number[],
         @Args('cursor', { nullable: true }) oldCursor: string,
         @Args('limit', { nullable: true, type: () => Int }) limit?: number,
     ): Promise<GetBankTransactionsResponse> {
-        const { list: movements, cursor } = await this.bankMovementService.getAll(oldCursor, limit);
+        const { list: movements, next } = await this.bankMovementService.getAll(groupIds, oldCursor, limit);
         return {
-            transactions: movements.map(movement => ({
+            results: movements.map(movement => ({
                 ...movement,
                 date: new DateOnly(movement.date),
                 dateValue: movement.dateValue ? new DateOnly(movement.dateValue) : undefined,
             })),
-            cursor,
+            next,
         };
+    }
+
+    @ResolveField(()=>[Int])
+    async labelIds(@Parent() parent: BankTransaction){
+        const {id} = parent
+        return this.labelService.getLabelsIdForTransaction(id)
     }
 }

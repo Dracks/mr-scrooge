@@ -6,5 +6,8 @@ export class Label {
     id!: number;
 
     @Field()
+    groupOwnerId!: number;
+
+    @Field()
     name!: string;
 }

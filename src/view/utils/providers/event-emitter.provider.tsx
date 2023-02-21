@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 
 export enum EventTypes {
     OnFileUploaded = 'on-file-uploaded',
@@ -25,7 +25,7 @@ const EventEmitterContext = React.createContext<TypedEventEmitter>(new TypedEven
 
 export const useEventEmitter = () => React.useContext(EventEmitterContext);
 
-export const ProvideEventEmitter: React.FC = ({ children }) => {
+export const ProvideEventEmitter: React.FC<PropsWithChildren> = ({ children }) => {
     const [emitter] = React.useState(new TypedEventEmitter());
     return <EventEmitterContext.Provider value={emitter}>{children}</EventEmitterContext.Provider>;
 };

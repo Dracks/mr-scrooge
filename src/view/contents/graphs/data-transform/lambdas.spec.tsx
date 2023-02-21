@@ -1,6 +1,6 @@
 import { parse } from 'date-fns';
 
-import { Tag } from '../../../api/client/tag/types';
+import { GQLLabel } from '../../../api/graphql/generated';
 import { getRangeFilter, groupLambdas, sortLambdas } from './lambdas';
 import { DTInputData } from './types';
 
@@ -11,26 +11,26 @@ describe('[Lambdas]', () => {
 
         beforeEach(() => {
             data = [
-                { tags: [1, 32], name: 'Daleks', value: 1, date: new Date() },
-                { tags: [12, 2], name: 'Pace keepers', value: 2, date: new Date() },
-                { tags: [43], name: 'Cylons', value: 3, date: new Date() },
-                { tags: [1, 2, 3], name: 'Prota', value: 4, date: new Date() },
-                { tags: [3], name: 'Reapers', value: 5, date: new Date() },
+                { labelIds: [1, 32], name: 'Daleks', value: 1, date: new Date() },
+                { labelIds: [12, 2], name: 'Pace keepers', value: 2, date: new Date() },
+                { labelIds: [43], name: 'Cylons', value: 3, date: new Date() },
+                { labelIds: [1, 2, 3], name: 'Prota', value: 4, date: new Date() },
+                { labelIds: [3], name: 'Reapers', value: 5, date: new Date() },
             ];
         });
 
         it('Group by tags', () => {
-            const tags = [
+            const labels = [
                 { id: 1, name: 'Dr Who' },
                 { id: 2, name: 'Farscape' },
                 { id: 3, name: 'Firefly' },
-            ] as Partial<Tag>[] as Tag[];
+            ] as Partial<GQLLabel>[] as GQLLabel[];
 
-            let result = data.map(subject.tags(tags, false));
+            let result = data.map(subject.Labels(labels, false));
 
             expect(result).toEqual(['Dr Who', 'Farscape', 'Others', 'Dr Who', 'Firefly']);
 
-            result = data.map(subject.tags(tags, true));
+            result = data.map(subject.Labels(labels, true));
 
             expect(result).toEqual(['Dr Who', 'Farscape', false, 'Dr Who', 'Firefly']);
         });
@@ -79,13 +79,13 @@ describe('[Lambdas]', () => {
 
         it('sort customized with all the same', () => {
             const data = ['ping', 'pam', 'pum'];
-            const result = data.sort(subject.tags(valuesToSort));
+            const result = data.sort(subject.Labels(valuesToSort));
             expect(result).toEqual(['pum', 'ping', 'pam']);
         });
 
         it('sort customized with others', () => {
             const data = ['ping', 'others', 'pam', 'pum'];
-            const result = data.sort(subject.tags(valuesToSort));
+            const result = data.sort(subject.Labels(valuesToSort));
             expect(result).toEqual(['pum', 'ping', 'pam', 'others']);
         });
     });

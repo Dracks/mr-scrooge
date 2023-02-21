@@ -1,9 +1,10 @@
 import { AxiosError } from 'axios';
 import { Heading, Main } from 'grommet';
 import React from 'react';
+import { CombinedError } from 'urql';
 
 interface ErrorHandlerProps {
-    error: AxiosError<unknown>;
+    error: AxiosError<unknown> | CombinedError;
 }
 
 const ErrorHandler: React.FC<ErrorHandlerProps> = ({ error }) => {

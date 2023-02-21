@@ -1,5 +1,6 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler, Logger } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { match } from 'ts-pattern';
 import { UserProfileService } from '../services/user-profile.service';
 
 @Injectable()
@@ -9,11 +10,14 @@ export class AuthInterceptor implements NestInterceptor {
     constructor(readonly userService: UserProfileService) { }
     async intercept(context: ExecutionContext &{getRequest: ()=>void}, next: CallHandler): Promise<Observable<any>> {
 
-        let request = context.switchToHttp().getRequest();
+        console.log(context.getType())
+        const request = match(context.getType<'http' | 'graphql'>())
+            .with('http', ()=>context.switchToHttp().getRequest())
+            .with('graphql', ()=>context.getArgByIndex(2))
+            .run()
 
-        if (!request.session) request = context.getArgByIndex(2) 
         let { session } = request;
-        const userId = session.get('userId');
+        const userId = session && session.get('userId');
 
         if (userId) {
             request.groupsId = await this.userService.getGroupsId(userId);

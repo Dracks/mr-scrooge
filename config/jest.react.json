@@ -9,10 +9,10 @@
     "testRegex": ".spec.tsx?$",
     "transform": {
         "^.+\\.tsx?$": ["ts-jest", {
-            "tsconfig": "../tsconfig.react.json"
+            "tsconfig": "<rootDir>/../../tsconfig.react.json"
         }]
     },
-    "setupFilesAfterEnv": ["<rootDir>/../config/setupTests.js"],
+    "setupFilesAfterEnv": ["<rootDir>/../../config/setupTests.js"],
     "coverageDirectory": "../coverage",
     "testEnvironment": "jsdom"
 }

@@ -1,5 +1,5 @@
 import { Grommet } from 'grommet';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import { DEBUG } from '../../constants';
@@ -10,7 +10,7 @@ import { LoggerConsole } from '../logger/logger-console';
 import { LoggerUi } from '../logger/logger-ui';
 import { ProvideEventEmitter } from './event-emitter.provider';
 
-const AllProviders: React.FC<> = ({ children }) => {
+const AllProviders: React.FC<PropsWithChildren> = ({ children }) => {
     return (
         <Router basename="/">
             <Grommet theme={MyTheme}>

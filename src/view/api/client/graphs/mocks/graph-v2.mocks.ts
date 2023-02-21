@@ -1,43 +1,43 @@
-import { GraphV2 } from '../types';
+import { GQLGraph, GQLGraphGroup, GQLGraphKind } from '../../../graphql/generated';
 
-export const GraphV2Pie: Omit<GraphV2, 'id'> = {
+export const GraphV2Pie: Omit<GQLGraph, 'id'> = {
+    groupOwnerId: 1,
     dateRange: 'all',
     group: {
-        group: 'tags',
-        groupTags: [{ tag: 4 }, { tag: 5 }, { tag: 8 }],
+        group: GQLGraphGroup.Labels,
+        labels: [ 4 , 5 , 8 ],
     },
-    kind: 'pie',
+    kind: GQLGraphKind.Pie,
     name: 'Percentatge',
-    oldGraph: 16,
     tagFilter: 2,
 };
 
-export const GraphV2Line: Omit<GraphV2, 'id'> = {
+export const GraphV2Line: Omit<GQLGraph, 'id'> = {
+    groupOwnerId: 1,
     dateRange: 'six',
     group: {
-        group: 'month',
+        group: GQLGraphGroup.Month,
     },
     horizontalGroup: {
         accumulate: true,
-        group: 'day',
+        group: GQLGraphGroup.Day,
     },
-    kind: 'line',
+    kind: GQLGraphKind.Line,
     name: 'Compare by day',
-    oldGraph: 2,
     tagFilter: 2,
 };
 
-export const GraphV2Bar: Omit<GraphV2, 'id'> = {
+export const GraphV2Bar: Omit<GQLGraph, 'id'> = {
+    groupOwnerId: 1,
     dateRange: 'year',
     group: {
-        group: 'sign',
+        group: GQLGraphGroup.Sign,
     },
     horizontalGroup: {
         accumulate: false,
-        group: 'month',
+        group: GQLGraphGroup.Month,
     },
-    kind: 'bar',
+    kind: GQLGraphKind.Bar,
     name: 'Income vs outcome',
-    oldGraph: 1,
     tagFilter: 1,
 };

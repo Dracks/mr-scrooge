@@ -13,6 +13,7 @@ import { ConfigModule } from './core/config/config.module';
 import { getDatabaseModule } from './core/database';
 import { MyLoggerModule } from './core/logger.module';
 import { GraphsModule } from './graphs/graphs.module';
+import { ImporterModule } from './importer/importer.module';
 import { ReactModule } from './react/react.module';
 import { AuthGuard } from './session/guard/auth.guard';
 import { AuthInterceptor } from './session/interceptor/auth.interceptor';
@@ -46,6 +47,7 @@ import { SessionModule } from './session/session.module';
         SessionModule,
         BankMovementModule,
         GraphsModule,
+        ImporterModule,
         ReactModule,
     ],
     providers: [

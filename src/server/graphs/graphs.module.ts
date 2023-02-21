@@ -3,12 +3,13 @@ import { SequelizeModule } from '@nestjs/sequelize';
 
 import {
     GraphGroupModel,
-    GraphGroupTagsModel,
+    GraphGroupLabelsModel,
     GraphHorizontalGroupModel,
-    GraphHorizontalGroupTagsModel,
+    GraphHorizontalGroupLabelsModel,
     GraphModel,
 } from './models/graph.model';
 import { LabelModel,LabelTransactionModel } from './models/label.model';
+import { GraphResolver } from './resolvers/graph.resolver';
 import { LabelResolver } from './resolvers/label.resolver';
 import { GraphService } from './services/graph.service';
 import { LabelService } from './services/label.service';
@@ -21,11 +22,11 @@ import { LabelService } from './services/label.service';
             GraphModel,
             GraphGroupModel,
             GraphHorizontalGroupModel,
-            GraphGroupTagsModel,
-            GraphHorizontalGroupTagsModel,
+            GraphGroupLabelsModel,
+            GraphHorizontalGroupLabelsModel,
         ]),
     ],
-    providers: [GraphService, LabelService, LabelResolver],
+    providers: [GraphService, LabelService, LabelResolver, GraphResolver],
     exports: [GraphService, LabelService],
 })
 export class GraphsModule {}

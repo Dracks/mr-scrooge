@@ -1,5 +1,5 @@
 import { DateRange, EnrichedGraph } from '../../api/client/graphs/types';
-import { Tag } from '../../api/client/tag/types';
+import { GQLLabel } from '../../api/graphql/generated';
 import { useRdsData } from '../common/raw-data-source.context';
 import { accumulateFn } from './data-transform/accumulate';
 import { createGroupWithSubGroup } from './data-transform/create-groups';
@@ -46,17 +46,17 @@ const normalizeSubGroups = (data: DSDoubleGroup<string, string>[]): DSDoubleGrou
     return newData;
 };
 
-const tagMap = ({ name }: Tag) => name;
+const labelMap = ({ name }: GQLLabel) => name;
 
 export const useGraphDataGenerator = ({ tagFilter, dateRange, horizontalGroup, group }: EnrichedGraph) => {
     const { data } = useRdsData();
     const monthRange = hashDateRange[dateRange as DateRange];
-    let rdsList = tagFilter ? data.filter(rds => rds.tags.indexOf(tagFilter) >= 0) : data;
+    let rdsList = tagFilter ? data.filter(rds => rds.labelIds.indexOf(tagFilter) >= 0) : data;
     rdsList = monthRange ? rdsList.filter(getRangeFilter(monthRange, new Date())) : rdsList;
 
-    const groupLambda = groupLambdas[group.group](group.groupTags, group.hideOthers ?? false);
+    const groupLambda = groupLambdas[group.group](group.labels, group.hideOthers ?? false);
     const horizontalGroupLambda = horizontalGroup
-        ? groupLambdas[horizontalGroup.group](horizontalGroup.groupTags, horizontalGroup.hideOthers ?? false)
+        ? groupLambdas[horizontalGroup.group](horizontalGroup.labels, horizontalGroup.hideOthers ?? false)
         : groupLambdas.identity();
 
     const rdsGrouped = createGroupWithSubGroup(
@@ -71,8 +71,8 @@ export const useGraphDataGenerator = ({ tagFilter, dateRange, horizontalGroup, g
     const normalizedRdsGroupedSum = horizontalGroup ? normalizeSubGroups(rdsGroupedSum) : rdsGroupedSum;
 
     const sortLambda = horizontalGroup
-        ? sortLambdas[horizontalGroup.group](horizontalGroup.groupTags.map(tagMap))
-        : sortLambdas[group.group](group.groupTags.map(tagMap));
+        ? sortLambdas[horizontalGroup.group](horizontalGroup.labels.map(labelMap))
+        : sortLambdas[group.group](group.labels.map(labelMap));
     let rdsSorted = normalizedRdsGroupedSum.sort((first, second) => sortLambda(first.label, second.label));
 
     const { accumulate } = horizontalGroup ?? { accumulate: false };

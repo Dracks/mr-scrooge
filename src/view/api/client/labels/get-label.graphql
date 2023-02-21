@@ -1,6 +1,7 @@
 query getLabels{
-    label{
+    labels{
         id
         name
+        groupOwnerId
     }
 }

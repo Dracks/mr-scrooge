@@ -1,21 +1,23 @@
-import React, { useContext } from 'react';
+import React, { PropsWithChildren, useContext } from 'react';
 
 import { RawDataSource } from '../../api/client/raw-data-source/types';
 import { useGetPaginatedRawDataSource } from '../../api/client/raw-data-source/use-get-paginated-rawdatasource';
 import { Tag } from '../../api/client/tag/types';
+import { GQLBankTransaction, GQLLabel } from '../../api/graphql/generated';
 import ErrorHandler from '../../api/helpers/request-error.handler';
 import { useLogger } from '../../utils/logger/logger.context';
 import { EventTypes, useEventEmitter } from '../../utils/providers/event-emitter.provider';
+import { useLabelsListContext } from './label.context';
 import { useTagsListContext } from './tag.context';
 
-export type RdsEnriched = Omit<RawDataSource, 'date'> & {
+export type TransactionsEnriched = Omit<GQLBankTransaction, 'date'> & {
     date: Date;
-    tagsComplete: Tag[];
+    labelsComplete: GQLLabel[];
 };
 
 export interface RdsContextType {
-    data: RdsEnriched[];
-    replace: (data: RawDataSource) => void;
+    data: TransactionsEnriched[];
+    replace: (data: GQLBankTransaction) => void;
     reset: () => void;
 }
 
@@ -27,7 +29,7 @@ const RdsContext = React.createContext<RdsContextType>({
 
 export const useRdsData = (): RdsContextType => useContext(RdsContext);
 
-const replaceOrAdd = (state: RdsEnriched[], stateIndexes: number[]) => (rds: RdsEnriched) => {
+const replaceOrAdd = (state: TransactionsEnriched[], stateIndexes: number[]) => (rds: TransactionsEnriched) => {
     const index = stateIndexes.indexOf(rds.id);
     if (index < 0) {
         state.push(rds);
@@ -37,19 +39,19 @@ const replaceOrAdd = (state: RdsEnriched[], stateIndexes: number[]) => (rds: Rds
     }
 };
 
-export const ProvideRdsData: React.FC = ({ children }) => {
+export const ProvideRdsData: React.FC<PropsWithChildren> = ({ children }) => {
     const [state, setState] = React.useState<{
-        data: RdsEnriched[];
+        data: TransactionsEnriched[];
         index: number[];
     }>({ data: [], index: [] });
     const eventEmitter = useEventEmitter();
-    const tags = useTagsListContext();
+    const labels = useLabelsListContext();
     const query = useGetPaginatedRawDataSource();
     const logger = useLogger();
-    const enrichRds = (rds: RawDataSource) => ({
+    const enrichTransactions = (rds: GQLBankTransaction) => ({
         ...rds,
         date: new Date(rds.date),
-        tagsComplete: rds.tags.map(tagId => tags.find(({ id }) => id === tagId) as Tag),
+        labelsComplete: rds.labelIds.map(labelId => labels.find(({ id }) => id === labelId) as GQLLabel),
     });
 
     React.useEffect(() => {
@@ -57,17 +59,17 @@ export const ProvideRdsData: React.FC = ({ children }) => {
             const newState = [...state.data];
             const stateIndexes = state.index;
 
-            query.results.map(enrichRds).forEach(replaceOrAdd(newState, stateIndexes));
+            query.results.map(enrichTransactions).forEach(replaceOrAdd(newState, stateIndexes));
             setState({ data: newState, index: stateIndexes });
             if (query.next) {
-                query.next().catch(error => logger.error('Error loading rds next page', { error }));
+                query.next()
             }
         }
     }, [query.loading, query.results]);
 
     React.useEffect(() => {
         const unSubscribe = eventEmitter.subscribe(EventTypes.OnQueueUploadFinish, () => {
-            query.reset().catch(error => logger.error('Error reloading rds', { error }));
+            query.reset()
         });
 
         return unSubscribe;
@@ -81,7 +83,7 @@ export const ProvideRdsData: React.FC = ({ children }) => {
         reset: query.reset,
         replace: data => {
             const newState = [...state.data];
-            replaceOrAdd(newState, state.index)(enrichRds(data));
+            replaceOrAdd(newState, state.index)(enrichTransactions(data));
             setState({ data: newState, index: state.index });
         },
     };
