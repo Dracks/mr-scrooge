@@ -15,7 +15,9 @@
     "format:fix": "prettier --config config/prettierrc --write 'src/**/*.{ts,tsx}'",
     "start:dev": "ts-node src/main.ts",
     "test:server": "jest --config config/jest.server.json",
-    "test:view": "jest --config config/jest.react.json"
+    "test:view": "jest --config config/jest.react.json",
+    "type-check:server": "tsc --noEmit -p tsconfig.server.ts",
+    "type-check:view": "tsc --noEmit -p tsconfig.react.ts"
   },
   "repository": {
     "type": "git",
