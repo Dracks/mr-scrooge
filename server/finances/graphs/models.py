@@ -23,14 +23,14 @@ class GraphGroup:
     Month='month'
     Year='year'
     Tags='tags'
-    Sign='sign'  
+    Sign='sign'
 
 GraphGroup.CHOICES=(
     (GraphGroup.Day,'day'),
     (GraphGroup.Month,'month'),
     (GraphGroup.Year,'year'),
     (GraphGroup.Tags,'tags'),
-    (GraphGroup.Sign,'sign' ), 
+    (GraphGroup.Sign,'sign' ),
 )
 
 class GraphV2(models.Model):
@@ -54,6 +54,10 @@ class Group(AbstractGroup):
 class GroupTags(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='group_tags')
     tag = models.ForeignKey(Tag, on_delete=models.PROTECT)
+    position = models.IntegerField(default=0)
+
+    class Meta:
+        ordering= ('group', 'position')
 
 class HorizontalGroup(AbstractGroup):
     graph = models.OneToOneField(GraphV2, on_delete=models.CASCADE, related_name='horizontal_group')
@@ -62,3 +66,7 @@ class HorizontalGroup(AbstractGroup):
 class HorizontalGroupTags(models.Model):
     group = models.ForeignKey(HorizontalGroup, on_delete=models.CASCADE, related_name='group_tags')
     tag = models.ForeignKey(Tag, on_delete=models.PROTECT)
+    position = models.IntegerField(default=0)
+
+    class Meta:
+        ordering= ('group', 'position')
