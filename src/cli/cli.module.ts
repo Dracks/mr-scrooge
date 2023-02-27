@@ -8,8 +8,8 @@ import { MyLoggerModule } from '../server/core/logger.module';
 import { GraphsModule } from '../server/graphs/graphs.module';
 import { SessionModule } from '../server/session/session.module';
 import { CliConfigModule } from './config/cli-config.module';
-import { DemoDataService } from './demo-data.service';
 import { DemoCommand } from './demo.command';
+import { DemoDataService } from './demo-data.service';
 import { LogsCommands } from './logs.command';
 import { MigrationsCommand } from './migrations.command';
 

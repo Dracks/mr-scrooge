@@ -6,10 +6,7 @@ import { DemoDataService } from './demo-data.service';
 
 @Injectable()
 export class DemoCommand {
-    constructor(
-        readonly userService: UserProfileService,
-        readonly demoDataService: DemoDataService,
-    ) {}
+    constructor(readonly userService: UserProfileService, readonly demoDataService: DemoDataService) {}
 
     @Command({
         command: 'demouser',
@@ -20,16 +17,14 @@ export class DemoCommand {
         @Option({ name: 'password', alias: 'p', default: 'demo' }) password: string,
     ) {
         const userInfo = await this.userService.addUser(username, password, { isActive: true });
-        console.log(`User added ${userInfo.id}: ${userInfo.username} with groupId: ${userInfo.groupId}`)
+        console.log(`User added ${userInfo.id}: ${userInfo.username} with groupId: ${userInfo.groupId}`);
     }
 
     @Command({
         command: 'demodata',
-        describe: 'will generate demo data for a group'
+        describe: 'will generate demo data for a group',
     })
-    async demoData(
-        @Option({ name: 'group', alias: 'g', requiresArg: true, type: 'number' }) groupId: number,
-    ){
-        await this.demoDataService.generateAll(groupId)
+    async demoData(@Option({ name: 'group', alias: 'g', requiresArg: true, type: 'number' }) groupId: number) {
+        await this.demoDataService.generateAll(groupId);
     }
 }

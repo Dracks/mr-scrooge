@@ -13,7 +13,7 @@ import { MyLoggerModule } from '../../core/logger.module';
 import { IUserModel } from '../models/user.model';
 import { UserProfileService } from '../services/user-profile.service';
 import { SessionModule } from '../session.module';
-import { LoginArgs, SessionResolver } from './session.resolver';
+import { Credentials, SessionResolver } from './session.resolver';
 
 describe(SessionResolver.name, () => {
     let app!: NestFastifyApplication;
@@ -83,7 +83,7 @@ describe(SessionResolver.name, () => {
         });
 
         it('login correctly with username', async () => {
-            const { data, errors } = await request<{ login: { __typename: string } }, { credentials: LoginArgs }>(
+            const { data, errors } = await request<{ login: { __typename: string } }, { credentials: Credentials }>(
                 server,
             ).query(login, { credentials: { username: 'test-user1', password: 'test-user1' } });
             expect(errors).toBeUndefined();
@@ -92,7 +92,7 @@ describe(SessionResolver.name, () => {
         });
 
         it('login correctly with email', async () => {
-            const { data, errors } = await request<{ login: { __typename: string } }, { credentials: LoginArgs }>(
+            const { data, errors } = await request<{ login: { __typename: string } }, { credentials: Credentials }>(
                 server,
             ).query(login, { credentials: { username: userValid.email, password: 'test-user1' } });
             expect(errors).toBeUndefined();
@@ -103,7 +103,7 @@ describe(SessionResolver.name, () => {
         });
 
         it('login inactive username', async () => {
-            const { data, errors } = await request<{ login: { __typename: string } }, { credentials: LoginArgs }>(
+            const { data, errors } = await request<{ login: { __typename: string } }, { credentials: Credentials }>(
                 server,
             ).query(login, { credentials: { username: userDisabled.username, password: 'test-user2' } });
             expect(errors).toBeUndefined();

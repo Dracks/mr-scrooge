@@ -1,0 +1,24 @@
+overwrite: true
+schema: "src/schema.gql"
+documents: "src/view/**/*.graphql"
+generates:
+  src/view/api/graphql/generated.ts:
+    plugins:
+      - typescript
+      - typescript-urql
+      - typescript-operations
+    config:
+      withComponent: false
+      withHooks: true
+      typesPrefix: GQL
+      nonOptionalTypename: false
+  src/server/common/test-graphql/generated.ts:
+    plugins:
+      - typescript
+      - typescript-urql
+      - typescript-operations
+    config:
+      withComponent: false
+      withHooks: false
+      typesPrefix: GQL
+      nonOptionalTypename: false

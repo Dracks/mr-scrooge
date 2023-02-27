@@ -1,7 +1,7 @@
 import * as secureSession from '@fastify/secure-session';
-import { Controller, Delete, Get, Post, Request } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
-import { GraphQLModule, Query, Resolver } from '@nestjs/graphql';
+import { Controller, Get, Post, Req, Request } from '@nestjs/common';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { Context, GraphQLModule, Int, Query, Resolver } from '@nestjs/graphql';
 import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -12,7 +12,11 @@ import request from 'supertest-graphql';
 
 import { TestDbModule } from '../../common/test-db.module';
 import { login } from '../../common/test-graphql/login';
+import { WebSession } from '../../common/web-session.type';
 import { ConfigTestModule } from '../../core/config/config.test';
+import { GqlGroupsId } from '../decorators/gql-groups-id';
+import { GroupsId } from '../decorators/groups-id';
+import { AuthInterceptor } from '../interceptor/auth.interceptor';
 import { UserProfileService } from '../services/user-profile.service';
 import { SessionModule } from '../session.module';
 import { AuthGuard } from './auth.guard';
@@ -36,6 +40,11 @@ class TestGuardController {
     admin(): string {
         return 'Allowed';
     }
+
+    @Get('/getGroups')
+    getGroups(@GroupsId() groupsId: number[]): number[] {
+        return groupsId;
+    }
 }
 
 @Resolver()
@@ -44,7 +53,13 @@ export class TestGuardResolver {
     test(): string {
         return 'Allowed';
     }
+
+    @Query(()=> [Int], {name: 'groups'})
+    getGroups(@GqlGroupsId() groupsId: number[]){
+        return groupsId;
+    }
 }
+
 
 describe(AuthGuard.name, () => {
     let app!: NestFastifyApplication;
@@ -60,15 +75,22 @@ describe(AuthGuard.name, () => {
                     driver: MercuriusDriver,
                     graphiql: false,
                     autoSchemaFile: `/tmp/mr-scrooge-tests/${Math.random()}.gql`,
-                    context: (req: { session: secureSession.Session }) => ({
-                        session: req.session,
-                    }),
+                    context: (req: unknown) => {
+                        const { session, groupsId} = req as {session: WebSession, groupsId: number[]}
+                        return {
+                        session,
+                        groups: groupsId
+                    }},
                 }),
             ],
             providers: [
                 {
                     provide: APP_GUARD,
                     useClass: AuthGuard,
+                },
+                {
+                    provide: APP_INTERCEPTOR,
+                    useClass: AuthInterceptor,
                 },
                 TestGuardResolver,
             ],
@@ -84,7 +106,7 @@ describe(AuthGuard.name, () => {
                 path: '/',
             },
         });
-
+        
         await app.init();
         await app.getHttpAdapter().getInstance().ready();
 
@@ -121,9 +143,11 @@ describe(AuthGuard.name, () => {
 
     describe('Normal user', () => {
         let cookies: string[];
+        let userId: number;
 
         beforeEach(async () => {
-            await app.get(UserProfileService).addUser('demo', 'demo', { isActive: true });
+            const user = await app.get(UserProfileService).addUser('demo', 'demo', { isActive: true });
+            userId = user.id
 
             const r = await request(server).query(login, { credentials: { username: 'demo', password: 'demo' } });
             cookies = r.response.headers['set-cookie'];
@@ -142,5 +166,34 @@ describe(AuthGuard.name, () => {
                 .set('Cookie', [...cookies])
                 .expect(403);
         });
+
+        describe('testing auth middleware getGroups', ()=>{
+            beforeEach(async () => {
+                await app.get(UserProfileService).addUser('demo2', 'demo')
+                await app.get(UserProfileService).addGroup(userId, 'testing3')
+            });
+
+            it('api rest works fine', async ()=>{
+                const response = await supertest(server)
+                .get('/test-controller/getGroups')
+                .set('Cookie', [...cookies])
+                .expect(200);
+                expect(response.body).toEqual([1,3])
+            })
+
+            it('api rest works fine', async ()=>{
+                const response = await request(server).query(
+                    gql`
+                        query {
+                            groups
+                        }
+                    `,
+                )
+                .set('Cookie', [...cookies])
+                
+                expect(response.data).toEqual({groups: [1,3]})
+            })
+        })
     });
+
 });

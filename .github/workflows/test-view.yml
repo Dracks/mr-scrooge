@@ -5,16 +5,12 @@ name: Node.js Package
 
 on: [pull_request]
 
-defaults:
-  run:
-    working-directory: view
-
 env:
   NODE_VERSION: 16
 
 jobs:
   test:
-    name: Test View
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -30,8 +26,9 @@ jobs:
           restore-keys: npm-${{ env.NODE_VERSION }}-
       - run: npm ci
         if: steps.npm-cache.outputs.cache-hit != 'true'
-      - run: npm test
-  lint:   
+      - run: npm run test:server
+      - run: npm run test:view
+  lint:
     name: Lint
     runs-on: ubuntu-latest
     steps:

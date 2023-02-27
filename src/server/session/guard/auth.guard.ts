@@ -42,26 +42,27 @@ export class AuthGuard implements CanActivate {
 
         let { session } = request;
         if (!session) session = context.getArgByIndex(2).session;
-        // const session = request.session;
         const { sessionId = '-' } = session.data() ?? {};
 
         const sessionData = await this.sessionService.getSession(sessionId);
-        // console.log(sessionData, sessionId);
+        console.log('session', sessionData, sessionId);
+        this.logger.warn({sessionData, sessionId}, 'session')
         if (sessionData) {
             // const user = sessionData.$get('user');
             const user = await this.userProfileService.getUserProfile(sessionData.userId);
             if (user && user.isActive && session.get('userId') === user.id) {
                 const dateToCheck = this.getDate(sessionData);
-                if (isFuture(add(dateToCheck, { days: this.config.sessionDaysActive })) && user.isActive) {
+                if (isFuture(add(dateToCheck, { days: this.config.sessionDaysActive }))) {
+                    this.logger.warn({roles, superUser: user.isSuperuser}, 'roles check?')
                     if (roles.length > 0 && roles.includes(Role.ADMIN)) {
                         return user.isSuperuser ?? false;
                     }
                     return true;
                 }
-            } else {
-                await this.sessionService.dropSession(sessionId);
             }
+            await this.sessionService.dropSession(sessionId);
         }
+        session.delete()
         return false;
     }
 }

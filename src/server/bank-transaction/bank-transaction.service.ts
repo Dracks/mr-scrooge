@@ -4,6 +4,7 @@ import sequelize, { InferCreationAttributes, Op } from 'sequelize';
 import { WhereOptions } from 'sequelize';
 
 import { CursorHandler, ListWithCursor } from '../common/cursor-handler';
+import { queryOwnerId } from '../session/db-query';
 import { BankTransaction, IBankTransaction } from './models/bank-transaction.model';
 
 @Injectable()
@@ -14,8 +15,9 @@ export class BankTransactionService {
 
     constructor(@InjectModel(BankTransaction) private readonly bankMovementModel: typeof BankTransaction) {}
 
-    async getAll(cursor?: string, limit = 100, query?: {}): Promise<ListWithCursor<IBankTransaction>> {
-        const andConditional: WhereOptions<BankTransaction>[] = [];
+    async getAll(groupIds: number[], cursor?: string, limit = 100, query?: {}): Promise<ListWithCursor<IBankTransaction>> {
+        const andConditional: WhereOptions<BankTransaction>[] = [queryOwnerId(groupIds)];
+
         if (cursor) {
             const orConditionals = [];
             const cursorData = this.cursorHandler.parse(cursor);
@@ -34,7 +36,6 @@ export class BankTransactionService {
         }
         const where: WhereOptions<BankTransaction> | undefined =
             andConditional.length > 0 ? sequelize.and(...andConditional) : undefined;
-        console.log(where);
 
         const listData = await this.bankMovementModel.findAll({
             where,
@@ -44,13 +45,11 @@ export class BankTransactionService {
                 ['id', 'desc'],
             ],
         });
-        console.log(listData);
-        console.log(typeof listData[0].dataValues.date);
-        const cursorElement = listData.length > 0 ? listData[listData.length - 1] : undefined;
+        const cursorElement = listData.length >= limit ? listData[listData.length - 1].dataValues : undefined;
 
         return {
             list: listData.map(movement => movement.dataValues),
-            cursor: cursorElement ? this.cursorHandler.stringify(cursorElement) : undefined,
+            next: cursorElement ? this.cursorHandler.stringify(cursorElement) : undefined,
         };
     }
 
@@ -64,8 +63,8 @@ export class BankTransactionService {
         });
     }
 
-    async addTransaction(transaction: Omit<InferCreationAttributes<BankTransaction>, 'id'>){
-        const data = await this.bankMovementModel.create(transaction)
-        return data.dataValues
+    async addTransaction(transaction: Omit<InferCreationAttributes<BankTransaction>, 'id'>) {
+        const data = await this.bankMovementModel.create(transaction);
+        return data.dataValues;
     }
 }

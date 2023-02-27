@@ -1,0 +1,8 @@
+query MyProfile {
+    me {
+       __typename  
+        ...on MyProfile {
+            ...MyProfileFragment
+        }
+    }
+}

@@ -1,15 +1,15 @@
-import { CreationOptional, InferAttributes, InferCreationAttributes } from "sequelize";
-import { Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
-import { UserGroupModel } from "../../session/models/group.model";
-import { ConditionModel } from "./condition.model";
+import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import { Column, DataType, ForeignKey, HasMany, Model, Table } from 'sequelize-typescript';
 
+import { UserGroupModel } from '../../session/models/group.model';
+import { ConditionModel } from './condition.model';
 
 export enum ConditionalRelationType {
-    and= 'and',
-    notOr= 'notOr',
+    and = 'and',
+    notOr = 'notOr',
 }
 
-export type IRuleAttributes = InferAttributes<RuleModel>
+export type IRuleAttributes = InferAttributes<RuleModel>;
 
 @Table({
     tableName: 'core_rule',
@@ -24,9 +24,11 @@ export class RuleModel extends Model<IRuleAttributes, InferCreationAttributes<Ru
     id!: CreationOptional<number>;
 
     @Column({
-        allowNull: false, field: 'group_owner_id', type: DataType.INTEGER
+        allowNull: false,
+        field: 'group_owner_id',
+        type: DataType.INTEGER,
     })
-    @ForeignKey(()=>UserGroupModel)
+    @ForeignKey(() => UserGroupModel)
     groupOwnerId!: UserGroupModel['id'];
 
     @Column({
@@ -35,24 +37,23 @@ export class RuleModel extends Model<IRuleAttributes, InferCreationAttributes<Ru
     })
     name!: string;
 
-    @HasMany(()=>ConditionModel)
-    conditionals?: ConditionModel[]
+    @HasMany(() => ConditionModel)
+    conditionals?: ConditionModel[];
 
     @Column({
         type: DataType.CHAR(10),
         allowNull: false,
         defaultValue: ConditionalRelationType.and,
-        values: Object.values(ConditionalRelationType)
+        values: Object.values(ConditionalRelationType),
     })
-    conditionsRelation?: ConditionalRelationType
+    conditionsRelation?: ConditionalRelationType;
 
-
-    @HasMany(()=>RuleModel, {foreignKey: 'parent'})
-    children?: RuleModel
+    @HasMany(() => RuleModel, { foreignKey: 'parent' })
+    children?: RuleModel;
 
     @Column({
-        type: DataType.INTEGER
+        type: DataType.INTEGER,
     })
-    @ForeignKey(()=>RuleModel)
-    parent?: RuleModel
+    @ForeignKey(() => RuleModel)
+    parent?: RuleModel;
 }

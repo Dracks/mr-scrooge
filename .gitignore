@@ -8,6 +8,8 @@ node_modules
 
 # production
 build
+static/react
+templates/react.hbs
 
 # misc
 .DS_Store

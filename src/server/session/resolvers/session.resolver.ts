@@ -1,4 +1,3 @@
-import * as secureSession from '@fastify/secure-session';
 import { Logger } from '@nestjs/common';
 import {
     Args,
@@ -11,6 +10,7 @@ import {
     Query,
     Resolver,
 } from '@nestjs/graphql';
+import { WebSession } from '../../common/web-session.type';
 
 import { CustomError, ensureOrThrow } from '../../core/errors/base-error';
 import { MyProfile } from '../gql-objects/my-profile.object';
@@ -19,7 +19,7 @@ import { SessionService } from '../services/session.service';
 import { UserProfileService } from '../services/user-profile.service';
 
 @InputType()
-export class LoginArgs {
+export class Credentials {
     @Field(() => String)
     username!: string;
 
@@ -72,11 +72,11 @@ export class SessionResolver {
         description: 'Checks if a user is logged in and returns his profile',
     })
     @AllowRoles(Role.GUEST)
-    async getCurrentUser(@Context('session') session: secureSession.Session): Promise<MyProfile | NotIdentified> {
+    async getCurrentUser(@Context('session') session: WebSession): Promise<MyProfile | NotIdentified> {
         // this.logger.log(session, 'get_current_user');
         const userId = session.get('userId');
         this.logger.warn({ userId }, 'USER ID');
-        if (userId > 0) {
+        if (userId && userId > 0) {
             const user = await this.userService.getUserProfile(userId);
             return ensureOrThrow(user, new CustomError('ER0000', 'User not found', { userId }));
         }
@@ -85,7 +85,7 @@ export class SessionResolver {
 
     @Mutation(() => LoginResponse)
     @AllowRoles(Role.GUEST)
-    async login(@Context('session') session: secureSession.Session, @Args('credentials') credentials: LoginArgs) {
+    async login(@Context('session') session: WebSession,  @Args('credentials') credentials: Credentials) {
         this.logger.log({ session, credentials }, 'session');
         const user = await this.userService.validateUser(credentials.username, credentials.password);
         this.logger.log({ user }, 'user');
@@ -101,9 +101,9 @@ export class SessionResolver {
     }
 
     @Mutation(() => Boolean)
-    async logout(@Context('session') session: secureSession.Session): Promise<boolean> {
+    async logout(@Context('session') session: WebSession): Promise<boolean> {
         const sessionId = session.get('sessionId');
-        await this.sessionService.dropSession(sessionId);
+        sessionId && await this.sessionService.dropSession(sessionId);
         session.delete();
         return true;
     }

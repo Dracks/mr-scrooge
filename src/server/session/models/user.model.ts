@@ -1,5 +1,6 @@
 import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import { Column, DataType, ForeignKey, Index, Model, PrimaryKey, Sequelize, Table } from 'sequelize-typescript';
+
 import { UserGroupModel } from './group.model';
 
 export type IUserModel = InferAttributes<UserModel>;
@@ -18,10 +19,11 @@ export class UserModel extends Model<IUserModel, InferCreationAttributes<UserMod
     id!: CreationOptional<number>;
 
     @Column({
-        field: 'default_group_id'
+        field: 'default_group_id',
+        type: DataType.INTEGER,
     })
-    @ForeignKey(()=>UserGroupModel)
-    defaultGroupId?: UserGroupModel['id']
+    @ForeignKey(() => UserGroupModel)
+    defaultGroupId?: UserGroupModel['id'];
 
     @Column({
         allowNull: false,

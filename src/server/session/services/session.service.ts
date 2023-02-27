@@ -31,6 +31,7 @@ export class SessionService {
     }
 
     public async getSession(sessionId: string): Promise<ISessionModel | undefined> {
+        //const session = await this.sessionRepository.findOne({ where: { sessionId }, include: [{model: UserModel}]});
         const session = await this.sessionRepository.findOne({ where: { sessionId } });
         if (session) {
             /*
