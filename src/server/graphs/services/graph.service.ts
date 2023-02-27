@@ -88,7 +88,7 @@ export class GraphService {
 
         if (groupTags) {
             const groupTagsData = await Promise.all(
-                groupTags.map(tag => this.graphGroupLabelsModel.create({ graphId, labelId: tag })),
+                groupTags.map((tag, idx) => this.graphGroupLabelsModel.create({ graphId, labelId: tag, position: idx })),
             );
             returnData.setGroupTags(groupTagsData.map(tag => tag.dataValues));
         }
@@ -102,7 +102,7 @@ export class GraphService {
 
             if (horizontalTags) {
                 const horizontalTagsData = await Promise.all(
-                    horizontalTags.map(tag => this.graphHorizontalGroupLabelsModel.create({ graphId, labelId: tag })),
+                    horizontalTags.map((tag, idx) => this.graphHorizontalGroupLabelsModel.create({ graphId, labelId: tag, position: idx })),
                 );
                 returnData.setHorizontalGroupTags(horizontalTagsData.map(tag => tag.dataValues));
             }
@@ -116,9 +116,9 @@ export class GraphService {
         // Retrieve all related data for the graphs
         const where = {graphId: {[Op.in]: graphsIds}}
         const groupsList = await this.graphGroupModel.findAll({where})
-        const groupsTagsList = await this.graphGroupLabelsModel.findAll({where})
+        const groupsTagsList = await this.graphGroupLabelsModel.findAll({where, order: [['position', 'ASC']]})
         const horizontalList = await this.graphHorizontalGroupModel.findAll({where})
-        const horizontalTagsList = await this.graphHorizontalGroupLabelsModel.findAll({where})
+        const horizontalTagsList = await this.graphHorizontalGroupLabelsModel.findAll({where, order: [['position', 'ASC']]})
 
         // Generate some dictionaries to found the data for every graphId
         const groupsMap = listToDictionary(groupsList.map(elem => elem.dataValues), 'graphId')
