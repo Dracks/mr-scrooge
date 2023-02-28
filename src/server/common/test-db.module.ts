@@ -1,30 +1,27 @@
-import { MikroORM } from '@mikro-orm/core';
-import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { ObjectionModule } from "@willsoto/nestjs-objection";
 import { Logger, Module } from '@nestjs/common';
 
 const logger = new Logger('MikroORM');
 
 @Module({
     imports: [
-        MikroOrmModule.forRoot({
-            type: 'sqlite',
-            dbName: ':memory:',
-            autoLoadEntities: true,
-            allowGlobalContext: true,
-            migrations: {
-                path: 'build/migrations/sqlite',
-                pathTs: 'src/migrations/sqlite',
-            },
-            logger: (msg: string) => logger.log(msg),
+        ObjectionModule.register({
+            config: {
+                client: "sqlite3",
+                useNullAsDefault: true,
+                connection: {
+                  filename: ":memory:",
+                },
+            }
         }),
     ],
 })
 export class TestDbModule {
-    constructor(readonly orm: MikroORM) {}
+    /*constructor(readonly orm: MikroORM) {}
 
     async onModuleInit() {
         const migrator = this.orm.getMigrator();
         await migrator.createMigration();
         await migrator.up();
-    }
+    }*/
 }

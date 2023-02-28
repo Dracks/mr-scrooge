@@ -1,10 +1,10 @@
 import * as secureSession from '@fastify/secure-session';
-import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius';
 import { join } from 'path';
+import { ObjectionModule } from "@willsoto/nestjs-objection";
 
 import { ConfigModule } from './core/config/config.module';
 import { getDatabaseModule } from './core/database';
@@ -23,12 +23,14 @@ import { SessionModule } from './session/session.module';
                 session: req.session,
             }),
         }),
-        MikroOrmModule.forRoot({
-            // entities: ['build/**/entities'],
-            // entitiesTs: ['src/server/**/entities'],
-            autoLoadEntities: true,
-            type: 'sqlite',
-            dbName: './db.sqlite',
+        ObjectionModule.register({
+            config: {
+                client: "sqlite3",
+                useNullAsDefault: true,
+                connection: {
+                  filename: "./example.sqlite",
+                },
+            }
         }),
         MyLoggerModule,
         SessionModule,
