@@ -1,4 +1,4 @@
-# Ui tasks 
+# Ui tasks
 * [x] Adapt docker to use the new ui
 * [x] Add linting/prettier & fix
 * [x] modify Github actions
@@ -12,3 +12,18 @@
 * [ ] Add translations
 * [ ] Save of a new graph is not redirecting to the edition of the graph once get the new id
 * [x] Imports missing the import raw data to get the errors
+
+# Server tasks
+* [ ] graphs
+  * [ ] Modify graph
+  * [ ] Create graph
+* [ ] Imports
+  * [ ] Import caixa enginyers
+  * [ ] Import n26
+  * [ ] Import commerzbank
+  * [ ] Import qif
+* [ ] labels
+  * [ ] create label
+  * [ ] modify label
+* [ ] rules engine
+* [ ] import django data
