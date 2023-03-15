@@ -15,5 +15,6 @@ def react_view(request):
             "debug": settings.DEBUG,
             "environment": os.getenv("ENVIRONMENT_NAME", "local"),
             "version": os.getenv("BUILD_VERSION", "unknown"),
+            "decimal_count": settings.DECIMAL_COUNT,
         },
     )
