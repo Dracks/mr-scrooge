@@ -31,6 +31,7 @@ You can set the following environment variables:
 - DEMOUSER: default "demo". The username to create on the application
 - DEMOPWD: default "demo". The password for the user
 - ALLOWED_HOSTS: default "localhost". You can put a list of hosts separed with a comma character
+- DECIMAL_COUNT: default 2, the number of digits to show in the graphs
 
 ## Screenshots MVP
 ### Home
@@ -67,5 +68,3 @@ or
 
 ## Thanks
 The current application icon is from VisualPharm
-
-

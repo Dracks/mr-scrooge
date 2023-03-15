@@ -17,6 +17,7 @@ import {
 } from 'recharts';
 
 import { EnrichedGraph, GraphKind } from '../../../api/client/graphs/types';
+import { DECIMAL_COUNT } from '../../../constants';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { DSDoubleGroup } from '../data-transform/types';
 import { useGraphDataGenerator } from '../use-graph-data';
@@ -69,7 +70,7 @@ const BarGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey={firstKey} />
                 <YAxis />
-                <Tooltip />
+                <Tooltip formatter={value => (value as number).toFixed(DECIMAL_COUNT)} />
                 <Legend onClick={({ dataKey }) => touch(dataKey)} />
                 {keys.map((key, idx) => (
                     <Bar
@@ -97,7 +98,7 @@ const LineGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey={firstKey} />
                 <YAxis />
-                <Tooltip />
+                <Tooltip formatter={value => (value as number).toFixed(DECIMAL_COUNT)} />
                 <Legend onClick={({ dataKey }) => touch(dataKey)} />
                 {keys.map((key, idx) => (
                     <Line
@@ -124,8 +125,15 @@ const PieGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
         <ResponsiveContainer width="100%" height={400}>
             <PieChart>
                 <Legend />
-                <Tooltip />
-                <Pie data={firstGroup?.value} dataKey="value" nameKey="label" cx="50%" cy="50%" label>
+                <Tooltip formatter={value => (value as number).toFixed(DECIMAL_COUNT)} />
+                <Pie
+                    data={firstGroup?.value}
+                    dataKey="value"
+                    nameKey="label"
+                    cx="50%"
+                    cy="50%"
+                    label={({ value }) => value.toFixed(DECIMAL_COUNT)}
+                >
                     {keys.map((_, index) => (
                         <Cell key={`cell-${index}`} fill={schemeTableau10[index]} />
                     ))}
