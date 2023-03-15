@@ -35,16 +35,17 @@ jest.mock('../common/raw-data-source.context', () => ({
 }));
 
 describe('useGraphData', () => {
-    let tags: Tag[];
+    let tagsMap: Map<number, Tag>;
     beforeEach(() => {
-        tags = [
+        const tags: Tag[] = [
             { id: 4, name: 'tag_4' },
             { id: 5, name: 'tag_5' },
             { id: 8, name: 'tag_8' },
         ].map(element => ({ ...element, children: [], filters: [] }));
+        tagsMap = new Map(tags.map(tag => [tag.id, tag]))
     });
     it('Check basic pie', () => {
-        expect(useGraphDataGenerator(enrichGraph({ ...GraphV2Pie, id: 2 }, tags))).toEqual([
+        expect(useGraphDataGenerator(enrichGraph({ ...GraphV2Pie, id: 2 }, tagsMap))).toEqual([
             {
                 groupName: 'identity',
                 label: 'identity',
@@ -84,7 +85,7 @@ describe('useGraphData', () => {
             },
             id: 2,
         };
-        expect(useGraphDataGenerator(enrichGraph(graph, tags))).toEqual([
+        expect(useGraphDataGenerator(enrichGraph(graph, tagsMap))).toEqual([
             {
                 groupName: 'month',
                 label: '2022-10',
@@ -110,7 +111,7 @@ describe('useGraphData', () => {
     });
 
     it('Check the Graph line', () => {
-        expect(useGraphDataGenerator(enrichGraph({ ...GraphV2Line, id: 2 }, tags))).toEqual([
+        expect(useGraphDataGenerator(enrichGraph({ ...GraphV2Line, id: 2 }, tagsMap))).toEqual([
             {
                 groupName: 'day',
                 label: '11',
