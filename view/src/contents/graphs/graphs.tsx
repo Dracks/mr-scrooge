@@ -17,7 +17,7 @@ export const Graphs: React.FC = () => {
     const [graphsResponse] = useGetGraphs();
     const [graphsV2Response, refresh] = useGetGraphsV2();
     const [, createNewGraphs] = usePostGraphsV2();
-    const { tags } = useTagsContext();
+    const { tagsMap } = useTagsContext();
     const joinedGraphsResponse = useJoinedGraphs(graphsV2Response, graphsResponse);
     const responseGraphList = joinedGraphsResponse.data;
     const oldGraphs = responseGraphList?.filter(graph => !graph.id && graph.oldGraph);
@@ -36,7 +36,7 @@ export const Graphs: React.FC = () => {
     if (joinedGraphsResponse.loading) {
         return <LoadingPage />;
     } else if (responseGraphList) {
-        const graphs = responseGraphList.map(graph => enrichGraph(graph, tags));
+        const graphs = responseGraphList.map(graph => enrichGraph(graph, tagsMap));
         return (
             <Grid columns={'450px'} gap="small">
                 {graphs.map((graph, idx) => (

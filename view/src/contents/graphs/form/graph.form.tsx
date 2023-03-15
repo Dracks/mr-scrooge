@@ -65,7 +65,11 @@ export const GraphForm: <T extends Partial<GraphV2>>(p: GraphFormProps<T>) => Re
             }}
         >
             <Box direction={size === 'small' ? 'column' : 'row'} width="fill">
-                {graphEnabled ? <GraphViewer graph={enrichGraph(graphData as GraphV2, tags)} /> : <GraphPlaceholder />}
+                {graphEnabled ? (
+                    <GraphViewer graph={enrichGraph(graphData as GraphV2, tagsMap)} />
+                ) : (
+                    <GraphPlaceholder />
+                )}
                 <Box>
                     <FormField name="name" label="Graph name" component={TextInput} />
                     <FormField label="Graph kind" name="kind" component={Select} options={Object.values(GraphKind)} />
@@ -101,7 +105,7 @@ export const GraphForm: <T extends Partial<GraphV2>>(p: GraphFormProps<T>) => Re
                             <React.Fragment>
                                 <FormField label="Tags to group" htmlFor="select-group-tags">
                                     <InputTag
-                                        value={graphUi.groupTags?.map(tagId => tagsMap[tagId]) ?? []}
+                                        value={graphUi.groupTags?.map(tagId => tagsMap.get(tagId)) ?? []}
                                         onAdd={tag =>
                                             updateGraph({
                                                 ...graphUi,
@@ -137,7 +141,7 @@ export const GraphForm: <T extends Partial<GraphV2>>(p: GraphFormProps<T>) => Re
                                 <React.Fragment>
                                     <FormField label="Tags to group" htmlFor="select-x-group-tags">
                                         <InputTag
-                                            value={graphUi.horizontalGroupTags?.map(tagId => tagsMap[tagId]) ?? []}
+                                            value={graphUi.horizontalGroupTags?.map(tagId => tagsMap.get(tagId)) ?? []}
                                             onAdd={tag =>
                                                 updateGraph({
                                                     ...graphUi,

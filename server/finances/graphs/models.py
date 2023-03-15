@@ -23,14 +23,14 @@ class GraphGroup:
     Month='month'
     Year='year'
     Tags='tags'
-    Sign='sign'  
+    Sign='sign'
 
 GraphGroup.CHOICES=(
     (GraphGroup.Day,'day'),
     (GraphGroup.Month,'month'),
     (GraphGroup.Year,'year'),
     (GraphGroup.Tags,'tags'),
-    (GraphGroup.Sign,'sign' ), 
+    (GraphGroup.Sign,'sign' ),
 )
 
 class GraphV2(models.Model):
