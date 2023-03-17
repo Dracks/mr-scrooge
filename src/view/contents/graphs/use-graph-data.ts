@@ -25,7 +25,13 @@ const normalizeSubGroups = (data: DSDoubleGroup<string, string>[]): DSDoubleGrou
     const newData = data.map(group => {
         const newValues = [...group.value];
 
-        const [{ groupName }] = group.value;
+        const [first] = group.value;
+        let { groupName } = first ?? {};
+
+        if (!groupName) {
+            groupName = '-- Unknown --';
+        }
+
         const existingSubGroupKeys = new Set(group.value.map(subGroup => subGroup.label));
         subGroupsKeys.forEach(subKey => {
             if (!existingSubGroupKeys.has(subKey)) {
@@ -48,10 +54,11 @@ const normalizeSubGroups = (data: DSDoubleGroup<string, string>[]): DSDoubleGrou
 
 const labelMap = ({ name }: GQLLabel) => name;
 
-export const useGraphDataGenerator = <T extends GQLNewGraph>({ tagFilter, dateRange, horizontalGroup, group }: EnrichedGraph<T>) => {
+export const useGraphDataGenerator = <T extends GQLNewGraph>({ labelFilter, dateRange, horizontalGroup, group, groupOwnerId }: EnrichedGraph<T>) => {
     const { data } = useRdsData();
     const monthRange = hashDateRange[dateRange];
-    let rdsList = tagFilter ? data.filter(rds => rds.labelIds.indexOf(tagFilter) >= 0) : data;
+    let rdsList = labelFilter ? data.filter(rds => rds.labelIds.indexOf(labelFilter) >= 0) : data;
+    rdsList = rdsList.filter(rds => rds.groupOwnerId === groupOwnerId);
     rdsList = monthRange ? rdsList.filter(getRangeFilter(monthRange, new Date())) : rdsList;
 
     const groupLambda = groupLambdas[group.group](group.labels, group.hideOthers ?? false);

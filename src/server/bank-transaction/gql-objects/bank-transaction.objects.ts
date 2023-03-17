@@ -9,6 +9,9 @@ export class BankTransaction implements Omit<IBankTransaction, 'pageKey' | 'date
     @Field(() => Int)
     id!: number;
 
+    @Field(() => Int)
+    groupOwnerId!: number;
+
     @Field(() => String)
     movementName!: string;
 

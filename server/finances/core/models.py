@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 class AbstractRawDataSource(models.Model):
     movement_name=models.CharField(max_length=255)
@@ -19,9 +20,15 @@ class RawDataSource(AbstractRawDataSource):
     page_key = models.CharField(max_length=255, default='')
     
     def save(self, *args, **kwargs):
-        if not self.page_key:
-            self.page_key = f"{self.date};{self.pk}"
+        if isinstance(self.date, str):
+            self.date = datetime.strptime(self.date, '%Y-%m-%d').date()
         super(RawDataSource, self).save(*args, **kwargs)
+        if not self.page_key:
+            if isinstance(self.date, datetime):
+                self.page_key = f"{self.date.date()};{self.pk}"
+            else:
+                self.page_key = f"{self.date};{self.pk}"
+            self.save()
 
     def __str__(self):
         parent = AbstractRawDataSource.__str__(self)

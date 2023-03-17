@@ -21,7 +21,7 @@ export const graphToUi = ({
     group,
     horizontalGroup,
     kind,
-    tagFilter,
+    labelFilter: tagFilter,
     ...graph
 }: Partial<GQLNewGraph>): GraphUiRepresentation => ({
     ...graph,

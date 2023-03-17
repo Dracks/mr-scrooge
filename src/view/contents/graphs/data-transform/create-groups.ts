@@ -14,9 +14,6 @@ export const createGroup = <K extends string>(
                 hashMap[key] = group;
             }
             group.push(record);
-        } else {
-            // eslint-disable-next-line no-console
-            console.warn(`Not generated key for ${record} with ${lambda}`);
         }
     });
     return (Object.keys(hashMap) as K[]).map(label => ({
@@ -32,9 +29,11 @@ export const createGroupWithSubGroup = <K extends string, SK extends string>(
     subLambda: { callback: DTGroupFn<SK>; name: string },
 ): GenericDSGroup<K, GenericDSGroup<SK, DTInputData[]>[]>[] => {
     const groupedData = createGroup(data, lambda);
-    return groupedData.map(({ label, value, groupName }) => ({
-        label,
-        groupName,
-        value: createGroup(value, subLambda),
-    }));
+    return groupedData
+        .map(({ label, value, groupName }) => ({
+            label,
+            groupName,
+            value: createGroup(value, subLambda),
+        }))
+        .filter(group => group.value.length > 0);
 };

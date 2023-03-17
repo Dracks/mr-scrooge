@@ -57,6 +57,7 @@ type Label {
 
 type BankTransaction {
   id: Int!
+  groupOwnerId: Int!
   movementName: String!
   date: DateOnly!
   dateValue: DateOnly

@@ -1,0 +1,9 @@
+fragment BankTransactionFragment on BankTransaction {
+    id
+    value
+    movementName
+    date
+    description
+    kind
+    labelIds
+}

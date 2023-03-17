@@ -1,7 +1,7 @@
 import { sub } from 'date-fns';
 
-import { GraphV2Line, GraphV2Pie } from '../../api/client/graphs/mocks/graph-v2.mocks';
-import { GQLLabel } from '../../api/graphql/generated';
+import { GraphV2Bar, GraphV2Line, GraphV2Pie } from '../../api/client/graphs/mocks/graph-v2.mocks';
+import { GQLGraph, GQLLabel } from '../../api/graphql/generated';
 import { TransactionsEnriched } from '../common/raw-data-source.context';
 import { enrichGraph } from './graph-with-rechart/enrich-graph';
 import { useGraphDataGenerator } from './use-graph-data';
@@ -17,10 +17,11 @@ const getData = (): TransactionsEnriched[] =>
         { date: { days: 5 }, labelIds: [2, 8], movementName: 'five' },
         { date: { months: 10 }, labelIds: [2], movementName: 'sixt' },
         { date: { months: 4, days: 1 }, labelIds: [2], movementName: 'sixt' },
+        { date: { days: 1 }, labelIds: [2, 4], movementName: 'other group id', groupOwnerId: 24 },
     ].map(({ date, ...element }, idx) => ({
+        groupOwnerId: 1,
         ...element,
         date: sub(new Date(), date),
-        groupOwnerId: 1,
         id: idx,
         kind: 'test',
         labelsComplete: [],
@@ -35,16 +36,17 @@ jest.mock('../common/raw-data-source.context', () => ({
 }));
 
 describe('useGraphData', () => {
-    let labels: GQLLabel[];
+    let labelsList: GQLLabel[];
     beforeEach(() => {
-        labels = [
+        labelsList = [
             { id: 4, name: 'tag_4' },
             { id: 5, name: 'tag_5' },
             { id: 8, name: 'tag_8' },
-        ].map(element => ({ ...element, groupOwnerId: 1}));
+        ].map(element => ({ ...element, groupOwnerId: 1 }));
+
     });
     it('Check basic pie', () => {
-        expect(useGraphDataGenerator(enrichGraph({ ...GraphV2Pie, id: 2 }, labels))).toEqual([
+        expect(useGraphDataGenerator(enrichGraph({ ...GraphV2Pie, id: 2 }, labelsList))).toEqual([
             {
                 groupName: 'identity',
                 label: 'identity',
@@ -74,8 +76,43 @@ describe('useGraphData', () => {
         ]);
     });
 
+    it('Check basic pie with hide others', () => {
+        const graph: GQLGraph = {
+            ...GraphV2Bar,
+            labelFilter: 2,
+            group: {
+                ...GraphV2Pie.group,
+                hideOthers: true,
+            },
+            id: 2,
+        };
+        expect(useGraphDataGenerator(enrichGraph(graph, labelsList))).toEqual([
+            {
+                groupName: 'Month',
+                label: '2022-10',
+                value: [
+                    {
+                        groupName: 'Labels',
+                        label: 'tag_4',
+                        value: 4,
+                    },
+                    {
+                        groupName: 'Labels',
+                        label: 'tag_5',
+                        value: 2,
+                    },
+                    {
+                        groupName: 'Labels',
+                        label: 'tag_8',
+                        value: 5,
+                    },
+                ],
+            },
+        ]);
+    });
+
     it('Check the Graph line', () => {
-        expect(useGraphDataGenerator(enrichGraph({ ...GraphV2Line, id: 2 }, labels))).toEqual([
+        expect(useGraphDataGenerator(enrichGraph({ ...GraphV2Line, id: 2 }, labelsList))).toEqual([
             {
                 groupName: 'Day',
                 label: '11',

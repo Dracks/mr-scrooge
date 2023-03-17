@@ -1,5 +1,5 @@
-import { Box, Select, Text } from 'grommet';
-import { Attachment, CircleAlert, StatusCritical, Upgrade } from 'grommet-icons';
+import { Box, Button, Select, Text } from 'grommet';
+import { Attachment, CircleAlert, StatusCritical, Trash, Upgrade } from 'grommet-icons';
 import React from 'react';
 
 import { Kind } from '../../../api/client/imports/types';
@@ -19,10 +19,10 @@ const STATUS_HASH: Record<FileStatus, React.FC> = {
     [FileStatus.uploading]: () => <Upgrade color="yellow" />,
 };
 
-export const ImportFileRow: React.FC<ImportFileRowArgs> = ({ fileData, kindsList, onKindSwitch }) => {
+export const ImportFileRow: React.FC<ImportFileRowArgs> = ({ fileData, kindsList, onKindSwitch, onRemove }) => {
     const Status = STATUS_HASH[fileData.status];
     return (
-        <Box direction="row">
+        <Box direction="row" align="center">
             <Attachment />
             <Box width="small">
                 <Text truncate="tip">{fileData.file.name}</Text>
@@ -32,6 +32,7 @@ export const ImportFileRow: React.FC<ImportFileRowArgs> = ({ fileData, kindsList
                 value={fileData.kind}
                 onChange={event => onKindSwitch(event.value)}
             />
+            <Button icon={<Trash />} disabled={fileData.status !== FileStatus.load} onClick={() => onRemove()} />
 
             <Status />
         </Box>

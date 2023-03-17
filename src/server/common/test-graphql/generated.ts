@@ -22,6 +22,7 @@ export type GQLBankTransaction = {
   dateValue?: Maybe<Scalars['DateOnly']>;
   description?: Maybe<Scalars['String']>;
   details?: Maybe<Scalars['String']>;
+  groupOwnerId: Scalars['Int'];
   id: Scalars['Int'];
   kind: Scalars['String'];
   labelIds: Array<Scalars['Int']>;
@@ -206,6 +207,17 @@ export type GQLWrongOwnerId = {
   validOwners: Array<Scalars['Int']>;
 };
 
+export const BankTransactionFragmentFragmentDoc = gql`
+    fragment BankTransactionFragment on BankTransaction {
+  id
+  value
+  movementName
+  date
+  description
+  kind
+  labelIds
+}
+    `;
 export const GraphFragmentFragmentDoc = gql`
     fragment GraphFragment on Graph {
   id
@@ -245,18 +257,12 @@ export const GetBankTransactionsDocument = gql`
     query getBankTransactions($cursor: String, $limit: Int) {
   bankTransaction(cursor: $cursor, limit: $limit) {
     results {
-      id
-      value
-      movementName
-      date
-      description
-      kind
-      labelIds
+      ...BankTransactionFragment
     }
     next
   }
 }
-    `;
+    ${BankTransactionFragmentFragmentDoc}`;
 export const GetGraphsDocument = gql`
     query getGraphs {
   graphs {
@@ -315,6 +321,8 @@ export const LoginDocument = gql`
   }
 }
     ${MyProfileFragmentFragmentDoc}`;
+export type GQLBankTransactionFragmentFragment = { __typename?: 'BankTransaction', id: number, value: number, movementName: string, date: any, description?: string | null, kind: string, labelIds: Array<number> };
+
 export type GQLGetBankTransactionsQueryVariables = Exact<{
   cursor?: InputMaybe<Scalars['String']>;
   limit?: InputMaybe<Scalars['Int']>;

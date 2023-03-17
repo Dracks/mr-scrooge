@@ -23,6 +23,7 @@ export type GQLBankTransaction = {
   dateValue?: Maybe<Scalars['DateOnly']>;
   description?: Maybe<Scalars['String']>;
   details?: Maybe<Scalars['String']>;
+  groupOwnerId: Scalars['Int'];
   id: Scalars['Int'];
   kind: Scalars['String'];
   labelIds: Array<Scalars['Int']>;
@@ -165,7 +166,7 @@ export type GQLNewGraph = {
   horizontalGroup?: InputMaybe<GQLMutateHorizontalGroup>;
   kind: GQLGraphKind;
   name: Scalars['String'];
-  tagFilter?: InputMaybe<Scalars['Float']>;
+  labelFilter?: InputMaybe<Scalars['Float']>;
 };
 
 export type GQLNewGraphResponse = GQLGraph | GQLWrongOwnerId;
@@ -207,6 +208,17 @@ export type GQLWrongOwnerId = {
   validOwners: Array<Scalars['Int']>;
 };
 
+export const BankTransactionFragmentFragmentDoc = gql`
+    fragment BankTransactionFragment on BankTransaction {
+  id
+  value
+  movementName
+  date
+  description
+  kind
+  labelIds
+}
+    `;
 export const GraphFragmentFragmentDoc = gql`
     fragment GraphFragment on Graph {
   id
@@ -246,18 +258,12 @@ export const GetBankTransactionsDocument = gql`
     query getBankTransactions($cursor: String, $limit: Int) {
   bankTransaction(cursor: $cursor, limit: $limit) {
     results {
-      id
-      value
-      movementName
-      date
-      description
-      kind
-      labelIds
+      ...BankTransactionFragment
     }
     next
   }
 }
-    `;
+    ${BankTransactionFragmentFragmentDoc}`;
 
 export function useGetBankTransactionsQuery(options?: Omit<Urql.UseQueryArgs<GQLGetBankTransactionsQueryVariables>, 'query'>) {
   return Urql.useQuery<GQLGetBankTransactionsQuery, GQLGetBankTransactionsQueryVariables>({ query: GetBankTransactionsDocument, ...options });
@@ -344,6 +350,8 @@ export const LoginDocument = gql`
 export function useLoginMutation() {
   return Urql.useMutation<GQLLoginMutation, GQLLoginMutationVariables>(LoginDocument);
 };
+export type GQLBankTransactionFragmentFragment = { __typename?: 'BankTransaction', id: number, value: number, movementName: string, date: any, description?: string | null, kind: string, labelIds: Array<number> };
+
 export type GQLGetBankTransactionsQueryVariables = Exact<{
   cursor?: InputMaybe<Scalars['String']>;
   limit?: InputMaybe<Scalars['Int']>;

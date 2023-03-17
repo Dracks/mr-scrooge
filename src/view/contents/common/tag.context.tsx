@@ -8,12 +8,12 @@ import { LoadingPage } from '../../utils/ui/loading';
 interface ITagContext {
     refresh: () => Promise<void>;
     tags: Tag[];
-    tagsMap: Record<number, Tag>;
+    tagsMap: Map<number, Tag>;
 }
 
 const TagContext = React.createContext<ITagContext>({
     tags: [],
-    tagsMap: {},
+    tagsMap: new Map(),
     refresh: () => Promise.resolve(),
 });
 
@@ -24,20 +24,13 @@ export const useTagsListContext = (): Tag[] => {
 
 export const useTagsContext = (): ITagContext => useContext(TagContext);
 
-const useGenerateHash = (tags: Tag[]): Record<number, Tag> => {
-    return React.useMemo(
-        () =>
-            tags.reduce((ac, tag) => {
-                ac[tag.id] = tag;
-                return ac;
-            }, {} as Record<number, Tag>),
-        [tags],
-    );
+const useGenerateMap = (tags: Tag[]): Map<number, Tag> => {
+    return React.useMemo(() => new Map(tags.map(tag => [tag.id, tag])), [tags]);
 };
 
 export const ProvideTagsData: React.FC<PropsWithChildren> = ({ children }) => {
     const [query, refresh] = useGetTags();
-    const tagsMap = useGenerateHash(query.data ?? []);
+    const tagsMap = useGenerateMap(query.data ?? []);
 
     if (query.data && !query.error) {
         const context: ITagContext = {
