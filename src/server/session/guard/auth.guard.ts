@@ -34,17 +34,21 @@ export class AuthGuard implements CanActivate {
         const roles = this.reflector.get<Role[]>('roles', context.getHandler()) ?? [];
         this.logger.log({ roles }, 'some roles');
 
-        if (roles.length == 1 && roles[0] === Role.GUEST) {
-            return true;
-        }
-
         const request = context.switchToHttp().getRequest();
 
         let { session } = request;
         if (!session) session = context.getArgByIndex(2).session;
-        const { sessionId = '-' } = session.data() ?? {};
-
+        const { sessionId = '' } = session.data() ?? {};
         const sessionData = await this.sessionService.getSession(sessionId);
+
+
+        if (roles.length == 1 && roles[0] === Role.GUEST) {
+            if (sessionId.length>0 && !sessionData){
+                session.delete()
+            }
+            return true;
+        }
+
         console.log('session', sessionData, sessionId);
         this.logger.warn({sessionData, sessionId}, 'session')
         if (sessionData) {
