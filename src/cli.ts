@@ -4,7 +4,7 @@ import { Logger } from 'nestjs-pino';
 
 import { CliModule } from './cli/cli.module';
 
-async function bootstrap() {
+const bootstrap = async () => {
     const app = await NestFactory.createApplicationContext(CliModule, {});
 
     const logger = app.get(Logger);
@@ -21,4 +21,5 @@ async function bootstrap() {
     }
 }
 
-bootstrap();
+// eslint-disable-next-line no-console
+bootstrap().catch(error => console.error(error));

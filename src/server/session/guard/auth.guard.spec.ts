@@ -1,7 +1,7 @@
-import * as secureSession from '@fastify/secure-session';
-import { Controller, Get, Post, Req, Request } from '@nestjs/common';
+/* eslint-disable class-methods-use-this */
+import { Controller, Get, Post } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { Context, GraphQLModule, Int, Query, Resolver } from '@nestjs/graphql';
+import { GraphQLModule, Int, Query, Resolver } from '@nestjs/graphql';
 import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -76,7 +76,7 @@ describe(AuthGuard.name, () => {
                     graphiql: false,
                     autoSchemaFile: `/tmp/mr-scrooge-tests/${Math.random()}.gql`,
                     context: (req: unknown) => {
-                        const { session, groupsId} = req as {session: WebSession, groupsId: number[]}
+                        const { session, groupsId} = req as {groupsId: number[], session: WebSession}
                         return {
                         session,
                         groups: groupsId
@@ -99,7 +99,8 @@ describe(AuthGuard.name, () => {
 
         app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
 
-        app.register(require('@fastify/secure-session'), {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        await app.register(require('@fastify/secure-session'), {
             secret: 'averylogphrasebiggerthanthirtytwochars',
             salt: 'mq9hDxBVDbspDR6n',
             cookie: {
@@ -113,8 +114,8 @@ describe(AuthGuard.name, () => {
         server = app.getHttpAdapter().getHttpServer();
     });
 
-    afterEach(() => {
-        app.close();
+    afterEach(async () => {
+        await app.close();
     });
 
     describe('Guest', () => {
@@ -149,8 +150,8 @@ describe(AuthGuard.name, () => {
             const user = await app.get(UserProfileService).addUser('demo', 'demo', { isActive: true });
             userId = user.id
 
-            const r = await request(server).query(login, { credentials: { username: 'demo', password: 'demo' } });
-            cookies = r.response.headers['set-cookie'];
+            const loginResponse = await request(server).query(login, { credentials: { username: 'demo', password: 'demo' } });
+            cookies = loginResponse.response.headers['set-cookie'];
         });
 
         it('Access allowed', async () => {

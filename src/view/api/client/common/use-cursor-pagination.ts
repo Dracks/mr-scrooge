@@ -1,13 +1,7 @@
-import { AxiosError, AxiosPromise, AxiosRequestConfig } from 'axios';
-import useAxios, { Options } from 'axios-hooks';
+import { AxiosError } from 'axios';
 import * as Urql from 'urql';
 import { CombinedError } from 'urql';
 
-interface CursorPagination<T> {
-    next?: string;
-    previous?: string;
-    results: T[];
-}
 
 export interface CursorPaginationResult<T> {
     error?: AxiosError<unknown, unknown> | CombinedError | null;
@@ -25,7 +19,7 @@ export const useCursorPaginationQuery = <Data extends object, Variables extends 
     const [response, request] = Urql.useQuery(options);
 
     const { data: parentData, fetching: loading, error } = response;
-    const data = parentData?.[field] as {results: R[], next?: string}
+    const data = parentData?.[field] as {next?: string, results: R[]}
     const getNewConfig: (cursor?: string) => Urql.UseQueryArgs<Variables, Data> = cursor => ({
         ...options,
         variables: {

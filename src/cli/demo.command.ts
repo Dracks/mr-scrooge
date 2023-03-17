@@ -17,6 +17,7 @@ export class DemoCommand {
         @Option({ name: 'password', alias: 'p', default: 'demo' }) password: string,
     ) {
         const userInfo = await this.userService.addUser(username, password, { isActive: true });
+        // eslint-disable-next-line no-console
         console.log(`User added ${userInfo.id}: ${userInfo.username} with groupId: ${userInfo.groupId}`);
     }
 

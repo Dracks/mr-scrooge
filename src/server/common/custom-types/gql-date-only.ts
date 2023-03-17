@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys */
 import { GraphQLScalarType, Kind } from 'graphql';
 
 import { DateOnly } from './date-only';
@@ -10,20 +11,23 @@ export const GQLDateOnly = new GraphQLScalarType({
         if (!(value instanceof DateOnly)) {
             throw new Error('GQLDateOnly can only serialize DateOnly values');
         }
-        return value.toString(); // value sent to the client
+        // value sent to the client
+        return value.toString(); 
     },
     parseValue(value: unknown): DateOnly {
         // check the type of received value
         if (typeof value !== 'string') {
             throw new Error('GQLDateOnly can only parse string values');
         }
-        return new DateOnly(value); // value from the client input variables
+        // value from the client input variables
+        return new DateOnly(value); 
     },
     parseLiteral(ast): DateOnly {
         // check the type of received value
         if (ast.kind !== Kind.STRING) {
             throw new Error('GQLDateOnly can only parse string values');
         }
-        return new DateOnly(ast.value); // value from the client query
+        // value from the client query
+        return new DateOnly(ast.value); 
     },
 });

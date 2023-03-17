@@ -1,8 +1,7 @@
 import { CamelCasedPropertiesDeep } from 'type-fest';
 
 import { components } from '../../generated-models';
-import { GQLGraph, GQLGroup, GQLLabel } from '../../graphql/generated';
-import { Tag } from '../tag/types';
+import { GQLGroup, GQLLabel, GQLNewGraph } from '../../graphql/generated';
 
 /*
  *Old graphs for retro compatibility
@@ -81,7 +80,7 @@ export interface EnrichedHorizontalGroup extends EnrichedGroup {
 
 export type GraphGroup = CamelCasedPropertiesDeep<components['schemas']['Group']>;
 
-export interface EnrichedGraph extends Omit<GQLGraph, 'group' | 'horizontalGroup'> {
+export type EnrichedGraph<T extends GQLNewGraph>  = Omit<T, 'group' | 'horizontalGroup'> & {
     group: EnrichedGroup;
     horizontalGroup?: EnrichedHorizontalGroup;
 }

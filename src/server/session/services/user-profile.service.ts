@@ -3,19 +3,17 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize';
 
 import { UserGroupModel } from '../models/group.model';
-import { UserGroupRelModel } from '../models/user-group-rel.model';
 import { IUserModel, UserModel } from '../models/user.model';
+import { UserGroupRelModel } from '../models/user-group-rel.model';
 import { PasswordService } from './password.service';
 
-const SECRET_KEY = '2&_7krtq544)s^9=8i$om!u+9ump*)#-7rcrka9pjld2nnk6p=';
-
 const emptyProfile: Pick<UserModel, 'isSuperuser' | 'lastName' | 'firstName' | 'email' | 'isStaff' | 'isActive'> = {
+    email: '',
+    firstName: '',
+    isActive: false,
+    isStaff: false,
     isSuperuser: false,
     lastName: '',
-    firstName: '',
-    email: '',
-    isStaff: false,
-    isActive: false,
 };
 
 @Injectable()
@@ -54,15 +52,15 @@ export class UserProfileService {
         const user = await users.find(async ({ password: oldHash, id }) => {
             let isValid = false;
             if (oldHash) {
-                if (oldHash[0] !== '$') {
+                if (oldHash[0] === '$') {
+                    isValid = await this.passwordService.validate(password, oldHash);
+                } else {
                     this.logger.log({ user }, 'password is a django one');
 
                     isValid = await this.passwordService.validateDjango(password, oldHash);
                     if (isValid) {
                         await this.setPassword(id, password);
                     }
-                } else {
-                    isValid = await this.passwordService.validate(password, oldHash);
                 }
             }
             this.logger.log({ user, isValid }, 'IS valid?');
@@ -93,9 +91,9 @@ export class UserProfileService {
         this.logger.log({ username, password }, 'addUser');
         const hashedPassword = await this.passwordService.hash(password);
         const user = await this.userModel.create({
-            username,
-            password: hashedPassword,
             dateJoined: new Date(),
+            password: hashedPassword,
+            username,
             ...emptyProfile,
             ...options,
         });

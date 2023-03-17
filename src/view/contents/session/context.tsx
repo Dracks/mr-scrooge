@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { UserSession } from '../../api/client/session/types';
+import { GQLMyProfile } from '../../api/graphql/generated';
 
 export interface UserSessionCtx {
-    data: UserSession;
+    data: GQLMyProfile;
     logout: () => Promise<void>;
     reload: () => Promise<void>;
 }

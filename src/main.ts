@@ -1,5 +1,4 @@
-// import './config/webpack.run'
-
+/* eslint-disable no-console */
 import { ChildProcess, fork } from 'child_process';
 import { TscWatchClient } from 'tsc-watch/client';
 import webpack from 'webpack';
@@ -8,6 +7,7 @@ import WebpackConfig from '../config/webpack.config';
 
 const tsc = new TscWatchClient();
 
+// eslint-disable-next-line init-declarations
 let serverInstance: ChildProcess | undefined;
 
 tsc.on('success', () => {
@@ -30,8 +30,10 @@ webpack(WebpackConfig, (err, stats) => {
 
     console.log(
         stats?.toString({
-            chunks: false, // Makes the build much quieter
-            colors: true, // Shows colors in the console
+            // Makes the build much quieter
+            chunks: false, 
+            // Shows colors in the console
+            colors: true, 
         }),
     );
 });

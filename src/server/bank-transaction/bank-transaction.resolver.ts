@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { Args, Context, Field, Int, ObjectType, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Args, Field, Int, ObjectType, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 
 import { DateOnly } from '../common/custom-types/date-only';
 import { LabelService } from '../graphs/services/label.service';
@@ -43,7 +43,7 @@ export class BankTransactionResolver {
     }
 
     @ResolveField(()=>[Int])
-    async labelIds(@Parent() parent: BankTransaction){
+    labelIds(@Parent() parent: BankTransaction){
         const {id} = parent
         return this.labelService.getLabelsIdForTransaction(id)
     }

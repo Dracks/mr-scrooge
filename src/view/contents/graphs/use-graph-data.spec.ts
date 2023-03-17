@@ -20,10 +20,10 @@ const getData = (): TransactionsEnriched[] =>
     ].map(({ date, ...element }, idx) => ({
         ...element,
         date: sub(new Date(), date),
+        groupOwnerId: 1,
         id: idx,
         kind: 'test',
         labelsComplete: [],
-        groupOwnerId: 1,
         value: idx + 1,
     }));
 

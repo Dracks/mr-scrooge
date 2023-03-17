@@ -1,6 +1,7 @@
 fragment MyProfileFragment on MyProfile{
-    email, 
+    email,
     firstName,
     lastName,
-    username
+    username,
+    defaultGroupId
 }

@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { CreationAttributes, InferAttributes, InferCreationAttributes, Op } from 'sequelize';
+import { CreationAttributes, InferAttributes, Op } from 'sequelize';
+
 import { listToDictionary, listToDictionaryList } from '../../common/list-to-dictionary';
 import { queryOwnerId } from '../../session/db-query';
-
 import {
-    GraphGroupModel,
     GraphGroupLabelsModel,
-    GraphHorizontalGroupModel,
+    GraphGroupModel,
     GraphHorizontalGroupLabelsModel,
+    GraphHorizontalGroupModel,
     GraphModel,
 } from '../models/graph.model';
 
@@ -62,6 +62,7 @@ export class GraphService {
         private readonly graphHorizontalGroupLabelsModel: typeof GraphHorizontalGroupLabelsModel,
     ) {}
 
+    // eslint-disable-next-line class-methods-use-this
     packGraph(
         graph: InferAttributes<GraphModel>,
         group: InferAttributes<GraphGroupModel>,

@@ -6,6 +6,7 @@ import { Config } from './config';
 export const configTestFactory = Factory.Sync.makeFactory<Config>({
     sessionDaysActive: 10,
     sessionUseLastActivity: true,
+    DEBUG: true,
 });
 
 @Global()

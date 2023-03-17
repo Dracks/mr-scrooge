@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import { Attributes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 

@@ -16,8 +16,8 @@ import {
     YAxis,
 } from 'recharts';
 
-import { EnrichedGraph, GraphKind } from '../../../api/client/graphs/types';
-import { GQLGraphKind } from '../../../api/graphql/generated';
+import { EnrichedGraph } from '../../../api/client/graphs/types';
+import { GQLGraphKind, GQLNewGraph } from '../../../api/graphql/generated';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { DSDoubleGroup } from '../data-transform/types';
 import { useGraphDataGenerator } from '../use-graph-data';
@@ -27,7 +27,7 @@ interface GraphRenderArgs {
 }
 
 interface GraphViewerArgs {
-    graph: EnrichedGraph;
+    graph: EnrichedGraph<GQLNewGraph>;
 }
 
 const genericToRecharts = <K extends string, SK extends string>(
@@ -145,7 +145,7 @@ const ComponentHash: Record<GQLGraphKind, React.FC<GraphRenderArgs>> = {
 export const GraphViewer: React.FC<GraphViewerArgs> = ({ graph }) => {
     const logger = useLogger();
     const data = useGraphDataGenerator(graph);
-    logger.info(graph.name, { data });
+    logger.info(`graph viewer: ${graph.name}`, { data });
     const Component = ComponentHash[graph.kind];
     return <Component graphData={data} />;
 };

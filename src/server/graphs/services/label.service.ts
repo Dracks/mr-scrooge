@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreationAttributes } from 'sequelize';
-import { queryOwnerId } from '../../session/db-query';
 
+import { queryOwnerId } from '../../session/db-query';
 import { ILabel, LabelModel, LabelTransactionModel } from '../models/label.model';
 
 @Injectable()
@@ -12,11 +12,11 @@ export class LabelService {
         @InjectModel(LabelTransactionModel) private readonly labelTransaction: typeof LabelTransactionModel,
         ) {}
 
-        async createLabel(label: CreationAttributes<LabelModel>): Promise<LabelModel> {
+        createLabel(label: CreationAttributes<LabelModel>): Promise<LabelModel> {
             return this.label.create(label);
         }
 
-        async addTransaction(labelTransaction: CreationAttributes<LabelTransactionModel>) {
+        addTransaction(labelTransaction: CreationAttributes<LabelTransactionModel>) {
             return this.labelTransaction.create(labelTransaction);
         }
 

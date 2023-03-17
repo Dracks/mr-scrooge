@@ -1,5 +1,5 @@
 import { EnrichedGraph, EnrichedGroup } from '../../../api/client/graphs/types';
-import { GQLGraph, GQLGroup, GQLLabel } from '../../../api/graphql/generated';
+import { GQLGroup, GQLLabel, GQLNewGraph } from '../../../api/graphql/generated';
 
 export const enrichGroup = <T extends Omit<GQLGroup, '__typename'>>({ labels: oldLabels, ...group }: T, labelsList: GQLLabel[]): EnrichedGroup => {
     const labels = labelsList.filter(label => oldLabels?.includes(label.id));
@@ -10,7 +10,7 @@ export const enrichGroup = <T extends Omit<GQLGroup, '__typename'>>({ labels: ol
     };
 };
 
-export const enrichGraph = (graph: GQLGraph, labelsList: GQLLabel[]): EnrichedGraph => {
+export const enrichGraph = <T extends GQLNewGraph>(graph: T, labelsList: GQLLabel[]): EnrichedGraph<T> => {
     const { horizontalGroup, group } = graph;
     const ownedLabels = labelsList.filter(({groupOwnerId})=>groupOwnerId === graph.groupOwnerId)
     return {

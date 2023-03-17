@@ -7,7 +7,7 @@ describe(DateOnly.name, () => {
         ['date', new Date('2019-07,20'), undefined, undefined, '2019-07-20'],
     ]);
 
-    cases('test %s args (%s, %s, %s) should be %s', (_, year, month, day, expected) => {
+    cases('test %s args (%s, %s, %s) should be %s', (_text, year, month, day, expected) => {
         const dateOnly = new DateOnly(year, month, day);
         expect(dateOnly.toString()).toEqual(expected);
         expect(dateOnly.getDate().toISOString()).toEqual(`${expected}T00:00:00.000Z`);

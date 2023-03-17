@@ -19,7 +19,10 @@ type GroupKeys = GQLGraphGroup;
 
 type LabelSign = 'expenses' | 'income';
 
-export const groupLambdas: Record<GroupKeys | 'identity', (labelsList?: GQLLabel[], others?: boolean) => DTGroupFn<string>> = {
+export const groupLambdas: Record<
+    GroupKeys | 'identity',
+    (labelsList?: GQLLabel[], others?: boolean) => DTGroupFn<string>
+> = {
     [GQLGraphGroup.Month]: () => record => format(record.date, 'yyyy-MM'),
     [GQLGraphGroup.Day]: () => record => `${record.date.getDate()}`,
     [GQLGraphGroup.Year]: () => record => `${record.date.getFullYear()}`,

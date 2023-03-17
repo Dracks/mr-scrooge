@@ -1,20 +1,29 @@
 import { Controller, Get, Logger, OnModuleInit, Render } from '@nestjs/common';
-import path from 'path'
 import fs from 'fs'
+import path from 'path'
 
+import { Config } from '../core/config/config';
 import { AllowRoles, Role } from '../session/guard/roles.decorator';
 
 interface ReactContext {
-    static: 'static/',
+    debug: boolean,
+    static: '/static/',
     version?: string
 }
 @Controller()
 export class ReactController implements OnModuleInit{
     private logger = new Logger(ReactController.name)
 
-    private ctx : ReactContext = {
-        static: 'static/'
+    private ctx : ReactContext
+
+    constructor(config : Config){
+        this.ctx = {
+            static: '/static/',
+            debug: config.DEBUG,
+        }
     }
+
+
 
     onModuleInit(){
         const pFile = path.resolve(__dirname, '../../package.json')

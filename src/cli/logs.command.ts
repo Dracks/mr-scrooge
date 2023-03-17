@@ -11,7 +11,7 @@ export class LogsCommands {
         command: 'show-logger-examples',
         describe: 'Get some examples of logging',
     })
-    async getLogs() {
+    getLogs() {
         this.logger.log('Getting logs...');
         this.logger.debug({ something: 'extra' }, 'Debug log');
         this.logger.warn('This is some warning with %s', 'extra');

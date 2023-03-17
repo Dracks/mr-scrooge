@@ -1,7 +1,7 @@
+/* eslint-disable no-use-before-define */
 import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
-import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, Model, Table } from 'sequelize-typescript';
 
-import { UserGroupModel } from '../../session/models/group.model';
 
 export type IConditionAttributes = InferAttributes<ConditionModel>;
 

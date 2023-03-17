@@ -2,38 +2,38 @@ import { format } from 'date-fns';
 import { TableCell, TableRow, TextArea } from 'grommet';
 import React from 'react';
 
-import { RawDataSource } from '../../api/client/raw-data-source/types';
 import { RdsLinkTagAction, useRdsAddTag } from '../../api/client/raw-data-source/use-rds-add-tag';
 import { useRdsSetDescription } from '../../api/client/raw-data-source/use-rds-set-description';
-import { Tag } from '../../api/client/tag/types';
+import { GQLBankTransaction, GQLLabel } from '../../api/graphql/generated';
 import { useLogger } from '../../utils/logger/logger.context';
 import { InputTag } from '../../utils/ui/tag/input-tag';
 import { TransactionsEnriched } from '../common/raw-data-source.context';
 
 interface RawDataRowProps {
-    onChange: (newData: RawDataSource) => void;
+    labels: GQLLabel[];
+    onChange: (newData: GQLBankTransaction) => void;
     rds: TransactionsEnriched;
-    tags: Tag[];
 }
 
-export const RawDataRow: React.FC<RawDataRowProps> = ({ rds, tags, onChange }) => {
+export const RawDataRow: React.FC<RawDataRowProps> = ({ rds, labels, onChange }) => {
     const linkTags = useRdsAddTag();
     const setComment = useRdsSetDescription();
-    const tagsIds = rds.tags;
-    const updateRdsTag = async (action: RdsLinkTagAction, tagId: number) => {
+    const { labelIds } = rds;
+    const updateRdsTag = async (action: RdsLinkTagAction, labelId: number) => {
         onChange({
             ...rds,
             date: rds.date.toISOString(),
-            tags: action === RdsLinkTagAction.Remove ? tagsIds.filter(id => id !== tagId) : [...tagsIds, tagId],
+            labelIds:
+                action === RdsLinkTagAction.Remove ? labelIds.filter(id => id !== labelId) : [...labelIds, labelId],
         });
-        const request = await linkTags(action, rds.id, tagId);
+        const request = await linkTags(action, rds.id, labelId);
         onChange(request.data);
     };
 
     const updateDesc = async (desc: string) => {
         onChange({
             ...rds,
-            tags: tagsIds,
+            labelIds,
             date: rds.date.toISOString(),
             description: desc,
         });
@@ -49,7 +49,7 @@ export const RawDataRow: React.FC<RawDataRowProps> = ({ rds, tags, onChange }) =
                     value={rds.labelsComplete}
                     onAdd={tag => updateRdsTag(RdsLinkTagAction.Add, tag.id)}
                     onRemove={tag => updateRdsTag(RdsLinkTagAction.Remove, tag.id)}
-                    suggestions={tags.filter(tag => !rds.labelsComplete.includes(tag))}
+                    suggestions={labels.filter(tag => !rds.labelsComplete.includes(tag))}
                 />
             </TableCell>
             <TableCell>{rds.movementName}</TableCell>

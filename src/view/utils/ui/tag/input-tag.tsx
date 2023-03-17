@@ -71,6 +71,7 @@ export const InputTag: React.FC<TagInputProps> = ({ value = [], onAdd, onChange,
                     onSuggestionSelect={event => {
                         const { value: suggestionId, label }: { label: string; value: number } = event.suggestion;
                         onAddTag({ id: suggestionId, name: label });
+                        setCurrentTag('');
                     }}
                 />
             </Box>

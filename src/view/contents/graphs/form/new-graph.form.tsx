@@ -1,12 +1,15 @@
 import React from 'react';
 
-import { GraphV2 } from '../../../api/client/graphs/types';
-import { usePostGraphsV2 } from '../../../api/client/graphs/use-post-graphs-v2';
+import { GQLNewGraph, useNewGraphMutation } from '../../../api/graphql/generated';
+import useSessionContext from '../../session/context';
 import { GraphForm } from './graph.form';
 
 export const GraphNew = () => {
-    const [graphData, setGraphData] = React.useState<Partial<GraphV2>>({});
-    const [, newFormRequest] = usePostGraphsV2();
+    const [, newFormRequest] = useNewGraphMutation();
+    const { data: user } = useSessionContext();
+    const [graphData, setGraphData] = React.useState<Partial<GQLNewGraph>>({
+        groupOwnerId: user.defaultGroupId,
+    });
 
     return (
         <GraphForm
@@ -14,7 +17,9 @@ export const GraphNew = () => {
             update={setGraphData}
             save={async () => {
                 await newFormRequest({
-                    data: graphData,
+                    graph: {
+                        ...graphData,
+                    } as GQLNewGraph,
                 });
             }}
         />

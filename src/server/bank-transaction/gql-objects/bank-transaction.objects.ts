@@ -1,4 +1,4 @@
-import { Field, Float, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 
 import { DateOnly } from '../../common/custom-types/date-only';
 import { GQLDateOnly } from '../../common/custom-types/gql-date-only';

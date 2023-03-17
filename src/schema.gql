@@ -10,9 +10,9 @@ type Group {
 
 enum GraphGroup {
   Day
+  Labels
   Month
   Sign
-  Labels
   Year
 }
 
@@ -28,8 +28,8 @@ type Graph {
   groupOwnerId: Int!
   name: String!
   kind: GraphKind!
-  tagFilter: Float
-  dateRange: String!
+  labelFilter: Float
+  dateRange: GraphDateRange!
   group: Group!
   horizontalGroup: HorizontalGroup
 }
@@ -38,6 +38,15 @@ enum GraphKind {
   Bar
   Line
   Pie
+}
+
+enum GraphDateRange {
+  all
+  halfYear
+  oneMonth
+  oneYear
+  sixYears
+  twoYears
 }
 
 type Label {
@@ -87,6 +96,7 @@ type MyProfile {
   firstName: String!
   lastName: String!
   username: String!
+  defaultGroupId: Int!
 }
 
 type NotIdentified {
@@ -96,6 +106,8 @@ type NotIdentified {
 type Mutation {
   login(credentials: Credentials!): LoginResponse!
   logout: Boolean!
+  newGraph(graph: NewGraph!): NewGraphResponse!
+  updateGraph(graph: UpdatedGraph!): Graph!
 }
 
 union LoginResponse = MyProfile | InvalidCredentials
@@ -107,4 +119,44 @@ type InvalidCredentials {
 input Credentials {
   username: String!
   password: String!
+}
+
+union NewGraphResponse = Graph | WrongOwnerId
+
+type WrongOwnerId {
+  validOwners: [Int!]!
+}
+
+input NewGraph {
+  groupOwnerId: Int!
+  name: String!
+  kind: GraphKind!
+  tagFilter: Float
+  dateRange: GraphDateRange!
+  group: MutateGroup!
+  horizontalGroup: MutateHorizontalGroup
+}
+
+input MutateGroup {
+  group: GraphGroup!
+  hideOthers: Boolean
+  labels: [Int!]
+}
+
+input MutateHorizontalGroup {
+  group: GraphGroup!
+  hideOthers: Boolean
+  labels: [Int!]
+  accumulate: Boolean
+}
+
+input UpdatedGraph {
+  id: Int!
+  groupOwnerId: Int!
+  name: String!
+  kind: GraphKind!
+  tagFilter: Float
+  dateRange: GraphDateRange!
+  group: MutateGroup!
+  horizontalGroup: MutateHorizontalGroup
 }

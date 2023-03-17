@@ -10,8 +10,8 @@ import {
     Query,
     Resolver,
 } from '@nestjs/graphql';
-import { WebSession } from '../../common/web-session.type';
 
+import { WebSession } from '../../common/web-session.type';
 import { CustomError, ensureOrThrow } from '../../core/errors/base-error';
 import { MyProfile } from '../gql-objects/my-profile.object';
 import { AllowRoles, Role } from '../guard/roles.decorator';
@@ -67,7 +67,7 @@ export class SessionResolver {
 
     constructor(private readonly userService: UserProfileService, private readonly sessionService: SessionService) {}
 
-    @Query(returns => MyProfileResponse, {
+    @Query(() => MyProfileResponse, {
         name: 'me',
         description: 'Checks if a user is logged in and returns his profile',
     })
@@ -103,7 +103,7 @@ export class SessionResolver {
     @Mutation(() => Boolean)
     async logout(@Context('session') session: WebSession): Promise<boolean> {
         const sessionId = session.get('sessionId');
-        sessionId && await this.sessionService.dropSession(sessionId);
+        if (sessionId) await this.sessionService.dropSession(sessionId);
         session.delete();
         return true;
     }
