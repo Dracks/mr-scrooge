@@ -9,7 +9,6 @@ import { enrichGraph } from './graph-with-rechart/enrich-graph';
 import { GraphWrapperWithRechart } from './graph-with-rechart/graph';
 
 export const Graphs: React.FC = () => {
-
     const [graphs, refresh] = useGetGraphsQuery();
     const { labels } = useLabelsContext();
 

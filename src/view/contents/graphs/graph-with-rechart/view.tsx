@@ -16,13 +16,9 @@ import {
     YAxis,
 } from 'recharts';
 
-<<<<<<< HEAD:src/view/contents/graphs/graph-with-rechart/view.tsx
 import { EnrichedGraph } from '../../../api/client/graphs/types';
 import { GQLGraphKind, GQLNewGraph } from '../../../api/graphql/generated';
-=======
-import { EnrichedGraph, GraphKind } from '../../../api/client/graphs/types';
 import { DECIMAL_COUNT } from '../../../constants';
->>>>>>> 587a706ad3cb5054df79f696eeb62f2615feecb2:view/src/contents/graphs/graph-with-rechart/view.tsx
 import { useLogger } from '../../../utils/logger/logger.context';
 import { DSDoubleGroup } from '../data-transform/types';
 import { useGraphDataGenerator } from '../use-graph-data';
