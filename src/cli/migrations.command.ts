@@ -20,10 +20,11 @@ export class MigrationsCommand {
 
     constructor(@InjectConnection() private readonly sequelize: Sequelize, private readonly config: CliConfig) {}
 
+    // eslint-disable-next-line max-lines-per-function
     @Command({
         command: 'makemigrations',
     })
-    async makeMigrations(
+    makeMigrations(
         @Option({ name: 'preview', default: false, type: 'boolean' }) preview: boolean,
         @Option({ name: 'name', default: 'no-name' }) name: string,
     ) {
@@ -49,6 +50,7 @@ export class MigrationsCommand {
 
         try {
             previousState = JSON.parse(fs.readFileSync(path.join(migrationsDir, '_current.json')).toString());
+        // eslint-disable-next-line id-length, no-empty
         } catch (e) {}
 
         const { models } = sequelize;

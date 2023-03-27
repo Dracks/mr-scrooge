@@ -1,4 +1,4 @@
-import { Field, Float, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 
 import { DateOnly } from '../../common/custom-types/date-only';
 import { GQLDateOnly } from '../../common/custom-types/gql-date-only';
@@ -8,6 +8,9 @@ import { IBankTransaction } from '../models/bank-transaction.model';
 export class BankTransaction implements Omit<IBankTransaction, 'pageKey' | 'date' | 'dateValue' | 'groupOwnerId'> {
     @Field(() => Int)
     id!: number;
+
+    @Field(() => Int)
+    groupOwnerId!: number;
 
     @Field(() => String)
     movementName!: string;

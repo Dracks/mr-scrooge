@@ -1,5 +1,6 @@
+/* eslint-disable no-use-before-define */
 import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
-import { Column, DataType, ForeignKey, Index, Model, Sequelize, Table } from 'sequelize-typescript';
+import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 
 import { UserModel } from './user.model';
 

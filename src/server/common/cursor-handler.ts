@@ -1,8 +1,8 @@
 import { CustomError } from '../core/errors/base-error';
 
 export interface ListWithCursor<T> {
-    next?: string;
     list: T[];
+    next?: string;
 }
 
 export class CursorHandler<T, R extends keyof T> {

@@ -1,0 +1,19 @@
+fragment GraphFragment on Graph{
+    id,
+    name,
+    kind,
+    labelFilter,
+    dateRange,
+    groupOwnerId,
+    group{
+        group,
+        hideOthers,
+        labels
+    },
+    horizontalGroup{
+        group,
+        hideOthers,
+        labels,
+        accumulate,
+    },
+}

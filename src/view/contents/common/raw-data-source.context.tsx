@@ -1,14 +1,10 @@
 import React, { PropsWithChildren, useContext } from 'react';
 
-import { RawDataSource } from '../../api/client/raw-data-source/types';
 import { useGetPaginatedRawDataSource } from '../../api/client/raw-data-source/use-get-paginated-rawdatasource';
-import { Tag } from '../../api/client/tag/types';
 import { GQLBankTransaction, GQLLabel } from '../../api/graphql/generated';
 import ErrorHandler from '../../api/helpers/request-error.handler';
-import { useLogger } from '../../utils/logger/logger.context';
 import { EventTypes, useEventEmitter } from '../../utils/providers/event-emitter.provider';
 import { useLabelsListContext } from './label.context';
-import { useTagsListContext } from './tag.context';
 
 export type TransactionsEnriched = Omit<GQLBankTransaction, 'date'> & {
     date: Date;
@@ -47,7 +43,6 @@ export const ProvideRdsData: React.FC<PropsWithChildren> = ({ children }) => {
     const eventEmitter = useEventEmitter();
     const labels = useLabelsListContext();
     const query = useGetPaginatedRawDataSource();
-    const logger = useLogger();
     const enrichTransactions = (rds: GQLBankTransaction) => ({
         ...rds,
         date: new Date(rds.date),
@@ -62,14 +57,14 @@ export const ProvideRdsData: React.FC<PropsWithChildren> = ({ children }) => {
             query.results.map(enrichTransactions).forEach(replaceOrAdd(newState, stateIndexes));
             setState({ data: newState, index: stateIndexes });
             if (query.next) {
-                query.next()
+                query.next();
             }
         }
     }, [query.loading, query.results]);
 
     React.useEffect(() => {
         const unSubscribe = eventEmitter.subscribe(EventTypes.OnQueueUploadFinish, () => {
-            query.reset()
+            query.reset();
         });
 
         return unSubscribe;

@@ -1,5 +1,5 @@
-import { DateRange, EnrichedGraph } from '../../api/client/graphs/types';
-import { GQLLabel } from '../../api/graphql/generated';
+import { EnrichedGraph } from '../../api/client/graphs/types';
+import { GQLGraphDateRange, GQLLabel, GQLNewGraph } from '../../api/graphql/generated';
 import { useRdsData } from '../common/raw-data-source.context';
 import { accumulateFn } from './data-transform/accumulate';
 import { createGroupWithSubGroup } from './data-transform/create-groups';
@@ -7,16 +7,16 @@ import { getRangeFilter, groupLambdas, sortLambdas } from './data-transform/lamb
 import { sumGroups } from './data-transform/sum-groups';
 import { DSDoubleGroup } from './data-transform/types';
 
-const hashDateRange: Record<DateRange, number | undefined> = {
-    month: 1,
-    six: 6,
-    year: 12,
+const hashDateRange: Record<GQLGraphDateRange, number | undefined> = {
+    [GQLGraphDateRange.OneMonth]: 1,
+    [GQLGraphDateRange.HalfYear]: 6,
+    [GQLGraphDateRange.OneYear]: 12,
     // eslint-disable-next-line sort-keys
-    twoYears: 24,
+    [GQLGraphDateRange.TwoYears]: 24,
     // eslint-disable-next-line sort-keys
-    sixYears: 12 * 6,
+    [GQLGraphDateRange.SixYears]: 12 * 6,
     // eslint-disable-next-line sort-keys
-    all: undefined,
+    [GQLGraphDateRange.All]: undefined,
 };
 
 const normalizeSubGroups = (data: DSDoubleGroup<string, string>[]): DSDoubleGroup<string, string>[] => {
@@ -25,7 +25,13 @@ const normalizeSubGroups = (data: DSDoubleGroup<string, string>[]): DSDoubleGrou
     const newData = data.map(group => {
         const newValues = [...group.value];
 
-        const [{ groupName }] = group.value;
+        const [first] = group.value;
+        let { groupName } = first ?? {};
+
+        if (!groupName) {
+            groupName = '-- Unknown --';
+        }
+
         const existingSubGroupKeys = new Set(group.value.map(subGroup => subGroup.label));
         subGroupsKeys.forEach(subKey => {
             if (!existingSubGroupKeys.has(subKey)) {
@@ -48,10 +54,11 @@ const normalizeSubGroups = (data: DSDoubleGroup<string, string>[]): DSDoubleGrou
 
 const labelMap = ({ name }: GQLLabel) => name;
 
-export const useGraphDataGenerator = ({ tagFilter, dateRange, horizontalGroup, group }: EnrichedGraph) => {
+export const useGraphDataGenerator = <T extends GQLNewGraph>({ labelFilter, dateRange, horizontalGroup, group, groupOwnerId }: EnrichedGraph<T>) => {
     const { data } = useRdsData();
-    const monthRange = hashDateRange[dateRange as DateRange];
-    let rdsList = tagFilter ? data.filter(rds => rds.labelIds.indexOf(tagFilter) >= 0) : data;
+    const monthRange = hashDateRange[dateRange];
+    let rdsList = labelFilter ? data.filter(rds => rds.labelIds.indexOf(labelFilter) >= 0) : data;
+    rdsList = rdsList.filter(rds => rds.groupOwnerId === groupOwnerId);
     rdsList = monthRange ? rdsList.filter(getRangeFilter(monthRange, new Date())) : rdsList;
 
     const groupLambda = groupLambdas[group.group](group.labels, group.hideOthers ?? false);

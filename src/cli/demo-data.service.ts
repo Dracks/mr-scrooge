@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
-import { add, isBefore, isFuture, sub } from 'date-fns';
-import { match, P } from 'ts-pattern';
+import {  isBefore, sub } from 'date-fns';
+import { match } from 'ts-pattern';
 
 import { BankTransactionService } from '../server/bank-transaction/bank-transaction.service';
 import { DateOnly } from '../server/common/custom-types/date-only';
-import { GraphGroup, GraphKind } from '../server/graphs/models/graph.model';
+import { GraphDateRange, GraphGroup, GraphKind } from '../server/graphs/models/graph.model';
 import { GraphService } from '../server/graphs/services/graph.service';
 import { LabelService } from '../server/graphs/services/label.service';
 
@@ -42,77 +41,77 @@ export class DemoDataService {
         let date = match(periodicity)
             .with('days', () => sub(new Date(), nextFn()))
             .with('montly', () => {
-                const d = new Date();
-                d.setDate(5);
-                return d;
+                const newDate = new Date();
+                newDate.setDate(5);
+                return newDate;
             })
             .exhaustive();
 
         const finish = sub(new Date(), { months: 6 });
         finish.setDate(0);
 
-        console.log(nextFn(), finish, date, sub(date, nextFn()));
-
         while (isBefore(finish, date)) {
+            // eslint-disable-next-line no-await-in-loop
             const transaction = await this.transactionService.addTransaction({
                 date: new DateOnly(date).toString(),
                 groupOwnerId,
                 kind: 'demo',
                 movementName: `transaction ${label}`,
-                value: getAmount(),
                 pageKey: '',
+                value: getAmount(),
             });
-            this.labelService.addTransaction({ labelId: labelData.dataValues.id, transactionId: transaction.id });
+            // eslint-disable-next-line no-await-in-loop
+            await this.labelService.addTransaction({ labelId: labelData.dataValues.id, transactionId: transaction.id });
             date = sub(date, nextFn());
-        } //* /
+        } 
         return labelData.id;
     }
 
     async generateGraphs(groupOwnerId: number, labelIdMap: Record<string, number>) {
         await this.graphService.createGraph({
-            groupOwnerId,
-            name: 'Income vs expenses',
-            kind: GraphKind.Bar,
+            dateRange: GraphDateRange.halfYear,
             group: {
                 group: GraphGroup.Sign,
             },
+            groupOwnerId,
             horizontalGroup: {
                 group: GraphGroup.Month,
             },
-            dateRange: "half year",
+            kind: GraphKind.Bar,
+            name: 'Income vs expenses',
         });
         await this.graphService.createGraph({
-            groupOwnerId,
-            name: 'Compare labels',
-            kind: GraphKind.Line,
+            dateRange: GraphDateRange.twoYears,
             group: {
                 group: GraphGroup.Labels,
                 labels: [labelIdMap.groceries, labelIdMap.gasoline],
             },
+            groupOwnerId,
             horizontalGroup: {
                 group: GraphGroup.Month,
             },
-            dateRange: 'two years'
+            kind: GraphKind.Line,
+            name: 'Compare labels',
         });
     }
 
     async generateAll(groupOwnerId: number) {
         const labelConfigMap: Record<string, { amount: Range; periodicity: 'days' | 'montly' }> = {
+            gasoline: { amount: { max: -30, min: -100 }, periodicity: 'days' },
             groceries: {
                 amount: { max: -10, min: -100 },
                 periodicity: 'days',
             },
-            salary: {
-                amount: { max: 2100, min: 1800 },
+            mortgage: {
+                amount: { max: -400, min: -400 },
                 periodicity: 'montly',
             },
-            gasoline: { amount: { max: -30, min: -100 }, periodicity: 'days' },
             phone: {
                 amount: { max: -10, min: -15 },
                 periodicity: 'montly',
             },
-            mortgage: {
-                amount: { max: -400, min: -400 },
+            salary: {
+                amount: { max: 2100, min: 1800 },
                 periodicity: 'montly',
             },
         };
@@ -123,6 +122,8 @@ export class DemoDataService {
                     const labelId = await this.generateTagAndTransactions(groupOwnerId, label, amount, periodicity);
                     return [label, labelId];
                 }
+
+                return undefined;
             }),
         )) as Array<[string, number]>;
 

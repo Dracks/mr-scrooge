@@ -1,4 +1,6 @@
+/* eslint-disable class-methods-use-this */
 import { Query, Resolver } from "@nestjs/graphql";
+
 import { ImportKind } from "../gql-objects/import-kind.object";
 
 @Resolver()

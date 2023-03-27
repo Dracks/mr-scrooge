@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 
 import {
-    GraphGroupModel,
     GraphGroupLabelsModel,
-    GraphHorizontalGroupModel,
+    GraphGroupModel,
     GraphHorizontalGroupLabelsModel,
+    GraphHorizontalGroupModel,
     GraphModel,
 } from './models/graph.model';
 import { LabelModel,LabelTransactionModel } from './models/label.model';

@@ -3,17 +3,17 @@ import { Analytics } from 'grommet-icons';
 import React from 'react';
 import { useNavigate } from 'react-router';
 
-import { DateRange, GraphGroupEnum, GraphKind, GraphV2 } from '../../../api/client/graphs/types';
+import { GQLGraphDateRange, GQLGraphGroup, GQLGraphKind, GQLLabel, GQLNewGraph } from '../../../api/graphql/generated';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { ConfirmationButton } from '../../../utils/ui/confirmation-button';
 import { InputTag } from '../../../utils/ui/tag/input-tag';
-import { useTagsContext } from '../../common/tag.context';
+import { useLabelsContext } from '../../common/label.context';
 import { enrichGraph } from '../graph-with-rechart/enrich-graph';
 import { GraphViewer } from '../graph-with-rechart/view';
 import { graphToUi, GraphUiRepresentation, uiToGraph } from './graph.transformer';
 
-interface GraphFormProps<T extends Partial<GraphV2>> {
-    graphData: T;
+interface GraphFormProps<T extends GQLNewGraph> {
+    graphData: Partial<T>;
     save: () => Promise<void>;
     update: (graphData: T) => void;
 }
@@ -28,34 +28,36 @@ const GraphPlaceholder: React.FC = () => {
     );
 };
 
-const DateRangeOptions: Array<{ id: DateRange; label: string }> = [
-    { id: DateRange.oneMonth, label: 'One month' },
-    { id: DateRange.halfYear, label: 'Half year' },
-    { id: DateRange.oneYear, label: 'One year' },
-    { id: DateRange.twoYears, label: 'Two years' },
-    { id: DateRange.all, label: 'all' },
+const DateRangeOptions: Array<{ id: GQLGraphDateRange; label: string }> = [
+    { id: GQLGraphDateRange.OneMonth, label: 'One month' },
+    { id: GQLGraphDateRange.HalfYear, label: 'Half year' },
+    { id: GQLGraphDateRange.OneYear, label: 'One year' },
+    { id: GQLGraphDateRange.TwoYears, label: 'Two years' },
+    { id: GQLGraphDateRange.All, label: 'all' },
 ];
 
 // eslint-disable-next-line max-lines-per-function
-export const GraphForm: <T extends Partial<GraphV2>>(p: GraphFormProps<T>) => React.ReactElement<GraphFormProps<T>> = <
-    T extends Partial<GraphV2>,
+export const GraphForm: <T extends GQLNewGraph>(p: GraphFormProps<T>) => React.ReactElement<GraphFormProps<T>> = <
+    T extends GQLNewGraph,
 >({
     graphData,
     update,
     save,
 }: GraphFormProps<T>) => {
-    const { tags, tagsMap } = useTagsContext();
-    const tagsPair = tags.map(({ id, name }) => ({ id, name }));
+    const { labels: allLabels, labelsMap } = useLabelsContext();
+    const labels = allLabels.filter(({ groupOwnerId }) => graphData.groupOwnerId === groupOwnerId);
+    const labelsPair = labels.map(({ id, name }) => ({ id, name }));
     const navigate = useNavigate();
 
     const size = React.useContext(ResponsiveContext);
-    const hasHorizontal = graphData.kind === GraphKind.bar || graphData.kind === GraphKind.line;
-    const graphEnabled = (graphData.kind && graphData.group && !hasHorizontal) || graphData.horizontalGroup;
+    const hasHorizontal = graphData.kind === GQLGraphKind.Bar || graphData.kind === GQLGraphKind.Line;
+    const graphEnabled = graphData.kind && graphData.group && (!hasHorizontal || graphData.horizontalGroup);
     const graphUi = graphToUi(graphData);
     const updateGraph = (data: GraphUiRepresentation) => {
         update(uiToGraph(data) as T);
     };
     useLogger().info('Graph Form', { graphData, graphUi });
+
     return (
         <Form<GraphUiRepresentation>
             value={graphUi}
@@ -65,15 +67,20 @@ export const GraphForm: <T extends Partial<GraphV2>>(p: GraphFormProps<T>) => Re
             }}
         >
             <Box direction={size === 'small' ? 'column' : 'row'} width="fill">
-                {graphEnabled ? <GraphViewer graph={enrichGraph(graphData as GraphV2, tags)} /> : <GraphPlaceholder />}
+                {graphEnabled ? <GraphViewer graph={enrichGraph(graphData as T, labels)} /> : <GraphPlaceholder />}
                 <Box>
                     <FormField name="name" label="Graph name" component={TextInput} />
-                    <FormField label="Graph kind" name="kind" component={Select} options={Object.values(GraphKind)} />
+                    <FormField
+                        label="Graph kind"
+                        name="kind"
+                        component={Select}
+                        options={Object.values(GQLGraphKind)}
+                    />
                     <FormField name="tag" htmlFor="select-for-tag-filter" label="Tag filter">
                         <Select
                             id="select-for-tag-filter"
                             name="tagFilter"
-                            options={tagsPair}
+                            options={labelsPair}
                             placeholder="No tag filter selected"
                             labelKey="name"
                             valueKey={{ key: 'id', reduce: true }}
@@ -94,27 +101,32 @@ export const GraphForm: <T extends Partial<GraphV2>>(p: GraphFormProps<T>) => Re
                         <FormField
                             label="Group type"
                             name="groupKind"
-                            options={Object.values(GraphGroupEnum)}
+                            options={Object.values(GQLGraphGroup)}
                             component={Select}
                         />
-                        {graphUi.groupKind === GraphGroupEnum.tags && (
+                        {graphUi.groupKind === GQLGraphGroup.Labels && (
                             <React.Fragment>
                                 <FormField label="Tags to group" htmlFor="select-group-tags">
                                     <InputTag
-                                        value={graphUi.groupTags?.map(tagId => tagsMap[tagId]) ?? []}
+                                        value={
+                                            graphUi.groupLabels?.map(labelId => labelsMap.get(labelId) as GQLLabel) ??
+                                            []
+                                        }
                                         onAdd={tag =>
                                             updateGraph({
                                                 ...graphUi,
-                                                groupTags: [...(graphUi.groupTags ?? []), tag.id],
+                                                groupLabels: [...(graphUi.groupLabels ?? []), tag.id],
                                             })
                                         }
                                         onRemove={tag =>
                                             updateGraph({
                                                 ...graphUi,
-                                                groupTags: (graphUi.groupTags ?? []).filter(tagId => tagId !== tag.id),
+                                                groupLabels: (graphUi.groupLabels ?? []).filter(
+                                                    tagId => tagId !== tag.id,
+                                                ),
                                             })
                                         }
-                                        suggestions={tags}
+                                        suggestions={labels}
                                     />
                                 </FormField>
                                 <FormField label="Hide other tags" name="groupHideOthers" component={CheckBox} />
@@ -127,22 +139,26 @@ export const GraphForm: <T extends Partial<GraphV2>>(p: GraphFormProps<T>) => Re
                             <FormField
                                 label="Group type"
                                 name="horizontalGroupKind"
-                                options={Object.values(GraphGroupEnum)}
+                                options={Object.values(GQLGraphGroup)}
                                 component={Select}
                             />
-                            {graphUi.kind === GraphKind.line && (
+                            {graphUi.kind === GQLGraphKind.Line && (
                                 <FormField label="Acumulate values" name="horizontalAccumulate" component={CheckBox} />
                             )}
-                            {graphUi.horizontalGroupKind === GraphGroupEnum.tags && (
+                            {graphUi.horizontalGroupKind === GQLGraphGroup.Labels && (
                                 <React.Fragment>
                                     <FormField label="Tags to group" htmlFor="select-x-group-tags">
                                         <InputTag
-                                            value={graphUi.horizontalGroupTags?.map(tagId => tagsMap[tagId]) ?? []}
+                                            value={
+                                                graphUi.horizontalGroupLabels?.map(
+                                                    labelId => labelsMap.get(labelId) as GQLLabel,
+                                                ) ?? []
+                                            }
                                             onAdd={tag =>
                                                 updateGraph({
                                                     ...graphUi,
-                                                    horizontalGroupTags: [
-                                                        ...(graphUi.horizontalGroupTags ?? []),
+                                                    horizontalGroupLabels: [
+                                                        ...(graphUi.horizontalGroupLabels ?? []),
                                                         tag.id,
                                                     ],
                                                 })
@@ -150,12 +166,12 @@ export const GraphForm: <T extends Partial<GraphV2>>(p: GraphFormProps<T>) => Re
                                             onRemove={tag =>
                                                 updateGraph({
                                                     ...graphUi,
-                                                    horizontalGroupTags: (graphUi.horizontalGroupTags ?? []).filter(
+                                                    horizontalGroupLabels: (graphUi.horizontalGroupLabels ?? []).filter(
                                                         tagId => tagId !== tag.id,
                                                     ),
                                                 })
                                             }
-                                            suggestions={tags}
+                                            suggestions={labels}
                                         />
                                     </FormField>
                                     <FormField
@@ -168,7 +184,12 @@ export const GraphForm: <T extends Partial<GraphV2>>(p: GraphFormProps<T>) => Re
                         </Box>
                     )}
                     <Box direction="row" gap="small" justify="center">
-                        <Button primary label="Save" type="submit" />
+                        <Button
+                            primary
+                            label="Save"
+                            type="submit"
+                            disabled={!graphEnabled || graphData.name?.length === 0 || !graphData.name}
+                        />
                         <ConfirmationButton
                             color="accent-4"
                             label="discard"

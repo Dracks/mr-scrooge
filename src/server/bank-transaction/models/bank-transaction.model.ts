@@ -1,12 +1,10 @@
+/* eslint-disable no-use-before-define */
 import { Attributes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import {
-    addFieldToIndex,
     Column,
     DataType,
     ForeignKey,
     Index,
-    IndexFieldOptions,
-    IndexOptions,
     Model,
     Table,
 } from 'sequelize-typescript';

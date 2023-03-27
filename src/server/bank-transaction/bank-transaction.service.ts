@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import sequelize, { InferCreationAttributes, Op } from 'sequelize';
-import { WhereOptions } from 'sequelize';
+import sequelize, { InferCreationAttributes, Op, WhereOptions } from 'sequelize';
 
 import { CursorHandler, ListWithCursor } from '../common/cursor-handler';
 import { queryOwnerId } from '../session/db-query';
@@ -15,7 +14,8 @@ export class BankTransactionService {
 
     constructor(@InjectModel(BankTransaction) private readonly bankMovementModel: typeof BankTransaction) {}
 
-    async getAll(groupIds: number[], cursor?: string, limit = 100, query?: {}): Promise<ListWithCursor<IBankTransaction>> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async getAll(groupIds: number[], cursor?: string, limit = 100, query= {}): Promise<ListWithCursor<IBankTransaction>> {
         const andConditional: WhereOptions<BankTransaction>[] = [queryOwnerId(groupIds)];
 
         if (cursor) {
@@ -57,7 +57,7 @@ export class BankTransactionService {
         await this.bankMovementModel.bulkCreate(movements, {
             logging: (sql, timing) => {
                 // this.logger.log({sql, timing}, 'Bulk insert')
-                console.log(sql, timing);
+                this.logger.log({sql, timing}, 'Insert batch');
             },
             validate: true,
         });

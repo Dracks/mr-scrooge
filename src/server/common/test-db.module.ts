@@ -1,9 +1,9 @@
 import { SequelizeModule } from '@nestjs/sequelize';
 
 export const TestDbModule = SequelizeModule.forRoot({
-    dialect: 'sqlite',
     autoLoadModels: true,
-    synchronize: true,
+    dialect: 'sqlite',
     logging: false,
     repositoryMode: true,
+    synchronize: true,
 });

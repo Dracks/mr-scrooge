@@ -5,11 +5,12 @@ import { useNavigate } from 'react-router';
 
 import { EnrichedGraph } from '../../../api/client/graphs/types';
 import { useDeleteGraphsV2 } from '../../../api/client/graphs/use-delete-graphs-v2';
+import { GQLGraph } from '../../../api/graphql/generated';
 import { ConfirmationButton } from '../../../utils/ui/confirmation-button';
 import { GraphViewer } from './view';
 
 interface GraphWrapperArgs {
-    graph: EnrichedGraph;
+    graph: EnrichedGraph<GQLGraph>;
     reload: () => Promise<void>;
 }
 

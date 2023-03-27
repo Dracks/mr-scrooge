@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import { DATEONLY, DateOnlyDataType, ValidationError } from 'sequelize';
 
 import { DateOnly } from './date-only';
@@ -22,7 +23,7 @@ export class MyDateType extends DATEONLY implements DateOnlyDataType {
 
     validate(value: unknown): void {
         if (!(value instanceof DateOnly)) {
-            new ValidationError('Invalid date', []);
+            throw new ValidationError('Invalid date', []);
         }
 
         /*
@@ -43,7 +44,8 @@ export class MyDateType extends DATEONLY implements DateOnlyDataType {
         return value.toString();
     }
 
-    escape(value: DateOnly, options: {}): string {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    escape(value: DateOnly, options: unknown): string {
         return value.toString();
     }
 }

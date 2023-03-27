@@ -1,35 +1,55 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GraphResolver testing with some data Testing the query 1`] = `
+exports[`GraphResolver Creating a new graph Testing the new graph 1`] = `
 {
-  "dateRange": "6 months",
+  "__typename": "Graph",
+  "dateRange": "halfYear",
   "group": {
     "group": "Month",
     "hideOthers": null,
     "labels": null,
   },
+  "groupOwnerId": 1,
   "horizontalGroup": null,
   "id": 1,
-  "kind": "Pie",
-  "name": "first",
-  "tagFilter": null,
+  "kind": "Bar",
+  "labelFilter": null,
+  "name": "name: 0",
 }
 `;
 
-exports[`GraphResolver testing with some data Testing the query 2`] = `
+exports[`GraphResolver testing with some data Testing query the graphs 1`] = `
 {
-  "dateRange": "twelve",
+  "dateRange": "halfYear",
   "group": {
-    "group": "Tags",
+    "group": "Month",
+    "hideOthers": null,
+    "labels": null,
+  },
+  "groupOwnerId": 1,
+  "horizontalGroup": null,
+  "id": 1,
+  "kind": "Pie",
+  "labelFilter": null,
+  "name": "first",
+}
+`;
+
+exports[`GraphResolver testing with some data Testing query the graphs 2`] = `
+{
+  "dateRange": "oneYear",
+  "group": {
+    "group": "Labels",
     "hideOthers": false,
     "labels": [
       1,
       2,
     ],
   },
+  "groupOwnerId": 1,
   "horizontalGroup": {
     "accumulate": false,
-    "group": "Tags",
+    "group": "Labels",
     "hideOthers": true,
     "labels": [
       3,
@@ -38,7 +58,7 @@ exports[`GraphResolver testing with some data Testing the query 2`] = `
   },
   "id": 34,
   "kind": "Line",
+  "labelFilter": null,
   "name": "huge graph",
-  "tagFilter": null,
 }
 `;

@@ -1,18 +1,18 @@
 import React, { PropsWithChildren, useContext } from 'react';
-import { GQLLabel, useGetLabelsQuery } from '../../api/graphql/generated';
 
+import { GQLLabel, useGetLabelsQuery } from '../../api/graphql/generated';
 import ErrorHandler from '../../api/helpers/request-error.handler';
 import { LoadingPage } from '../../utils/ui/loading';
 
 interface ILabelContext {
-    refresh: () => Promise<void>;
     labels: GQLLabel[];
-    labelsMap: Record<number, GQLLabel>;
+    labelsMap: Map<number, GQLLabel>;
+    refresh: () => Promise<void>;
 }
 
 const LabelContext = React.createContext<ILabelContext>({
     labels: [],
-    labelsMap: {},
+    labelsMap: new Map<number, GQLLabel>(),
     refresh: () => Promise.resolve(),
 });
 
@@ -23,15 +23,8 @@ export const useLabelsListContext = (): GQLLabel[] => {
 
 export const useLabelsContext = (): ILabelContext => useContext(LabelContext);
 
-const useGenerateHash = (labels: GQLLabel[]): Record<number, GQLLabel> => {
-    return React.useMemo(
-        () =>
-            labels.reduce((ac, tag) => {
-                ac[tag.id] = tag;
-                return ac;
-            }, {} as Record<number, GQLLabel>),
-        [labels],
-    );
+const useGenerateHash = (labels: GQLLabel[]): Map<number, GQLLabel> => {
+    return React.useMemo(() => new Map(labels.map(label => [label.id, label])), [labels]);
 };
 
 export const ProvideLabelsData: React.FC<PropsWithChildren> = ({ children }) => {

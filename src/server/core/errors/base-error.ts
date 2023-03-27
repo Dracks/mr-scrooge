@@ -34,12 +34,12 @@ export class CustomError extends Error {
 
     toJSON() {
         return {
-            type: this.constructor.name,
-            code: this.code,
-            message: this.message,
-            context: this.context,
             cause: this.cause ? errorToJson(this.cause) : undefined,
+            code: this.code,
+            context: this.context,
+            message: this.message,
             stack: this.stack,
+            type: this.constructor.name,
         };
     }
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const zeroPad = (num: number, places: number) => String(num).padStart(places, '0');
 
 export class DateOnly {
@@ -25,7 +26,8 @@ export class DateOnly {
         ) {
             this.assign(new Date(date));
         } else if (typeof date === 'number' && typeof month === 'number' && typeof day === 'number') {
-            this.assign(new Date(date, month - 1, day));
+            // this.assign(new Date(date, month - 1, day));
+            this.assign(new Date(`${date}-${month}-${day}`));
         } else if (date instanceof Date) {
             this.assign(date);
         } else {
@@ -38,15 +40,7 @@ export class DateOnly {
      * @returns {Date} a date set in UTC format
      */
     getDate(): Date {
-        const d = new Date(0, 0, 0, 0, 0, 0, 0);
-        // return new Date(this._year, this._month-1, this._day, 0, 0, 0, 0)
-        d.setUTCFullYear(this._year);
-        d.setUTCMonth(this._month - 1);
-        d.setUTCDate(this._day);
-        d.setUTCHours(0);
-        d.setUTCMinutes(0);
-        d.setUTCSeconds(0);
-        return d;
+        return new Date(Date.UTC(this._year, this._month-1, this._day, 0, 0, 0, 0))
     }
 
     toString(): string {

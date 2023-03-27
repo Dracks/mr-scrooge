@@ -7,13 +7,14 @@ import { AppModule } from './app.module';
 
 const rootDir = __dirname;
 
-async function bootstrap() {
+const bootstrap = async () => {
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), { bufferLogs: true });
 
     const logger = app.get(Logger);
 
     app.useLogger(logger);
 
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     await app.register(require('@fastify/secure-session'), {
         secret: 'averylogphrasebiggerthanthirtytwochars',
         salt: 'mq9hDxBVDbspDR6n',
@@ -34,6 +35,7 @@ async function bootstrap() {
         templates: path.resolve(rootDir, 'templates/'),
     });
 
-    await app.listen(3000);
+    await app.listen(8010);
 }
-bootstrap();
+// eslint-disable-next-line no-console
+bootstrap().catch(error => console.error(error));

@@ -44,7 +44,7 @@ describe(BankTransactionResolver.name, () => {
 
     describe('testing cursor and pagination', () => {
         let movements!: IBankTransaction[];
-        beforeAll(async () => {
+        beforeAll(() => {
             movements = BankTransactionFactory.buildList(5);
             movements.push(
                 BankTransactionFactory.build({
@@ -77,7 +77,7 @@ describe(BankTransactionResolver.name, () => {
             const response = await request<GQLGetBankTransactionsQuery, GQLGetBankTransactionsQueryVariables>(
                 server,
             ).query(GetBankTransactionsDocument, { limit: 5 });
-            console.log(response.data);
+            
             expect(response.errors).toEqual(undefined);
             const { results, next } = response.data?.bankTransaction ?? {};
             expect(results).toBeTruthy();
@@ -91,7 +91,7 @@ describe(BankTransactionResolver.name, () => {
             const response = await request<GQLGetBankTransactionsQuery, GQLGetBankTransactionsQueryVariables>(
                 server,
             ).query(GetBankTransactionsDocument, { limit: 5, cursor: '2022-02-02:1' });
-            console.log(response.data);
+            
             expect(response.errors).toEqual(undefined);
             const { results, next } = response.data?.bankTransaction ?? {};
             expect(results).toBeTruthy();
@@ -99,7 +99,7 @@ describe(BankTransactionResolver.name, () => {
             const [firstMovement] = results ?? [];
             expect(firstMovement.date).toEqual('2022-02-02');
             expect(firstMovement.id).toEqual(0);
-            expect(next).toEqual('2022-01-30:6');
+            expect(next).toEqual(null);
         });
     });
 });

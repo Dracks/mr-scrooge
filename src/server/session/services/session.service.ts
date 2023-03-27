@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import shortUuid from 'short-uuid';
 
-import { CustomError, ensureOrThrow } from '../../core/errors/base-error';
 import { ISessionModel, SessionModel } from '../models/session.model';
 import { IUserModel, UserModel } from '../models/user.model';
 
@@ -31,7 +30,7 @@ export class SessionService {
     }
 
     public async getSession(sessionId: string): Promise<ISessionModel | undefined> {
-        //const session = await this.sessionRepository.findOne({ where: { sessionId }, include: [{model: UserModel}]});
+        // const session = await this.sessionRepository.findOne({ where: { sessionId }, include: [{model: UserModel}]});
         const session = await this.sessionRepository.findOne({ where: { sessionId } });
         if (session) {
             /*
@@ -40,6 +39,8 @@ export class SessionService {
              */
             return session.dataValues;
         }
+
+        return undefined;
     }
 
     public async dropSession(sessionId: string): Promise<void> {

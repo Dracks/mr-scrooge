@@ -16,8 +16,9 @@ import {
     YAxis,
 } from 'recharts';
 
-import { EnrichedGraph, GraphKind } from '../../../api/client/graphs/types';
-import { GQLGraphKind } from '../../../api/graphql/generated';
+import { EnrichedGraph } from '../../../api/client/graphs/types';
+import { GQLGraphKind, GQLNewGraph } from '../../../api/graphql/generated';
+import { DECIMAL_COUNT } from '../../../constants';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { DSDoubleGroup } from '../data-transform/types';
 import { useGraphDataGenerator } from '../use-graph-data';
@@ -27,7 +28,7 @@ interface GraphRenderArgs {
 }
 
 interface GraphViewerArgs {
-    graph: EnrichedGraph;
+    graph: EnrichedGraph<GQLNewGraph>;
 }
 
 const genericToRecharts = <K extends string, SK extends string>(
@@ -70,7 +71,7 @@ const BarGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey={firstKey} />
                 <YAxis />
-                <Tooltip />
+                <Tooltip formatter={value => (value as number).toFixed(DECIMAL_COUNT)} />
                 <Legend onClick={({ dataKey }) => touch(dataKey)} />
                 {keys.map((key, idx) => (
                     <Bar
@@ -98,7 +99,7 @@ const LineGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey={firstKey} />
                 <YAxis />
-                <Tooltip />
+                <Tooltip formatter={value => (value as number).toFixed(DECIMAL_COUNT)} />
                 <Legend onClick={({ dataKey }) => touch(dataKey)} />
                 {keys.map((key, idx) => (
                     <Line
@@ -125,8 +126,15 @@ const PieGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
         <ResponsiveContainer width="100%" height={400}>
             <PieChart>
                 <Legend />
-                <Tooltip />
-                <Pie data={firstGroup?.value} dataKey="value" nameKey="label" cx="50%" cy="50%" label>
+                <Tooltip formatter={value => (value as number).toFixed(DECIMAL_COUNT)} />
+                <Pie
+                    data={firstGroup?.value}
+                    dataKey="value"
+                    nameKey="label"
+                    cx="50%"
+                    cy="50%"
+                    label={({ value }) => value.toFixed(DECIMAL_COUNT)}
+                >
                     {keys.map((_, index) => (
                         <Cell key={`cell-${index}`} fill={schemeTableau10[index]} />
                     ))}
@@ -145,7 +153,7 @@ const ComponentHash: Record<GQLGraphKind, React.FC<GraphRenderArgs>> = {
 export const GraphViewer: React.FC<GraphViewerArgs> = ({ graph }) => {
     const logger = useLogger();
     const data = useGraphDataGenerator(graph);
-    logger.info(graph.name, { data });
+    logger.info(`graph viewer: ${graph.name}`, { data });
     const Component = ComponentHash[graph.kind];
     return <Component graphData={data} />;
 };

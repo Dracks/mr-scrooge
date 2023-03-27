@@ -16,7 +16,8 @@
 # Server tasks
 * [ ] graphs
   * [ ] Modify graph
-  * [ ] Create graph
+  * [x] Create graph
+  * [ ] Add validations on the selected labels
 * [ ] Imports
   * [ ] Import caixa enginyers
   * [ ] Import n26

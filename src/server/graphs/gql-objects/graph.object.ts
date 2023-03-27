@@ -1,10 +1,17 @@
 import { Field, Int, ObjectType, registerEnumType } from "@nestjs/graphql";
-import { GraphGroup, GraphKind } from "../models/graph.model";
+
+import { GraphDateRange, GraphGroup, GraphKind } from "../models/graph.model";
+
 registerEnumType(GraphKind, {
     name: "GraphKind",
 })
+
 registerEnumType(GraphGroup, {
     name: "GraphGroup",
+})
+
+registerEnumType(GraphDateRange, {
+    name: 'GraphDateRange'
 })
 
 @ObjectType()
@@ -26,8 +33,9 @@ export class HorizontalGroup extends Group{
     accumulate?: boolean
 }
 
+
 @ObjectType()
-export class Graph {
+export class Graph{
     @Field(()=>Int)
     id!: number;
 
@@ -36,14 +44,15 @@ export class Graph {
 
     @Field()
     name!: string
+
     @Field(()=>GraphKind)
     kind!: GraphKind;
 
     @Field({nullable: true})
-    tagFilter?: number;
+    labelFilter?: number;
 
-    @Field()
-    dateRange!: string;
+    @Field(()=>GraphDateRange)
+    dateRange!: GraphDateRange;
 
     @Field(()=>Group)
     group!: Group;

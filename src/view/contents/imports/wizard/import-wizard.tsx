@@ -23,7 +23,7 @@ const useKindWithRegex = () => {
 };
 
 export const ImportWizard: React.FC = () => {
-    const { files, onAdd, onChangeKind, submit, uploading } = useUploadQueue();
+    const { files, onAdd, onChangeKind, submit, uploading, onRemove } = useUploadQueue();
     const { kindList, findKind } = useKindWithRegex();
     const logger = useLogger();
     logger.info('Import wizard', { files });
@@ -49,7 +49,7 @@ export const ImportWizard: React.FC = () => {
                     <ImportFileRow
                         key={idx}
                         fileData={data}
-                        onRemove={() => undefined}
+                        onRemove={() => onRemove(data.id)}
                         onKindSwitch={kind => onChangeKind(data.id, kind)}
                         kindsList={kindList}
                     />

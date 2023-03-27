@@ -1,0 +1,11 @@
+mutation newGraph($graph: NewGraph!){
+    newGraph(graph: $graph){
+        __typename
+        ... on Graph {
+            ...GraphFragment
+        },
+        ... on WrongOwnerId{
+            ...WrongOwnerIdFragment
+        }
+    }
+}

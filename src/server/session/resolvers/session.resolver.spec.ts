@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import * as secureSession from '@fastify/secure-session';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test, TestingModule } from '@nestjs/testing';

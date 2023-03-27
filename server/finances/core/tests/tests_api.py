@@ -16,7 +16,7 @@ class RawDataSourceApiTest(TestCase):
         self.user = get_user()
         self.client = APIClient()
         self.client.force_authenticate(self.user)
-        self.rds = RawDataSource(kind="demo", movement_name="demo", date=date.today(), value=35)
+        self.rds = RawDataSource(kind="demo", movement_name="demo 1", date=date.today(), value=35)
         self.rds.save()
         self.tag = Tag(name="ping")
         self.tag.save()
@@ -28,19 +28,21 @@ class RawDataSourceApiTest(TestCase):
         Tag.objects.all().delete()
 
     def test_get_data_filtered_by_date(self):
-        rds_first = RawDataSource(kind="demo", movement_name="demo", date="2018-02-01", value=25)
+        rds_first = RawDataSource(kind="demo", movement_name="demo 2", date="2018-02-01", value=25)
         rds_first.save()
-        rds_second = RawDataSource(kind="demo", movement_name="demo", date="2018-02-03", value=25)
+        rds_second = RawDataSource(kind="demo", movement_name="demo 3", date="2018-02-03", value=25)
         rds_second.save()
         response = self.client.get('/api/raw-data/?from=2018-02-01&to=2018-02-03')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = json.loads(response.content)
-        self.assertEqual(len(data), 2)
+        results = data.get('results', [])
+        self.assertEqual(len(results), 2)
 
         response = self.client.get('/api/raw-data/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = json.loads(response.content)
-        self.assertEqual(len(data), 3)
+        results = data.get('results', [])
+        self.assertEqual(len(results), 3)
 
     def test_get_data_with_tags(self):
         response = self.client.get('/api/raw-data/1/')

@@ -1,8 +1,7 @@
 # Mr Scrooge
 This is the base repository, to clone and start it using docker.
 
-## Status
-![https://travis-ci.org/Dracks/mr-scrooge.svg?branch=master](https://travis-ci.org/Dracks/mr-scrooge.svg?branch=master)
+[![CodeFactor](https://www.codefactor.io/repository/github/dracks/mr-scrooge/badge)](https://www.codefactor.io/repository/github/dracks/mr-scrooge)
 
 ## File formats suported
 Currently this application supports the following bank file formats:
@@ -22,7 +21,7 @@ https://hub.docker.com/r/dracks/mrscrooge/
 
 To run, execute the following command:
 ```
-docker run --rm -p 3333:80 -e DEMODATA="true" dracks/mrscrooge:MVP
+docker run --rm -p 3333:80 -e DEMODATA="true" dracks/mrscrooge:latest
 ```
 
 It will open your port 3333 with user demo/demo
@@ -32,6 +31,7 @@ You can set the following environment variables:
 - DEMOUSER: default "demo". The username to create on the application
 - DEMOPWD: default "demo". The password for the user
 - ALLOWED_HOSTS: default "localhost". You can put a list of hosts separed with a comma character
+- DECIMAL_COUNT: default 2, the number of digits to show in the graphs
 
 ## Screenshots MVP
 ### Home
@@ -68,5 +68,3 @@ or
 
 ## Thanks
 The current application icon is from VisualPharm
-
-

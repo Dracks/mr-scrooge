@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 
@@ -12,11 +13,20 @@ export enum GraphKind {
 
 export enum GraphGroup {
     Day = 'day',
-    Month = 'month',
-    Sign = 'sign',
     // Note this needs to be transformed from old tags
     Labels = 'labels',
+    Month = 'month',
+    Sign = 'sign',
     Year = 'year'
+}
+
+export enum GraphDateRange {
+    all = 'all',
+    halfYear = 'six',
+    oneMonth = 'month',
+    oneYear = 'year',
+    sixYears = 'sixYears',
+    twoYears = 'twoYears',
 }
 
 export type IGraphAttributes = InferAttributes<GraphModel>;
@@ -57,23 +67,24 @@ export class GraphModel extends Model<IGraphAttributes, InferCreationAttributes<
         field: 'tag_filter',
     })
     @ForeignKey(() => LabelModel)
-    tagFilter?: LabelModel['id'];
+    labelFilter?: LabelModel['id'];
 
     @Column({
-        type: DataType.STRING(255),
+        type: DataType.CHAR(10),
         field: 'date_range',
+        values: Object.values(GraphDateRange),
         allowNull: false,
     })
-    dateRange!: string;
+    dateRange!: GraphDateRange;
 }
 
-export class AbstractGroupModel<A extends {}, C extends {}> extends Model<A, C> {
+export class AbstractGroupModel<A extends object, C extends object> extends Model<A, C> {
     @Column({
-        type: DataType.INTEGER,
         allowNull: false,
-        primaryKey: true,
-        unique: true,
         field: 'graph_id',
+        primaryKey: true,
+        type: DataType.INTEGER,
+        unique: true,
     })
     @ForeignKey(() => GraphModel)
     graphId!: GraphModel['id'];

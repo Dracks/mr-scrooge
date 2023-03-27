@@ -23,24 +23,24 @@ import { SessionModule } from './session/session.module';
     imports: [
         SequelizeModule.forRoot({
             ...getDatabaseModule(),
-            models: [],
             autoLoadModels: true,
-            synchronize: true,
             logging: (() => {
                 const logger = new Logger('sequelize');
                 return msg => logger.debug(msg);
             })(),
+            models: [],
+            synchronize: true,
         }),
         GraphQLModule.forRoot<MercuriusDriverConfig>({
-            driver: MercuriusDriver,
-            graphiql: 'graphiql',
             autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-            context: (req: { session: secureSession.Session }) => ({
-                session: req.session,
-            }),
             buildSchemaOptions: {
                 scalarsMap: [{ type: DateOnly, scalar: GQLDateOnly }],
             },
+            context: (req: { session: secureSession.Session }) => ({
+                session: req.session,
+            }),
+            driver: MercuriusDriver,
+            graphiql: 'graphiql',
         }),
         MyLoggerModule,
         ConfigModule,

@@ -1,7 +1,4 @@
-import { IncomingMessage, ServerResponse } from 'http';
 import { LoggerModule } from 'nestjs-pino';
-
-import { errorToJson } from './errors/base-error';
 
 export const MyLoggerModule = LoggerModule.forRoot({
     pinoHttp: {
