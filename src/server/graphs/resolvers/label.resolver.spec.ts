@@ -9,7 +9,7 @@ import { GetLabelsDocument, GQLGetLabelsQuery, GQLGetLabelsQueryVariables } from
 import { getGraphQLTestModule } from '../../common/test-graphql/graph-ql.module';
 import { GraphsModule } from '../graphs.module';
 import { LabelService } from '../services/label.service';
-import { LabelFactory } from '../test-data/label.factory';
+import { labelFactory } from '../test-data/label.factory';
 import { LabelResolver } from './label.resolver';
 
 describe(LabelResolver.name, () => {
@@ -40,9 +40,9 @@ describe(LabelResolver.name, () => {
 
     describe('testing with some data', () => {
         beforeEach(async () => {
-            await app.get(LabelService).createLabel(LabelFactory.build({ name: 'ping' }));
-            await app.get(LabelService).createLabel(LabelFactory.build({ name: 'pong' }));
-            await app.get(LabelService).createLabel(LabelFactory.build({ name: 'not-in-list', groupOwnerId: 2 }));
+            await app.get(LabelService).createLabel(labelFactory.build({ name: 'ping' }));
+            await app.get(LabelService).createLabel(labelFactory.build({ name: 'pong' }));
+            await app.get(LabelService).createLabel(labelFactory.build({ name: 'not-in-list', groupOwnerId: 2 }));
         });
 
         it('Testing the query', async () => {

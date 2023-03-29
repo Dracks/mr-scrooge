@@ -102,6 +102,16 @@ export type GQLInvalidCredentials = {
   invalidUserOrPassword: Scalars['String'];
 };
 
+export type GQLInvalidGraph = {
+  __typename?: 'InvalidGraph';
+  availableGraphsId: Array<Scalars['Int']>;
+};
+
+export type GQLInvalidLabel = {
+  __typename?: 'InvalidLabel';
+  invalidLabels: Array<Scalars['Int']>;
+};
+
 export type GQLLabel = {
   __typename?: 'Label';
   groupOwnerId: Scalars['Float'];
@@ -129,7 +139,7 @@ export type GQLMutation = {
   login: GQLLoginResponse;
   logout: Scalars['Boolean'];
   newGraph: GQLNewGraphResponse;
-  updateGraph: GQLGraph;
+  updateGraph: GQLUpdateGraphResponse;
 };
 
 
@@ -164,11 +174,11 @@ export type GQLNewGraph = {
   groupOwnerId: Scalars['Int'];
   horizontalGroup?: InputMaybe<GQLMutateHorizontalGroup>;
   kind: GQLGraphKind;
+  labelFilter?: InputMaybe<Scalars['Float']>;
   name: Scalars['String'];
-  tagFilter?: InputMaybe<Scalars['Float']>;
 };
 
-export type GQLNewGraphResponse = GQLGraph | GQLWrongOwnerId;
+export type GQLNewGraphResponse = GQLGraph | GQLInvalidLabel | GQLWrongOwnerId;
 
 export type GQLNotIdentified = {
   __typename?: 'NotIdentified';
@@ -191,6 +201,13 @@ export type GQLQueryBankTransactionArgs = {
   limit?: InputMaybe<Scalars['Int']>;
 };
 
+
+export type GQLQueryGraphsArgs = {
+  graphsIds?: InputMaybe<Array<Scalars['Int']>>;
+};
+
+export type GQLUpdateGraphResponse = GQLGraph | GQLInvalidGraph | GQLInvalidLabel | GQLWrongOwnerId;
+
 export type GQLUpdatedGraph = {
   dateRange: GQLGraphDateRange;
   group: GQLMutateGroup;
@@ -198,8 +215,8 @@ export type GQLUpdatedGraph = {
   horizontalGroup?: InputMaybe<GQLMutateHorizontalGroup>;
   id: Scalars['Int'];
   kind: GQLGraphKind;
+  labelFilter?: InputMaybe<Scalars['Float']>;
   name: Scalars['String'];
-  tagFilter?: InputMaybe<Scalars['Float']>;
 };
 
 export type GQLWrongOwnerId = {
@@ -216,6 +233,7 @@ export const BankTransactionFragmentFragmentDoc = gql`
   description
   kind
   labelIds
+  groupOwnerId
 }
     `;
 export const GraphFragmentFragmentDoc = gql`
@@ -237,6 +255,11 @@ export const GraphFragmentFragmentDoc = gql`
     labels
     accumulate
   }
+}
+    `;
+export const InvalidLabelFragmentFragmentDoc = gql`
+    fragment InvalidLabelFragment on InvalidLabel {
+  invalidLabels
 }
     `;
 export const MyProfileFragmentFragmentDoc = gql`
@@ -270,6 +293,13 @@ export const GetGraphsDocument = gql`
   }
 }
     ${GraphFragmentFragmentDoc}`;
+export const GetGraphsByIdDocument = gql`
+    query getGraphsById($graphsIds: [Int!]) {
+  graphs(graphsIds: $graphsIds) {
+    ...GraphFragment
+  }
+}
+    ${GraphFragmentFragmentDoc}`;
 export const NewGraphDocument = gql`
     mutation newGraph($graph: NewGraph!) {
   newGraph(graph: $graph) {
@@ -280,10 +310,35 @@ export const NewGraphDocument = gql`
     ... on WrongOwnerId {
       ...WrongOwnerIdFragment
     }
+    ... on InvalidLabel {
+      ...InvalidLabelFragment
+    }
   }
 }
     ${GraphFragmentFragmentDoc}
-${WrongOwnerIdFragmentFragmentDoc}`;
+${WrongOwnerIdFragmentFragmentDoc}
+${InvalidLabelFragmentFragmentDoc}`;
+export const UpdateGraphDocument = gql`
+    mutation updateGraph($graph: UpdatedGraph!) {
+  updateGraph(graph: $graph) {
+    __typename
+    ... on Graph {
+      ...GraphFragment
+    }
+    ... on WrongOwnerId {
+      ...WrongOwnerIdFragment
+    }
+    ... on InvalidLabel {
+      ...InvalidLabelFragment
+    }
+    ... on InvalidGraph {
+      availableGraphsId
+    }
+  }
+}
+    ${GraphFragmentFragmentDoc}
+${WrongOwnerIdFragmentFragmentDoc}
+${InvalidLabelFragmentFragmentDoc}`;
 export const GetImportKindsDocument = gql`
     query getImportKinds {
   importKinds {
@@ -321,7 +376,7 @@ export const LoginDocument = gql`
   }
 }
     ${MyProfileFragmentFragmentDoc}`;
-export type GQLBankTransactionFragmentFragment = { __typename?: 'BankTransaction', id: number, value: number, movementName: string, date: any, description?: string | null, kind: string, labelIds: Array<number> };
+export type GQLBankTransactionFragmentFragment = { __typename?: 'BankTransaction', id: number, value: number, movementName: string, date: any, description?: string | null, kind: string, labelIds: Array<number>, groupOwnerId: number };
 
 export type GQLGetBankTransactionsQueryVariables = Exact<{
   cursor?: InputMaybe<Scalars['String']>;
@@ -329,12 +384,19 @@ export type GQLGetBankTransactionsQueryVariables = Exact<{
 }>;
 
 
-export type GQLGetBankTransactionsQuery = { __typename?: 'Query', bankTransaction: { __typename?: 'GetBankTransactionsResponse', next?: string | null, results: Array<{ __typename?: 'BankTransaction', id: number, value: number, movementName: string, date: any, description?: string | null, kind: string, labelIds: Array<number> }> } };
+export type GQLGetBankTransactionsQuery = { __typename?: 'Query', bankTransaction: { __typename?: 'GetBankTransactionsResponse', next?: string | null, results: Array<{ __typename?: 'BankTransaction', id: number, value: number, movementName: string, date: any, description?: string | null, kind: string, labelIds: Array<number>, groupOwnerId: number }> } };
 
 export type GQLGetGraphsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GQLGetGraphsQuery = { __typename?: 'Query', graphs: Array<{ __typename?: 'Graph', id: number, name: string, kind: GQLGraphKind, labelFilter?: number | null, dateRange: GQLGraphDateRange, groupOwnerId: number, group: { __typename?: 'Group', group: GQLGraphGroup, hideOthers?: boolean | null, labels?: Array<number> | null }, horizontalGroup?: { __typename?: 'HorizontalGroup', group: GQLGraphGroup, hideOthers?: boolean | null, labels?: Array<number> | null, accumulate?: boolean | null } | null }> };
+
+export type GQLGetGraphsByIdQueryVariables = Exact<{
+  graphsIds?: InputMaybe<Array<Scalars['Int']> | Scalars['Int']>;
+}>;
+
+
+export type GQLGetGraphsByIdQuery = { __typename?: 'Query', graphs: Array<{ __typename?: 'Graph', id: number, name: string, kind: GQLGraphKind, labelFilter?: number | null, dateRange: GQLGraphDateRange, groupOwnerId: number, group: { __typename?: 'Group', group: GQLGraphGroup, hideOthers?: boolean | null, labels?: Array<number> | null }, horizontalGroup?: { __typename?: 'HorizontalGroup', group: GQLGraphGroup, hideOthers?: boolean | null, labels?: Array<number> | null, accumulate?: boolean | null } | null }> };
 
 export type GQLGraphFragmentFragment = { __typename?: 'Graph', id: number, name: string, kind: GQLGraphKind, labelFilter?: number | null, dateRange: GQLGraphDateRange, groupOwnerId: number, group: { __typename?: 'Group', group: GQLGraphGroup, hideOthers?: boolean | null, labels?: Array<number> | null }, horizontalGroup?: { __typename?: 'HorizontalGroup', group: GQLGraphGroup, hideOthers?: boolean | null, labels?: Array<number> | null, accumulate?: boolean | null } | null };
 
@@ -343,7 +405,14 @@ export type GQLNewGraphMutationVariables = Exact<{
 }>;
 
 
-export type GQLNewGraphMutation = { __typename?: 'Mutation', newGraph: { __typename: 'Graph', id: number, name: string, kind: GQLGraphKind, labelFilter?: number | null, dateRange: GQLGraphDateRange, groupOwnerId: number, group: { __typename?: 'Group', group: GQLGraphGroup, hideOthers?: boolean | null, labels?: Array<number> | null }, horizontalGroup?: { __typename?: 'HorizontalGroup', group: GQLGraphGroup, hideOthers?: boolean | null, labels?: Array<number> | null, accumulate?: boolean | null } | null } | { __typename: 'WrongOwnerId', validOwners: Array<number> } };
+export type GQLNewGraphMutation = { __typename?: 'Mutation', newGraph: { __typename: 'Graph', id: number, name: string, kind: GQLGraphKind, labelFilter?: number | null, dateRange: GQLGraphDateRange, groupOwnerId: number, group: { __typename?: 'Group', group: GQLGraphGroup, hideOthers?: boolean | null, labels?: Array<number> | null }, horizontalGroup?: { __typename?: 'HorizontalGroup', group: GQLGraphGroup, hideOthers?: boolean | null, labels?: Array<number> | null, accumulate?: boolean | null } | null } | { __typename: 'InvalidLabel', invalidLabels: Array<number> } | { __typename: 'WrongOwnerId', validOwners: Array<number> } };
+
+export type GQLUpdateGraphMutationVariables = Exact<{
+  graph: GQLUpdatedGraph;
+}>;
+
+
+export type GQLUpdateGraphMutation = { __typename?: 'Mutation', updateGraph: { __typename: 'Graph', id: number, name: string, kind: GQLGraphKind, labelFilter?: number | null, dateRange: GQLGraphDateRange, groupOwnerId: number, group: { __typename?: 'Group', group: GQLGraphGroup, hideOthers?: boolean | null, labels?: Array<number> | null }, horizontalGroup?: { __typename?: 'HorizontalGroup', group: GQLGraphGroup, hideOthers?: boolean | null, labels?: Array<number> | null, accumulate?: boolean | null } | null } | { __typename: 'InvalidGraph', availableGraphsId: Array<number> } | { __typename: 'InvalidLabel', invalidLabels: Array<number> } | { __typename: 'WrongOwnerId', validOwners: Array<number> } };
 
 export type GQLGetImportKindsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -354,6 +423,8 @@ export type GQLGetLabelsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GQLGetLabelsQuery = { __typename?: 'Query', labels: Array<{ __typename?: 'Label', id: number, name: string, groupOwnerId: number }> };
+
+export type GQLInvalidLabelFragmentFragment = { __typename?: 'InvalidLabel', invalidLabels: Array<number> };
 
 export type GQLMyProfileFragmentFragment = { __typename?: 'MyProfile', email: string, firstName: string, lastName: string, username: string, defaultGroupId: number };
 
