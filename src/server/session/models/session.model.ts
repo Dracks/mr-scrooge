@@ -1,37 +1,40 @@
 /* eslint-disable no-use-before-define */
-import {  InferAttributes, InferCreationAttributes } from 'sequelize';
-import { BelongsTo, Column, DataType, ForeignKey, Index, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { Column, Table } from '@knestjs/core';
 
 import { UserModel } from './user.model';
 
-export type ISessionModel = InferAttributes<SessionModel>;
-
-@Table({ tableName: 'session_session' })
-export class SessionModel extends Model<ISessionModel, InferCreationAttributes<SessionModel>> {
-    @PrimaryKey
-    @Column
+@Table({ name: 'session_session' })
+export class SessionModel  {
+    @Column({
+        type: 'varchar',
+        primaryKey: true,
+        nullable: false,
+        length: 255
+    })
     sessionId!: string;
 
-    @ForeignKey(() => UserModel)
-    @Column
+    // @ForeignKey(() => UserModel)
+    @Column({
+        type: 'int',
+        nullable: false,
+    })
     userId!: number;
 
-    
-    @BelongsTo(() => UserModel, { onDelete: 'CASCADE' })
-    user?: UserModel;
-     
 
-    @Index
+    // @BelongsTo(() => UserModel, { onDelete: 'CASCADE' })
+    user?: UserModel;
+
+
     @Column({
-        allowNull: false,
-        type: DataType.DATE,
+        nullable: false,
+        type: 'datetime',
     })
     createdAt!: Date;
 
-    @Index
+    // @Index
     @Column({
-        allowNull: false,
-        type: DataType.DATE,
+        nullable: false,
+        type: 'datetime',
     })
     lastActivity!: Date;
 }

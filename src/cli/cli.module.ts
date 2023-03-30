@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { SequelizeModule } from '@nestjs/sequelize';
+import { KnestObjectionModule } from '@knestjs/objection'
 import { CommandModule } from 'nestjs-command';
 
 import { BankMovementModule } from '../server/bank-transaction/bank-transaction.module';
@@ -16,11 +16,11 @@ import { MigrationsCommand } from './migrations.command';
 @Module({
     imports: [
         CommandModule,
-        SequelizeModule.forRoot({
-            ...getDatabaseModule(),
-            models: [],
-            autoLoadModels: true,
-            synchronize: true,
+        KnestObjectionModule.forRoot({
+            db: getDatabaseModule(),
+            migrations: {
+                folder: './migrations'
+            }
         }),
         SessionModule,
         MyLoggerModule,

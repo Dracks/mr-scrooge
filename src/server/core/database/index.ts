@@ -1,5 +1,5 @@
-import { SequelizeOptions } from 'sequelize-typescript';
+import { KnestModuleConfig } from '@knestjs/core'
 
 import { getSqlite } from './sqlite';
 
-export const getDatabaseModule = (): Partial<SequelizeOptions> => getSqlite();
+export const getDatabaseModule = (): KnestModuleConfig['db'] => getSqlite();

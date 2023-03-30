@@ -1,95 +1,97 @@
-/* eslint-disable no-use-before-define */
-import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
-import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { Column,Table } from '@knestjs/core';
 
 import { UserGroupModel } from './group.model';
 
-export type IUserModel = InferAttributes<UserModel>;
-
 @Table({
-    tableName: 'session_user',
-    timestamps: false,
+    name: 'session_user',
 })
-export class UserModel extends Model<IUserModel, InferCreationAttributes<UserModel>> {
+export class UserModel {
     @Column({
         primaryKey: true,
         autoIncrement: true,
         unique: true,
-        type: DataType.INTEGER,
+        nullable: false,
+        type: 'int'
     })
-    id!: CreationOptional<number>;
+    id!: number;
 
     @Column({
-        field: 'default_group_id',
-        type: DataType.INTEGER,
+        name: 'default_group_id',
+        nullable: false,
+        type: 'int',
     })
-    @ForeignKey(() => UserGroupModel)
+    // @ForeignKey(() => UserGroupModel)
     defaultGroupId?: UserGroupModel['id'];
 
     @Column({
-        allowNull: false,
-        type: DataType.STRING(128),
+        nullable: false,
+        type: 'varchar',
+        length: 128,
     })
     password!: string;
 
     @Column({
-        field: 'last_login',
-        allowNull: true,
-        type: DataType.DATE,
+        name: 'last_login',
+        nullable: true,
+        type: 'datetime',
     })
     lastLogin?: Date;
 
     @Column({
-        field: 'is_superuser',
-        allowNull: false,
-        type: DataType.BOOLEAN,
+        name: 'is_superuser',
+        nullable: false,
+        type: 'boolean',
     })
     isSuperuser!: boolean;
 
     @Column({
-        allowNull: false,
-        type: DataType.STRING(150),
+        nullable: false,
+        type: 'varchar',
+        length: 150,
     })
     username!: string;
 
     @Column({
-        field: 'first_name',
-        allowNull: false,
-        type: DataType.STRING(150),
+        name: 'first_name',
+        nullable: false,
+        type: 'varchar',
+        length: 150,
     })
     firstName!: string;
 
     @Column({
-        field: 'last_name',
-        allowNull: false,
-        type: DataType.STRING(150),
+        name: 'last_name',
+        nullable: false,
+        type: 'varchar',
+        length: 150,
     })
     lastName!: string;
 
     @Column({
-        allowNull: false,
-        type: DataType.STRING(254),
+        nullable: false,
+        type: 'varchar',
+        length: 254,
     })
     email!: string;
 
     @Column({
-        field: 'is_staff',
-        allowNull: false,
-        type: DataType.BOOLEAN,
+        name: 'is_staff',
+        nullable: false,
+        type: 'boolean',
     })
     isStaff!: boolean;
 
     @Column({
-        field: 'is_active',
-        allowNull: false,
-        type: DataType.BOOLEAN,
+        name: 'is_active',
+        nullable: false,
+        type: 'boolean',
     })
     isActive!: boolean;
 
     @Column({
-        field: 'date_joined',
-        allowNull: false,
-        type: DataType.DATE,
+        name: 'date_joined',
+        nullable: false,
+        type: 'datetime',
     })
     dateJoined!: Date;
 }

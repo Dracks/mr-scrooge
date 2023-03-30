@@ -1,37 +1,35 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { Column, Table } from '@knestjs/core';
 
-export interface authUserGroupsAttributes {
+export interface AuthUserGroupsAttributes {
     groupId: number;
     id?: number;
     userId: number;
 }
 
 @Table({
-    tableName: 'session_user_groups',
-    timestamps: false,
+    name: 'session_user_groups',
 })
-export class authUserGroups
-    extends Model<authUserGroupsAttributes, authUserGroupsAttributes>
-    implements authUserGroupsAttributes
+export class AuthUserGroups
 {
     @Column({
         primaryKey: true,
         autoIncrement: true,
-        type: DataType.INTEGER,
+        type: 'int',
+        nullable: false,
     })
-    id?: number;
+    id!: number;
 
     @Column({
-        field: 'user_id',
-        allowNull: false,
-        type: DataType.INTEGER,
+        name: 'user_id',
+        nullable: false,
+        type: 'int',
     })
     userId!: number;
 
     @Column({
-        field: 'group_id',
-        allowNull: false,
-        type: DataType.INTEGER,
+        name: 'group_id',
+        nullable: false,
+        type: 'int',
     })
     groupId!: number;
 }

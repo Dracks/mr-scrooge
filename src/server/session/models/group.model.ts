@@ -1,33 +1,31 @@
 /* eslint-disable no-use-before-define */
-import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
-import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { Column, Table } from '@knestjs/core';
 
 import { UserModel } from './user.model';
 
-export type IUserGroup = InferAttributes<UserGroupModel>;
-
 @Table({
-    tableName: 'user_group',
-    timestamps: false,
+    name: 'user_group',
 })
-export class UserGroupModel extends Model<IUserGroup, InferCreationAttributes<UserGroupModel>> {
+export class UserGroupModel {
     @Column({
         primaryKey: true,
         autoIncrement: true,
-        type: DataType.INTEGER,
+        type: 'int',
+        nullable: false,
     })
-    id!: CreationOptional<number>;
+    id!: number;
 
     @Column({
-        allowNull: false,
-        type: DataType.STRING(150),
+        nullable: false,
+        type: 'varchar',
+        length: 150,
     })
     name!: string;
 
     @Column({
-        allowNull: false,
-        type: DataType.INTEGER,
+        nullable: false,
+        type: 'int',
     })
-    @ForeignKey(() => UserModel)
+    // @ForeignKey(() => UserModel)
     ownerId!: number;
 }

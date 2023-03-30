@@ -1,6 +1,9 @@
-import { SequelizeOptions } from 'sequelize-typescript';
+import {SqliteConfig} from '@knestjs/core'
 
-export const getSqlite = (): Partial<SequelizeOptions> => ({
-    dialect: 'sqlite',
-    storage: './db.sqlite3',
+export const getSqlite = (): SqliteConfig => ({
+    client: 'sqlite3',
+    connection: {
+        filename: './db.sqlite3',
+    },
+    useNullAsDefault: true,
 });

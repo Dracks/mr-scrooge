@@ -1,32 +1,31 @@
 /* eslint-disable no-use-before-define */
-import { InferAttributes, InferCreationAttributes } from 'sequelize';
-import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { Column, Table } from '@knestjs/core';
 
 import { UserGroupModel } from './group.model';
 import { UserModel } from './user.model';
 
 
 @Table({
-    tableName: 'user_group_rel',
-    timestamps: false,
+    name: 'user_group_rel',
     indexes: [
-        {fields: ['user_id', 'user_group_id',], unique: true}
+        //{fields: ['user_id', 'user_group_id',], unique: true}
+        {properties: ['userId', 'userGroupId'], unique: true}
     ]
 })
-export class UserGroupRelModel extends Model<InferAttributes<UserGroupRelModel>, InferCreationAttributes<UserGroupRelModel>> {
-    @ForeignKey(() => UserGroupModel)
+export class UserGroupRelModel {
+    //@ForeignKey(() => UserGroupModel)
     @Column({
-        allowNull: false,
-        type: DataType.INTEGER,
-        field: 'user_group_id'
+        nullable: false,
+        type: 'int',
+        name: 'user_group_id'
     })
     userGroupId!: UserGroupModel['id'];
 
-    @ForeignKey(()=> UserModel)
+    //@ForeignKey(()=> UserModel)
     @Column({
-        allowNull: false,
-        type: DataType.INTEGER,
-        field: 'user_id'
+        nullable: false,
+        type: 'int',
+        name: 'user_id'
     })
     userId!: UserModel['id'];
 }

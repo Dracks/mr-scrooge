@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { SequelizeModule } from '@nestjs/sequelize';
+import { KnestObjectionModule } from '@knestjs/objection'
 
 import { UserGroupModel } from './models/group.model';
 import { SessionModel } from './models/session.model';
@@ -11,7 +11,7 @@ import { SessionService } from './services/session.service';
 import { UserProfileService } from './services/user-profile.service';
 
 @Module({
-    imports: [SequelizeModule.forFeature([UserModel, SessionModel, UserGroupModel, UserGroupRelModel])],
+    imports: [KnestObjectionModule.forFeature([UserModel, SessionModel, UserGroupModel, UserGroupRelModel])],
     providers: [SessionResolver, UserProfileService, PasswordService, SessionService],
     exports: [UserProfileService, SessionService],
 })
