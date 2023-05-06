@@ -6,7 +6,7 @@ import { FastifyInstance } from 'fastify';
 import request from 'supertest-graphql';
 
 import { TestDbModule } from '../../common/test-db.module';
-import { GetGraphsByIdDocument, GetGraphsDocument, GQLGetGraphsByIdQuery, GQLGetGraphsByIdQueryVariables, GQLGetGraphsQuery, GQLGetGraphsQueryVariables,  GQLGraph, GQLGraphDateRange, GQLGraphGroup, GQLGraphKind,GQLNewGraphMutation, GQLNewGraphMutationVariables, GQLUpdateGraphMutation, GQLUpdateGraphMutationVariables, NewGraphDocument, UpdateGraphDocument } from '../../common/test-graphql/generated';
+import { DeleteGraphDocument, GetGraphsByIdDocument, GetGraphsDocument, GQLDeleteGraphMutation, GQLDeleteGraphMutationVariables, GQLGetGraphsByIdQuery, GQLGetGraphsByIdQueryVariables, GQLGetGraphsQuery, GQLGetGraphsQueryVariables,  GQLGraph, GQLGraphDateRange, GQLGraphGroup, GQLGraphKind,GQLNewGraphMutation, GQLNewGraphMutationVariables, GQLUpdateGraphMutation, GQLUpdateGraphMutationVariables, NewGraphDocument, UpdateGraphDocument } from '../../common/test-graphql/generated';
 import { getGraphQLTestModule } from '../../common/test-graphql/graph-ql.module';
 import {WrongOwnerId} from '../../session'
 import { InvalidGraph } from '../gql-objects/invalid-graph.object';
@@ -200,6 +200,51 @@ describe(GraphResolver.name, () => {
 
             expect(response.errors).toEqual(undefined)
             expect(response.data?.updateGraph.__typename).toEqual('Graph')
+        })
+    })
+
+    describe('Delete Graph', ()=>{
+        let existingGraphs!: Graph[] 
+        beforeEach(async ()=>{
+            const graphsToCreate = [
+                GraphFactory.build(),
+                GraphFactory.build(),
+                GraphFactory.build({groupOwnerId: 42}),
+            ]
+            existingGraphs = await Promise.all(graphsToCreate.map(graph => graphService.createGraph(graph))) 
+        })
+
+        it('delete it correctly', async () =>{
+            const graphId= existingGraphs[1].id
+            const response = await request<GQLDeleteGraphMutation, GQLDeleteGraphMutationVariables>(server).mutate(
+                DeleteGraphDocument,
+                { graphId}
+            )
+
+            expect(response.errors).toEqual(undefined)
+            expect(response.data?.deleteGraph.__typename).toEqual('Confirmation')
+
+            await expect(graphService.getGraphById(graphId)).rejects.toThrowError()
+        })
+
+        it('deleting an invalid graph not found', async () =>{
+            const response = await request<GQLDeleteGraphMutation, GQLDeleteGraphMutationVariables>(server).mutate(
+                DeleteGraphDocument,
+                { graphId: -1}
+            )
+
+            expect(response.errors).toEqual(undefined)
+            expect(response.data?.deleteGraph.__typename).toEqual('InvalidGraph')
+        })
+
+        it('deleting an invalid graph not valid if not owned', async () =>{
+            const response = await request<GQLDeleteGraphMutation, GQLDeleteGraphMutationVariables>(server).mutate(
+                DeleteGraphDocument,
+                { graphId: existingGraphs[2].id}
+            )
+
+            expect(response.errors).toEqual(undefined)
+            expect(response.data?.deleteGraph.__typename).toEqual('InvalidGraph')
         })
     })
 });

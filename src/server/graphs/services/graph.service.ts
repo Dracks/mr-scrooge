@@ -224,5 +224,20 @@ export class GraphService {
         }))
     }
 
+    async deleteGraph(graphId: number) {
+        const transaction = await this.sequelize.transaction()
+        try {
+            await this.graphModel.destroy({ where: {id: graphId}, transaction})
+            const destroyQuery = {where: {graphId}, transaction}
+            await this.graphGroupModel.destroy(destroyQuery)
+            await this.graphGroupLabelsModel.destroy(destroyQuery)
+            await this.graphHorizontalGroupModel.destroy(destroyQuery)
+            await this.graphHorizontalGroupLabelsModel.destroy(destroyQuery)
+            await transaction.commit()
+        } catch (error){
+            await transaction.rollback()
+            throw error;
+        }
+    }
 
 }

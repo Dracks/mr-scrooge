@@ -31,10 +31,17 @@ export type GQLBankTransaction = {
   value: Scalars['Float'];
 };
 
+export type GQLConfirmation = {
+  __typename?: 'Confirmation';
+  confirm: Scalars['Boolean'];
+};
+
 export type GQLCredentials = {
   password: Scalars['String'];
   username: Scalars['String'];
 };
+
+export type GQLDeleteGraphResponse = GQLConfirmation | GQLInvalidGraph | GQLWrongOwnerId;
 
 export type GQLGetBankTransactionsResponse = {
   __typename?: 'GetBankTransactionsResponse';
@@ -137,10 +144,16 @@ export type GQLMutateHorizontalGroup = {
 
 export type GQLMutation = {
   __typename?: 'Mutation';
+  deleteGraph: GQLDeleteGraphResponse;
   login: GQLLoginResponse;
   logout: Scalars['Boolean'];
   newGraph: GQLNewGraphResponse;
   updateGraph: GQLUpdateGraphResponse;
+};
+
+
+export type GQLMutationDeleteGraphArgs = {
+  graphId: Scalars['Int'];
 };
 
 
@@ -291,6 +304,20 @@ export const GetBankTransactionsDocument = gql`
 export function useGetBankTransactionsQuery(options?: Omit<Urql.UseQueryArgs<GQLGetBankTransactionsQueryVariables>, 'query'>) {
   return Urql.useQuery<GQLGetBankTransactionsQuery, GQLGetBankTransactionsQueryVariables>({ query: GetBankTransactionsDocument, ...options });
 };
+export const DeleteGraphDocument = gql`
+    mutation deleteGraph($graphId: Int!) {
+  deleteGraph(graphId: $graphId) {
+    __typename
+    ... on InvalidGraph {
+      availableGraphsId
+    }
+  }
+}
+    `;
+
+export function useDeleteGraphMutation() {
+  return Urql.useMutation<GQLDeleteGraphMutation, GQLDeleteGraphMutationVariables>(DeleteGraphDocument);
+};
 export const GetGraphsDocument = gql`
     query getGraphs {
   graphs {
@@ -422,6 +449,13 @@ export type GQLGetBankTransactionsQueryVariables = Exact<{
 
 
 export type GQLGetBankTransactionsQuery = { __typename?: 'Query', bankTransaction: { __typename?: 'GetBankTransactionsResponse', next?: string | null, results: Array<{ __typename?: 'BankTransaction', id: number, value: number, movementName: string, date: any, description?: string | null, kind: string, labelIds: Array<number>, groupOwnerId: number }> } };
+
+export type GQLDeleteGraphMutationVariables = Exact<{
+  graphId: Scalars['Int'];
+}>;
+
+
+export type GQLDeleteGraphMutation = { __typename?: 'Mutation', deleteGraph: { __typename: 'Confirmation' } | { __typename: 'InvalidGraph', availableGraphsId: Array<number> } | { __typename: 'WrongOwnerId' } };
 
 export type GQLGetGraphsQueryVariables = Exact<{ [key: string]: never; }>;
 

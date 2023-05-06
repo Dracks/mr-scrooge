@@ -109,6 +109,7 @@ type Mutation {
   logout: Boolean!
   newGraph(graph: NewGraph!): NewGraphResponse!
   updateGraph(graph: UpdatedGraph!): UpdateGraphResponse!
+  deleteGraph(graphId: Int!): DeleteGraphResponse!
 }
 
 union LoginResponse = MyProfile | InvalidCredentials
@@ -170,4 +171,10 @@ input UpdatedGraph {
   dateRange: GraphDateRange!
   group: MutateGroup!
   horizontalGroup: MutateHorizontalGroup
+}
+
+union DeleteGraphResponse = Confirmation | InvalidGraph
+
+type Confirmation {
+  confirm: Boolean!
 }

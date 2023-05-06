@@ -2,6 +2,7 @@ import { Logger } from "@nestjs/common";
 import { Args, Int, Mutation,Query, Resolver } from "@nestjs/graphql";
 
 import { GenerateResponseUnion, GQLBaseError } from "../../common/errors/gql-error.decorator";
+import { Confirmation } from "../../common/graphql/confirmation.object";
 import { GqlGroupsId, WrongOwnerId } from "../../session/";
 import { NewGraph, UpdatedGraph } from '../gql-objects/graph.input';
 import { Graph } from "../gql-objects/graph.object";
@@ -12,6 +13,7 @@ import { LabelService } from "../services/label.service";
 
 const NewGraphResponse = GenerateResponseUnion('NewGraphResponse', Graph, [WrongOwnerId, InvalidLabel])
 const UpdateGraphResponse = GenerateResponseUnion('UpdateGraphResponse', Graph, [WrongOwnerId, InvalidLabel, InvalidGraph])
+const DeleteGraphResponse = GenerateResponseUnion('DeleteGraphResponse', Confirmation, [InvalidGraph])
 
 @Resolver()
 export class GraphResolver{
@@ -66,6 +68,18 @@ export class GraphResolver{
             return error
         }
         return this.graphService.updateGraph(updatedGraph)
+    }
+
+    @Mutation(()=>DeleteGraphResponse)
+    async deleteGraph(@GqlGroupsId() groupsId: number[], @Args('graphId', {type: ()=>Int}) graphId: number): Promise<InvalidGraph | Confirmation>{
+        const graphsId = await this.graphService.getGraphsId(groupsId)
+        if (!graphsId.includes(graphId)){
+            return InvalidGraph.build({availableGraphsId: graphsId})
+        }
+        await this.graphService.deleteGraph(graphId)
+        return {
+            confirm: true
+        }
     }
 
 }
