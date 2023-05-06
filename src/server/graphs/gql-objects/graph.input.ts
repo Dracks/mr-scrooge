@@ -33,7 +33,7 @@ export class NewGraph {
     kind!: GraphKind;
 
     @Field({nullable: true})
-    tagFilter?: number;
+    labelFilter?: number;
 
     @Field(()=>GraphDateRange)
     dateRange!: GraphDateRange;
@@ -60,7 +60,7 @@ export class UpdatedGraph {
     kind!: GraphKind;
 
     @Field({nullable: true})
-    tagFilter?: number;
+    labelFilter?: number;
 
     @Field(()=>GraphDateRange)
     dateRange!: GraphDateRange;

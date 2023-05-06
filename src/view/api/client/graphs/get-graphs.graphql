@@ -3,3 +3,10 @@ query getGraphs {
         ...GraphFragment
     }
 }
+
+
+query getGraphsById($graphsIds: [Int!]) {
+    graphs(graphsIds: $graphsIds) {
+        ...GraphFragment
+    }
+}

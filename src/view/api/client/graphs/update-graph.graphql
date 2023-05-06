@@ -1,5 +1,5 @@
-mutation newGraph($graph: NewGraph!){
-    newGraph(graph: $graph){
+mutation updateGraph($graph: UpdatedGraph!){
+    updateGraph(graph: $graph){
         __typename
         ... on Graph {
             ...GraphFragment
@@ -9,6 +9,9 @@ mutation newGraph($graph: NewGraph!){
         },
         ... on InvalidLabel{
             ...InvalidLabelFragment
+        }
+        ... on InvalidGraph {
+            availableGraphsId
         }
     }
 }

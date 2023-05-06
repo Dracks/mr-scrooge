@@ -86,7 +86,7 @@ type Query {
   me: MyProfileResponse!
   bankTransaction(cursor: String, limit: Int): GetBankTransactionsResponse!
   labels: [Label!]!
-  graphs: [Graph!]!
+  graphs(graphsIds: [Int!]): [Graph!]!
   importKinds: [ImportKind!]!
 }
 
@@ -108,7 +108,8 @@ type Mutation {
   login(credentials: Credentials!): LoginResponse!
   logout: Boolean!
   newGraph(graph: NewGraph!): NewGraphResponse!
-  updateGraph(graph: UpdatedGraph!): Graph!
+  updateGraph(graph: UpdatedGraph!): UpdateGraphResponse!
+  deleteGraph(graphId: Int!): DeleteGraphResponse!
 }
 
 union LoginResponse = MyProfile | InvalidCredentials
@@ -122,17 +123,21 @@ input Credentials {
   password: String!
 }
 
-union NewGraphResponse = Graph | WrongOwnerId
+union NewGraphResponse = Graph | WrongOwnerId | InvalidLabel
 
 type WrongOwnerId {
   validOwners: [Int!]!
+}
+
+type InvalidLabel {
+  invalidLabels: [Int!]!
 }
 
 input NewGraph {
   groupOwnerId: Int!
   name: String!
   kind: GraphKind!
-  tagFilter: Float
+  labelFilter: Float
   dateRange: GraphDateRange!
   group: MutateGroup!
   horizontalGroup: MutateHorizontalGroup
@@ -151,13 +156,25 @@ input MutateHorizontalGroup {
   accumulate: Boolean
 }
 
+union UpdateGraphResponse = Graph | WrongOwnerId | InvalidLabel | InvalidGraph
+
+type InvalidGraph {
+  availableGraphsId: [Int!]!
+}
+
 input UpdatedGraph {
   id: Int!
   groupOwnerId: Int!
   name: String!
   kind: GraphKind!
-  tagFilter: Float
+  labelFilter: Float
   dateRange: GraphDateRange!
   group: MutateGroup!
   horizontalGroup: MutateHorizontalGroup
+}
+
+union DeleteGraphResponse = Confirmation | InvalidGraph
+
+type Confirmation {
+  confirm: Boolean!
 }

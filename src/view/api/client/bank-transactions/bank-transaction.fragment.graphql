@@ -6,4 +6,5 @@ fragment BankTransactionFragment on BankTransaction {
     description
     kind
     labelIds
+    groupOwnerId
 }
