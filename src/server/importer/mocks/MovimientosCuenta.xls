@@ -1,0 +1,347 @@
+
+
+
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:x="urn:schemas-microsoft-com:office:excel"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html;charset=windows-1252">
+<META NAME=ProgId content=Excel.Sheet>
+<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.0  (Win32)">
+<style>
+<!--table
+	{mso-displayed-decimal-separator:"\,";
+	mso-displayed-thousand-separator:"\.";}
+@page
+	{margin:.98in .79in .98in .79in;
+	mso-header-margin:0in;
+	mso-footer-margin:0in;}
+tr
+	{mso-height-source:auto;}
+col
+	{mso-width-source:auto;}
+br
+	{mso-data-placement:same-cell;}
+.style0
+	{mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	white-space:nowrap;
+	mso-rotate:0;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	color:windowtext;
+	font-size:10.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:Arial;
+	mso-generic-font-family:auto;
+	mso-font-charset:0;
+	border:none;
+	mso-protection:locked visible;
+	mso-style-name:Normal;
+	mso-style-id:0;}
+td
+	{mso-style-parent:style0;
+	padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:10.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:Arial;
+	mso-generic-font-family:auto;
+	mso-font-charset:0;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:bottom;
+	border:none;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	mso-protection:locked visible;
+	white-space:nowrap;
+	mso-rotate:0;}
+.xl24
+	{mso-style-parent:style0;
+	font-weight:700;
+	font-family:Arial, sans-serif;
+	mso-font-charset:0;}
+.xl25
+	{mso-style-parent:style0;
+	font-family:Arial, sans-serif;
+	mso-font-charset:0;}
+.xl25red
+	{mso-style-parent:style0;
+	font-family:Arial, sans-serif;
+	mso-font-charset:0;
+	color:red;}
+.xl26
+	{mso-style-parent:style0;
+	font-family:Arial, sans-serif;
+	mso-font-charset:0;
+	border-top:none;
+	border-right:none;
+	border-bottom:none;
+	border-left:1.0pt solid windowtext;}
+.xl27
+	{mso-style-parent:style0;
+	font-family:Arial, sans-serif;
+	mso-font-charset:0;
+	border-top:none;
+	border-right:1.0pt solid windowtext;
+	border-bottom:none;
+	border-left:none;}
+.xl27red
+	{mso-style-parent:style0;
+	font-family:Arial, sans-serif;
+	mso-font-charset:0;
+	border-top:none;
+	border-right:1.0pt solid windowtext;
+	border-bottom:none;
+	border-left:none;
+	color:red;}
+.xl28
+	{mso-style-parent:style0;
+	font-family:Arial, sans-serif;
+	mso-font-charset:0;
+	border-top:none;
+	border-right:none;
+	border-bottom:1.0pt solid windowtext;
+	border-left:1.0pt solid windowtext;}
+.xl29
+	{mso-style-parent:style0;
+	font-family:Arial, sans-serif;
+	mso-font-charset:0;
+	border-top:none;
+	border-right:none;
+	border-bottom:1.0pt solid windowtext;
+	border-left:none;}
+.xl29red
+	{mso-style-parent:style0;
+	font-family:Arial, sans-serif;
+	mso-font-charset:0;
+	border-top:none;
+	border-right:none;
+	border-bottom:1.0pt solid windowtext;
+	border-left:none;
+	color:red;}
+.xl30
+	{mso-style-parent:style0;
+	font-family:Arial, sans-serif;
+	mso-font-charset:0;
+	border-top:none;
+	border-right:1.0pt solid windowtext;
+	border-bottom:1.0pt solid windowtext;
+	border-left:none;}
+.xl30red
+	{mso-style-parent:style0;
+	font-family:Arial, sans-serif;
+	mso-font-charset:0;
+	border-top:none;
+	border-right:1.0pt solid windowtext;
+	border-bottom:1.0pt solid windowtext;
+	color:red;
+	border-left:none;}
+.xl31
+	{mso-style-parent:style0;
+	font-weight:700;
+	font-family:Arial, sans-serif;
+	mso-font-charset:0;
+	border-top:1.0pt solid windowtext;
+	border-right:none;
+	border-bottom:1.0pt solid windowtext;
+	border-left:1.0pt solid windowtext;}
+.xl32
+	{mso-style-parent:style0;
+	font-weight:700;
+	font-family:Arial, sans-serif;
+	mso-font-charset:0;
+	border-top:1.0pt solid windowtext;
+	border-right:none;
+	border-bottom:1.0pt solid windowtext;
+	border-left:none;}
+.xl33
+	{mso-style-parent:style0;
+	font-weight:700;
+	font-family:Arial, sans-serif;
+	mso-font-charset:0;
+	border-top:1.0pt solid windowtext;
+	border-right:1.0pt solid windowtext;
+	border-bottom:1.0pt solid windowtext;
+	border-left:none;}
+.red{
+	color:red;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <x:ExcelWorkbook>
+  <x:ExcelWorksheets>
+   <x:ExcelWorksheet>
+    <x:Name>Hoja1</x:Name>
+    <x:WorksheetOptions>
+     <x:DefaultColWidth>10</x:DefaultColWidth>
+     <x:Print>
+      <x:ValidPrinterInfo/>
+      <x:PaperSizeIndex>9</x:PaperSizeIndex>
+      <x:HorizontalResolution>600</x:HorizontalResolution>
+      <x:VerticalResolution>600</x:VerticalResolution>
+     </x:Print>
+     <x:Selected/>
+     <x:Panes>
+      <x:Pane>
+       <x:Number>3</x:Number>
+       <x:ActiveRow>16</x:ActiveRow>
+       <x:ActiveCol>6</x:ActiveCol>
+      </x:Pane>
+     </x:Panes>
+     <x:ProtectContents>False</x:ProtectContents>
+     <x:ProtectObjects>False</x:ProtectObjects>
+     <x:ProtectScenarios>False</x:ProtectScenarios>
+    </x:WorksheetOptions>
+   </x:ExcelWorksheet>
+   <x:ExcelWorksheet>
+    <x:Name>Hoja2</x:Name>
+    <x:WorksheetOptions>
+     <x:DefaultColWidth>10</x:DefaultColWidth>
+     <x:ProtectContents>False</x:ProtectContents>
+     <x:ProtectObjects>False</x:ProtectObjects>
+     <x:ProtectScenarios>False</x:ProtectScenarios>
+    </x:WorksheetOptions>
+   </x:ExcelWorksheet>
+   <x:ExcelWorksheet>
+    <x:Name>Hoja3</x:Name>
+    <x:WorksheetOptions>
+     <x:DefaultColWidth>10</x:DefaultColWidth>
+     <x:ProtectContents>False</x:ProtectContents>
+     <x:ProtectObjects>False</x:ProtectObjects>
+     <x:ProtectScenarios>False</x:ProtectScenarios>
+    </x:WorksheetOptions>
+   </x:ExcelWorksheet>
+  </x:ExcelWorksheets>
+  <x:WindowHeight>11250</x:WindowHeight>
+  <x:WindowWidth>17595</x:WindowWidth>
+  <x:WindowTopX>120</x:WindowTopX>
+  <x:WindowTopY>30</x:WindowTopY>
+  <x:ProtectStructure>False</x:ProtectStructure>
+  <x:ProtectWindows>False</x:ProtectWindows>
+ </x:ExcelWorkbook>
+</xml><![endif]-->
+</head>
+
+<body link=blue vlink=purple>
+
+<table x:str border=0 cellpadding=0 cellspacing=0 width=467 style='border-collapse:
+ collapse;table-layout:fixed;width:350pt'>
+ <col width=80 style='width:60pt'>
+ <col width=199 style='mso-width-source:userset;mso-width-alt:7277;width:149pt'>
+ <col width=241 style='mso-width-source:userset;mso-width-alt:8813;width:181pt'>
+ <col width=133 style='mso-width-source:userset;mso-width-alt:4864;width:100pt'>
+ <col width=126 style='mso-width-source:userset;mso-width-alt:4608;width:95pt'>
+ <col width=193 style='mso-width-source:userset;mso-width-alt:7058;width:145pt'>
+ <tr height=17 style='height:12.75pt'>
+  <td height=17 width=80 style='height:12.75pt;width:60pt'></td>
+  <td width=199 style='width:149pt'></td>
+  <td width=241 style='width:181pt'></td>
+  <td width=133 style='width:100pt'></td>
+  <td width=126 style='width:95pt'></td>
+  <td width=193 style='width:145pt'></td>
+ </tr>
+ <tr height=17 style='height:12.75pt'>
+  <td height=17 style='height:12.75pt'></td>
+  <td class=xl24>Número de compte</td>
+  <td>ES** 3025 **** **** **** **** (COMPTE CORRENT)</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+ </tr>
+	 <tr height=17 style='height:12.75pt'>
+	  <td height=17 style='height:12.75pt'></td>
+	  <td class=xl24>Titulars</td>
+	  <td>Dr Who</td>
+	  <td colspan=2 style='mso-ignore:colspan'></td>
+	 </tr>
+	 <tr height=17 style='height:12.75pt'>
+	  <td height=17 style='height:12.75pt'></td>
+	  <td class=xl24></td>
+	  <td>Rose Tyler</td>
+	  <td colspan=2 style='mso-ignore:colspan'></td>
+	 </tr>
+ <tr height=17 style='height:12.75pt'>
+  <td height=17 style='height:12.75pt'></td>
+  <td class=xl24>Saldo</td>
+	<td align=right x:num="2000.00">2.000,00</td>
+  <td colspan=2 style='mso-ignore:colspan'></td>
+ </tr>
+	 <tr height=17 style='height:12.75pt'>
+	  <td height=17 style='height:12.75pt'></td>
+	  <td class=xl24>Data des de</td>
+	  <td></td>
+	  <td colspan=2 style='mso-ignore:colspan'></td>
+	 </tr>
+	 <tr height=17 style='height:12.75pt'>
+	  <td height=17 style='height:12.75pt'></td>
+	  <td class=xl24>Data fins a</td>
+	  <td></td>
+	  <td colspan=2 style='mso-ignore:colspan'></td>
+	 </tr>
+ <tr height=18 style='height:13.5pt'>
+  <td height=18 colspan=5 style='height:13.5pt;mso-ignore:colspan'></td>
+ </tr>
+ <tr height=18 style='height:13.5pt'>
+  <td height=18 style='height:13.5pt'></td>
+	<td class=xl31>DATA D'OPERACIÓ</td>
+	<td class=xl32>CONCEPTE</td>
+	<td class=xl32>DATA VALOR</td>
+	<td class=xl32>IMPORT</td>
+	<td class=xl33>SALDO</td>
+ </tr>
+	<tr height=17 style='height:12.75pt'>
+		<td height=17 style='height:12.75pt'></td>
+			<td class=xl26>12/01/2020</td>
+			<td class=xl25>TARGETA *2316 AIRE DEL CIELO</td>
+			<td class=xl25>12/01/2020</td>
+					<td class=xl25 align=right x:num="-300.00">-300,00</td>
+				<td class=xl27 align=right x:num="28.79">28,79</td>
+	</tr>
+	<tr height=17 style='height:12.75pt'>
+		<td height=17 style='height:12.75pt'></td>
+			<td class=xl26>09/11/2019</td>
+			<td class=xl25>TARGETA *5019 OPERACIÓ VIKINI</td>
+			<td class=xl25>09/11/2019</td>
+					<td class=xl25red align=right x:num="-2.88">-2,88</td>
+				<td class=xl27red align=right x:num="300.00">300,00</td>
+	</tr>
+	<tr height=17 style='height:12.75pt'>
+		<td height=17 style='height:12.75pt'></td>
+			<td class=xl26>08/10/2019</td>
+			<td class=xl25>R/ AI DIOS NOS AYUDE</td>
+			<td class=xl25>08/10/2019</td>
+					<td class=xl25red align=right x:num="-120.00">-120,00</td>
+				<td class=xl27red align=right x:num="1000.00">1000,00</td>
+	</tr>
+	<tr height=17 style='height:12.75pt'>
+		<td height=17 style='height:12.75pt'></td>
+			<td class=xl28>04/08/2019</td>
+			<td class=xl29>TRANSF CTE DE:Dr Who</td>
+			<td class=xl29>04/08/2019</td>
+					<td class=xl29 align=right x:num="1500.00">1.500,00</td>
+				<td class=xl30 align=right x:num="1500.00">1.500,00</td>
+
+	</tr>
+ <![if supportMisalignedColumns]>
+ <tr height=0 style='display:none'>
+	<td height=17 width=80 style='height:12.75pt;width:60pt'></td>
+  <td width=199 style='width:149pt'></td>
+  <td width=241 style='width:181pt'></td>
+  <td width=133 style='width:100pt'></td>
+  <td width=126 style='width:95pt'></td>
+  <td width=193 style='width:145pt'></td>
+ </tr>
+ <![endif]>
+</table>
+</body>
+</html>
+
