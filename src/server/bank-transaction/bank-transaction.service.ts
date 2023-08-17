@@ -3,11 +3,13 @@ import { InjectModel } from '@nestjs/sequelize';
 import sequelize, { InferCreationAttributes, Op, WhereOptions } from 'sequelize';
 
 import { CursorHandler, ListWithCursor } from '../common/cursor-handler';
+import { sequelizeQueryOrIsNull } from '../common/helpers';
 import { queryOwnerId } from '../session/db-query';
-import { BankTransaction, IBankTransaction } from './models/bank-transaction.model';
+import { BankTransaction, BankTransactionBase, IBankTransaction } from './models/bank-transaction.model';
 
 @Injectable()
 export class BankTransactionService {
+
     private readonly logger = new Logger(BankTransactionService.name);
 
     private readonly cursorHandler = new CursorHandler<BankTransaction, 'date' | 'id'>(['date', 'id']);
@@ -51,6 +53,22 @@ export class BankTransactionService {
             list: listData.map(movement => movement.dataValues),
             next: cursorElement ? this.cursorHandler.stringify(cursorElement) : undefined,
         };
+    }
+
+    async existsSimilar(groupOwnerId: number, kind: string, transaction: BankTransactionBase): Promise<boolean> {
+
+        const result = await this.bankMovementModel.count({
+            where: {
+                date: transaction.date,
+                details: sequelizeQueryOrIsNull(transaction.details),
+                groupOwnerId,
+                kind,
+                movementName: transaction.movementName,
+                value: transaction.value,
+            }
+        })
+
+        return result>0
     }
 
     async insertBatch(movements: InferCreationAttributes<BankTransaction>[]) {

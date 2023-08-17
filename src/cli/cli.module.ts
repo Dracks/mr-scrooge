@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { CommandModule } from 'nestjs-command';
 
-import { BankMovementModule } from '../server/bank-transaction/bank-transaction.module';
+import { BankTransactionModule } from '../server/bank-transaction/bank-transaction.module';
 import { getDatabaseModule } from '../server/core/database';
 import { MyLoggerModule } from '../server/core/logger.module';
 import { GraphsModule } from '../server/graphs/graphs.module';
@@ -12,6 +12,7 @@ import { DemoCommand } from './demo.command';
 import { DemoDataService } from './demo-data.service';
 import { LogsCommands } from './logs.command';
 import { MigrationsCommand } from './migrations.command';
+import { ImporterModule } from '../server/importer/importer.module';
 
 @Module({
     imports: [
@@ -26,7 +27,8 @@ import { MigrationsCommand } from './migrations.command';
         MyLoggerModule,
         CliConfigModule,
         GraphsModule,
-        BankMovementModule,
+        BankTransactionModule,
+        ImporterModule,
     ],
     providers: [DemoCommand, LogsCommands, MigrationsCommand, DemoDataService],
 })

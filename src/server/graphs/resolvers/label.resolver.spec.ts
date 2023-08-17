@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { FastifyInstance } from 'fastify';
 import request from 'supertest-graphql';
 
-import { BankMovementModule } from '../../bank-transaction/bank-transaction.module';
+import { BankTransactionModule } from '../../bank-transaction/bank-transaction.module';
 import { TestDbModule } from '../../common/test-db.module';
 import { GetLabelsDocument, GQLGetLabelsQuery, GQLGetLabelsQueryVariables } from '../../common/test-graphql/generated';
 import { getGraphQLTestModule } from '../../common/test-graphql/graph-ql.module';

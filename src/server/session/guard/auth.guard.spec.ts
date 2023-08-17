@@ -107,7 +107,7 @@ describe(AuthGuard.name, () => {
                 path: '/',
             },
         });
-        
+
         await app.init();
         await app.getHttpAdapter().getInstance().ready();
 
@@ -151,7 +151,7 @@ describe(AuthGuard.name, () => {
             userId = user.id
 
             const loginResponse = await request(server).query(login, { credentials: { username: 'demo', password: 'demo' } });
-            cookies = loginResponse.response.headers['set-cookie'];
+            cookies = loginResponse.response.headers['set-cookie'] as unknown as string[];
         });
 
         it('Access allowed', async () => {
@@ -191,7 +191,7 @@ describe(AuthGuard.name, () => {
                     `,
                 )
                 .set('Cookie', [...cookies])
-                
+
                 expect(response.data).toEqual({groups: [1,3]})
             })
         })

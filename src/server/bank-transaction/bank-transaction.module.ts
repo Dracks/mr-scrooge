@@ -11,4 +11,4 @@ import { BankTransaction } from './models/bank-transaction.model';
     providers: [BankTransactionService, BankTransactionResolver],
     exports: [BankTransactionService],
 })
-export class BankMovementModule {}
+export class BankTransactionModule {}

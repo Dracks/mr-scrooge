@@ -8,6 +8,5 @@ export const BankTransactionFactory = Factory.Sync.makeFactory<IBankTransaction>
     id: Factory.Sync.each(id => id),
     kind: 'demo',
     movementName: Factory.Sync.each(id => `movement ${id}`),
-    pageKey: '',
     value: Factory.Sync.each(id => id + id / 100),
 });

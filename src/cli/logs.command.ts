@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Command } from 'nestjs-command';
 
-import { CustomError } from '../server/core/errors/base-error';
+import { Exception } from '../server/core/errors/exception';
 
 @Injectable()
 export class LogsCommands {
@@ -16,7 +16,7 @@ export class LogsCommands {
         this.logger.debug({ something: 'extra' }, 'Debug log');
         this.logger.warn('This is some warning with %s', 'extra');
         this.logger.error(
-            { err: new CustomError('ER0000', 'Some message', { context: 'extra' }) },
+            { err: new Exception('E10000', 'Test message', { context: 'extra' }) },
             'we have some error',
         );
     }

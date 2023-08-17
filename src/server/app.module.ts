@@ -1,16 +1,17 @@
 import * as secureSession from '@fastify/secure-session';
 import { Logger, Module } from '@nestjs/common';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { join } from 'path';
 
-import { BankMovementModule } from './bank-transaction/bank-transaction.module';
+import { BankTransactionModule } from './bank-transaction/bank-transaction.module';
 import { DateOnly } from './common/custom-types/date-only';
 import { GQLDateOnly } from './common/custom-types/gql-date-only';
 import { ConfigModule } from './core/config/config.module';
 import { getDatabaseModule } from './core/database';
+import { AllExceptionsHandler } from './core/errors/exceptions.filter';
 import { MyLoggerModule } from './core/logger.module';
 import { GraphsModule } from './graphs/graphs.module';
 import { ImporterModule } from './importer/importer.module';
@@ -45,7 +46,7 @@ import { SessionModule } from './session/session.module';
         MyLoggerModule,
         ConfigModule,
         SessionModule,
-        BankMovementModule,
+        BankTransactionModule,
         GraphsModule,
         ImporterModule,
         ReactModule,
@@ -58,7 +59,12 @@ import { SessionModule } from './session/session.module';
         {
             provide: APP_INTERCEPTOR,
             useClass: AuthInterceptor,
-        }
+        },
+        {
+            provide: APP_FILTER,
+            useClass: AllExceptionsHandler
+        },
+
     ],
 })
 export class AppModule {}

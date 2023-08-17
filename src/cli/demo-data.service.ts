@@ -57,13 +57,12 @@ export class DemoDataService {
                 groupOwnerId,
                 kind: 'demo',
                 movementName: `transaction ${label}`,
-                pageKey: '',
                 value: getAmount(),
             });
             // eslint-disable-next-line no-await-in-loop
             await this.labelService.addTransaction({ labelId: labelData.dataValues.id, transactionId: transaction.id });
             date = sub(date, nextFn());
-        } 
+        }
         return labelData.id;
     }
 

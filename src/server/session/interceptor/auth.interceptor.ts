@@ -10,7 +10,8 @@ export class AuthInterceptor implements NestInterceptor {
 
     constructor(readonly userService: UserProfileService) { }
 
-    async intercept(context: ExecutionContext &{getRequest: ()=>void}, next: CallHandler): Promise<Observable<unknown>> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async intercept(context: ExecutionContext &{getRequest: ()=>void}, next: CallHandler): Promise<Observable<any>> {
 
         const request = match(context.getType<'http' | 'graphql'>())
             .with('http', ()=>context.switchToHttp().getRequest())
@@ -22,7 +23,7 @@ export class AuthInterceptor implements NestInterceptor {
 
         if (userId) {
             request.groupsId = await this.userService.getGroupsId(userId);
-        } 
+        }
         return next.handle()
     }
 }

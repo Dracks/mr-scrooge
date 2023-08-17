@@ -9,14 +9,16 @@ import {
     Table,
 } from 'sequelize-typescript';
 
-import { UserGroupModel } from '../../session/models/group.model';
+import { BankTransaction,IBankTransaction } from '../../bank-transaction/models/bank-transaction.model';
+import { StatusReport } from './status-report';
+
+
 
 @Table({
-    tableName: 'core_bank_transaction',
+    tableName: 'importer_status_report_row',
     timestamps: false,
-    indexes: [{ name: 'cursor', fields: ['group_owner_id', 'date', 'id'] }],
 })
-export class BankTransaction extends Model<InferAttributes<BankTransaction>, InferCreationAttributes<BankTransaction>> {
+export class StatusReportRow extends Model<InferAttributes<StatusReportRow>, InferCreationAttributes<StatusReportRow>> implements Omit<IBankTransaction, 'kind' | 'pageKey' | 'groupOwnerId'>{
     @Column({
         primaryKey: true,
         autoIncrement: true,
@@ -24,9 +26,19 @@ export class BankTransaction extends Model<InferAttributes<BankTransaction>, Inf
     })
     id!: CreationOptional<number>;
 
-    @ForeignKey(() => UserGroupModel)
-    @Column({ allowNull: false, field: 'group_owner_id', type: DataType.INTEGER })
-    groupOwnerId!: UserGroupModel['id'];
+    @ForeignKey(() => StatusReport)
+    @Column({ allowNull: false, field: 'report_id', type: DataType.INTEGER })
+    reportId!: StatusReport['id'];
+
+    @ForeignKey(() => BankTransaction)
+    @Column({ allowNull: true, field: 'transaction_id', type: DataType.INTEGER })
+    transactionId?: BankTransaction['id'];
+
+    @Column({
+        type: DataType.STRING(255),
+        allowNull: true,
+    })
+    message?: string;
 
     @Column({
         field: 'movement_name',
@@ -62,25 +74,10 @@ export class BankTransaction extends Model<InferAttributes<BankTransaction>, Inf
     value!: number;
 
     @Column({
-        allowNull: false,
-        type: DataType.STRING(255),
-    })
-    kind!: string;
-
-    @Column({
         allowNull: true,
         type: DataType.STRING,
     })
     description?: string;
-
-/*@Column({
-        field: 'page_key',
-        allowNull: false,
-        type: DataType.STRING(255),
-    })
-    pageKey!: string;*/
 }
 
-export type IBankTransaction = Attributes<BankTransaction>;
-
-export type BankTransactionBase = Omit<IBankTransaction, 'kind' |'groupOwnerId' >
+export type IStatusReportRow = Attributes<StatusReportRow>;

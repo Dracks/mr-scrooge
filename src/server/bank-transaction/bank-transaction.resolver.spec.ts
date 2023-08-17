@@ -10,7 +10,7 @@ import {
     GQLGetBankTransactionsQueryVariables,
 } from '../common/test-graphql/generated';
 import { getGraphQLTestModule } from '../common/test-graphql/graph-ql.module';
-import { BankMovementModule } from './bank-transaction.module';
+import { BankTransactionModule } from './bank-transaction.module';
 import { BankTransactionResolver } from './bank-transaction.resolver';
 import { BankTransactionService } from './bank-transaction.service';
 import { IBankTransaction } from './models/bank-transaction.model';
@@ -22,9 +22,13 @@ describe(BankTransactionResolver.name, () => {
 
     beforeEach(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports: [TestDbModule, getGraphQLTestModule(() => ({
-                groupsId: [1],
-            })), BankMovementModule],
+            imports: [
+                TestDbModule,
+                getGraphQLTestModule(() => ({
+                    groupsId: [1],
+                })),
+                BankTransactionModule
+            ],
         }).compile();
 
         app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
@@ -77,7 +81,7 @@ describe(BankTransactionResolver.name, () => {
             const response = await request<GQLGetBankTransactionsQuery, GQLGetBankTransactionsQueryVariables>(
                 server,
             ).query(GetBankTransactionsDocument, { limit: 5 });
-            
+
             expect(response.errors).toEqual(undefined);
             const { results, next } = response.data?.bankTransaction ?? {};
             expect(results).toBeTruthy();
@@ -91,7 +95,7 @@ describe(BankTransactionResolver.name, () => {
             const response = await request<GQLGetBankTransactionsQuery, GQLGetBankTransactionsQueryVariables>(
                 server,
             ).query(GetBankTransactionsDocument, { limit: 5, cursor: '2022-02-02:1' });
-            
+
             expect(response.errors).toEqual(undefined);
             const { results, next } = response.data?.bankTransaction ?? {};
             expect(results).toBeTruthy();

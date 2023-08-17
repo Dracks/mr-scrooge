@@ -1,4 +1,5 @@
-import { CustomError } from '../core/errors/base-error';
+import { Exception } from '../core/errors/exception';
+import { ensureOrThrow } from '../core/errors/utils';
 
 export interface ListWithCursor<T> {
     list: T[];
@@ -12,7 +13,7 @@ export class CursorHandler<T, R extends keyof T> {
         const data = cursor.split(':');
         return data.reduce((acc, item, idx) => {
             const field = this.fields[idx];
-            if (!field) throw new CustomError('ER0001', 'Invalid cursor', { cursor, field });
+            ensureOrThrow(field, new Exception('E10001', 'Invalid cursor', { cursor, field }))
             acc[field] = item as T[R];
             return acc;
         }, {} as Record<R, T[R]>);

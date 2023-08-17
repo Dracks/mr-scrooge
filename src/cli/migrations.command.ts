@@ -7,6 +7,7 @@ import * as migrate from 'sequelize-auto-migrations-vk/lib/migrate';
 import { Sequelize } from 'sequelize-typescript';
 
 import { CliConfig } from './config/cli-config';
+import { Exception } from '../server/core/errors/exception';
 
 interface migrationState {
     revision: number;
@@ -31,7 +32,7 @@ export class MigrationsCommand {
         const { sequelize, config } = this;
         const migrationsDir = config.migrationsFolder;
         if (!fs.existsSync(migrationsDir)) {
-            throw new Error(`Migrations folder ${migrationsDir} doesn't exists`);
+            throw new Exception('E10005', `Migrations folder does not exists`, {migrationsDir});
         }
 
         // current state

@@ -12,7 +12,8 @@ import {
 } from '@nestjs/graphql';
 
 import { WebSession } from '../../common/web-session.type';
-import { CustomError, ensureOrThrow } from '../../core/errors/base-error';
+import { Exception } from '../../core/errors/exception';
+import { ensureOrThrow } from '../../core/errors/utils';
 import { MyProfile } from '../gql-objects/my-profile.object';
 import { AllowRoles, Role } from '../guard/roles.decorator';
 import { SessionService } from '../services/session.service';
@@ -78,7 +79,7 @@ export class SessionResolver {
         this.logger.warn({ userId }, 'USER ID');
         if (userId && userId > 0) {
             const user = await this.userService.getUserProfile(userId);
-            return ensureOrThrow(user, new CustomError('ER0000', 'User not found', { userId }));
+            return ensureOrThrow(user, new Exception('E10002', 'User not found', { userId }));
         }
         return { identified: false };
     }

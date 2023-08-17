@@ -23,6 +23,8 @@
   * [ ] Import n26
   * [ ] Import commerzbank
   * [ ] Import qif
+* [ ] Bank transactions
+  * [ ] new transactions are applied with the rules engine
 * [ ] labels
   * [ ] create label
   * [ ] modify label
