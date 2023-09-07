@@ -42,7 +42,7 @@ describe('useGraphData', () => {
             { id: 5, name: 'tag_5' },
             { id: 8, name: 'tag_8' },
         ].map(element => ({ ...element, children: [], filters: [] }));
-        tagsMap = new Map(tags.map(tag => [tag.id, tag]))
+        tagsMap = new Map(tags.map(tag => [tag.id, tag]));
     });
     it('Check basic pie', () => {
         expect(useGraphDataGenerator(enrichGraph({ ...GraphV2Pie, id: 2 }, tagsMap))).toEqual([

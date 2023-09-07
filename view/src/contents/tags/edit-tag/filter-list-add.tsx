@@ -19,6 +19,7 @@ export const FilterListAddArgs: React.FC<FilterListAddArgs> = ({ conditions, tag
     const [, request] = usePostTagFilter();
     const [viewFilter, setViewFilter] = React.useState<Partial<TagFilter>>({
         tag: tagId,
+        conditional: '',
     });
     React.useEffect(() => {
         setViewFilter({ tag: tagId });

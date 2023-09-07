@@ -26,8 +26,8 @@ export const EditTagForm: React.FC<EditTagFormProps> = ({ tag, save }) => {
         while (tmpChildrenList.length > 0) {
             const firstChildId = tmpChildrenList.pop() as number;
             childrenList.push(firstChildId);
-            const firstChild = tagsMap[firstChildId];
-            firstChild.children.forEach(child => tmpChildrenList.push(child));
+            const firstChild = tagsMap.get(firstChildId);
+            firstChild?.children.forEach(child => tmpChildrenList.push(child));
         }
         return tags.filter(({ id }) => !childrenList.includes(id)).map(({ id, name }) => ({ id, name }));
     }, [tag, tag?.parent, tagsMap, tags]);

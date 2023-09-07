@@ -9,7 +9,7 @@ import { TagListRow } from './tag-list-row';
 
 export const TagsList: React.FC = () => {
     const [isAdding, setIsAdding] = React.useState(false);
-    const { tags, tagsMap: tagsHash, refresh } = useTagsContext();
+    const { tags, tagsMap, refresh } = useTagsContext();
 
     const onClose = React.useCallback(
         async (newTag?: Tag) => {
@@ -41,7 +41,7 @@ export const TagsList: React.FC = () => {
             <TableBody>
                 {isAdding ? <NewTagRow close={onClose} /> : undefined}
                 <InfiniteScroll items={tags}>
-                    {(result: Tag) => <TagListRow key={result.id} tag={result} tagHash={tagsHash} refresh={refresh} />}
+                    {(result: Tag) => <TagListRow key={result.id} tag={result} tagsMap={tagsMap} refresh={refresh} />}
                 </InfiniteScroll>
             </TableBody>
         </Table>

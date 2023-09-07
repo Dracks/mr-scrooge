@@ -1,4 +1,4 @@
-import * as Factory from 'factory.ts'
+import * as Factory from 'factory.ts';
 
 import { Tag } from '../../api/client/tag/types';
 
@@ -7,4 +7,4 @@ export const tagFactory = Factory.Sync.makeFactory<Tag>({
     name: 'Build tag',
     children: [],
     filters: [],
-})
+});
