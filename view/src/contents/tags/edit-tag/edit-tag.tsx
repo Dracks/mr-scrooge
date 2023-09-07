@@ -13,9 +13,10 @@ import { UITag } from './models/ui-tag.model';
 export const TagEdit: React.FC = () => {
     const { tagsMap, refresh } = useTagsContext();
     const { id } = useParams<{ id: string }>();
-    const tag: Tag | undefined = tagsMap[Number.parseInt(id ?? 'Nan', 10)];
+    const idNum = Number.parseInt(id ?? 'Nan', 10);
+    const tag: Tag | undefined = tagsMap.get(idNum);
 
-    const [, updateTag] = usePutTag(tag?.id);
+    const [, updateTag] = usePutTag(tag?.id ?? 0);
 
     const [tagUiValue, setTagUiValue] = React.useState<UITag | undefined>();
 

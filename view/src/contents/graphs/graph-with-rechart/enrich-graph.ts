@@ -1,8 +1,11 @@
 import { EnrichedGraph, EnrichedGroup, GraphGroup, GraphV2 } from '../../../api/client/graphs/types';
 import { Tag } from '../../../api/client/tag/types';
 
-export const enrichGroup = ({ groupTags: oldGroupTags, ...group }: GraphGroup, tagsMap: Map<number, Tag>): EnrichedGroup => {
-    const groupTags = oldGroupTags?.map(tag => tagsMap.get(tag.tag)).filter(Boolean) as Tag[] ?? [];
+export const enrichGroup = (
+    { groupTags: oldGroupTags, ...group }: GraphGroup,
+    tagsMap: Map<number, Tag>,
+): EnrichedGroup => {
+    const groupTags = (oldGroupTags?.map(tag => tagsMap.get(tag.tag)).filter(Boolean) as Tag[]) ?? [];
 
     return {
         ...group,

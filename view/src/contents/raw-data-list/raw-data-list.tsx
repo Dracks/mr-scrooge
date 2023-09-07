@@ -86,7 +86,14 @@ export const RawDataList: React.FC = () => {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                <InfiniteScroll items={filteredResults}>
+                <InfiniteScroll
+                    items={filteredResults}
+                    renderMarker={marker => (
+                        <TableRow>
+                            <TableCell>{marker}</TableCell>
+                        </TableRow>
+                    )}
+                >
                     {(result: RdsEnriched) => (
                         <RawDataRow rds={result} tags={tags} onChange={replace} key={result.id} />
                     )}

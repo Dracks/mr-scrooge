@@ -10,17 +10,17 @@ import { ConfirmationButton } from '../../utils/ui/confirmation-button';
 interface TagListRowArgs {
     refresh: () => void;
     tag: Tag;
-    tagHash: Record<number, Tag>;
+    tagsMap: Map<number, Tag>;
 }
 
-export const TagListRow: React.FC<TagListRowArgs> = ({ tag, tagHash, refresh }) => {
+export const TagListRow: React.FC<TagListRowArgs> = ({ tag, tagsMap: tagHash, refresh }) => {
     const [, deleteRequest] = useDeleteTag(tag.id);
     const navigate = useNavigate();
-    const parentTag = tag.parent ? tagHash[tag.parent] : { name: undefined };
+    const parentTag = tag.parent ? tagHash.get(tag.parent) : { name: undefined };
     const logger = useLogger();
     return (
         <TableRow>
-            <TableCell>{parentTag.name}</TableCell>
+            <TableCell>{parentTag?.name}</TableCell>
             <TableCell>{tag.name}</TableCell>
             <TableCell>{tag.negateConditional ? 'not and' : 'or'}</TableCell>
             <TableCell>{tag.filters.length}</TableCell>
