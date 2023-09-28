@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { Injectable, Logger } from '@nestjs/common';
-import bcrypt from 'bcrypt';
+// import bcrypt from 'bcrypt';
+import Bun from 'bun'
 import { pbkdf2 } from 'node:crypto';
 
 @Injectable()
@@ -8,11 +9,11 @@ export class PasswordService {
     private readonly logger = new Logger(this.constructor.name);
 
     validate(password: string, oldHash: string): Promise<boolean> {
-        return bcrypt.compare(password, oldHash);
+        return Bun.password.verify(password, oldHash)//compare(password, oldHash);
     }
 
     hash(password: string): Promise<string> {
-        return bcrypt.hash(password, 10);
+        return Bun.password.hash(password, {algorithm: 'bcrypt', cost: 10});
     }
 
     // https://docs.djangoproject.com/en/4.1/topics/auth/passwords/

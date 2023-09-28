@@ -3,6 +3,7 @@
         "src/"
     ],
     "compilerOptions": {
+        "types": ["bun-types"],
         "sourceMap": true,
         "strict": true,
         "module": "commonjs",
