@@ -50,7 +50,7 @@ export class MigrationsCommand {
 
         try {
             previousState = JSON.parse(fs.readFileSync(path.join(migrationsDir, '_current.json')).toString());
-        // eslint-disable-next-line id-length, no-empty
+            // eslint-disable-next-line id-length, no-empty
         } catch (e) {}
 
         const { models } = sequelize;

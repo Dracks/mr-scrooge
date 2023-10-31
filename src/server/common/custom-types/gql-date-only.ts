@@ -12,7 +12,7 @@ export const GQLDateOnly = new GraphQLScalarType({
             throw new Error('GQLDateOnly can only serialize DateOnly values');
         }
         // value sent to the client
-        return value.toString(); 
+        return value.toString();
     },
     parseValue(value: unknown): DateOnly {
         // check the type of received value
@@ -20,7 +20,7 @@ export const GQLDateOnly = new GraphQLScalarType({
             throw new Error('GQLDateOnly can only parse string values');
         }
         // value from the client input variables
-        return new DateOnly(value); 
+        return new DateOnly(value);
     },
     parseLiteral(ast): DateOnly {
         // check the type of received value
@@ -28,6 +28,6 @@ export const GQLDateOnly = new GraphQLScalarType({
             throw new Error('GQLDateOnly can only parse string values');
         }
         // value from the client query
-        return new DateOnly(ast.value); 
+        return new DateOnly(ast.value);
     },
 });

@@ -58,7 +58,7 @@ import { SessionModule } from './session/session.module';
         {
             provide: APP_INTERCEPTOR,
             useClass: AuthInterceptor,
-        }
+        },
     ],
 })
 export class AppModule {}

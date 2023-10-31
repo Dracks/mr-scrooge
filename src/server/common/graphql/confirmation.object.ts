@@ -1,8 +1,7 @@
-import { Field, ObjectType } from "@nestjs/graphql";
-
+import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class Confirmation {
-    @Field(()=>Boolean)
-    confirm!: true
+    @Field(() => Boolean)
+    confirm!: true;
 }

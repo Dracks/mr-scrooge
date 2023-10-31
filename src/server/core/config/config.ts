@@ -3,12 +3,12 @@ import { IsBoolean, IsNumber } from 'class-validator';
 
 export class Config {
     @IsBoolean()
-    @Type(()=>Boolean)
-    readonly DEBUG : boolean = false;
+    @Type(() => Boolean)
+    readonly DEBUG: boolean = false;
 
     @IsNumber()
-    @Type(()=>Number)
-    readonly DECIMAL_COUNT :number = 2;
+    @Type(() => Number)
+    readonly DECIMAL_COUNT: number = 2;
 
     @IsBoolean()
     readonly sessionUseLastActivity: boolean = true;

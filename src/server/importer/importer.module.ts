@@ -1,8 +1,8 @@
-import { Module } from "@nestjs/common";
+import { Module } from '@nestjs/common';
 
-import { ImportKindResolver } from "./resolvers/import-kind.resolver";
+import { ImportKindResolver } from './resolvers/import-kind.resolver';
 
 @Module({
-    providers: [ImportKindResolver]
+    providers: [ImportKindResolver],
 })
-export class ImporterModule{}
+export class ImporterModule {}

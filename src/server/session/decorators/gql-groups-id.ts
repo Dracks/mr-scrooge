@@ -1,3 +1,3 @@
-import { Context } from "@nestjs/graphql";
+import { Context } from '@nestjs/graphql';
 
-export const GqlGroupsId = ()=>Context('groupsId');
+export const GqlGroupsId = () => Context('groupsId');

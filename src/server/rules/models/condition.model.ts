@@ -2,10 +2,9 @@
 import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import { Column, DataType, Model, Table } from 'sequelize-typescript';
 
-
 export type IConditionAttributes = InferAttributes<ConditionModel>;
 
-export enum FilterConditionals {
+export enum ConditionalTypeEnum {
     CONTAINS = 'c',
     GREATER = 'g',
     GREATER_EQUAL = 'G',
@@ -13,7 +12,7 @@ export enum FilterConditionals {
     LOWER_EQUAL = 'L',
     PREFIX = 'p',
     REGULAR_EXPRESION = 'r',
-    SUFFIX = 's'
+    SUFFIX = 's',
 }
 
 @Table({
@@ -29,8 +28,14 @@ export class ConditionModel extends Model<IConditionAttributes, InferCreationAtt
     id!: CreationOptional<number>;
 
     @Column({
+        type: DataType.STRING(1),
+        field: "type_conditional",
+    })
+    typeCondition!: ConditionalTypeEnum
+
+    @Column({
         type: DataType.STRING(255),
         allowNull: false,
     })
-    name!: string;
+    conditional!: string;
 }

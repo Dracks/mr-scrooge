@@ -1,4 +1,4 @@
-import { FastifyAdapter,NestFastifyApplication } from '@nestjs/platform-fastify';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test, TestingModule } from '@nestjs/testing';
 import { FastifyInstance } from 'fastify';
 import request from 'supertest-graphql';
@@ -18,9 +18,13 @@ describe(LabelResolver.name, () => {
 
     beforeEach(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports: [TestDbModule, getGraphQLTestModule(() => ({
-                groupsId: [1]
-            })), GraphsModule],
+            imports: [
+                TestDbModule,
+                getGraphQLTestModule(() => ({
+                    groupsId: [1],
+                })),
+                GraphsModule,
+            ],
         }).compile();
 
         app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
@@ -50,7 +54,7 @@ describe(LabelResolver.name, () => {
                 GetLabelsDocument,
             );
             expect(response.errors).toEqual(undefined);
-            expect(response.data?.labels.map(label => label.name)).toEqual(['ping', 'pong'])
+            expect(response.data?.labels.map(label => label.name)).toEqual(['ping', 'pong']);
         });
     });
 });

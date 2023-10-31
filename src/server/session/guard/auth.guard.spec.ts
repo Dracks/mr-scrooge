@@ -54,12 +54,11 @@ export class TestGuardResolver {
         return 'Allowed';
     }
 
-    @Query(()=> [Int], {name: 'groups'})
-    getGroups(@GqlGroupsId() groupsId: number[]){
+    @Query(() => [Int], { name: 'groups' })
+    getGroups(@GqlGroupsId() groupsId: number[]) {
         return groupsId;
     }
 }
-
 
 describe(AuthGuard.name, () => {
     let app!: NestFastifyApplication;
@@ -76,11 +75,12 @@ describe(AuthGuard.name, () => {
                     graphiql: false,
                     autoSchemaFile: `/tmp/mr-scrooge-tests/${Math.random()}.gql`,
                     context: (req: unknown) => {
-                        const { session, groupsId} = req as {groupsId: number[], session: WebSession}
+                        const { session, groupsId } = req as { groupsId: number[]; session: WebSession };
                         return {
-                        session,
-                        groups: groupsId
-                    }},
+                            session,
+                            groups: groupsId,
+                        };
+                    },
                 }),
             ],
             providers: [
@@ -107,7 +107,7 @@ describe(AuthGuard.name, () => {
                 path: '/',
             },
         });
-        
+
         await app.init();
         await app.getHttpAdapter().getInstance().ready();
 
@@ -148,9 +148,11 @@ describe(AuthGuard.name, () => {
 
         beforeEach(async () => {
             const user = await app.get(UserProfileService).addUser('demo', 'demo', { isActive: true });
-            userId = user.id
+            userId = user.id;
 
-            const loginResponse = await request(server).query(login, { credentials: { username: 'demo', password: 'demo' } });
+            const loginResponse = await request(server).query(login, {
+                credentials: { username: 'demo', password: 'demo' },
+            });
             cookies = loginResponse.response.headers['set-cookie'];
         });
 
@@ -168,33 +170,33 @@ describe(AuthGuard.name, () => {
                 .expect(403);
         });
 
-        describe('testing auth middleware getGroups', ()=>{
+        describe('testing auth middleware getGroups', () => {
             beforeEach(async () => {
-                await app.get(UserProfileService).addUser('demo2', 'demo')
-                await app.get(UserProfileService).addGroup(userId, 'testing3')
+                await app.get(UserProfileService).addUser('demo2', 'demo');
+                await app.get(UserProfileService).addGroup(userId, 'testing3');
             });
 
-            it('api rest works fine', async ()=>{
+            it('api rest works fine', async () => {
                 const response = await supertest(server)
-                .get('/test-controller/getGroups')
-                .set('Cookie', [...cookies])
-                .expect(200);
-                expect(response.body).toEqual([1,3])
-            })
+                    .get('/test-controller/getGroups')
+                    .set('Cookie', [...cookies])
+                    .expect(200);
+                expect(response.body).toEqual([1, 3]);
+            });
 
-            it('api rest works fine', async ()=>{
-                const response = await request(server).query(
-                    gql`
-                        query {
-                            groups
-                        }
-                    `,
-                )
-                .set('Cookie', [...cookies])
-                
-                expect(response.data).toEqual({groups: [1,3]})
-            })
-        })
+            it('api rest works fine', async () => {
+                const response = await request(server)
+                    .query(
+                        gql`
+                            query {
+                                groups
+                            }
+                        `,
+                    )
+                    .set('Cookie', [...cookies]);
+
+                expect(response.data).toEqual({ groups: [1, 3] });
+            });
+        });
     });
-
 });

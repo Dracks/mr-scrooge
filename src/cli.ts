@@ -19,7 +19,7 @@ const bootstrap = async () => {
         await app.close();
         process.exit(1);
     }
-}
+};
 
 // eslint-disable-next-line no-console
 bootstrap().catch(error => console.error(error));

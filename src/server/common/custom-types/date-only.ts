@@ -40,7 +40,7 @@ export class DateOnly {
      * @returns {Date} a date set in UTC format
      */
     getDate(): Date {
-        return new Date(Date.UTC(this._year, this._month-1, this._day, 0, 0, 0, 0))
+        return new Date(Date.UTC(this._year, this._month - 1, this._day, 0, 0, 0, 0));
     }
 
     toString(): string {

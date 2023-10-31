@@ -1,5 +1,5 @@
-import { Op,WhereOptions } from "sequelize"
+import { Op, WhereOptions } from 'sequelize';
 
-export const queryOwnerId = (groupsId: number[]): WhereOptions<{groupOwnerId: number}>=> ({
-    groupOwnerId: {[Op.in]: groupsId}
-})
+export const queryOwnerId = (groupsId: number[]): WhereOptions<{ groupOwnerId: number }> => ({
+    groupOwnerId: { [Op.in]: groupsId },
+});

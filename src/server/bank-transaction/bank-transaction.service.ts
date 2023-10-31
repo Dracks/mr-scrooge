@@ -15,7 +15,12 @@ export class BankTransactionService {
     constructor(@InjectModel(BankTransaction) private readonly bankMovementModel: typeof BankTransaction) {}
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async getAll(groupIds: number[], cursor?: string, limit = 100, query= {}): Promise<ListWithCursor<IBankTransaction>> {
+    async getAll(
+        groupIds: number[],
+        cursor?: string,
+        limit = 100,
+        query = {},
+    ): Promise<ListWithCursor<IBankTransaction>> {
         const andConditional: WhereOptions<BankTransaction>[] = [queryOwnerId(groupIds)];
 
         if (cursor) {
@@ -57,7 +62,7 @@ export class BankTransactionService {
         await this.bankMovementModel.bulkCreate(movements, {
             logging: (sql, timing) => {
                 // this.logger.log({sql, timing}, 'Bulk insert')
-                this.logger.log({sql, timing}, 'Insert batch');
+                this.logger.log({ sql, timing }, 'Insert batch');
             },
             validate: true,
         });

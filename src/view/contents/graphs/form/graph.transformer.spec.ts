@@ -24,7 +24,7 @@ describe('[graph.transformer]', () => {
         horizontalGroup: {
             group: GQLGraphGroup.Labels,
             hideOthers: true,
-            labels: [3 ,  4],
+            labels: [3, 4],
         },
         id: 34,
         kind: GQLGraphKind.Line,

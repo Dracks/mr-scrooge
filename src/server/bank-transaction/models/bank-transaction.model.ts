@@ -1,13 +1,6 @@
 /* eslint-disable no-use-before-define */
 import { Attributes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
-import {
-    Column,
-    DataType,
-    ForeignKey,
-    Index,
-    Model,
-    Table,
-} from 'sequelize-typescript';
+import { Column, DataType, ForeignKey, Index, Model, Table } from 'sequelize-typescript';
 
 import { UserGroupModel } from '../../session/models/group.model';
 
