@@ -39,7 +39,7 @@ export class RuleModel extends Model<IRuleAttributes, InferCreationAttributes<Ru
     name!: string;
 
     @HasMany(() => ConditionModel)
-    conditionals?: ConditionModel[];
+    conditions?: ConditionModel[];
 
     @Column({
         type: DataType.CHAR(10),

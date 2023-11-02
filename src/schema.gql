@@ -81,6 +81,30 @@ type ImportKind {
   regex: String!
 }
 
+type Condition {
+  id: Int!
+  typeCondition: ConditionalTypeEnum!
+  conditional: String!
+}
+
+enum ConditionalTypeEnum {
+  CONTAINS
+  GREATER
+  GREATER_EQUAL
+  LOWER
+  LOWER_EQUAL
+  PREFIX
+  REGULAR_EXPRESION
+  SUFFIX
+}
+
+type Rule {
+  id: Int!
+  groupOwnerId: Int!
+  name: String!
+  conditions: [Condition!]!
+}
+
 type Query {
   """Checks if a user is logged in and returns his profile"""
   me: MyProfileResponse!
@@ -88,6 +112,7 @@ type Query {
   labels: [Label!]!
   graphs(graphsIds: [Int!]): [Graph!]!
   importKinds: [ImportKind!]!
+  rules: [Rule!]!
 }
 
 union MyProfileResponse = MyProfile | NotIdentified

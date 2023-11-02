@@ -7,6 +7,8 @@ import { DateOnly } from '../server/common/custom-types/date-only';
 import { GraphDateRange, GraphGroup, GraphKind } from '../server/graphs/models/graph.model';
 import { GraphService } from '../server/graphs/services/graph.service';
 import { LabelService } from '../server/graphs/services/label.service';
+import { ConditionalTypeEnum } from '../server/rules/models/condition.model';
+import { RuleService } from '../server/rules/rule.service';
 
 interface Range {
     max: number;
@@ -19,6 +21,7 @@ export class DemoDataService {
         private readonly transactionService: BankTransactionService,
         private readonly labelService: LabelService,
         private readonly graphService: GraphService,
+        private readonly ruleService: RuleService,
     ) {}
 
     async generateTagAndTransactions(
@@ -95,6 +98,19 @@ export class DemoDataService {
         });
     }
 
+    async generateRules(groupOwnerId: number) {
+        await this.ruleService.createRule({
+            groupOwnerId,
+            name: 'positive movements',
+            conditions: [
+                {
+                    typeCondition: ConditionalTypeEnum.GREATER, 
+                    conditional: "0"
+                }
+            ]
+        })
+    }
+
     async generateAll(groupOwnerId: number) {
         const labelConfigMap: Record<string, { amount: Range; periodicity: 'days' | 'montly' }> = {
             gasoline: { amount: { max: -30, min: -100 }, periodicity: 'days' },
@@ -132,5 +148,6 @@ export class DemoDataService {
             return acc;
         }, {} as Record<string, number>);
         await this.generateGraphs(groupOwnerId, labelIdMap);
+        await this.generateRules(groupOwnerId);
     }
 }

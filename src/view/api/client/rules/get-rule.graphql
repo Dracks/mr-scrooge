@@ -1,0 +1,11 @@
+query {
+  rules {
+    name,
+    groupOwnerId,
+    conditions {
+      id
+      typeCondition
+      conditional
+    }
+  }
+}

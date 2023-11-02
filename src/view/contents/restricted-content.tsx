@@ -11,6 +11,7 @@ import Headers from './headers';
 import { Imports } from './imports/imports';
 import { EditProfile } from './profile/edit-profile';
 import { RawDataList } from './raw-data-list/raw-data-list';
+import { RulesRouter } from './rules/rules';
 import { Tags } from './tags/tags';
 
 const RestrictedContent: React.FC = () => (
@@ -24,6 +25,7 @@ const RestrictedContent: React.FC = () => (
                 <Route path="/tag/*" element={<Tags />} />
                 <Route path="/movement" element={<RawDataList />} />
                 <Route path="/profile" element={<EditProfile />} />
+                <Route path="/rules" element={<RulesRouter />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </Main>

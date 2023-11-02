@@ -1,6 +1,8 @@
 /* eslint-disable no-use-before-define */
 import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
+
+import { RuleModel } from './rule.model';
 
 export type IConditionAttributes = InferAttributes<ConditionModel>;
 
@@ -15,6 +17,7 @@ export enum ConditionalTypeEnum {
     SUFFIX = 's',
 }
 
+
 @Table({
     tableName: 'core_condition',
     timestamps: false,
@@ -26,6 +29,12 @@ export class ConditionModel extends Model<IConditionAttributes, InferCreationAtt
         type: DataType.INTEGER,
     })
     id!: CreationOptional<number>;
+
+    @Column({
+        type: DataType.INTEGER
+    })
+    @ForeignKey(()=>RuleModel)
+    rule?: number;
 
     @Column({
         type: DataType.STRING(1),

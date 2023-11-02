@@ -6,6 +6,7 @@ import { BankMovementModule } from '../server/bank-transaction/bank-transaction.
 import { getDatabaseModule } from '../server/core/database';
 import { MyLoggerModule } from '../server/core/logger.module';
 import { GraphsModule } from '../server/graphs/graphs.module';
+import { RulesModule } from '../server/rules/rules.module';
 import { SessionModule } from '../server/session/session.module';
 import { CliConfigModule } from './config/cli-config.module';
 import { DemoCommand } from './demo.command';
@@ -27,7 +28,13 @@ import { MigrationsCommand } from './migrations.command';
         CliConfigModule,
         GraphsModule,
         BankMovementModule,
+        RulesModule,
     ],
-    providers: [DemoCommand, LogsCommands, MigrationsCommand, DemoDataService],
+    providers: [
+        DemoCommand, 
+        LogsCommands, 
+        MigrationsCommand, 
+        DemoDataService
+    ],
 })
 export class CliModule {}

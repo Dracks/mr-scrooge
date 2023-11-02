@@ -1,8 +1,9 @@
-import { Box, Header, Menu, Nav } from 'grommet';
+import { Anchor, Box, Header, Menu, Nav } from 'grommet';
 import { Home, Logout } from 'grommet-icons';
 import React from 'react';
 import { useNavigate } from 'react-router';
 
+import { DEBUG } from '../constants';
 import { AnchorLink } from '../utils/ui/anchor-link';
 import useSessionContext from './session/context';
 
@@ -17,6 +18,17 @@ const Headers: React.FC = () => {
                 <AnchorLink href="/import" label="Imports" color="light-1" />
                 <AnchorLink href="/movement" label="Movements" color="light-1" />
                 <AnchorLink href="/tag" label="Tags" color="light-1" />
+                <AnchorLink href="/rules" label="Rules" color="light-1" />
+                {DEBUG ? (
+                    <Anchor
+                        as={props => (
+                            <a {...props} href="/graphiql">
+                                GraphQL
+                            </a>
+                        )}
+                        color="light-1"
+                    />
+                ) : undefined}
             </Nav>
             <Box flex />
             <Menu

@@ -18,6 +18,7 @@ import { ReactModule } from './react/react.module';
 import { AuthGuard } from './session/guard/auth.guard';
 import { AuthInterceptor } from './session/interceptor/auth.interceptor';
 import { SessionModule } from './session/session.module';
+import { RulesModule } from './rules/rules.module';
 
 @Module({
     imports: [
@@ -48,6 +49,7 @@ import { SessionModule } from './session/session.module';
         BankMovementModule,
         GraphsModule,
         ImporterModule,
+        RulesModule,
         ReactModule,
     ],
     providers: [

@@ -1,7 +1,17 @@
-import { ObjectType, Resolver } from '@nestjs/graphql';
+import { Query, Resolver } from '@nestjs/graphql';
 
-@ObjectType()
-export class Rule {}
+import { GqlGroupsId } from '../../session';
+import { Rule } from '../gql-objects/rule.object';
+import { RuleService } from '../rule.service';
+
 
 @Resolver(() => Rule)
-export class RuleResolver {}
+export class RuleResolver {
+    constructor(readonly rulesService: RuleService){}
+
+    @Query(()=>[Rule])
+    async rules(@GqlGroupsId() groupsId: number[]){
+        const rules = await this.rulesService.getRules(groupsId);
+        return rules;
+    }
+}

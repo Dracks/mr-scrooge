@@ -197,6 +197,7 @@ export class GraphService {
         return graphsList.map(graph => graph.id);
     }
 
+    // eslint-disable-next-line max-lines-per-function
     async getGraphs(groupsId: number[], filterGraphsIds?: number[]): Promise<Graph[]> {
         const firstQuery: FindOptions<Attributes<GraphModel>> = { where: queryOwnerId(groupsId) };
         if (filterGraphsIds && filterGraphsIds.length > 0) {
