@@ -11,7 +11,7 @@ import { CliConfigModule } from './config/cli-config.module';
 import { DemoCommand } from './demo.command';
 import { DemoDataService } from './demo-data.service';
 import { LogsCommands } from './logs.command';
-import { MigrationsCommand } from './migrations.command';
+import { MigrationsModule } from './migrations/migrations.module';
 
 @Module({
     imports: [
@@ -20,14 +20,15 @@ import { MigrationsCommand } from './migrations.command';
             ...getDatabaseModule(),
             models: [],
             autoLoadModels: true,
-            synchronize: true,
+            synchronize: false,
         }),
         SessionModule,
         MyLoggerModule,
         CliConfigModule,
         GraphsModule,
         BankMovementModule,
+        MigrationsModule,
     ],
-    providers: [DemoCommand, LogsCommands, MigrationsCommand, DemoDataService],
+    providers: [DemoCommand, LogsCommands, DemoDataService],
 })
 export class CliModule {}

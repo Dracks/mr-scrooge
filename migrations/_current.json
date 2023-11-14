@@ -1,0 +1,695 @@
+{
+    "tables": {
+        "graph_label": {
+            "tableName": "graph_label",
+            "schema": {
+                "id": {
+                    "field": "id",
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "groupOwnerId": {
+                    "field": "group_owner_id",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "name": {
+                    "field": "name",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {
+                            "length": 255
+                        },
+                        "_length": 255
+                    },
+                    "seqType": "Sequelize.STRING(255)"
+                }
+            },
+            "indexes": {}
+        },
+        "graph_label_transaction": {
+            "tableName": "graph_label_transaction",
+            "schema": {
+                "id": {
+                    "field": "id",
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "labelId": {
+                    "field": "labelId",
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.NUMBER"
+                },
+                "transactionId": {
+                    "field": "transactionId",
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.NUMBER"
+                }
+            },
+            "indexes": {}
+        },
+        "graph_graph": {
+            "tableName": "graph_graph",
+            "schema": {
+                "id": {
+                    "field": "id",
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "groupOwnerId": {
+                    "field": "group_owner_id",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "name": {
+                    "field": "name",
+                    "defaultValue": {},
+                    "type": {
+                        "options": {
+                            "length": 255
+                        },
+                        "_length": 255
+                    },
+                    "seqType": "Sequelize.STRING(255)"
+                },
+                "kind": {
+                    "field": "kind",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {
+                            "length": 3
+                        },
+                        "_length": 3
+                    },
+                    "seqType": "Sequelize.CHAR(3)"
+                },
+                "labelFilter": {
+                    "field": "tag_filter",
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "dateRange": {
+                    "field": "date_range",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {
+                            "length": 10
+                        },
+                        "_length": 10
+                    },
+                    "seqType": "Sequelize.CHAR(10)"
+                }
+            },
+            "indexes": {}
+        },
+        "graph_group": {
+            "tableName": "graph_group",
+            "schema": {
+                "graphId": {
+                    "field": "graph_id",
+                    "primaryKey": true,
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "group": {
+                    "field": "group",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {
+                            "length": 10
+                        },
+                        "_length": 10
+                    },
+                    "seqType": "Sequelize.CHAR(10)"
+                },
+                "hideOthers": {
+                    "field": "hide_others",
+                    "defaultValue": {},
+                    "type": {},
+                    "seqType": "Sequelize.BOOLEAN"
+                }
+            },
+            "indexes": {}
+        },
+        "graph_horizontal_group": {
+            "tableName": "graph_horizontal_group",
+            "schema": {
+                "graphId": {
+                    "field": "graph_id",
+                    "primaryKey": true,
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "group": {
+                    "field": "group",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {
+                            "length": 10
+                        },
+                        "_length": 10
+                    },
+                    "seqType": "Sequelize.CHAR(10)"
+                },
+                "hideOthers": {
+                    "field": "hide_others",
+                    "defaultValue": {},
+                    "type": {},
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "accumulate": {
+                    "field": "accumulate",
+                    "defaultValue": {
+                        "value": false
+                    },
+                    "type": {},
+                    "seqType": "Sequelize.BOOLEAN"
+                }
+            },
+            "indexes": {}
+        },
+        "graph_group_labels": {
+            "tableName": "graph_group_labels",
+            "schema": {
+                "graphId": {
+                    "field": "graph_id",
+                    "primaryKey": true,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "labelId": {
+                    "field": "label_id",
+                    "primaryKey": true,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                }
+            },
+            "indexes": {}
+        },
+        "graph_horizontal_group_labels": {
+            "tableName": "graph_horizontal_group_labels",
+            "schema": {
+                "graphId": {
+                    "field": "graph_id",
+                    "primaryKey": true,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "labelId": {
+                    "field": "label_id",
+                    "primaryKey": true,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                }
+            },
+            "indexes": {}
+        },
+        "core_bank_transaction": {
+            "tableName": "core_bank_transaction",
+            "schema": {
+                "id": {
+                    "field": "id",
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "groupOwnerId": {
+                    "field": "group_owner_id",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "movementName": {
+                    "field": "movement_name",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {
+                            "length": 255
+                        },
+                        "_length": 255
+                    },
+                    "seqType": "Sequelize.STRING(255)"
+                },
+                "date": {
+                    "field": "date",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {},
+                    "seqType": "Sequelize.DATEONLY"
+                },
+                "dateValue": {
+                    "field": "date_value",
+                    "allowNull": true,
+                    "defaultValue": {},
+                    "type": {},
+                    "seqType": "Sequelize.DATEONLY"
+                },
+                "details": {
+                    "field": "details",
+                    "allowNull": true,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {},
+                        "_length": 255
+                    },
+                    "seqType": "Sequelize.STRING"
+                },
+                "value": {
+                    "field": "value",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.DOUBLE"
+                },
+                "kind": {
+                    "field": "kind",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {
+                            "length": 255
+                        },
+                        "_length": 255
+                    },
+                    "seqType": "Sequelize.STRING(255)"
+                },
+                "description": {
+                    "field": "description",
+                    "allowNull": true,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {},
+                        "_length": 255
+                    },
+                    "seqType": "Sequelize.STRING"
+                },
+                "pageKey": {
+                    "field": "page_key",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {
+                            "length": 255
+                        },
+                        "_length": 255
+                    },
+                    "seqType": "Sequelize.STRING(255)"
+                }
+            },
+            "indexes": {
+                "455222a14cede433562ca180d7cc9b2ab1f9e264": {
+                    "options": {
+                        "indexName": "cursor",
+                        "name": "cursor"
+                    },
+                    "fields": [
+                        "group_owner_id",
+                        "date",
+                        "id"
+                    ]
+                }
+            }
+        },
+        "session_user": {
+            "tableName": "session_user",
+            "schema": {
+                "id": {
+                    "field": "id",
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "defaultGroupId": {
+                    "field": "default_group_id",
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "password": {
+                    "field": "password",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {
+                            "length": 128
+                        },
+                        "_length": 128
+                    },
+                    "seqType": "Sequelize.STRING(128)"
+                },
+                "lastLogin": {
+                    "field": "last_login",
+                    "allowNull": true,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {},
+                        "_length": ""
+                    },
+                    "seqType": "Sequelize.DATE"
+                },
+                "isSuperuser": {
+                    "field": "is_superuser",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {},
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "username": {
+                    "field": "username",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {
+                            "length": 150
+                        },
+                        "_length": 150
+                    },
+                    "seqType": "Sequelize.STRING(150)"
+                },
+                "firstName": {
+                    "field": "first_name",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {
+                            "length": 150
+                        },
+                        "_length": 150
+                    },
+                    "seqType": "Sequelize.STRING(150)"
+                },
+                "lastName": {
+                    "field": "last_name",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {
+                            "length": 150
+                        },
+                        "_length": 150
+                    },
+                    "seqType": "Sequelize.STRING(150)"
+                },
+                "email": {
+                    "field": "email",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {
+                            "length": 254
+                        },
+                        "_length": 254
+                    },
+                    "seqType": "Sequelize.STRING(254)"
+                },
+                "isStaff": {
+                    "field": "is_staff",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {},
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "isActive": {
+                    "field": "is_active",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {},
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "dateJoined": {
+                    "field": "date_joined",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {},
+                        "_length": ""
+                    },
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": {}
+        },
+        "session_session": {
+            "tableName": "session_session",
+            "schema": {
+                "sessionId": {
+                    "field": "sessionId",
+                    "primaryKey": true,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {},
+                        "_length": 255
+                    },
+                    "seqType": "Sequelize.STRING"
+                },
+                "userId": {
+                    "field": "userId",
+                    "allowNull": true,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER",
+                    "references": {
+                        "model": "session_user",
+                        "key": "id"
+                    }
+                },
+                "createdAt": {
+                    "field": "createdAt",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {},
+                        "_length": ""
+                    },
+                    "seqType": "Sequelize.DATE"
+                },
+                "lastActivity": {
+                    "field": "lastActivity",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {},
+                        "_length": ""
+                    },
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "field": "updatedAt",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {},
+                        "_length": ""
+                    },
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": {
+                "f83a728f7ce7d2b45a7d4cf82c0fb169dbaf1ac7": {
+                    "options": {
+                        "indexName": "session_session_created_at",
+                        "name": "session_session_created_at"
+                    },
+                    "fields": [
+                        {
+                            "name": "createdAt"
+                        }
+                    ]
+                },
+                "e5d128d0cb1763b4f7c8ec183888c6c2c2faa925": {
+                    "options": {
+                        "indexName": "session_session_last_activity",
+                        "name": "session_session_last_activity"
+                    },
+                    "fields": [
+                        {
+                            "name": "lastActivity"
+                        }
+                    ]
+                }
+            }
+        },
+        "user_group": {
+            "tableName": "user_group",
+            "schema": {
+                "id": {
+                    "field": "id",
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "name": {
+                    "field": "name",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {
+                            "length": 150
+                        },
+                        "_length": 150
+                    },
+                    "seqType": "Sequelize.STRING(150)"
+                },
+                "ownerId": {
+                    "field": "ownerId",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                }
+            },
+            "indexes": {}
+        },
+        "user_group_rel": {
+            "tableName": "user_group_rel",
+            "schema": {
+                "id": {
+                    "field": "id",
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "userGroupId": {
+                    "field": "user_group_id",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "userId": {
+                    "field": "user_id",
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {}
+                    },
+                    "seqType": "Sequelize.INTEGER"
+                }
+            },
+            "indexes": {
+                "d98e1aa65716f420e4e441108ebe67ee1f100a49": {
+                    "options": {
+                        "indexName": "user_group_rel_user_id_user_group_id",
+                        "name": "user_group_rel_user_id_user_group_id",
+                        "indicesType": "UNIQUE",
+                        "type": "UNIQUE"
+                    },
+                    "fields": [
+                        "user_id",
+                        "user_group_id"
+                    ]
+                }
+            }
+        },
+        "SequelizeMeta": {
+            "tableName": "SequelizeMeta",
+            "schema": {
+                "name": {
+                    "field": "name",
+                    "autoIncrement": false,
+                    "primaryKey": true,
+                    "allowNull": false,
+                    "defaultValue": {},
+                    "type": {
+                        "options": {},
+                        "_length": 255
+                    },
+                    "seqType": "Sequelize.STRING"
+                }
+            },
+            "indexes": {},
+            "charset": null
+        }
+    },
+    "revision": 1,
+    "version": 0
+}

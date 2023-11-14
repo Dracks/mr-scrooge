@@ -31,9 +31,9 @@ webpack(WebpackConfig, (err, stats) => {
     console.log(
         stats?.toString({
             // Makes the build much quieter
-            chunks: false, 
+            chunks: false,
             // Shows colors in the console
-            colors: true, 
+            colors: true,
         }),
     );
 });
