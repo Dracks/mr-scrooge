@@ -5,7 +5,7 @@ from django.test import TestCase, TransactionTestCase
 from finances.core.models import RawDataSource
 from finances.management.models import Filter, FilterConditionals, Tag
 
-from ..importers import caixa_bank, caixa_enginyers, n26, commerz_bank
+from ..importers import caixa_bank, caixa_enginyers, n26, commerz_bank, commerz_bank_2024_en
 from ..models import IMPORT_STATUS, StatusReport, StatusReportRow
 from .classes.importer import SAMPLE_DATA, TestAccount
 
@@ -240,6 +240,102 @@ class CommerzBank(TransactionTestCase):
         self.subject.run()
         self.subject.apply_filters()
         rds = RawDataSource.objects.filter(date="2019-05-02").first()
+        self.assertEqual(rds.tags.count(), 1)
+
+
+class CommerzBank2024en(TransactionTestCase):
+    def setUp(self):
+        self.subject = commerz_bank_2024_en.CommerzBank2024en('cb', PATH+"/resources/commerz_bank_2024.csv", 'test')
+
+    def check_movement(self, date, movement_name, value):
+        query_test = RawDataSource.objects.filter(date=date)
+        self.assertEqual(query_test.count(), 1)
+        test_value = query_test.first()
+        self.assertEqual(test_value.value, value)
+        self.assertEqual(test_value.movement_name, movement_name)
+
+
+    def test_basic(self):
+        self.subject.run()
+        self.assertEqual(StatusReport.objects.all().count(), 1)
+        print(StatusReport.objects.first().description)
+        self.assertEqual(RawDataSource.objects.all().count(), 12)
+
+        self.check_movement(
+            date='2024-04-23',
+            value=-15.00,
+            movement_name="AUSGABE EINER DEBITKARTE ENTGELT ERSATZKARTE GIROCARD"
+        )
+
+        self.check_movement(
+            date='2024-03-12',
+            value=-20.55,
+            movement_name="Stadtwerke Ingolstadt Energie GmbH E-Mobility Rechnung Nr. 56315 zu Ve rtrag 704860, Kundennummer 718838"
+        )
+
+        self.check_movement(
+            date= '2024-03-10',
+            value= -24.93,
+            movement_name= "Stadtapotheke Stephan Kurzeder e.K."
+            )
+        self.check_movement(
+            date= '2024-03-04',
+            value= -20.12,
+            movement_name= "85053 EDEKA FANDERL"
+            )
+        self.check_movement(
+            date= '2024-03-01',
+            value= -45.99,
+            movement_name= "M001-MEDIA MARKT"
+            )
+        self.check_movement(
+            date= '2024-02-29',
+            value= -22.35,
+            movement_name= "BAUHAUS SOMEPLACE - DANKE 270217190097028271201056880 ELV6512 0607 27.02 17.19 ME0"
+            )
+        self.check_movement(
+            date= '2024-02-18',
+            value= -8.00,
+            movement_name= "FLUGHAFEN MUENCHEN GMBH GIR 6912847"
+            )
+        self.check_movement(
+            date= '2024-02-14',
+            value= 0.00,
+            movement_name= "Datenschutzhinweis ab 28.02.2024: Wir übermitteln Überweisungsdaten an den Zahlungsdienstleister des Empfängers (ZDE). Eingeschaltete Dienstleister können erforderliche Prüfungen zur Verhinderung von Zah- lungsverkehrsbetrug vornehmen. Der ZDE kann d"
+            )
+        self.check_movement(
+            date= '2023-07-08',
+            value= -120.00,
+            movement_name= "Bargeldauszahlung Commerzbank 00210074"
+        )
+        self.check_movement(
+            date= '2023-07-06',
+            value= -15.11,
+            movement_name= "Kartenzahlung ARAL Some place Stra-e 7"
+            )
+        self.check_movement(
+            date= '2023-06-30',
+            value= 0.00,
+            movement_name= "Periodic balance statement Account  201527900 EUR Bank Code 721 400 52 from 31.03.2023 to 30.06.2023 Balance after closing                     1.283,80  EUR re.: approval of the balancing"
+            )
+        self.check_movement(
+            date= '2023-06-20',
+            value= 500.00,
+            movement_name= "Jaume Singla Valls"
+        )
+
+    def test_filters(self):
+        t1 = Tag(name="Test tag")
+        t1.save()
+        f = Filter(
+            tag=t1,
+            type_conditional=FilterConditionals.GREATER,
+            conditional="0")
+        f.save()
+
+        self.subject.run()
+        self.subject.apply_filters()
+        rds = RawDataSource.objects.filter(date="2023-06-20").first()
         self.assertEqual(rds.tags.count(), 1)
 
 
