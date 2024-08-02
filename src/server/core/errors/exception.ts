@@ -10,10 +10,10 @@ type Context = Record<string, Jsonable>
 
 
 interface StdDictError {
-    message: string
-    context?: Context
-    stack?: string,
     cause?: StdDictError,
+    context?: Context
+    message: string
+    stack?: string,
 }
 
 const deepmerge = deepmergeCreator()

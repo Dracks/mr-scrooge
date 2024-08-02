@@ -11,6 +11,7 @@ import { getGraphQLTestModule } from "../../common/test-graphql/graph-ql.module"
 import { ImporterModule } from "../importer.module";
 import { StatusReportRow } from "../models/status-report-row-import";
 import { TransformHelper } from "../transform.helper";
+import { CommerzBankEnImporter } from "./commerz-bank-importer";
 import { NewImportService, ParserFactory, PARSERS_TOKEN } from "./importer.service";
 import { N26Importer } from "./n26-importer";
 import { StatusReportsService } from "./status-reports.service";
@@ -70,7 +71,7 @@ describe(`[${NewImportService.name}]`, ()=>{
             ],
         })
             .overrideProvider(PARSERS_TOKEN)
-            .useValue([new TestAccount(), new N26Importer()])
+            .useValue([new TestAccount(), new N26Importer(), new CommerzBankEnImporter()])
         .compile();
 
         app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
@@ -176,4 +177,59 @@ describe(`[${NewImportService.name}]`, ()=>{
             }))
         })
     })
+
+    describe(`[${CommerzBankEnImporter.name}]`, () => {
+
+        it('inserting data in CommerzBank', async () => {
+            await subject.import(groupOwnerId, 'commerz-bank/en', 'commerz-file.csv', getMockFile('commerz_bank.CSV'));
+
+            await checkImportIsOk();
+
+            const transactions = await bankTransactionService.getAll([groupOwnerId]);
+            expect(transactions.list).toHaveLength(5);
+
+            let queryTest = await statusRowModel.findAll({ where: { date: '2019-05-02' } });
+            expect(queryTest).toHaveLength(1);
+
+            let [testValue] = queryTest;
+            expect(testValue.value).toEqual(256.01);
+            expect(testValue.movementName).toEqual("Concept and more concepts");
+
+            queryTest = await statusRowModel.findAll({ where: { date: '2020-01-09' } });
+            expect(queryTest).toHaveLength(1);
+            [testValue] = queryTest;
+            expect(testValue.value).toEqual(-25);
+            expect(testValue.movementName).toEqual("Commerzbank 0321554");
+
+            queryTest = await statusRowModel.findAll({ where: { date: '2020-01-07' } });
+            expect(queryTest).toHaveLength(1);
+            [testValue] = queryTest;
+            expect(testValue.movementName).toEqual("Backerei Sipl GmbH Fil.35 GIR 69036");
+
+            queryTest = await statusRowModel.findAll({ where: { date: '2020-02-09' } });
+            expect(queryTest).toHaveLength(1);
+            [testValue] = queryTest;
+            expect(testValue.movementName).toEqual("ARAL Some address");
+
+            queryTest = await statusRowModel.findAll({ where: { date: '2020-02-07' } });
+            expect(queryTest).toHaveLength(1);
+            [testValue] = queryTest;
+            expect(testValue.movementName).toEqual("BACKSTUBE WUENSCHE GMBH");
+        });
+
+        it('invalid file throws an error and is cached', async () => {
+            await subject.import(groupOwnerId, 'commerz-bank/en', 'commerz-file.csv', 'invalid');
+
+            const reports = await statusReportsService.getAll([groupOwnerId]);
+            expect(reports.list.length).toBe(1);
+            const [status] = reports.list;
+            expect(status).toEqual(expect.objectContaining({
+                context: "{\"filePath\":\"invalid\"}",
+                description: "E10007: CommerzBank file not found",
+                fileName: "commerz-file.csv",
+                stack: expect.stringContaining("at CommerzBankEnImporter."),
+                status: "ERR",
+            }));
+        });
+    });
 })

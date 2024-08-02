@@ -1,6 +1,5 @@
 import { parse } from 'csv-parse';
-import fs from 'node:fs';
-import { finished, pipeline } from 'node:stream/promises';
+import fs from 'node:fs/promises';
 
 import { BankTransactionBase } from "../../bank-transaction/models/bank-transaction.model";
 import { Exception } from '../../core/errors/exception';
@@ -16,30 +15,15 @@ export class N26Importer implements ParserFactory {
         ['value', 5],
     ]))
 
-    async create(filePath: string): Promise<Iterable<BankTransactionBase>> {
+    async *create(filePath: string): AsyncGenerator<BankTransactionBase> {
         try {
-            const data = Array<BankTransactionBase>()
-            const sourceFile = fs.createReadStream(filePath)
-            const sourceData =
-                    sourceFile
-                    .pipe(
-                parse({
-                    autoParseDate: true,
-                    delimiter: ',',
-                    fromLine: 2,
-                }))
+            const fileData = await fs.readFile(filePath)
+            const csvData = parse(fileData, {autoParseDate: true, delimiter: ',', fromLine: 2})
 
-            sourceData.on('readable', () => {
-                let row: unknown | undefined = undefined;
-                while ((row = sourceData.read()) !== null) {
-                    data.push(this.mapper.map(row as Record<number, unknown>));
-                }
-              });
-            await finished(sourceFile)
-            await finished(sourceData)
+            for await (const row of csvData){
+                yield this.mapper.map(row as Record<number, unknown>)
+            }
 
-
-            return data;
         } catch (error) {
             if (typeof error === 'object' && error && 'code' in error && error.code === 'ENOENT'){
                 throw new Exception('E10006', 'N26 file not found', {filePath}, error)

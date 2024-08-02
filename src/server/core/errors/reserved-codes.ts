@@ -12,7 +12,8 @@ const ReservedMap = {
     E10003: 'Parser not found',
     E10004: 'TransformHelper was created with missing fields in the mapping',
     E10005: 'Migrations folder does not exists',
-    E10006: 'N26 file not found'
+    E10006: 'N26 file not found',
+    E10007: 'CommerzBank file not found'
 } as const
 
 type ReservedMapType = typeof ReservedMap

@@ -11,7 +11,7 @@ import { StatusReportRow } from "../models/status-report-row-import";
 export const PARSERS_TOKEN = "PARSERS_TOKEN"
 
 export interface ParserFactory {
-    create(filePath: string) : Iterable<BankTransactionBase> | Promise<Iterable<BankTransactionBase>>
+    create(filePath: string) : Iterable<BankTransactionBase> | Promise<Iterable<BankTransactionBase>> | AsyncGenerator<BankTransactionBase>
     fileRegex: string | RegExp
     key: string
 }

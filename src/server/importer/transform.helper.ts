@@ -2,7 +2,7 @@ import { BankTransactionBase } from "../bank-transaction/models/bank-transaction
 import { Exception } from "../core/errors/exception";
 ;
 
-type FieldsMap<T> = Map<keyof BankTransactionBase, T>
+export type FieldsMap<T> = Map<keyof BankTransactionBase, T>
 const mandatoryFields : (keyof BankTransactionBase)[] = ['movementName', 'date', 'value']
 
 export class TransformHelper<T extends number | string> {
