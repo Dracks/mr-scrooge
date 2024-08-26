@@ -2,18 +2,16 @@ import { Logger } from '@nestjs/common';
 import { Args, Field, Int, ObjectType, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 
 import { DateOnly } from '../common/custom-types/date-only';
+import { GetPageResponse } from '../common/graphql/pagination';
 import { LabelService } from '../graphs/services/label.service';
 import { GqlGroupsId } from '../session/decorators/gql-groups-id';
 import { BankTransactionService } from './bank-transaction.service';
 import { BankTransaction } from './gql-objects/bank-transaction.objects';
 
 @ObjectType()
-export class GetBankTransactionsResponse {
+export class GetBankTransactionsResponse extends GetPageResponse<BankTransaction> {
     @Field(() => [BankTransaction])
     results!: BankTransaction[];
-
-    @Field(() => String, { nullable: true })
-    next?: string;
 }
 
 @Resolver(() => BankTransaction)
