@@ -30,3 +30,7 @@ migrations/*.py
 server/db.sqlite3
 server/finances/templates/react.html
 server/static/react
+
+# swift
+.build
+.swiftpm

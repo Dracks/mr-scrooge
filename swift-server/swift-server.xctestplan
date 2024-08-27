@@ -1,0 +1,38 @@
+{
+  "configurations" : [
+    {
+      "id" : "702E776B-F683-43F3-B2FC-AC8E8BE5F02F",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "environmentVariableEntries" : [
+      {
+        "key" : "DB_NAME",
+        "value" : "memory"
+      },
+      {
+        "key" : "DB_TYPE",
+        "value" : "sqlite"
+      }
+    ],
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:",
+      "identifier" : "App",
+      "name" : "App"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AppTests",
+        "name" : "AppTests"
+      }
+    }
+  ],
+  "version" : 1
+}
