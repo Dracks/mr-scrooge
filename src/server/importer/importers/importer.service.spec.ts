@@ -1,46 +1,20 @@
 import { FastifyAdapter, NestFastifyApplication } from "@nestjs/platform-fastify";
 import { getModelToken } from "@nestjs/sequelize";
 import { Test, TestingModule } from "@nestjs/testing";
-import * as path from 'path';
 
 import { BankTransactionModule } from "../../bank-transaction/bank-transaction.module";
 import { BankTransactionService } from "../../bank-transaction/bank-transaction.service";
-import { BankTransactionBase } from "../../bank-transaction/models/bank-transaction.model";
 import { TestDbModule } from "../../common/test-db.module";
 import { getGraphQLTestModule } from "../../common/test-graphql/graph-ql.module";
 import { ImporterModule } from "../importer.module";
 import { StatusReportRow } from "../models/status-report-row-import";
-import { TransformHelper } from "../transform.helper";
 import { CommerzBankEnImporter } from "./commerz-bank-importer";
-import { NewImportService, ParserFactory, PARSERS_TOKEN } from "./importer.service";
+import { NewImportService,  PARSERS_TOKEN } from "./importer.service";
 import { N26Importer } from "./n26-importer";
 import { StatusReportsService } from "./status-reports.service";
-
-type SampleDataRow = [string, string, number]
-const SAMPLE_DATA: SampleDataRow[] = [
-    ['first', '1990-03-01', -20.0],
-    ['second', '1990-03-02', -10.0],
-    ['ingress', '1990-03-03', 100],
-    ['first.second', '1990-03-04', -5.0]
-];
-
-class TestAccount implements ParserFactory{
-
-    fileRegex = '';
-
-    key = "test-account";
-
-    mapper = new TransformHelper<number>(new Map([['movementName', 0], ['date', 1], ['value', 2]]))
-
-    create(_filePath: string): BankTransactionBase[] {
-        return SAMPLE_DATA.map(row => this.mapper.map(row));
-    }
-}
+import { getMockFile, TestBasicImporter } from "./test-importers";
 
 const groupOwnerId = 1
-
-const getMockFile = (file: string)=> path.join(__dirname, "..", "mocks", file)
-
 
 describe(`[${NewImportService.name}]`, ()=>{
     let app!: NestFastifyApplication;
@@ -71,7 +45,7 @@ describe(`[${NewImportService.name}]`, ()=>{
             ],
         })
             .overrideProvider(PARSERS_TOKEN)
-            .useValue([new TestAccount(), new N26Importer(), new CommerzBankEnImporter()])
+            .useValue([new TestBasicImporter(), new N26Importer(), new CommerzBankEnImporter()])
         .compile();
 
         app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
@@ -106,7 +80,7 @@ describe(`[${NewImportService.name}]`, ()=>{
     })
 
     it('insert with one duplicated', async () => {
-         const [,repeated] = new TestAccount().create("something");
+         const [,repeated] = new TestBasicImporter().create("something");
 
          await bankTransactionService.addTransaction({kind: 'test-account', groupOwnerId, ...repeated})
 

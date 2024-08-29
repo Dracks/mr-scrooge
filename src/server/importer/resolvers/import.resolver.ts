@@ -26,7 +26,7 @@ export class ImportResolver {
     }
 
     @Query(()=>GetImportStatusReportResponse)
-    async getImporters(@GqlGroupsId() groupIds: number[],@Args('cursor', { nullable: true }) oldCursor: string,
+    async getImports(@GqlGroupsId() groupIds: number[],@Args('cursor', { nullable: true }) oldCursor: string,
     @Args('limit', { nullable: true, type: () => Int }) limit?: number,): Promise<GetImportStatusReportResponse>{
         const { next, list} = await this.reportService.getAll(groupIds, oldCursor, limit)
         return {
