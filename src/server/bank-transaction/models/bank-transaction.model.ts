@@ -1,13 +1,6 @@
 /* eslint-disable no-use-before-define */
 import { Attributes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
-import {
-    Column,
-    DataType,
-    ForeignKey,
-    Index,
-    Model,
-    Table,
-} from 'sequelize-typescript';
+import { Column, DataType, ForeignKey, Index, Model, Table } from 'sequelize-typescript';
 
 import { UserGroupModel } from '../../session/models/group.model';
 
@@ -73,7 +66,7 @@ export class BankTransaction extends Model<InferAttributes<BankTransaction>, Inf
     })
     description?: string;
 
-/*@Column({
+    /*@Column({
         field: 'page_key',
         allowNull: false,
         type: DataType.STRING(255),
@@ -83,4 +76,4 @@ export class BankTransaction extends Model<InferAttributes<BankTransaction>, Inf
 
 export type IBankTransaction = Attributes<BankTransaction>;
 
-export type BankTransactionBase = Omit<IBankTransaction, 'kind' |'groupOwnerId' >
+export type BankTransactionBase = Omit<IBankTransaction, 'kind' | 'groupOwnerId'>;

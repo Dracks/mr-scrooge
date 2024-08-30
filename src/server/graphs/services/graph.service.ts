@@ -111,38 +111,50 @@ export class GraphService {
         return returnData.graph;
     }
 
-    async getGraphs(groupsId: number[]): Promise<Graph[]>{
-        const graphsList = await this.graphModel.findAll({where: queryOwnerId(groupsId)})
-        const graphsIds = graphsList.map(graph => graph.id)
+    async getGraphs(groupsId: number[]): Promise<Graph[]> {
+        const graphsList = await this.graphModel.findAll({ where: queryOwnerId(groupsId) });
+        const graphsIds = graphsList.map(graph => graph.id);
         // Retrieve all related data for the graphs
-        const where = {graphId: {[Op.in]: graphsIds}}
-        const groupsList = await this.graphGroupModel.findAll({where})
-        const groupsTagsList = await this.graphGroupLabelsModel.findAll({where})
-        const horizontalList = await this.graphHorizontalGroupModel.findAll({where})
-        const horizontalTagsList = await this.graphHorizontalGroupLabelsModel.findAll({where})
+        const where = { graphId: { [Op.in]: graphsIds } };
+        const groupsList = await this.graphGroupModel.findAll({ where });
+        const groupsTagsList = await this.graphGroupLabelsModel.findAll({ where });
+        const horizontalList = await this.graphHorizontalGroupModel.findAll({ where });
+        const horizontalTagsList = await this.graphHorizontalGroupLabelsModel.findAll({ where });
 
         // Generate some dictionaries to found the data for every graphId
-        const groupsMap = listToDictionary(groupsList.map(elem => elem.dataValues), 'graphId')
-        const groupsTagsMap = listToDictionaryList(groupsTagsList.map(elem => elem.dataValues), 'graphId')
-        const horizontalMap = listToDictionary(horizontalList.map(elem => elem.dataValues), 'graphId')
-        const horizontalTagsMap = listToDictionaryList(horizontalTagsList.map(elem => elem.dataValues), 'graphId')
+        const groupsMap = listToDictionary(
+            groupsList.map(elem => elem.dataValues),
+            'graphId',
+        );
+        const groupsTagsMap = listToDictionaryList(
+            groupsTagsList.map(elem => elem.dataValues),
+            'graphId',
+        );
+        const horizontalMap = listToDictionary(
+            horizontalList.map(elem => elem.dataValues),
+            'graphId',
+        );
+        const horizontalTagsMap = listToDictionaryList(
+            horizontalTagsList.map(elem => elem.dataValues),
+            'graphId',
+        );
 
-        return Promise.all(graphsList.map(graph =>{
-            const graphId = graph.id
+        return Promise.all(
+            graphsList.map(graph => {
+                const graphId = graph.id;
 
-            const graphBuilder = new GraphBuilder(graph.dataValues, groupsMap[graphId]);
-            if (groupsTagsMap[graphId]){
-                graphBuilder.setGroupTags(groupsTagsMap[graphId])
-            }
-            if (horizontalMap[graphId]){
-                graphBuilder.setHorizontalGroup(horizontalMap[graphId])
-                if (horizontalTagsMap[graphId]){
-                    graphBuilder.setHorizontalGroupTags(horizontalTagsMap[graphId])
+                const graphBuilder = new GraphBuilder(graph.dataValues, groupsMap[graphId]);
+                if (groupsTagsMap[graphId]) {
+                    graphBuilder.setGroupTags(groupsTagsMap[graphId]);
                 }
-            }
-            return graphBuilder.graph
-        }))
+                if (horizontalMap[graphId]) {
+                    graphBuilder.setHorizontalGroup(horizontalMap[graphId]);
+                    if (horizontalTagsMap[graphId]) {
+                        graphBuilder.setHorizontalGroupTags(horizontalTagsMap[graphId]);
+                    }
+                }
+                return graphBuilder.graph;
+            }),
+        );
     }
-
-
 }

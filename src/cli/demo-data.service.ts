@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {  isBefore, sub } from 'date-fns';
+import { isBefore, sub } from 'date-fns';
 import { match } from 'ts-pattern';
 
 import { BankTransactionService } from '../server/bank-transaction/bank-transaction.service';

@@ -1,73 +1,72 @@
-import { Field, InputType, Int } from "@nestjs/graphql";
+import { Field, InputType, Int } from '@nestjs/graphql';
 
-import { GraphDateRange, GraphGroup, GraphKind } from "../models/graph.model";
-
+import { GraphDateRange, GraphGroup, GraphKind } from '../models/graph.model';
 
 @InputType()
 export class MutateGroup {
-    @Field(()=>GraphGroup)
-    group!: GraphGroup
+    @Field(() => GraphGroup)
+    group!: GraphGroup;
 
-    @Field({nullable: true})
-    hideOthers!: boolean
+    @Field({ nullable: true })
+    hideOthers!: boolean;
 
-    @Field(()=>[Int], {nullable: true})
-    labels?: number[]
+    @Field(() => [Int], { nullable: true })
+    labels?: number[];
 }
 
 @InputType()
-export class MutateHorizontalGroup extends MutateGroup{
-    @Field({nullable: true})
-    accumulate?: boolean
+export class MutateHorizontalGroup extends MutateGroup {
+    @Field({ nullable: true })
+    accumulate?: boolean;
 }
 
 @InputType()
 export class NewGraph {
-    @Field(()=>Int)
+    @Field(() => Int)
     groupOwnerId!: number;
 
     @Field()
-    name!: string
+    name!: string;
 
-    @Field(()=>GraphKind)
+    @Field(() => GraphKind)
     kind!: GraphKind;
 
-    @Field({nullable: true})
+    @Field({ nullable: true })
     tagFilter?: number;
 
-    @Field(()=>GraphDateRange)
+    @Field(() => GraphDateRange)
     dateRange!: GraphDateRange;
 
-    @Field(()=>MutateGroup)
+    @Field(() => MutateGroup)
     group!: MutateGroup;
 
-    @Field(()=>MutateHorizontalGroup, {nullable: true})
+    @Field(() => MutateHorizontalGroup, { nullable: true })
     horizontalGroup?: MutateHorizontalGroup;
 }
 
 @InputType()
 export class UpdatedGraph {
-    @Field(()=>Int)
+    @Field(() => Int)
     id!: number;
 
-    @Field(()=>Int)
+    @Field(() => Int)
     groupOwnerId!: number;
 
     @Field()
-    name!: string
+    name!: string;
 
-    @Field(()=>GraphKind)
+    @Field(() => GraphKind)
     kind!: GraphKind;
 
-    @Field({nullable: true})
+    @Field({ nullable: true })
     tagFilter?: number;
 
-    @Field(()=>GraphDateRange)
+    @Field(() => GraphDateRange)
     dateRange!: GraphDateRange;
 
-    @Field(()=>MutateGroup)
+    @Field(() => MutateGroup)
     group!: MutateGroup;
 
-    @Field(()=>MutateHorizontalGroup, {nullable: true})
+    @Field(() => MutateHorizontalGroup, { nullable: true })
     horizontalGroup?: MutateHorizontalGroup;
 }

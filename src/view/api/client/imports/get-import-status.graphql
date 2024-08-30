@@ -1,8 +1,10 @@
 query getImportStatus($cursor: String, $limit: Int) {
-    getImports(cursor: $cursor, limit: $limit){
-        results {
-            id
-        },
-        next
+  getImports(cursor: $cursor, limit: $limit) {
+    results {
+      id
+      description
+      status
     }
+    next
+  }
 }

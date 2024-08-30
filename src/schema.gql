@@ -83,6 +83,13 @@ type ImportKind {
 
 type ImportStatusReport {
   id: Int!
+  groupOwnerId: Int!
+  status: String!
+  description: String!
+  stack: String
+  context: String
+  fileName: String!
+  kind: String!
 }
 
 type GetImportStatusReportResponse {

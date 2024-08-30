@@ -10,24 +10,23 @@ export class LabelService {
     constructor(
         @InjectModel(LabelModel) private readonly label: typeof LabelModel,
         @InjectModel(LabelTransactionModel) private readonly labelTransaction: typeof LabelTransactionModel,
-        ) {}
+    ) {}
 
-        createLabel(label: CreationAttributes<LabelModel>): Promise<LabelModel> {
-            return this.label.create(label);
-        }
+    createLabel(label: CreationAttributes<LabelModel>): Promise<LabelModel> {
+        return this.label.create(label);
+    }
 
-        addTransaction(labelTransaction: CreationAttributes<LabelTransactionModel>) {
-            return this.labelTransaction.create(labelTransaction);
-        }
+    addTransaction(labelTransaction: CreationAttributes<LabelTransactionModel>) {
+        return this.labelTransaction.create(labelTransaction);
+    }
 
+    async getAll(groupsId: number[]): Promise<ILabel[]> {
+        const labels = await this.label.findAll({ where: queryOwnerId(groupsId) });
+        return labels.map(label => label.dataValues);
+    }
 
-        async getAll(groupsId: number[]): Promise<ILabel[]> {
-            const labels = await this.label.findAll({where: queryOwnerId(groupsId)})
-            return labels.map(label => label.dataValues);
-        }
-
-        async getLabelsIdForTransaction(transactionId: number): Promise<number[]>{
-            const labelsRelation = await this.labelTransaction.findAll({where: {transactionId}})
-            return labelsRelation.map(({labelId})=>labelId)
-        }
+    async getLabelsIdForTransaction(transactionId: number): Promise<number[]> {
+        const labelsRelation = await this.labelTransaction.findAll({ where: { transactionId } });
+        return labelsRelation.map(({ labelId }) => labelId);
+    }
 }

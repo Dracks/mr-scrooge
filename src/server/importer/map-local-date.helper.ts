@@ -1,21 +1,21 @@
 import { parse } from 'date-fns';
 
-import { FieldsMap } from "./transform.helper";
+import { FieldsMap } from './transform.helper';
 
 export class MapLocalDate<T extends number | string> {
-    constructor(private readonly mapper: FieldsMap<T>, private readonly dateFormat = 'dd/MM/yyyy') { }
+    constructor(private readonly mapper: FieldsMap<T>, private readonly dateFormat = 'dd/MM/yyyy') {}
 
-    transform(row: Record<T, unknown>){
-        const dateList : T[] = [this.mapper.get('date') as T]
-        if (this.mapper.has('dateValue')){
-            dateList.push(this.mapper.get('dateValue') as T)
+    transform(row: Record<T, unknown>) {
+        const dateList: T[] = [this.mapper.get('date') as T];
+        if (this.mapper.has('dateValue')) {
+            dateList.push(this.mapper.get('dateValue') as T);
         }
 
-        console.log(row, dateList)
+        console.log(row, dateList);
 
-        for (const dateIndex of dateList){
+        for (const dateIndex of dateList) {
             row[dateIndex] = parse(row[dateIndex] as string, this.dateFormat, new Date());
         }
-        console.log(row)
+        console.log(row);
     }
 }

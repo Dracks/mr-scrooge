@@ -1,24 +1,18 @@
 /* eslint-disable no-use-before-define */
 import { Attributes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
-import {
-    Column,
-    DataType,
-    ForeignKey,
-    Index,
-    Model,
-    Table,
-} from 'sequelize-typescript';
+import { Column, DataType, ForeignKey, Index, Model, Table } from 'sequelize-typescript';
 
-import { BankTransaction,IBankTransaction } from '../../bank-transaction/models/bank-transaction.model';
+import { BankTransaction, IBankTransaction } from '../../bank-transaction/models/bank-transaction.model';
 import { StatusReport } from './status-report';
-
-
 
 @Table({
     tableName: 'importer_status_report_row',
     timestamps: false,
 })
-export class StatusReportRow extends Model<InferAttributes<StatusReportRow>, InferCreationAttributes<StatusReportRow>> implements Omit<IBankTransaction, 'kind' | 'pageKey' | 'groupOwnerId'>{
+export class StatusReportRow
+    extends Model<InferAttributes<StatusReportRow>, InferCreationAttributes<StatusReportRow>>
+    implements Omit<IBankTransaction, 'kind' | 'pageKey' | 'groupOwnerId'>
+{
     @Column({
         primaryKey: true,
         autoIncrement: true,

@@ -80,7 +80,7 @@ export interface EnrichedHorizontalGroup extends EnrichedGroup {
 
 export type GraphGroup = CamelCasedPropertiesDeep<components['schemas']['Group']>;
 
-export type EnrichedGraph<T extends GQLNewGraph>  = Omit<T, 'group' | 'horizontalGroup'> & {
+export type EnrichedGraph<T extends GQLNewGraph> = Omit<T, 'group' | 'horizontalGroup'> & {
     group: EnrichedGroup;
     horizontalGroup?: EnrichedHorizontalGroup;
-}
+};

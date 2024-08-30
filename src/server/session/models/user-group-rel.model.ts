@@ -5,28 +5,28 @@ import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript
 import { UserGroupModel } from './group.model';
 import { UserModel } from './user.model';
 
-
 @Table({
     tableName: 'user_group_rel',
     timestamps: false,
-    indexes: [
-        {fields: ['user_id', 'user_group_id',], unique: true}
-    ]
+    indexes: [{ fields: ['user_id', 'user_group_id'], unique: true }],
 })
-export class UserGroupRelModel extends Model<InferAttributes<UserGroupRelModel>, InferCreationAttributes<UserGroupRelModel>> {
+export class UserGroupRelModel extends Model<
+    InferAttributes<UserGroupRelModel>,
+    InferCreationAttributes<UserGroupRelModel>
+> {
     @ForeignKey(() => UserGroupModel)
     @Column({
         allowNull: false,
         type: DataType.INTEGER,
-        field: 'user_group_id'
+        field: 'user_group_id',
     })
     userGroupId!: UserGroupModel['id'];
 
-    @ForeignKey(()=> UserModel)
+    @ForeignKey(() => UserModel)
     @Column({
         allowNull: false,
         type: DataType.INTEGER,
-        field: 'user_id'
+        field: 'user_id',
     })
     userId!: UserModel['id'];
 }

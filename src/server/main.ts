@@ -36,6 +36,6 @@ const bootstrap = async () => {
     });
 
     await app.listen(8010);
-}
+};
 // eslint-disable-next-line no-console
 bootstrap().catch(error => console.error(error));

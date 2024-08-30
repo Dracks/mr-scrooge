@@ -32,7 +32,7 @@ export class MigrationsCommand {
         const { sequelize, config } = this;
         const migrationsDir = config.migrationsFolder;
         if (!fs.existsSync(migrationsDir)) {
-            throw new Exception('E10005', `Migrations folder does not exists`, {migrationsDir});
+            throw new Exception('E10005', `Migrations folder does not exists`, { migrationsDir });
         }
 
         // current state
@@ -51,7 +51,7 @@ export class MigrationsCommand {
 
         try {
             previousState = JSON.parse(fs.readFileSync(path.join(migrationsDir, '_current.json')).toString());
-        // eslint-disable-next-line id-length, no-empty
+            // eslint-disable-next-line id-length, no-empty
         } catch (e) {}
 
         const { models } = sequelize;
