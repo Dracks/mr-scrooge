@@ -17,7 +17,16 @@ final class BankTransaction: Model, Content {
     var movementName: String
 
     @Field(key: "date" )
-    var date: DateOnly
+    var _date: String
+    
+    var date: DateOnly{
+        get {
+            DateOnly(_date)!
+        }
+        set {
+            _date = newValue.toString()
+        }
+    }
 
     @OptionalField(key: "date_value")
     var dateValue: DateOnly?

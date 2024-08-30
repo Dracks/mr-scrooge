@@ -82,18 +82,27 @@ final class BankTransactionTests: AbstractBaseTestsClass {
         }
         print(lastId)
         XCTAssertEqual(data.data?["bankTransaction"]["next"].string, "2022-02-02:\(lastId)")
-        
     }
+    
+    func getCursor(headers identifiedHeaders: HTTPHeaders) async throws -> String{
+        let res = try await app?.queryGql(GraphQLRequest(query: query, variables: toVars(["limit": 5,  "groupIds": [testGroup.requireID()]])), headers: identifiedHeaders)
+        let data = try res?.content.decode(GraphQLResult.self)
+        return (data?.data?["bankTransaction"]["next"].string)!
+    }
+    
     func testCursorWithDuplicatedDate() async throws {
         let app = try getApp()
         
         // Create test bank transactions
-        let transactions = try await createTestBankTransactions()
+        let _ = try await createTestBankTransactions()
         
         let identifiedHeaders = try await app.getHeaders(forUser: SessionTypes.Credentials(username: "test-user", password: "test-password"))
         
+        let cursor = try await getCursor(headers: identifiedHeaders)
+        
+        
         // Test cursor with duplicated date
-        let res = try await app.queryGql(GraphQLRequest(query: query, variables: toVars(["limit": 5, "cursor": "2022-02-02:\(transactions[5].requireID().uuidString)", "groupIds": [testGroup.requireID()]])), headers: identifiedHeaders)
+        let res = try await app.queryGql(GraphQLRequest(query: query, variables: toVars(["limit": 5, "cursor": cursor, "groupIds": [testGroup.requireID()]])), headers: identifiedHeaders)
         XCTAssertEqual(res.status, .ok)
         let data = try res.content.decode(GraphQLResult.self)
         XCTAssertEqual(data.errors, [])

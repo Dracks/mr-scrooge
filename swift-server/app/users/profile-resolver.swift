@@ -133,7 +133,7 @@ class SessionTypes {
             self.groups = user.groups.map({return GqlUserGroup(group: $0)})
         }
         
-        /*func groups(req: Request, parent: MyProfile) async throws -> [GqlUserGroup] {
+        /*static func groups(req: Request, parent: MyProfile) async throws -> [GqlUserGroup] {
             return try await SessionTypes.usersService.getGroups(on: req.db, forUser: parent.id).map {
                 return GqlUserGroup(group: $0)
             }

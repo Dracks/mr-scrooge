@@ -16,9 +16,9 @@ func configureDb(_ app: Application) async throws {
 		let dbName = Environment.get("DB_NAME") ?? "db.sqlite"
 		if dbName != "memory" {
 			app.databases.use(
-                DatabaseConfigurationFactory.sqlite(.file(dbName)), as: .sqlite)
+                DatabaseConfigurationFactory.sqlite(.file(dbName), sqlLogLevel: .info), as: .sqlite)
 		} else {
-			app.databases.use(DatabaseConfigurationFactory.sqlite(.memory, sqlLogLevel: .debug), as: .sqlite)
+			app.databases.use(DatabaseConfigurationFactory.sqlite(.memory, sqlLogLevel: .info), as: .sqlite)
 		}
 	}
 }

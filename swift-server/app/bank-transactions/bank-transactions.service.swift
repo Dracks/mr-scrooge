@@ -22,17 +22,17 @@ class BankTransactionService {
                let idString = cursorData["id"], let id = UUID(uuidString: idString) {
                 query = query.group(.or) { group in
                     group.group(.and) { subGroup in
-                        subGroup.filter(\.$date == date)
+                        subGroup.filter(\.$_date == date.toString())
                             .filter(\.$id < id)
                     }
-                    group.filter(\.$date < date)
+                    group.filter(\.$_date < date.toString())
                 }
                 print(query)
             }
         }
 
         let data = try await query
-            .sort(\.$date, .descending)
+            .sort(\.$_date, .descending)
             .sort(\.$id, .descending)
             .limit(limit)
             .all()
@@ -55,7 +55,7 @@ class BankTransactionService {
     func existsSimilar(on db: Database, groupOwnerId: UUID, kind: String, transaction: BankTransaction) -> EventLoopFuture<Bool> {
         return BankTransaction.query(on: db)
             .filter(\.$groupOwner.$id == groupOwnerId)
-            .filter(\.$date == transaction.date)
+            .filter(\.$_date == transaction.date.toString())
             .filter(\.$details == transaction.details)
             .filter(\.$kind == kind)
             .filter(\.$movementName == transaction.movementName)
