@@ -41,6 +41,12 @@ export type GQLGetBankTransactionsResponse = {
   results: Array<GQLBankTransaction>;
 };
 
+export type GQLGetImportStatusReportResponse = {
+  __typename?: 'GetImportStatusReportResponse';
+  next?: Maybe<Scalars['String']>;
+  results: Array<GQLImportStatusReport>;
+};
+
 export type GQLGraph = {
   __typename?: 'Graph';
   dateRange: GQLGraphDateRange;
@@ -95,6 +101,11 @@ export type GQLImportKind = {
   __typename?: 'ImportKind';
   name: Scalars['String'];
   regex: Scalars['String'];
+};
+
+export type GQLImportStatusReport = {
+  __typename?: 'ImportStatusReport';
+  id: Scalars['Int'];
 };
 
 export type GQLInvalidCredentials = {
@@ -178,6 +189,7 @@ export type GQLNotIdentified = {
 export type GQLQuery = {
   __typename?: 'Query';
   bankTransaction: GQLGetBankTransactionsResponse;
+  getImports: GQLGetImportStatusReportResponse;
   graphs: Array<GQLGraph>;
   importKinds: Array<GQLImportKind>;
   labels: Array<GQLLabel>;
@@ -187,6 +199,12 @@ export type GQLQuery = {
 
 
 export type GQLQueryBankTransactionArgs = {
+  cursor?: InputMaybe<Scalars['String']>;
+  limit?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type GQLQueryGetImportsArgs = {
   cursor?: InputMaybe<Scalars['String']>;
   limit?: InputMaybe<Scalars['Int']>;
 };
@@ -292,6 +310,16 @@ export const GetImportKindsDocument = gql`
   }
 }
     `;
+export const GetImportStatusDocument = gql`
+    query getImportStatus($cursor: String, $limit: Int) {
+  getImports(cursor: $cursor, limit: $limit) {
+    results {
+      id
+    }
+    next
+  }
+}
+    `;
 export const GetLabelsDocument = gql`
     query getLabels {
   labels {
@@ -349,6 +377,14 @@ export type GQLGetImportKindsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GQLGetImportKindsQuery = { __typename?: 'Query', importKinds: Array<{ __typename?: 'ImportKind', name: string, regex: string }> };
+
+export type GQLGetImportStatusQueryVariables = Exact<{
+  cursor?: InputMaybe<Scalars['String']>;
+  limit?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type GQLGetImportStatusQuery = { __typename?: 'Query', getImports: { __typename?: 'GetImportStatusReportResponse', next?: string | null, results: Array<{ __typename?: 'ImportStatusReport', id: number }> } };
 
 export type GQLGetLabelsQueryVariables = Exact<{ [key: string]: never; }>;
 
