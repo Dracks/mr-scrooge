@@ -24,8 +24,8 @@ export const Graphs: React.FC = () => {
                     <GraphWrapperWithRechart
                         key={idx}
                         graph={graph}
-                        reload={async () => {
-                            await refresh();
+                        reload={() => {
+                            refresh({ requestPolicy: 'network-only' });
                         }}
                     />
                 ))}

@@ -4,19 +4,18 @@ import React from 'react';
 import { useNavigate } from 'react-router';
 
 import { EnrichedGraph } from '../../../api/client/graphs/types';
-import { useDeleteGraphsV2 } from '../../../api/client/graphs/use-delete-graphs-v2';
-import { GQLGraph } from '../../../api/graphql/generated';
+import { GQLGraph, useDeleteGraphMutation } from '../../../api/graphql/generated';
 import { ConfirmationButton } from '../../../utils/ui/confirmation-button';
 import { GraphViewer } from './view';
 
 interface GraphWrapperArgs {
     graph: EnrichedGraph<GQLGraph>;
-    reload: () => Promise<void>;
+    reload: () => Promise<void> | void;
 }
 
 export const GraphWrapperWithRechart: React.FC<GraphWrapperArgs> = ({ graph, reload }) => {
     const navigate = useNavigate();
-    const [, deleteRequest] = useDeleteGraphsV2(graph.id);
+    const [, deleteRequest] = useDeleteGraphMutation();
     return (
         <Box direction="column">
             <Heading level={3}>{graph.name}</Heading>
@@ -27,7 +26,7 @@ export const GraphWrapperWithRechart: React.FC<GraphWrapperArgs> = ({ graph, rel
                     color="accent-4"
                     icon={<Trash />}
                     onConfirm={async () => {
-                        await deleteRequest();
+                        await deleteRequest({ graphId: graph.id });
                         await reload();
                     }}
                 />
