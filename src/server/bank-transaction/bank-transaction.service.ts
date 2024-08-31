@@ -9,7 +9,6 @@ import { BankTransaction, BankTransactionBase, IBankTransaction } from './models
 
 @Injectable()
 export class BankTransactionService {
-
     private readonly logger = new Logger(BankTransactionService.name);
 
     private readonly cursorHandler = new CursorHandler<BankTransaction, 'date' | 'id'>(['date', 'id']);
@@ -17,7 +16,12 @@ export class BankTransactionService {
     constructor(@InjectModel(BankTransaction) private readonly bankMovementModel: typeof BankTransaction) {}
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async getAll(groupIds: number[], cursor?: string, limit = 100, query= {}): Promise<ListWithCursor<IBankTransaction>> {
+    async getAll(
+        groupIds: number[],
+        cursor?: string,
+        limit = 100,
+        query = {},
+    ): Promise<ListWithCursor<IBankTransaction>> {
         const andConditional: WhereOptions<BankTransaction>[] = [queryOwnerId(groupIds)];
 
         if (cursor) {
@@ -56,7 +60,6 @@ export class BankTransactionService {
     }
 
     async existsSimilar(groupOwnerId: number, kind: string, transaction: BankTransactionBase): Promise<boolean> {
-
         const result = await this.bankMovementModel.count({
             where: {
                 date: transaction.date,
@@ -65,17 +68,17 @@ export class BankTransactionService {
                 kind,
                 movementName: transaction.movementName,
                 value: transaction.value,
-            }
-        })
+            },
+        });
 
-        return result>0
+        return result > 0;
     }
 
     async insertBatch(movements: InferCreationAttributes<BankTransaction>[]) {
         await this.bankMovementModel.bulkCreate(movements, {
             logging: (sql, timing) => {
                 // this.logger.log({sql, timing}, 'Bulk insert')
-                this.logger.log({sql, timing}, 'Insert batch');
+                this.logger.log({ sql, timing }, 'Insert batch');
             },
             validate: true,
         });

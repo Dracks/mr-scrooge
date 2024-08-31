@@ -8,7 +8,7 @@ import { LabelModel } from './label.model';
 export enum GraphKind {
     Bar = 'bar',
     Line = 'line',
-    Pie = 'pie'
+    Pie = 'pie',
 }
 
 export enum GraphGroup {
@@ -17,7 +17,7 @@ export enum GraphGroup {
     Labels = 'labels',
     Month = 'month',
     Sign = 'sign',
-    Year = 'year'
+    Year = 'year',
 }
 
 export enum GraphDateRange {
@@ -163,7 +163,7 @@ export class GraphHorizontalGroupLabelsModel extends Model<
     @Column({
         type: DataType.INTEGER,
         primaryKey: true,
-        field: 'graph_id'
+        field: 'graph_id',
     })
     @ForeignKey(() => GraphHorizontalGroupModel)
     graphId!: GraphHorizontalGroupModel['graphId'];
@@ -171,7 +171,7 @@ export class GraphHorizontalGroupLabelsModel extends Model<
     @Column({
         type: DataType.INTEGER,
         primaryKey: true,
-        field: 'label_id'
+        field: 'label_id',
     })
     @ForeignKey(() => LabelModel)
     labelId!: LabelModel['id'];

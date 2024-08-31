@@ -21,14 +21,21 @@ export class PasswordService {
         const [algorithm, diggest] = algorithmComposed.split('_') ?? [];
         const hashBuffer = Buffer.from(hash, 'base64');
         if (algorithm === 'pbkdf2') {
-            const newHash = await new Promise((resolve, reject) =>{
-                pbkdf2(password, salt, Number.parseInt(iterations, 10), hashBuffer.length, diggest, (err, derivedKey) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(derivedKey.toString('base64'));
-                    }
-                })
+            const newHash = await new Promise((resolve, reject) => {
+                pbkdf2(
+                    password,
+                    salt,
+                    Number.parseInt(iterations, 10),
+                    hashBuffer.length,
+                    diggest,
+                    (err, derivedKey) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(derivedKey.toString('base64'));
+                        }
+                    },
+                );
             });
             // eslint-disable-next-line sort-keys
             this.logger.log({ algorithm, diggest, iterations, salt, hash, newHash }, 'Hashed using pbkdf2');

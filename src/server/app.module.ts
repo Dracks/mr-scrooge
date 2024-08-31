@@ -62,9 +62,8 @@ import { SessionModule } from './session/session.module';
         },
         {
             provide: APP_FILTER,
-            useClass: AllExceptionsHandler
+            useClass: AllExceptionsHandler,
         },
-
     ],
 })
 export class AppModule {}

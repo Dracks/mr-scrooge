@@ -27,7 +27,7 @@ describe(BankTransactionResolver.name, () => {
                 getGraphQLTestModule(() => ({
                     groupsId: [1],
                 })),
-                BankTransactionModule
+                BankTransactionModule,
             ],
         }).compile();
 
@@ -69,8 +69,8 @@ describe(BankTransactionResolver.name, () => {
             movements.push(
                 BankTransactionFactory.build({
                     groupOwnerId: 2,
-                })
-            )
+                }),
+            );
         });
 
         beforeEach(async () => {

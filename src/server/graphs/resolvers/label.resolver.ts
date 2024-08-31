@@ -1,4 +1,4 @@
-import { Query,Resolver } from '@nestjs/graphql';
+import { Query, Resolver } from '@nestjs/graphql';
 
 import { GqlGroupsId } from '../../session/decorators/gql-groups-id';
 import { Label } from '../gql-objects/label.object';

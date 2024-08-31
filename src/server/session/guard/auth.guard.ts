@@ -39,22 +39,21 @@ export class AuthGuard implements CanActivate {
         const { sessionId = '' } = session.data() ?? {};
         const sessionData = await this.sessionService.getSession(sessionId);
 
-
         if (roles.length === 1 && roles[0] === Role.GUEST) {
-            if (sessionId.length>0 && !sessionData){
-                session.delete()
+            if (sessionId.length > 0 && !sessionData) {
+                session.delete();
             }
             return true;
         }
 
-        this.logger.warn({sessionData, sessionId}, 'session')
+        this.logger.warn({ sessionData, sessionId }, 'session');
         if (sessionData) {
             // const user = sessionData.$get('user');
             const user = await this.userProfileService.getUserProfile(sessionData.userId);
             if (user && user.isActive && session.get('userId') === user.id) {
                 const dateToCheck = this.getDate(sessionData);
                 if (isFuture(add(dateToCheck, { days: this.config.sessionDaysActive }))) {
-                    this.logger.warn({roles, superUser: user.isSuperuser}, 'roles check?')
+                    this.logger.warn({ roles, superUser: user.isSuperuser }, 'roles check?');
                     if (roles.length > 0 && roles.includes(Role.ADMIN)) {
                         return user.isSuperuser ?? false;
                     }
@@ -63,7 +62,7 @@ export class AuthGuard implements CanActivate {
             }
             await this.sessionService.dropSession(sessionId);
         }
-        session.delete()
+        session.delete();
         return false;
     }
 }

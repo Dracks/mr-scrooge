@@ -1,6 +1,9 @@
-import { Exception } from "./exception";
+import { Exception } from './exception';
 
-export const ensureOrThrow = <T extends object | string | number | symbol>(object: T | null | undefined, error: Exception): T => {
+export const ensureOrThrow = <T extends object | string | number | symbol>(
+    object: T | null | undefined,
+    error: Exception,
+): T => {
     if (object === undefined) {
         throw error;
     }

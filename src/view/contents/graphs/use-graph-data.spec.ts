@@ -43,7 +43,6 @@ describe('useGraphData', () => {
             { id: 5, name: 'tag_5' },
             { id: 8, name: 'tag_8' },
         ].map(element => ({ ...element, groupOwnerId: 1 }));
-
     });
     it('Check basic pie', () => {
         expect(useGraphDataGenerator(enrichGraph({ ...GraphV2Pie, id: 2 }, labelsList))).toEqual([

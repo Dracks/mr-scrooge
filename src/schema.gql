@@ -72,13 +72,29 @@ type BankTransaction {
 scalar DateOnly
 
 type GetBankTransactionsResponse {
-  results: [BankTransaction!]!
   next: String
+  results: [BankTransaction!]!
 }
 
 type ImportKind {
   name: String!
   regex: String!
+}
+
+type ImportStatusReport {
+  id: Int!
+  groupOwnerId: Int!
+  status: String!
+  description: String!
+  stack: String
+  context: String
+  fileName: String!
+  kind: String!
+}
+
+type GetImportStatusReportResponse {
+  next: String
+  results: [ImportStatusReport!]!
 }
 
 type Query {
@@ -87,6 +103,7 @@ type Query {
   bankTransaction(cursor: String, limit: Int): GetBankTransactionsResponse!
   labels: [Label!]!
   graphs: [Graph!]!
+  getImports(cursor: String, limit: Int): GetImportStatusReportResponse!
   importKinds: [ImportKind!]!
 }
 

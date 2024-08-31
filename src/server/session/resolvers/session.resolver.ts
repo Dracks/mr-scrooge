@@ -86,7 +86,7 @@ export class SessionResolver {
 
     @Mutation(() => LoginResponse)
     @AllowRoles(Role.GUEST)
-    async login(@Context('session') session: WebSession,  @Args('credentials') credentials: Credentials) {
+    async login(@Context('session') session: WebSession, @Args('credentials') credentials: Credentials) {
         this.logger.log({ session, credentials }, 'session');
         const user = await this.userService.validateUser(credentials.username, credentials.password);
         this.logger.log({ user }, 'user');

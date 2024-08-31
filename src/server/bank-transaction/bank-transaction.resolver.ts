@@ -18,10 +18,7 @@ export class GetBankTransactionsResponse extends GetPageResponse<BankTransaction
 export class BankTransactionResolver {
     private readonly logger = new Logger(BankTransactionResolver.name);
 
-    constructor(
-        readonly bankMovementService: BankTransactionService,
-        readonly labelService: LabelService,
-    ) {}
+    constructor(readonly bankMovementService: BankTransactionService, readonly labelService: LabelService) {}
 
     @Query(() => GetBankTransactionsResponse)
     async bankTransaction(
@@ -40,9 +37,9 @@ export class BankTransactionResolver {
         };
     }
 
-    @ResolveField(()=>[Int])
-    labelIds(@Parent() parent: BankTransaction){
-        const {id} = parent
-        return this.labelService.getLabelsIdForTransaction(id)
+    @ResolveField(() => [Int])
+    labelIds(@Parent() parent: BankTransaction) {
+        const { id } = parent;
+        return this.labelService.getLabelsIdForTransaction(id);
     }
 }

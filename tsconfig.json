@@ -16,6 +16,6 @@
         "emitDecoratorMetadata": true,
         "alwaysStrict": true,
         "esModuleInterop": true,
-        "outDir": "build/", 
+        "outDir": "build/",
     }
 }

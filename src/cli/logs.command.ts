@@ -15,9 +15,6 @@ export class LogsCommands {
         this.logger.log('Getting logs...');
         this.logger.debug({ something: 'extra' }, 'Debug log');
         this.logger.warn('This is some warning with %s', 'extra');
-        this.logger.error(
-            { err: new Exception('E10000', 'Test message', { context: 'extra' }) },
-            'we have some error',
-        );
+        this.logger.error({ err: new Exception('E10000', 'Test message', { context: 'extra' }) }, 'we have some error');
     }
 }

@@ -27,7 +27,7 @@ export class ProfileResolver {
         try {
             await this.userProfileService.changePassword(session.get('userId') as number, oldPassword, newPassword);
             return true;
-        } catch (error ){
+        } catch (error) {
             this.logger.warn(error);
             return false;
         }

@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import {  InferAttributes, InferCreationAttributes } from 'sequelize';
+import { InferAttributes, InferCreationAttributes } from 'sequelize';
 import { BelongsTo, Column, DataType, ForeignKey, Index, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 import { UserModel } from './user.model';
@@ -16,10 +16,8 @@ export class SessionModel extends Model<ISessionModel, InferCreationAttributes<S
     @Column
     userId!: number;
 
-    
     @BelongsTo(() => UserModel, { onDelete: 'CASCADE' })
     user?: UserModel;
-     
 
     @Index
     @Column({

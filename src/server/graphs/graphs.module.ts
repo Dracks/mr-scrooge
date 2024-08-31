@@ -8,7 +8,7 @@ import {
     GraphHorizontalGroupModel,
     GraphModel,
 } from './models/graph.model';
-import { LabelModel,LabelTransactionModel } from './models/label.model';
+import { LabelModel, LabelTransactionModel } from './models/label.model';
 import { GraphResolver } from './resolvers/graph.resolver';
 import { LabelResolver } from './resolvers/label.resolver';
 import { GraphService } from './services/graph.service';

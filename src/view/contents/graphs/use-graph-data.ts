@@ -54,7 +54,13 @@ const normalizeSubGroups = (data: DSDoubleGroup<string, string>[]): DSDoubleGrou
 
 const labelMap = ({ name }: GQLLabel) => name;
 
-export const useGraphDataGenerator = <T extends GQLNewGraph>({ labelFilter, dateRange, horizontalGroup, group, groupOwnerId }: EnrichedGraph<T>) => {
+export const useGraphDataGenerator = <T extends GQLNewGraph>({
+    labelFilter,
+    dateRange,
+    horizontalGroup,
+    group,
+    groupOwnerId,
+}: EnrichedGraph<T>) => {
     const { data } = useRdsData();
     const monthRange = hashDateRange[dateRange];
     let rdsList = labelFilter ? data.filter(rds => rds.labelIds.indexOf(labelFilter) >= 0) : data;

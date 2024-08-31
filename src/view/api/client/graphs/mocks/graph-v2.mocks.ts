@@ -4,7 +4,7 @@ export const GraphV2Pie: Omit<GQLGraph, 'id'> = {
     dateRange: GQLGraphDateRange.All,
     group: {
         group: GQLGraphGroup.Labels,
-        labels: [ 4 , 5 , 8 ],
+        labels: [4, 5, 8],
     },
     groupOwnerId: 1,
     kind: GQLGraphKind.Pie,

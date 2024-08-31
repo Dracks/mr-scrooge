@@ -98,13 +98,13 @@ export class UserProfileService {
             ...options,
         });
         this.logger.log({ user }, 'Hey this is the user');
-        const group = await this.addGroup(user.dataValues.id, username)
+        const group = await this.addGroup(user.dataValues.id, username);
         user.defaultGroupId = group.id;
         await user.save();
         return { ...user.dataValues, groupId: group.id };
     }
 
-    public async addGroup(userId: number, groupName:string){
+    public async addGroup(userId: number, groupName: string) {
         const group = await this.userGroupModel.create({
             name: groupName,
             ownerId: userId,
@@ -113,13 +113,13 @@ export class UserProfileService {
         await this.userGroupRelModel.create({
             userId,
             userGroupId: group.id,
-        })
+        });
 
         return group.dataValues;
     }
 
     public async getGroupsId(userId: number): Promise<number[]> {
-        const userGroupRels = await this.userGroupRelModel.findAll({where: {userId}})
+        const userGroupRels = await this.userGroupRelModel.findAll({ where: { userId } });
         return userGroupRels.map(userGroupRel => userGroupRel.dataValues.userGroupId);
     }
 }

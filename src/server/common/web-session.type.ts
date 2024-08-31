@@ -1,5 +1,5 @@
 export interface SessionData {
-    groupsId: number[],
+    groupsId: number[];
     sessionId: string;
     userId: number;
 }
