@@ -7,21 +7,21 @@ extension MrScroogeResolver {
         guard let user = req.auth.get(User.self) else {
             throw Abort(.unauthorized)
         }
-        
+
         let groupIds = try await user.getGroupsIds(on: req.db)
         return try await GraphTypes.graphService.getGraphs(on: req.db, groupsId: groupIds)
     }
-    
+
     func newGraph(request req: Request, arguments: GraphTypes.NewGraphArguments) async throws -> GraphTypes.GraphResponse {
         guard let user = req.auth.get(User.self) else {
             throw Abort(.unauthorized)
         }
-        
+
         let userGroupIds = try await user.getGroupsIds(on: req.db)
         guard let groupId = userGroupIds.first(where: { $0 == arguments.graph.groupOwnerId }) else {
             return WrongOwnerId(validOwners: userGroupIds)
         }
-        
+
         let graph = Graph(
             groupOwnerId: groupId,
             name: arguments.graph.name,
@@ -29,38 +29,42 @@ extension MrScroogeResolver {
             labelFilterId: arguments.graph.labelFilterId,
             dateRange: arguments.graph.dateRange
         )
-        
+
         try await graph.save(on: req.db)
         return graph
     }
-    
+
     /*func updateGraph(request req: Request, arguments: GraphTypes.UpdateGraphArguments) async throws -> Graph {
         guard let user = req.auth.get(User.self) else {
             throw Abort(.unauthorized)
         }
-        
+
         guard let graph = try await Graph.find(arguments.graph.id, on: req.db) else {
             throw Abort(.notFound)
         }
-        
+
         let userGroups = try await user.$groups.get(on: req.db)
         guard userGroups.contains(where: { $0.id == graph.$groupOwner.id }) else {
             throw Abort(.forbidden)
         }
-        
+
         graph.name = arguments.graph.name
         graph.kind = arguments.graph.kind
         graph.$labelFilter.id = arguments.graph.labelFilterId
         graph.dateRange = arguments.graph.dateRange
-        
+
         try await graph.save(on: req.db)
         return graph
+    }*/
+
+    /*func deleteGraph(request req: Request, arguments: GraphTypes.DeleteArgs) async throws -> {
+
     }*/
 }
 
 class GraphTypes {
     static let graphService = GraphService()
-    struct GqlGraph: Codable, GraphResponse {
+    struct GqlGraph: Codable, GraphResponse, UpdateGraphResponse {
         let id: UUID
         let groupOwnerId: UUID
         let name: String
@@ -131,10 +135,10 @@ class GraphTypes {
     }
 
     struct UpdateGraphArguments: Codable {
-        let graph: UpdatedGraph
+        let graph: UpdateGraph
     }
 
-    struct UpdatedGraph: Codable {
+    struct UpdateGraph: Codable {
         let id: UUID
         let name: String
         let kind: GraphKind
@@ -146,13 +150,19 @@ class GraphTypes {
 
     protocol GraphResponse {}
 
+    struct InvalidGraph: Codable, UpdateGraphResponse {
+    	let availableGraphIds: [UUID]
+    }
+
+    protocol UpdateGraphResponse {}
+
     class Schema: PartialSchema<MrScroogeResolver, Request> {
         @TypeDefinitions
         override var types: Types {
             Enum(GraphKind.self)
             Enum(GraphGroupType.self, as: "GraphGroup")
             Enum(GraphDateRange.self)
-            
+
             Type(GqlGraph.self, as: "Graph") {
                 Field("id", at: \.id)
                 Field("groupOwnerId", at: \.groupOwnerId)
@@ -176,7 +186,7 @@ class GraphTypes {
                 Field("labels", at: \.labels)
                 Field("accumulate", at: \.accumulate)
             }
-            
+
             Input(GqlInputGroup.self, as: "InputGroup") {
                 InputField("group", at: \.group)
                 InputField("hideOthers", at: \.hideOthers)
@@ -189,7 +199,7 @@ class GraphTypes {
                 InputField("labels", at: \.labels)
                 InputField("accumulate", at: \.accumulate)
             }
-            
+
             Input(NewGraph.self){
                 InputField("groupOwnerId", at: \.groupOwnerId)
                 InputField("name", at: \.name)
@@ -199,8 +209,8 @@ class GraphTypes {
                 InputField("group", at: \.group)
                 InputField("horizontalGroup", at: \.horizontalGroup)
             }
-            
-            Input(UpdatedGraph.self){
+
+            Input(UpdateGraph.self){
                 InputField("id", at: \.id)
                 InputField("name", at: \.name)
                 InputField("kind", at: \.kind)
@@ -209,16 +219,16 @@ class GraphTypes {
                 InputField("group", at: \.group)
                 InputField("horizontalGroup", at: \.horizontalGroup)
             }
-            
-           
+
+
             Union(GraphResponse.self, members: GqlGraph.self, WrongOwnerId.self)
         }
-        
+
         @FieldDefinitions
         override var query: Fields {
             Field("graphs", at: MrScroogeResolver.graphs)
         }
-        
+
         @FieldDefinitions
         override var mutation: Fields {
             Field("newGraph", at: MrScroogeResolver.newGraph) {
@@ -232,4 +242,3 @@ class GraphTypes {
 }
 extension Graph: GraphTypes.GraphResponse {}
 extension WrongOwnerId: GraphTypes.GraphResponse{}
-

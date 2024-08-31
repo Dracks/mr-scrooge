@@ -2,7 +2,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "swift-server",
+    name: "MrScrooge-swift-server",
     platforms: [
        .macOS(.v13)
     ],

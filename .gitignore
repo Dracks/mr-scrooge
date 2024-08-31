@@ -27,10 +27,13 @@ __pycache__
 migrations/*.py
 
 
-server/db.sqlite3
+db.sqlite3
+db.sqlite
 server/finances/templates/react.html
 server/static/react
 
 # swift
 .build
 .swiftpm
+swift-server/Resources/Views/react.leaf
+swift-server/Public/react

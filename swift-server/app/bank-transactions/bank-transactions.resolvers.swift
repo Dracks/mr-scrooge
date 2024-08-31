@@ -96,7 +96,7 @@ class BankTransactionTypes {
                 Field("results", at: \.labels)
             }
             
-            Union(GetLabelsResponse.self, members: GetLabels.self, NotIdentified.self)
+            Union(GetLabelsResponse.self, members: GetLabels.self)
             
         }
         
@@ -116,54 +116,42 @@ extension MrScroogeResolver  {
     
     
     func bankTransaction(req: Request, arguments: BankTransactionTypes.GetBankTransactionArgs) async throws -> BankTransactionTypes.GetBankTransactionsResponse {
-        do {
-            let user = try await getUser(fromRequest: req);
-            let validGroupsIds = try user.groups.map { return try $0.requireID() }
-            let groupIds = arguments.groupIds ?? validGroupsIds
-            if groupIds.filter({return !validGroupsIds.contains($0)} ).count>0 {
-                return WrongOwnerId(validOwners: validGroupsIds)
-            }
-            let data = try await BankTransactionTypes.bankTransactionService.getAll(on: req.db, groupIds: groupIds, cursor: arguments.cursor, limit: arguments.limit ?? 100)
-            let results = try data.list.map { movement in
-                BankTransactionTypes.BankTransaction(
-                    id: try movement.requireID(),
-                    groupOwnerId: movement.groupOwnerId,
-                    movementName: movement.movementName,
-                    date: movement.date,
-                    dateValue: movement.dateValue,
-                    details: movement.details,
-                    value: movement.value,
-                    kind: movement.kind,
-                    description: movement.description, 
-                    labels: try movement.labels.map({ label in
-                        return try label.requireID()
-                    })
-                )
-            }
-            return BankTransactionTypes.BankTransactionsResponse(results: results, next: data.next)
-        } catch let error as NotIdentifiedError {
-            return NotIdentified()
+        let user = try await getUser(fromRequest: req);
+        let validGroupsIds = try user.groups.map { return try $0.requireID() }
+        let groupIds = arguments.groupIds ?? validGroupsIds
+        if groupIds.filter({return !validGroupsIds.contains($0)} ).count>0 {
+            return WrongOwnerId(validOwners: validGroupsIds)
         }
+        let data = try await BankTransactionTypes.bankTransactionService.getAll(on: req.db, groupIds: groupIds, cursor: arguments.cursor, limit: arguments.limit ?? 100)
+        let results = try data.list.map { movement in
+            BankTransactionTypes.BankTransaction(
+                id: try movement.requireID(),
+                groupOwnerId: movement.groupOwnerId,
+                movementName: movement.movementName,
+                date: movement.date,
+                dateValue: movement.dateValue,
+                details: movement.details,
+                value: movement.value,
+                kind: movement.kind,
+                description: movement.description,
+                labels: try movement.labels.map({ label in
+                    return try label.requireID()
+                })
+            )
+        }
+        return BankTransactionTypes.BankTransactionsResponse(results: results, next: data.next)
     }
     
     func labels(req: Request, arguments: NoArguments) async throws -> BankTransactionTypes.GetLabelsResponse {
-        do {
-            let user = try await getUser(fromRequest: req);
-            let validGroupsIds = try user.groups.map { return try $0.requireID() }
-            let data = try await BankTransactionTypes.labelService.getAll(on: req.db, groupIds: validGroupsIds)
-            let list = try data.map({ label in
-                return try BankTransactionTypes.GqlLabel(label: label)
-            })
-            return BankTransactionTypes.GetLabels(list)
-            
-            
-        } catch let error as NotIdentifiedError {
-            return NotIdentified()
-        }
-        
+        let user = try await getUser(fromRequest: req);
+        let validGroupsIds = try user.groups.map { return try $0.requireID() }
+        let data = try await BankTransactionTypes.labelService.getAll(on: req.db, groupIds: validGroupsIds)
+        let list = try data.map({ label in
+            return try BankTransactionTypes.GqlLabel(label: label)
+        })
+        return BankTransactionTypes.GetLabels(list)
     }
 }
 
 extension WrongOwnerId: BankTransactionTypes.GetBankTransactionsResponse {}
-extension NotIdentified: BankTransactionTypes.GetLabelsResponse, BankTransactionTypes.GetBankTransactionsResponse {}
 

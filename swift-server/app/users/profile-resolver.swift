@@ -28,13 +28,11 @@ extension MrScroogeResolver {
 	}
 
     func getCurrentUser(request req: Request, arguments: NoArguments) async throws -> SessionTypes.MyProfileResponse {
-        if let user = req.auth.get(User.self) {
-            // let user2 = try await User.query(on: req.db).filter(\.$id == user.requireID()).all().first!
-            try await user.$groups.load(on: req.db)
-            try await user.$defaultGroup.load(on: req.db)
-            return SessionTypes.MyProfile(user: user)
-        }
-        return NotIdentified()
+        let user = try await getUser(fromRequest: req)
+        try await user.$groups.load(on: req.db)
+        try await user.$defaultGroup.load(on: req.db)
+        return SessionTypes.MyProfile(user: user)
+        
     }
 
     func logout(request req: Request, arguments: NoArguments) async throws -> Bool {
@@ -67,10 +65,6 @@ class SessionTypes {
                 Field("defaultGroupId", at: \.defaultGroup.id)
                 //Field("groups", at: MyProfile.groups)
             }
-
-            Type(NotIdentified.self) {
-                Field("identified", at: \.identified)
-            }
             
             Type(LoginError.self) {
                 Field("error", at: \.error)
@@ -81,7 +75,7 @@ class SessionTypes {
                 Field("name", at: \.name)
             }
             
-            Union(MyProfileResponse.self, members: MyProfile.self, NotIdentified.self)
+            Union(MyProfileResponse.self, members: MyProfile.self)
             Union(LoginResponse.self, members: MyProfile.self, LoginError.self)
             
             Input(Credentials.self){
@@ -167,8 +161,6 @@ class SessionTypes {
         
     }
 }
-
-extension NotIdentified: SessionTypes.MyProfileResponse {}
 
 class UsersService {
     func getGroups(on db: Database, forUser userId: UUID) async throws -> [UserGroup] {

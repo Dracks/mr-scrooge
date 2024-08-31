@@ -13,15 +13,15 @@
 * [ ] Save of a new graph is not redirecting to the edition of the graph once get the new id
 * [x] Imports missing the import raw data to get the errors
 
-# Server tasks
+# Server tasks (nestjs)
 * [x] graphs
   * [x] Modify graph
   * [x] Create graph
   * [x] Add validations on the selected labels
 * [ ] Imports
   * [ ] Import caixa enginyers
-  * [ ] Import n26
-  * [ ] Import commerzbank
+  * [x] Import n26
+  * [x] Import commerzbank
   * [ ] Import qif
 * [ ] Bank transactions
   * [ ] new transactions are applied with the rules engine
@@ -30,3 +30,31 @@
   * [ ] modify label
 * [ ] rules engine
 * [ ] import django data
+
+# Server tasks (swift)
+* [ ] graphs
+  * [ ] Modify graph
+  * [x] Create graph
+  * [x] Add validations on the selected labels
+  * [ ] Fix daterange enum values in ui
+* [ ] Imports
+  * [ ] Import caixa enginyers
+  * [ ] Import n26
+  * [ ] Import commerzbank
+  * [ ] Import qif
+  * [ ] Call to apply rules
+* [ ] Bank transactions
+  * [x] get bank transactions data
+* [ ] labels
+  * [x] get labels
+  * [ ] create label
+  * [ ] modify label
+* [ ] rules engine
+  * [ ] new transactions are applied with the rules engine
+* [ ] import django data
+* [ ] users
+  * [x] login/logout
+  * [ ] admin users
+  * [ ] edit my user
+* [ ] Improve Expected errors in graphql
+  * [ ] Add a handler of the graphql generic errors in client
