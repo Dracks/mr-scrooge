@@ -10,6 +10,7 @@ final class BankTransactionTests: AbstractBaseTestsClass {
     let query = """
     query($groupIds: [UUID!]!, $limit: Int, $cursor: String) {
       bankTransaction(groupIds: $groupIds, limit: $limit, cursor: $cursor) {
+        ... on BankTransactionResponse {
         results {
           id
           date
@@ -17,6 +18,7 @@ final class BankTransactionTests: AbstractBaseTestsClass {
     movementName
         }
         next
+    }
       }
     }
     """

@@ -50,6 +50,12 @@ class BankTransactionFactory: AbstractFactory<BankTransaction> {
         )
     }
 }
+
+class LabelFactory: AbstractFactory<Label> {
+    override func create(id: Int) -> Label {
+        return Label(groupOwnerId: UUID(), name: "Label \(id)")
+    }
+}
 /*
 class GraphFactory: AbstractFactory<Graph> {
     override func build(modifier: ((Graph) -> Graph)? = nil) -> Graph {

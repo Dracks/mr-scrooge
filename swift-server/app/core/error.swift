@@ -1,5 +1,5 @@
 enum ErrorCode: String, CaseIterable {
-    case E10000, E10001, E10002/*, E10003, E10004, E10005, E10006, E10007*/
+    case E10000, E10001, E10002, E10003/*, E10004, E10005, E10006, E10007*/
 }
 
 class ErrorInfo {
@@ -15,7 +15,8 @@ class ErrorInfo {
 let errorDictionary: [ErrorCode: ErrorInfo] = [
     .E10000: ErrorInfo(message: "Label not found in graph group for this group user id"),
     .E10001: ErrorInfo(message: "Graph doesn't contain any group", additionalInfo: "This can mean the database was corrupted"),
-    .E10002: ErrorInfo(message: "Label not found in horizontal group for this group user id")
+    .E10002: ErrorInfo(message: "Label not found in horizontal group for this group user id"),
+    .E10003: ErrorInfo(message: "Invalid DB_URL format"),
 ]
 
 extension ErrorCode {

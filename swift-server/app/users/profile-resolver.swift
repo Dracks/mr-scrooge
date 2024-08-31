@@ -28,10 +28,14 @@ extension MrScroogeResolver {
 	}
 
     func getCurrentUser(request req: Request, arguments: NoArguments) async throws -> SessionTypes.MyProfileResponse {
-        let user = try await getUser(fromRequest: req)
-        try await user.$groups.load(on: req.db)
-        try await user.$defaultGroup.load(on: req.db)
-        return SessionTypes.MyProfile(user: user)
+        do {
+            let user = try await getUser(fromRequest: req)
+            try await user.$groups.load(on: req.db)
+            try await user.$defaultGroup.load(on: req.db)
+            return SessionTypes.MyProfile(user: user)
+        } catch is NotIdentifiedError {
+            return SessionTypes.NotIdentified()
+        }
         
     }
 
@@ -74,8 +78,11 @@ class SessionTypes {
                 Field("id", at: \.id)
                 Field("name", at: \.name)
             }
+            Type(NotIdentified.self){
+                Field("username", at: \.username)
+            }
             
-            Union(MyProfileResponse.self, members: MyProfile.self)
+            Union(MyProfileResponse.self, members: MyProfile.self, NotIdentified.self)
             Union(LoginResponse.self, members: MyProfile.self, LoginError.self)
             
             Input(Credentials.self){
@@ -154,6 +161,10 @@ class SessionTypes {
             self.id = group.id!
             self.name = group.name
         }
+    }
+    
+    struct NotIdentified: Content, MyProfileResponse {
+        let username = "anonymous"
     }
 
     

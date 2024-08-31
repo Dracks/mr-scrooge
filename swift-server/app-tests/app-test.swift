@@ -7,8 +7,8 @@ import GraphQL
 
 class TestError: Error {}
 
-func createUser(app: Application, username: String, email: String, password: String, isAdmin: Bool = false) async throws -> User {
-    let user = User(username: username, email: email, isAdmin: isAdmin)
+func createUser(app: Application, username: String, email: String, password: String, defaultGroupId: UserGroup.IDValue,isAdmin: Bool = false) async throws -> User {
+    let user = User(username: username, email: email, isAdmin: isAdmin, defaultGroupId: defaultGroupId)
     try user.setPassword(pwd: password)
     try await user.save(on: app.db)
     return user
@@ -26,6 +26,7 @@ class AbstractBaseTestsClass: XCTestCase {
     var testUser: User!
     var testGroup: UserGroup!
     var testGroup2: UserGroup!
+    var labels: [Label]!
 
     func getApp() throws -> Application {
         guard let app = app else {
@@ -35,20 +36,36 @@ class AbstractBaseTestsClass: XCTestCase {
     }
 
     override func setUp() async throws {
-        let app = try await Application.make(.testing)
-        try await configure(app)
-        
-        // Create users
-        /*_ = try await createUser(app: app, username: "admin", email: "j@k.com", password: "admin", isAdmin: true)
-        _ = try await createUser(app: app, username: "demo", email: "d@k.com", password: "demo")*/
-        testUser = try await createUser(app: app, username: "test-user", email: "test@example.com", password: "test-password")
-        
-        // Create a test group
-        testGroup = try await createGroup(app: app, name: "Test Group")
-        try await testUser.$groups.attach(testGroup, on: app.db)
-        testGroup2 = try await createGroup(app: app, name: "Other Group")
-        
-        self.app = app
+        do {
+            let app = try await Application.make(.testing)
+            try await configure(app)
+            // Create a test group
+            testGroup2 = try await createGroup(app: app, name: "Other Group")
+            testGroup = try await createGroup(app: app, name: "Test Group")
+            let testGroupId = try testGroup.requireID()
+            
+            // Create users
+            /*_ = try await createUser(app: app, username: "admin", email: "j@k.com", password: "admin", isAdmin: true)
+             _ = try await createUser(app: app, username: "demo", email: "d@k.com", password: "demo")*/
+            testUser = try await createUser(app: app, username: "test-user", email: "test@example.com", password: "test-password", defaultGroupId: testGroupId)
+            try await testUser.$groups.attach(testGroup, on: app.db)
+            
+            // Create labels
+            let labelFactory = LabelFactory()
+            
+            labels = labelFactory.createSequence(8) {
+                $0.$groupOwner.id = testGroupId
+                return $0
+            }
+            for label in labels {
+                try await label.save(on: app.db)
+            }
+            
+            self.app = app
+        } catch {
+            print(error)
+            throw error
+        }
     }
 
     override func tearDown() async throws {

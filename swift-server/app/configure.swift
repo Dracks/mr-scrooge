@@ -6,21 +6,27 @@ import Vapor
 import Leaf
 
 func configureDb(_ app: Application) async throws {
-	switch Environment.get("DB_TYPE") {
-	case "POSTGRES":
-		let dbUrl = Environment.get("DB_URL")
-		guard let dbUrl = dbUrl else {
-			throw GenericError(msg: "DB_URL must be defined for DB_TYPE postgress")
-		}
+	var dbUrl = Environment.get("DB_URL") ?? "sqlite://db.sqlite3"
+	if !dbUrl.starts(with: "sqlite://") && !dbUrl.starts(with: "postgres://") {
+		print("Warning: Invalid DB_URL format. Using default.")
+		dbUrl = "sqlite://db.sqlite3"
+	}
+	
+	let components = dbUrl.split(separator: ":", maxSplits: 1)
+	let dbType = components[0].lowercased()
+    let filePath = String(components[1].dropFirst(2))
+	
+	switch dbType {
+	case "postgres":
 		app.databases.use(try DatabaseConfigurationFactory.postgres(url: dbUrl), as: .psql)
-	default:
-		let dbName = Environment.get("DB_NAME") ?? "db.sqlite"
-		if dbName != "memory" {
-			app.databases.use(
-                DatabaseConfigurationFactory.sqlite(.file(dbName), sqlLogLevel: .info), as: .sqlite)
-		} else {
+	case "sqlite":
+		if filePath == "memory" {
 			app.databases.use(DatabaseConfigurationFactory.sqlite(.memory, sqlLogLevel: .info), as: .sqlite)
+		} else {
+			app.databases.use(DatabaseConfigurationFactory.sqlite(.file(filePath), sqlLogLevel: .info), as: .sqlite)
 		}
+	default:
+        throw Exception(.E10003, context: ["db_url": dbUrl])
 	}
 }
 

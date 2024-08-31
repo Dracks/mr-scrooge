@@ -28,7 +28,6 @@ migrations/*.py
 
 
 db.sqlite3
-db.sqlite
 server/finances/templates/react.html
 server/static/react
 

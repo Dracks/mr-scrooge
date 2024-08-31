@@ -30,7 +30,11 @@ struct GqlErrorHandlerMiddleware: AsyncMiddleware {
         do {
             return try await next.respond(to: request)
         } catch let error as NotIdentifiedError {
+            print(error)
             return try await GraphQLResult(errors: [GraphQLError(error)]).encodeResponse(for: request)
+        } catch {
+            print(error)
+            throw error
         }
     }
 }
@@ -53,17 +57,5 @@ func routes(_ app: Application) throws {
         app.enableGraphiQL(on: "graphiql")
     }
 
-	/*try app.register(collection: LoginController(app: app))
-	try app.register(collection: ProfileController(app: app))
-	try app.register(collection: AdminUsersController())
-	try app.register(collection: LanguageController(app: app))
-	try app.register(collection: RawImportsController(app: app))
-	try app.register(collection: DeclinationTypeController())
-	try app.register(collection: WordsManagementController())
-	try app.register(collection: ExercisesController())
-
-	app.get { req -> Document in
-		return HomeTemplates(req: req).home()
-	}*/
 	try app.register(collection: ReactController())
 }
