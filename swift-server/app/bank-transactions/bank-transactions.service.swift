@@ -32,6 +32,7 @@ class BankTransactionService {
         }
 
         let data = try await query
+            .with(\.$labels)
             .sort(\.$_date, .descending)
             .sort(\.$id, .descending)
             .limit(limit)

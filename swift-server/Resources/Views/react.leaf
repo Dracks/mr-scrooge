@@ -14,9 +14,7 @@
         <meta name="theme-color" content="#ffffff">
 
         <!-- Load scss (css) files -->
-        <% for (item of htmlWebpackPlugin.files.css) { %>
-            <link href="{{ static }}<%= item %>" rel='stylesheet'></link>
-        <% } %>
+        
     </head>
 
     <!-- React config -->
@@ -34,9 +32,11 @@
     </script>
 
     <!-- Load javascript files -->
-    <% for (item of htmlWebpackPlugin.files.js) { %>
-        <script src="#(static)<%= item %>" type='text/javascript'></script>
-    <% } %>
+    
+        <script src="#(static)/react/vendors-node_modules_axios-case-converter_es_index_js-node_modules_axios-hooks_es_index_js-no-a823aa.js" type='text/javascript'></script>
+    
+        <script src="#(static)/react/main.js" type='text/javascript'></script>
+    
     <style>
         body {
             margin: 0;
@@ -50,5 +50,12 @@
 
 <!--
 
-    <%= JSON.stringify(htmlWebpackPlugin.files, undefined, 4) %>
+    {
+    "publicPath": "/",
+    "js": [
+        "/react/vendors-node_modules_axios-case-converter_es_index_js-node_modules_axios-hooks_es_index_js-no-a823aa.js",
+        "/react/main.js"
+    ],
+    "css": []
+}
 -->

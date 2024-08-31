@@ -3,6 +3,7 @@ import FluentPostgresDriver
 import FluentSQLiteDriver
 import NIOSSL
 import Vapor
+import Leaf
 
 func configureDb(_ app: Application) async throws {
 	switch Environment.get("DB_TYPE") {
@@ -33,21 +34,21 @@ public func configure(_ app: Application) async throws {
     do {
         // uncomment to serve files from /Public folder
         app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
-        
+
         try await registerMigrations(app)
-        
+
         try await configureDb(app)
-        
+
         if app.environment == .testing {
             try await app.autoMigrate()
         }
-        
+
         app.sessions.use(.fluent)
-        
-        
+        app.views.use(.leaf)
+
         app.commands.use(CreateUserCommand(), as: "demo_user")
         app.commands.use(DemoDataCommand(), as: "demo_data")
-        
+
         // register routes
         try routes(app)
     } catch {

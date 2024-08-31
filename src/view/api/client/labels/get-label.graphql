@@ -1,7 +1,11 @@
 query getLabels{
     labels{
-        id
-        name
-        groupOwnerId
+        ... on GetLabels {
+            results {
+                id
+                name
+                groupOwnerId
+            }
+        }
     }
 }

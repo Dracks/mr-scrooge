@@ -16,14 +16,23 @@ final class User: Model, Content {
     @Field(key: "email")
     var email: String
 
+    @Field(key: "first_name")
+    var firstName: String?
+
+    @Field(key: "last_name")
+    var lastName: String?
+
     @Field(key: "is_active")
     var isActive: Bool
 
     @Field(key: "is_superuser")
     var isAdmin: Bool
-    
+
     @Siblings(through: UserGroupPivot.self, from: \.$user, to: \.$group)
     var groups: [UserGroup]
+
+    @Parent(key: "default_group_id")
+    var defaultGroup: UserGroup
 
     @Timestamp(key: "created_at", on: .create)
     var createdAt: Date?
@@ -33,13 +42,16 @@ final class User: Model, Content {
 
     init() { }
 
-    init(id: UUID? = nil, username: String, passwordHash: String = "", email: String = "", isActive: Bool = true, isAdmin: Bool = false) {
+    init(id: UUID? = nil, username: String, passwordHash: String = "", email: String = "", firstName: String? = nil, lastName: String? = nil, isActive: Bool = true, isAdmin: Bool = false, defaultGroupId: UserGroup.IDValue) {
         self.id = id
         self.username = username
         self.passwordHash = passwordHash
         self.email = email
+        self.firstName = firstName
+        self.lastName = lastName
         self.isActive = isActive
         self.isAdmin = isAdmin
+        self.$defaultGroup.id = defaultGroupId
     }
 
    	func setPassword(pwd: String) throws {
@@ -53,7 +65,7 @@ final class User: Model, Content {
 			return false
 		}
 	}
-    
+
     func getGroupsIds(on db: Database) async throws -> [UserGroup.IDValue] {
         return try await self.$groups.get(on: db).map { try $0.requireID() }
     }

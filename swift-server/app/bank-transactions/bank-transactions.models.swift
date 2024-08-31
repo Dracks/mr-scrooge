@@ -39,6 +39,9 @@ final class BankTransaction: Model, Content {
 
     @Field(key: "kind")
     var kind: String
+    
+    @Siblings(through: LabelTransaction.self, from: \.$transaction, to: \.$label)
+    var labels: [Label]
 
     @OptionalField(key: "description")
     var description: String?
@@ -127,5 +130,47 @@ final class Rule: Model, Content {
         self.name = name
         self.conditionsRelation = conditionsRelation
         self.$parent.id = parentId
+    }
+}
+
+final class Label: Model, Content {
+    static let schema = "graph_label"
+
+    @ID(key: .id)
+    var id: UUID?
+
+    @Parent(key: "group_owner_id")
+    var groupOwner: UserGroup
+
+    @Field(key: "name")
+    var name: String
+
+    init() { }
+
+    init(id: UUID? = nil, groupOwnerId: UserGroup.IDValue, name: String) {
+        self.id = id
+        self.$groupOwner.id = groupOwnerId
+        self.name = name
+    }
+}
+
+final class LabelTransaction: Model, Content {
+    static let schema = "graph_label_transaction"
+
+    @ID(key: .id)
+    var id: UUID?
+
+    @Parent(key: "label_id")
+    var label: Label
+
+    @Parent(key: "transaction_id")
+    var transaction: BankTransaction
+
+    init() { }
+
+    init(id: UUID? = nil, labelId: Label.IDValue, transactionId: BankTransaction.IDValue) {
+        self.id = id
+        self.$label.id = labelId
+        self.$transaction.id = transactionId
     }
 }

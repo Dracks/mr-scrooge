@@ -15,6 +15,7 @@ extension MrScroogeResolver {
 			if let user = optionalUser, user.verifyPassword(pwd: credentials.password) {
 				req.auth.login(user)
                 try await user.$groups.load(on: req.db)
+                try await user.$defaultGroup.load(on: req.db)
                 return SessionTypes.MyProfile(user: user)
 			}
 			errorStr = "Invalid credentials"
@@ -30,9 +31,10 @@ extension MrScroogeResolver {
         if let user = req.auth.get(User.self) {
             // let user2 = try await User.query(on: req.db).filter(\.$id == user.requireID()).all().first!
             try await user.$groups.load(on: req.db)
+            try await user.$defaultGroup.load(on: req.db)
             return SessionTypes.MyProfile(user: user)
         }
-        return SessionTypes.NotIdentified()
+        return NotIdentified()
     }
 
     func logout(request req: Request, arguments: NoArguments) async throws -> Bool {
@@ -59,7 +61,10 @@ class SessionTypes {
                 Field("username", at: \.username)
                 Field("email", at: \.email)
                 Field("isAdmin", at: \.isAdmin)
+                Field("firstName", at: \.firstName)
+                Field("lastName", at: \.lastName)
                 Field("groups", at: \.groups)
+                Field("defaultGroupId", at: \.defaultGroup.id)
                 //Field("groups", at: MyProfile.groups)
             }
 
@@ -121,16 +126,23 @@ class SessionTypes {
         let id: UUID
         let username: String
         let email: String
+        let firstName: String?
+        let lastName: String?
+        let isActive: Bool
         let isAdmin: Bool
         let groups: [GqlUserGroup]
+        let defaultGroup: GqlUserGroup
 
         init(user: User) {
             self.id = user.id!
-            print(self.id)
             self.username = user.username
             self.email = user.email
+            self.firstName = user.firstName
+            self.lastName = user.lastName
+            self.isActive = user.isActive
             self.isAdmin = user.isAdmin
-            self.groups = user.groups.map({return GqlUserGroup(group: $0)})
+            self.groups = user.groups.map { GqlUserGroup(group: $0) }
+            self.defaultGroup = GqlUserGroup(group: user.defaultGroup)
         }
         
         /*static func groups(req: Request, parent: MyProfile) async throws -> [GqlUserGroup] {
@@ -150,14 +162,13 @@ class SessionTypes {
         }
     }
 
-    struct NotIdentified: Content, MyProfileResponse {
-        var identified: Bool = false
-    }
     
     protocol MyProfileResponse {
         
     }
 }
+
+extension NotIdentified: SessionTypes.MyProfileResponse {}
 
 class UsersService {
     func getGroups(on db: Database, forUser userId: UUID) async throws -> [UserGroup] {

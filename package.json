@@ -16,8 +16,8 @@
     "start:dev": "DEBUG=true ts-node src/main.ts",
     "test:server": "jest --config config/jest.server.json",
     "test:view": "jest --config config/jest.react.json",
-    "type-check:server": "tsc --noEmit -p tsconfig.server.ts",
-    "type-check:view": "tsc --noEmit -p tsconfig.react.ts"
+    "type-check:server": "tsc --noEmit -p tsconfig.server.json",
+    "type-check:view": "tsc --noEmit -p tsconfig.react.json"
   },
   "repository": {
     "type": "git",
@@ -81,7 +81,8 @@
     "ts-loader": "^9.2.6",
     "ts-morph": "^17.0.1",
     "ts-pattern": "^4.1.4",
-    "urql": "^3.0.3"
+    "urql": "^3.0.3",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^3.0.0",
@@ -96,6 +97,7 @@
     "@types/react": "^18.0.28",
     "@types/sequelize": "^4.28.14",
     "@types/supertest": "^2.0.12",
+    "@types/uuid": "^10.0.0",
     "@types/ws": "^8.5.4",
     "@types/yargs": "^17.0.19",
     "@typescript-eslint/eslint-plugin": "^5.38.1",

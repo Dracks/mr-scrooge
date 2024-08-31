@@ -29,8 +29,10 @@ func routes(_ app: Application) throws {
 	app.middleware.use(ErrorHandlerMiddleware())
 	app.middleware.use(SessionsMiddleware(session: app.sessions.driver))
 	app.middleware.use(UserSessionAuthenticator())
+
+    let mrScroogeSchema = try Schema.create(from: [SessionTypes.Schema(), BaseSchema(), BankTransactionTypes.Schema(), GraphTypes.Schema(), ImporterTypes.Schema()])
     
-    let mrScroogeSchema = try Schema.create(from: [SessionTypes.Schema(), BaseSchema(), BankTransactionTypes.Schema()])
+    print(mrScroogeSchema.schema)
 
 	// Register the schema and its resolver.
     app.register(graphQLSchema: mrScroogeSchema, withResolver: MrScroogeResolver())
@@ -52,4 +54,5 @@ func routes(_ app: Application) throws {
 	app.get { req -> Document in
 		return HomeTemplates(req: req).home()
 	}*/
+	try app.register(collection: ReactController())
 }

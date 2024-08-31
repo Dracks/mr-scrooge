@@ -7,6 +7,10 @@ struct WrongOwnerId {
     let validOwners: [UUID]
 }
 
+struct NotIdentified: Content {
+    var identified: Bool = false
+}
+
 class BaseSchema: PartialSchema<MrScroogeResolver, Request> {
     @TypeDefinitions
     override var types: Types {

@@ -15,20 +15,21 @@ struct ReactController: RouteCollection {
         self.logger = Logger(label: "ReactController")
         self.ctx = ReactContext(
             debug: true, // Todo: get from app env
-            staticPath: "/static/"
+            staticPath: "/"
         )
     }
-    
+
     mutating func onModuleInit() async throws {
         // Load version from package.json
-        
+
         self.loadVersion()
-        
+
     }
 
     func boot(routes: RoutesBuilder) throws {
+        routes.get("*", use: getReact)
         routes.get(use: getReact)
-        
+
     }
 
     private mutating func loadVersion() {

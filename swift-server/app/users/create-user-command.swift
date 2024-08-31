@@ -33,7 +33,7 @@ struct CreateUserCommand: Command {
 		let username = signature.user ?? "demo"
 		let password = signature.password ?? "demo"
 
-		let user = User(username: username,isAdmin: signature.isAdmin)
+        let user = try User(username: username,isAdmin: signature.isAdmin, defaultGroupId: group.requireID())
 		try user.setPassword(pwd: password)
 		try user.save(on: context.application.db).wait()
         try user.$groups.attach(group, on: context.application.db).wait()

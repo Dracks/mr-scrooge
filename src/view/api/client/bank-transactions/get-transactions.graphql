@@ -1,8 +1,10 @@
-query getBankTransactions($cursor: String, $limit: Int) {
-    bankTransaction(cursor: $cursor, limit: $limit) {
-        results {
-            ...BankTransactionFragment
+query getBankTransactions($groupIds: [UUID!],$cursor: String, $limit: Int) {
+    bankTransaction(groupIds: $groupIds, cursor: $cursor, limit: $limit) {
+        ... on BankTransactionResponse {
+            results {
+                ...BankTransactionFragment
+            }
+            next
         }
-        next
     }
 }

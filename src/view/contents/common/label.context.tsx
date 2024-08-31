@@ -29,11 +29,11 @@ const useGenerateHash = (labels: GQLLabel[]): Map<number, GQLLabel> => {
 
 export const ProvideLabelsData: React.FC<PropsWithChildren> = ({ children }) => {
     const [query, refresh] = useGetLabelsQuery();
-    const labelsMap = useGenerateHash(query.data?.labels ?? []);
+    const labelsMap = useGenerateHash(query.data?.labels?.results ?? []);
 
     if (query.data && !query.error) {
         const context: ILabelContext = {
-            labels: query.data.labels,
+            labels: query.data.labels.results,
             labelsMap,
             refresh: async () => {
                 await refresh();

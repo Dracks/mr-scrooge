@@ -2,7 +2,7 @@ fragment GraphFragment on Graph{
     id,
     name,
     kind,
-    labelFilter,
+    labelFilterId,
     dateRange,
     groupOwnerId,
     group{

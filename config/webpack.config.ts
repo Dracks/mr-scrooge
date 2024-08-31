@@ -18,14 +18,14 @@ export default {
     },
     mode: isProduction? "production" : 'development',
     output: {
-        path: path.resolve(rootDir, '../static'),
+        path: path.resolve(rootDir, '../swift-server/Public'),
         filename: `react/[name]${hash}.js`,
         publicPath: '/',
     },
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(rootDir, './view/index.html'),
-            filename: path.resolve(rootDir, '../build/templates/react.hbs'),
+            filename: path.resolve(rootDir, '../swift-server/Resources/Views/react.leaf'),
             inject: false,
         }),
         new MiniCssExtractPlugin({

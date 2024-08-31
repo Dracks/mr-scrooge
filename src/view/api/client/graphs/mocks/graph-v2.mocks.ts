@@ -13,7 +13,7 @@ export const GraphV2Pie: Omit<GQLGraph, 'id'> = {
 };
 
 export const GraphV2Line: Omit<GQLGraph, 'id'> = {
-    dateRange: GQLGraphDateRange.HalfYear,
+    dateRange: GQLGraphDateRange.Six,
     group: {
         group: GQLGraphGroup.Month,
     },
@@ -28,7 +28,7 @@ export const GraphV2Line: Omit<GQLGraph, 'id'> = {
 };
 
 export const GraphV2Bar: Omit<GQLGraph, 'id'> = {
-    dateRange: GQLGraphDateRange.OneYear,
+    dateRange: GQLGraphDateRange.Year,
     group: {
         group: GQLGraphGroup.Sign,
     },

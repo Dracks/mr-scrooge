@@ -12,8 +12,8 @@ struct LabelService {
         return labelTransaction
     }
 
-    func getAll(req: Request, groupIds: [UUID]) async throws -> [Label] {
-        try await Label.query(on: req.db)
+    func getAll(on db: Database, groupIds: [UUID]) async throws -> [Label] {
+        try await Label.query(on: db)
             .filter(\.$groupOwner.$id ~~ groupIds)
             .all()
     }

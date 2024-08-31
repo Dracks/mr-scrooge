@@ -3,15 +3,13 @@ import Vapor
 import Fluent
 
 extension MrScroogeResolver {
-    func graphs(request req: Request, arguments: NoArguments) async throws -> [Graph] {
+    func graphs(request req: Request, arguments: NoArguments) async throws -> [GraphTypes.GqlGraph] {
         guard let user = req.auth.get(User.self) else {
             throw Abort(.unauthorized)
         }
         
         let groupIds = try await user.getGroupsIds(on: req.db)
-        return try await Graph.query(on: req.db)
-            .filter(\.$groupOwner.$id ~~ groupIds)
-            .all()
+        return try await GraphTypes.graphService.getGraphs(on: req.db, groupsId: groupIds)
     }
     
     func newGraph(request req: Request, arguments: GraphTypes.NewGraphArguments) async throws -> GraphTypes.GraphResponse {
@@ -36,7 +34,7 @@ extension MrScroogeResolver {
         return graph
     }
     
-    func updateGraph(request req: Request, arguments: GraphTypes.UpdateGraphArguments) async throws -> Graph {
+    /*func updateGraph(request req: Request, arguments: GraphTypes.UpdateGraphArguments) async throws -> Graph {
         guard let user = req.auth.get(User.self) else {
             throw Abort(.unauthorized)
         }
@@ -57,10 +55,67 @@ extension MrScroogeResolver {
         
         try await graph.save(on: req.db)
         return graph
-    }
+    }*/
 }
 
 class GraphTypes {
+    static let graphService = GraphService()
+    struct GqlGraph: Codable, GraphResponse {
+        let id: UUID
+        let groupOwnerId: UUID
+        let name: String
+        let kind: GraphKind
+        let labelFilterId: UUID?
+        let dateRange: GraphDateRange
+        let group: GqlGroup
+        let horizontalGroup: GqlHorizontalGroup?
+
+        init(id: UUID, groupOwnerId: UUID, name: String, kind: GraphKind, labelFilterId: UUID?, dateRange: GraphDateRange, group: GqlGroup, horizontalGroup: GqlHorizontalGroup?) {
+            self.id = id
+            self.groupOwnerId = groupOwnerId
+            self.name = name
+            self.kind = kind
+            self.labelFilterId = labelFilterId
+            self.dateRange = dateRange
+            self.group = group
+            self.horizontalGroup = horizontalGroup
+        }
+    }
+
+    class GqlGroup: Codable {
+        let group: GraphGroupType
+        let hideOthers: Bool?
+        var labels: [UUID]?
+
+        init(group: GraphGroupType, hideOthers: Bool?, labels: [UUID]?) {
+            self.group = group
+            self.hideOthers = hideOthers
+            self.labels = labels
+        }
+    }
+
+    class GqlHorizontalGroup: GqlGroup {
+        let accumulate: Bool?
+
+        init(group: GraphGroupType, hideOthers: Bool?, labels: [UUID]?, accumulate: Bool?) {
+            self.accumulate = accumulate
+            super.init(group: group, hideOthers: hideOthers, labels: labels)
+        }
+
+        required init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            accumulate = try container.decodeIfPresent(Bool.self, forKey: .accumulate)
+            try super.init(from: decoder)
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case accumulate
+        }
+    }
+
+    class GqlInputGroup: GqlGroup {}
+    class GqlInputHorizontalGroup: GqlHorizontalGroup {}
+
     struct NewGraphArguments: Codable {
         let graph: NewGraph
     }
@@ -71,6 +126,8 @@ class GraphTypes {
         let kind: GraphKind
         let labelFilterId: UUID?
         let dateRange: GraphDateRange
+        let group: GqlInputGroup
+        let horizontalGroup:GqlInputHorizontalGroup?
     }
 
     struct UpdateGraphArguments: Codable {
@@ -83,6 +140,8 @@ class GraphTypes {
         let kind: GraphKind
         let labelFilterId: UUID?
         let dateRange: GraphDateRange
+        let group: GqlInputGroup
+        let horizontalGroup:GqlInputHorizontalGroup
     }
 
     protocol GraphResponse {}
@@ -91,20 +150,68 @@ class GraphTypes {
         @TypeDefinitions
         override var types: Types {
             Enum(GraphKind.self)
-            Enum(GraphGroupType.self)
+            Enum(GraphGroupType.self, as: "GraphGroup")
             Enum(GraphDateRange.self)
             
-            Type(Graph.self) {
+            Type(GqlGraph.self, as: "Graph") {
                 Field("id", at: \.id)
-                Field("groupOwnerId", at: \.$groupOwner.id)
+                Field("groupOwnerId", at: \.groupOwnerId)
                 Field("name", at: \.name)
                 Field("kind", at: \.kind)
-                Field("labelFilterId", at: \.$labelFilter.id)
+                Field("labelFilterId", at: \.labelFilterId)
                 Field("dateRange", at: \.dateRange)
+                Field("group", at: \.group)
+                Field("horizontalGroup", at: \.horizontalGroup)
+            }
+
+            Type(GqlGroup.self, as: "Group") {
+                Field("group", at: \.group)
+                Field("hideOthers", at: \.hideOthers)
+                Field("labels", at: \.labels)
+            }
+
+            Type(GqlHorizontalGroup.self, as: "HorizontalGroup") {
+                Field("group", at: \.group)
+                Field("hideOthers", at: \.hideOthers)
+                Field("labels", at: \.labels)
+                Field("accumulate", at: \.accumulate)
+            }
+            
+            Input(GqlInputGroup.self, as: "InputGroup") {
+                InputField("group", at: \.group)
+                InputField("hideOthers", at: \.hideOthers)
+                InputField("labels", at: \.labels)
+            }
+
+            Input(GqlInputHorizontalGroup.self, as: "InputHorizontalGroup") {
+                InputField("group", at: \.group)
+                InputField("hideOthers", at: \.hideOthers)
+                InputField("labels", at: \.labels)
+                InputField("accumulate", at: \.accumulate)
+            }
+            
+            Input(NewGraph.self){
+                InputField("groupOwnerId", at: \.groupOwnerId)
+                InputField("name", at: \.name)
+                InputField("kind", at: \.kind)
+                InputField("labelFilterId", at: \.labelFilterId)
+                InputField("dateRange", at: \.dateRange)
+                InputField("group", at: \.group)
+                InputField("horizontalGroup", at: \.horizontalGroup)
+            }
+            
+            Input(UpdatedGraph.self){
+                InputField("id", at: \.id)
+                InputField("name", at: \.name)
+                InputField("kind", at: \.kind)
+                InputField("labelFilterId", at: \.labelFilterId)
+                InputField("dateRange", at: \.dateRange)
+                InputField("group", at: \.group)
+                InputField("horizontalGroup", at: \.horizontalGroup)
             }
             
            
-            Union(GraphResponse.self, members: Graph.self, WrongOwnerId.self)
+            Union(GraphResponse.self, members: GqlGraph.self, WrongOwnerId.self)
         }
         
         @FieldDefinitions
@@ -117,9 +224,9 @@ class GraphTypes {
             Field("newGraph", at: MrScroogeResolver.newGraph) {
                 Argument("graph", at: \.graph)
             }
-            Field("updateGraph", at: MrScroogeResolver.updateGraph) {
+            /*Field("updateGraph", at: MrScroogeResolver.updateGraph) {
                 Argument("graph", at: \.graph)
-            }
+            }*/
         }
     }
 }
