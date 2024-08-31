@@ -14,10 +14,10 @@
 * [x] Imports missing the import raw data to get the errors
 
 # Server tasks
-* [ ] graphs
-  * [ ] Modify graph
+* [x] graphs
+  * [x] Modify graph
   * [x] Create graph
-  * [ ] Add validations on the selected labels
+  * [x] Add validations on the selected labels
 * [ ] Imports
   * [ ] Import caixa enginyers
   * [ ] Import n26

@@ -1,0 +1,8 @@
+mutation deleteGraph($graphId: Int!) {
+    deleteGraph(graphId: $graphId){
+        __typename,
+        ... on InvalidGraph {
+            availableGraphsId
+        }
+    }
+}

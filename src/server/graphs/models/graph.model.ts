@@ -150,6 +150,13 @@ export class GraphGroupLabelsModel extends Model<
     })
     @ForeignKey(() => LabelModel)
     labelId!: LabelModel['id'];
+
+    @Column({
+        type: DataType.INTEGER,
+        primaryKey: true,
+        field: 'order',
+    })
+    order!: number;
 }
 
 @Table({
@@ -175,4 +182,11 @@ export class GraphHorizontalGroupLabelsModel extends Model<
     })
     @ForeignKey(() => LabelModel)
     labelId!: LabelModel['id'];
+
+    @Column({
+        type: DataType.INTEGER,
+        primaryKey: true,
+        field: 'order',
+    })
+    order!: number;
 }
