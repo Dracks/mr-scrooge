@@ -1,4 +1,4 @@
-mutation updateGraph($graph: UpdatedGraph!){
+mutation updateGraph($graph: UpdateGraph!){
     updateGraph(graph: $graph){
         __typename
         ... on Graph {

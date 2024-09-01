@@ -33,10 +33,10 @@
 
 # Server tasks (swift)
 * [ ] graphs
-  * [ ] Modify graph
+  * [x] Modify graph
   * [x] Create graph
   * [x] Add validations on the selected labels
-  * [ ] Fix daterange enum values in ui
+  * [ ] Fix ui
 * [ ] Imports
   * [ ] Import caixa enginyers
   * [ ] Import n26

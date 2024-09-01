@@ -15,9 +15,9 @@ struct UserSessionAuthenticator: AsyncSessionAuthenticator {
 class NotIdentifiedError: Error {}
 
 func getUser(fromRequest req: Request) async throws -> User {
-    guard let user = req.auth.get(User.self) else {
-        throw NotIdentifiedError()
-    }
-    try await user.$groups.load(on: req.db)
-    return user
+	guard let user = req.auth.get(User.self) else {
+		throw NotIdentifiedError()
+	}
+	try await user.$groups.load(on: req.db)
+	return user
 }
