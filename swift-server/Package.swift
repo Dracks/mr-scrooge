@@ -43,6 +43,7 @@ let package = Package(
 					name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
 				.product(name: "GraphQLKit", package: "graphql-kit"),
 				.product(name: "GraphiQLVapor", package: "graphiql-vapor"),
+                "SwiftSoup"
 			],
 			path: "app",
 			swiftSettings: [

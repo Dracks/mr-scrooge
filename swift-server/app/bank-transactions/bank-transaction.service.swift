@@ -59,17 +59,17 @@ class BankTransactionService {
 	}
 
 	func existsSimilar(
-		on db: Database, groupOwnerId: UUID, kind: String, transaction: BankTransaction
-	) -> EventLoopFuture<Bool> {
-		return BankTransaction.query(on: db)
-			.filter(\.$groupOwner.$id == groupOwnerId)
+		on db: Database, transaction: BankTransaction
+	) async throws -> Bool {
+		let count = try await BankTransaction.query(on: db)
+            .filter(\.$groupOwner.$id == transaction.groupOwnerId)
 			.filter(\.$_date == transaction.date.toString())
 			.filter(\.$details == transaction.details)
-			.filter(\.$kind == kind)
+            .filter(\.$kind == transaction.kind)
 			.filter(\.$movementName == transaction.movementName)
 			.filter(\.$value == transaction.value)
 			.count()
-			.map { $0 > 0 }
+        return count > 0
 	}
 
 	func insertBatch(on db: Database, movements: [BankTransaction]) -> EventLoopFuture<Void> {
@@ -78,11 +78,10 @@ class BankTransactionService {
 		}
 	}
 
-	func addTransaction(on db: Database, transaction: BankTransaction) -> EventLoopFuture<
-		BankTransaction
-	> {
-		return transaction.create(on: db).map { transaction }
-	}
+	func addTransaction(on db: Database, transaction: BankTransaction)async throws -> BankTransaction {
+        try await transaction.create(on: db)
+        return transaction
+    }
 }
 
 // Helper extension
