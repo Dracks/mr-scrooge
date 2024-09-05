@@ -1,7 +1,7 @@
 import Fluent
 import Vapor
 
-final class StatusReport: Model {
+final class StatusReport: Model, Content {
     static let schema = "status_report"
 
     @ID(key: .id)

@@ -3,7 +3,7 @@ import Vapor
 import Fluent
 
 protocol ParserFactory {
-    func create(filePath: String) -> any AsyncSequence
+    func create(filePath: String) -> AsyncStream<PartialBankTransaction>
 	var fileRegex: String { get }
 	var key: String { get }
 }
@@ -55,7 +55,7 @@ class NewImportService {
         )
     }
 
-    func `import`(on db: Database, groupOwnerId: UUID, key: String, fileName: String, filePath: String) async throws {
+    func importFromFile(on db: Database, groupOwnerId: UUID, key: String, fileName: String, filePath: String) async throws {
         let status = StatusReport(
             description: "",
             fileName: fileName,
@@ -63,11 +63,11 @@ class NewImportService {
             kind: key,
             status: "OK"
         )
-        try await status.save(on: db)
+        try await status.create(on: db)
 
         do {
             guard let parser = parsersMap[key] else {
-                throw Abort(.notFound, reason: "Parser not found for key: \(key)")
+                throw Exception(.E10000, context: ["parserKey": key])
             }
 
             let source = parser.create(filePath: filePath)
@@ -118,9 +118,13 @@ class NewImportService {
                 }
             }
         } catch {
+            // print(error)
             status.description = error.localizedDescription
             status.stack = String(describing: error)
-            status.context = nil  // You might want to add context if needed
+            if let error = error as? Exception {
+                let jsonData = try JSONEncoder().encode(error.context)
+                status.context = String(data: jsonData, encoding: .utf8)
+            }
             status.status = "ERR"
             try await status.save(on: db)
         }

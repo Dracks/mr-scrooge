@@ -14,6 +14,9 @@ final class SessionTests: AbstractBaseTestsClass {
 		    ... on MyProfile {
 		      username
 		      isAdmin
+		      groups {
+		        name
+			  }
 		    }
 		  }
 		}
@@ -59,6 +62,7 @@ final class SessionTests: AbstractBaseTestsClass {
 			GraphQLRequest(query: query), headers: identifiedHeaders)
 		XCTAssertEqual(res.status, .ok)
 		let data = try res.content.decode(GraphQLResult.self)
+        XCTAssertEqual(data.errors, [])
 		XCTAssertEqual(data.data?["me"]["__typename"], "MyProfile")
 		XCTAssertEqual(data.data?["me"]["username"].string, testUser.username)
 		XCTAssertEqual(data.data?["me"]["isAdmin"].bool, testUser.isAdmin)

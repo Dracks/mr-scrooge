@@ -1,13 +1,13 @@
 import GraphQL
 
-class Exception: Error {
+class Exception: Error, CustomStringConvertible {
 	let errorCode: ErrorCode
-	let context: [String: Any]
+	let context: [String: Codable]
 	let file: String
 	let line: Int
 
 	init(
-		_ errorCode: ErrorCode, context: [String: Any] = [:], file: String = #file,
+		_ errorCode: ErrorCode, context: [String: Codable] = [:], file: String = #file,
 		line: Int = #line
 	) {
 		self.errorCode = errorCode
@@ -29,6 +29,10 @@ class Exception: Error {
 			"line": line,
 		]
 	}
+    
+    var description: String {
+        self.localizedDescription
+    }
 }
 /*
 extension GraphQLError {

@@ -154,7 +154,7 @@ extension Dictionary {
 
 extension OrderedDictionary {
 	func toNormal(recursive: Bool = false) -> [Key: Value] {
-		var ret = Dictionary(Array(self), uniquingKeysWith: { v1, v2 in v1 })
+		let ret = Dictionary(Array(self), uniquingKeysWith: { v1, v2 in v1 })
 		if recursive {
 			return ret.mapValues { value in
 				if let dic = value as? OrderedDictionary {
