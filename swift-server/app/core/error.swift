@@ -1,5 +1,5 @@
 enum ErrorCode: String, CaseIterable {
-	case E10000, E10001, E10002, E10003 /*, E10004, E10005, E10006, E10007*/
+	case E10000, E10001, E10002, E10003, E10004/*, E10005, E10006, E10007*/
 }
 
 class ErrorInfo {
@@ -17,8 +17,9 @@ let errorDictionary: [ErrorCode: ErrorInfo] = [
 	.E10001: ErrorInfo(
 		message: "Graph doesn't contain any group",
 		additionalInfo: "This can mean the database was corrupted"),
-	.E10002: ErrorInfo(message: "--"),
+	.E10002: ErrorInfo(message: "TransformHelper was created with missing fields in the mapping"),
 	.E10003: ErrorInfo(message: "Invalid DB_URL format"),
+    .E10004: ErrorInfo(message: "Invalid format converting data")
 ]
 
 extension ErrorCode {

@@ -21,9 +21,9 @@ let package = Package(
 		.package(url: "https://github.com/alexsteinerde/graphiql-vapor.git", from: "2.0.0"),
 
 		// GraphQL client for tests?
-        // .package(url: "https://github.com/maticzav/swift-graphql.git", from: "5.1.3")
+		// .package(url: "https://github.com/maticzav/swift-graphql.git", from: "5.1.3")
 
-        // Parser libs
+		// Parser libs
 		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.6.0"),
 
 		// Tools
@@ -43,7 +43,7 @@ let package = Package(
 					name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
 				.product(name: "GraphQLKit", package: "graphql-kit"),
 				.product(name: "GraphiQLVapor", package: "graphiql-vapor"),
-                "SwiftSoup"
+				"SwiftSoup",
 			],
 			path: "app",
 			swiftSettings: [

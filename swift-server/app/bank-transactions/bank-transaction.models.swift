@@ -55,6 +55,7 @@ final class BankTransaction: Model, Content {
 	) {
 		self.id = id
 		self.$groupOwner.id = groupOwnerId
+		self.groupOwnerId = groupOwnerId
 		self.movementName = movementName
 		self.date = date
 		self.dateValue = dateValue
