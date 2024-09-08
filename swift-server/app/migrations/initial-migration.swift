@@ -1,4 +1,5 @@
 import Fluent
+import FluentSQL
 
 struct InitialMigration: AsyncMigration {
 	func prepare(on database: Database) async throws {
@@ -128,6 +129,9 @@ struct InitialMigration: AsyncMigration {
 			.field("description", .string, .required)
 			.field("file_name", .string, .required)
 			.field("group_owner_id", .uuid, .required, .references("user_groups", "id"))
+            // when problems look at the answer of Gwynne
+            // https://discord.com/channels/431917998102675485/684159753189982218/1282405735455522950
+            .field("created_at", .datetime, .required)
 			.field("kind", .string, .required)
 			.field("status", .string, .required)
 			.field("stack", .string)

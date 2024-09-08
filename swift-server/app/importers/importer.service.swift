@@ -2,7 +2,7 @@ import Fluent
 import Vapor
 
 class StatusReportsService {
-	private let cursorHandler = CursorHandler<StatusReport, String>(["id"])
+	private let cursorHandler = CursorHandler<StatusReport, String>(["created", "id"])
 
 	func getAll(on db: Database, groupIds: [UUID], cursor: String? = nil, limit: Int = 100)
 		async throws -> ListWithCursor<StatusReport>
@@ -10,14 +10,24 @@ class StatusReportsService {
 		var query = StatusReport.query(on: db)
 			.filter(\.$groupOwnerId ~~ groupIds)
 			.limit(limit)
+            .sort(\.$createdAt, .descending)
 			.sort(\.$id, .descending)
 
-		if let cursor = cursor,
-			let cursorData = try? cursorHandler.parse(cursor),
-			let idString = cursorData["id"], let id = UUID(uuidString: idString)
-		{
-			query = query.filter(\.$id < id)
-		}
+        if let cursor = cursor {
+            let cursorData = try self.cursorHandler.parse(cursor)
+            if let dateString = cursorData["created"], let date = Date(rfc1123: dateString),
+               let idString = cursorData["id"], let id = UUID(uuidString: idString)
+            {
+                query = query.group(.or) { group in
+                    group.group(.and) { subGroup in
+                        subGroup.filter(\.$createdAt == date)
+                            .filter(\.$id < id)
+                    }
+                    group.filter(\.$createdAt < date)
+                }
+                print(query)
+            }
+        }
 
 		let reports = try await query.all()
 

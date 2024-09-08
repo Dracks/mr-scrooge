@@ -38,7 +38,7 @@
   * [x] Add validations on the selected labels
   * [ ] Fix ui
 * [ ] Imports
-  * [ ] Import caixa enginyers
+  * [x] Import caixa enginyers
   * [ ] Import n26
   * [ ] Import commerzbank
   * [ ] Import qif

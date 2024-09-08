@@ -3,7 +3,7 @@ import Foundation
 import Vapor
 
 protocol ParserFactory {
-	func create(filePath: String) -> AsyncStream<PartialBankTransaction>
+	func create(filePath: String) -> AsyncThrowingStream<PartialBankTransaction, Error>
 	var fileRegex: String { get }
 	var key: String { get }
 }
@@ -15,7 +15,6 @@ struct PartialBankTransaction {
 	var details: String?
 	var value: Double
 	var description: String?
-	var labels: [Label]?
 
 	func toBankTransaction(kind: String, groupOwnerId: UUID) -> BankTransaction {
 		return BankTransaction(
@@ -135,7 +134,7 @@ class NewImportService {
 			// status.stack = String(describing: error)
 			if let error = error as? Exception {
 				let jsonData = try JSONSerialization.data(
-					withJSONObject: error.context, options: [])
+					withJSONObject: error.allContext, options: [])
 				status.context = String(data: jsonData, encoding: .utf8)
 			}
 			status.status = "ERR"

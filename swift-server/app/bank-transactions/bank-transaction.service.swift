@@ -31,7 +31,6 @@ class BankTransactionService {
 					}
 					group.filter(\.$_date < date.toString())
 				}
-				print(query)
 			}
 		}
 

@@ -22,7 +22,7 @@ final class ImporterServiceTests: XCTestCase {
 		self.group = UserGroup(name: "Test User Group")
 		try await self.group.save(on: app.db)
 
-		let testParsers: [ParserFactory] = [TestBasicImporter()]
+		let testParsers: [ParserFactory] = [TestBasicImporter(), TestBasicImporter(key: "test-invalid-data", data: [["a": "b"]])]
 		importerService = NewImportService(parsers: testParsers)
 		bankTransactionService = BankTransactionService()
 		statusReportsService = StatusReportsService()
@@ -52,6 +52,7 @@ final class ImporterServiceTests: XCTestCase {
 		XCTAssertEqual(reports.list.count, 1)
 		XCTAssertEqual(reports.list.first?.status, "OK")
 		XCTAssertEqual(reports.list.first?.description, "")
+        XCTAssertEqual(reports.list.first?.context, nil)
 
 		let transactions = try await bankTransactionService.getAll(
 			on: db, groupIds: [groupOwnerId])
@@ -125,10 +126,10 @@ final class ImporterServiceTests: XCTestCase {
 		// Check import status
 		let reports = try await statusReportsService.getAll(on: db, groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 2)
-		XCTAssertEqual(reports.list[0].status, "OK")
-		XCTAssertEqual(reports.list[0].description, "")
-		XCTAssertEqual(reports.list[1].status, "WARN")
+		XCTAssertEqual(reports.list[1].status, "OK")
 		XCTAssertEqual(reports.list[1].description, "")
+		XCTAssertEqual(reports.list[0].status, "WARN")
+		XCTAssertEqual(reports.list[0].description, "")
 		
 		// Check transactions
 		let transactions = try await bankTransactionService.getAll(on: db, groupIds: [groupOwnerId])
@@ -138,4 +139,36 @@ final class ImporterServiceTests: XCTestCase {
 		let statusRows = try await StatusReportRow.query(on: db).all()
 		XCTAssertEqual(statusRows.count, 8)
 	}
+
+    
+    func testInvalidDataImport() async throws {
+        let groupOwnerId = try self.group.requireID()
+        let db = try getDb()
+        
+        // Attempt to import invalid data
+        try await importerService.importFromFile(
+            on: db, groupOwnerId: groupOwnerId, key: "test-invalid-data",
+            fileName: "invalid-file.csv", filePath: "invalid-data")
+        
+        // Check import status
+        let reports = try await statusReportsService.getAll(on: db, groupIds: [groupOwnerId])
+        XCTAssertEqual(reports.list.count, 1)
+        
+        let report = reports.list.first
+        print(report?.description)
+        XCTAssertEqual(report?.status, "ERR")
+        XCTAssertNotNil(report?.description)
+        XCTAssertTrue(report?.description.contains("E10004") ?? false)
+        XCTAssertEqual(report?.context, "{\"invalidFields\":[\"movementName\",\"date\",\"value\"]}")
+        
+        // Check that no transactions were imported
+        let transactions = try await bankTransactionService.getAll(on: db, groupIds: [groupOwnerId])
+        XCTAssertEqual(transactions.list.count, 0)
+        
+        // Check status report rows
+        let statusRows = try await StatusReportRow.query(on: db).all()
+        XCTAssertEqual(statusRows.count, 0)
+    }
+    
+    
 }

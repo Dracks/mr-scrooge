@@ -2,11 +2,6 @@ import Foundation
 
 @testable import App
 
-struct SampleDataRow {
-	let movementName: String
-	let date: String
-	let value: Double
-}
 let SAMPLE_DATA: [[String: Any]] = [
     ["movementName": "first", "date": "1990-03-01", "value": -20.0],
     ["movementName": "second", "date": "1990-03-02", "value": -10.0],
@@ -17,30 +12,34 @@ let SAMPLE_DATA: [[String: Any]] = [
 class TestBasicImporter: ParserFactory {
 
     let fileRegex = ""
-    let key = "test-account"
+    let key: String
 
     let transformHelper: TransformHelper<String>
 
-    init() {
+    let data: [[String: Any]]
+
+    init(key: String?=nil, data: [[String: Any]]?=nil) {
         let fieldsMap = FieldsMap<String>(
             movementName: "movementName",
             date: "date",
             value: "value"
         )
-        self.transformHelper = TransformHelper(fieldsMap)
+        self.transformHelper = TransformHelper(fieldsMap, dateFormat: "yyyy-MM-dd")
+        self.data = data ?? SAMPLE_DATA
+        self.key = key ?? "test-account"
     }
 
-    func create(filePath: String) -> AsyncStream<PartialBankTransaction> {
-        return AsyncStream { continuation in
-            for row in SAMPLE_DATA {
-                do {
+    func create(filePath: String) -> AsyncThrowingStream<PartialBankTransaction, Error> {
+        return AsyncThrowingStream { continuation in
+            do {
+                for row in self.data {
                     let transaction = try self.transformHelper.map(row)
                     continuation.yield(transaction)
-                } catch {
-                    print("Error mapping row: \(error)")
                 }
+                continuation.finish()
+            } catch {
+                continuation.finish(throwing: error)
             }
-            continuation.finish()
         }
     }
 }
@@ -54,8 +53,8 @@ class TestDynamicImporter: ParserFactory {
 		self.amount = amount
 	}
 
-	func create(filePath: String) -> AsyncStream<PartialBankTransaction> {
-		return AsyncStream { continuation in
+	func create(filePath: String) -> AsyncThrowingStream<PartialBankTransaction, Error> {
+		return AsyncThrowingStream { continuation in
 			for index in 0..<self.amount {
 				let transaction = PartialBankTransaction(
 					movementName: "movement \(index)",

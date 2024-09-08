@@ -6,6 +6,9 @@ final class StatusReport: Model, Content {
 
 	@ID(key: .id)
 	var id: UUID?
+    
+    @Field(key: "created_at")
+    var createdAt: Date
 
 	@Field(key: "description")
 	var description: String
@@ -40,6 +43,7 @@ final class StatusReport: Model, Content {
 		self.groupOwnerId = groupOwnerId
 		self.kind = kind
 		self.status = status
+        createdAt = Date()
 	}
 }
 
