@@ -5,48 +5,13 @@ import XCTest
 
 @testable import App
 
-final class CaixaEnginyersImporterTests: XCTestCase {
-	var importerService: NewImportService!
-	var bankTransactionService: BankTransactionService!
-	var statusReportsService: StatusReportsService!
-	var caixaEnginyersImporter: CaixaEnginyersAccountImporter!
-	var group: UserGroup!
-	var app: Application?
-
-	func getTestFile(file: String) -> String {
-		let pwd = URL(fileURLWithPath: #file).pathComponents
-			.prefix(while: { $0 != "importers" }).joined(separator: "/").dropFirst()
-		return "\(pwd)/\(file)"
-	}
-
-	override func setUp() async throws {
-		let app = try await Application.make(.testing)
-		try await configure(app)
-		self.app = app
-
-		self.group = UserGroup(name: "Test User Group")
-		try await self.group.save(on: app.db)
-
-		caixaEnginyersImporter = CaixaEnginyersAccountImporter()
-		let testParsers: [ParserFactory] = [
-			caixaEnginyersImporter, CaixaEnginiersCreditImporter(),
-		]
-		importerService = NewImportService(parsers: testParsers)
-		bankTransactionService = BankTransactionService()
-		statusReportsService = StatusReportsService()
-	}
-
-	override func tearDown() async throws {
-		try await self.app?.asyncShutdown()
-		self.app = nil
-	}
-
-	func getDb() throws -> Database {
-		guard let app = app else {
-			throw TestError()
-		}
-		return app.db
-	}
+final class CaixaEnginyersImporterTests: BaseImporterTests {
+    
+    override func getParsers() throws -> [any ParserFactory] {
+        return [
+            CaixaEnginyersAccountImporter(), CaixaEnginiersCreditImporter(),
+        ]
+    }
 
 	func testCaixaEnginyersAccountImport() async throws {
 		let groupOwnerId = try self.group.requireID()

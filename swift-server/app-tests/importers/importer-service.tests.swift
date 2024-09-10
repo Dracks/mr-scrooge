@@ -5,43 +5,13 @@ import XCTest
 
 @testable import App
 
-final class ImporterServiceTests: XCTestCase {
-	var importerService: NewImportService!
-	var bankTransactionService: BankTransactionService!
-	var statusReportsService: StatusReportsService!
-	var group: UserGroup!
-	var app: Application?
-
-	override func setUp() async throws {
-		// let testParsers: [ParserFactory] = [TestBasicImporter(), N26Importer(), CommerzBankEnImporter()]
-
-		let app = try await Application.make(.testing)
-		try await configure(app)
-		self.app = app
-
-		self.group = UserGroup(name: "Test User Group")
-		try await self.group.save(on: app.db)
-
-		let testParsers: [ParserFactory] = [
-			TestBasicImporter(),
-			TestBasicImporter(key: "test-invalid-data", data: [["a": "b"]]),
-		]
-		importerService = NewImportService(parsers: testParsers)
-		bankTransactionService = BankTransactionService()
-		statusReportsService = StatusReportsService()
-	}
-
-	override func tearDown() async throws {
-		try await self.app?.asyncShutdown()
-		self.app = nil
-	}
-
-	func getDb() throws -> Database {
-		guard let app = app else {
-			throw TestError()
-		}
-		return app.db
-	}
+final class ImporterServiceTests: BaseImporterTests {
+    override func getParsers() throws -> [any ParserFactory] {
+        return [
+            TestBasicImporter(),
+            TestBasicImporter(key: "test-invalid-data", data: [["a": "b"]]),
+        ]
+    }
 
 	func testImportEverythingFine() async throws {
 		let groupOwnerId = try self.group.requireID()

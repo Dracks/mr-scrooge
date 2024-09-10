@@ -1,4 +1,6 @@
-import Foundation
+import XCTest
+import XCTVapor
+import Fluent
 
 @testable import App
 
@@ -67,4 +69,50 @@ class TestDynamicImporter: ParserFactory {
 			continuation.finish()
 		}
 	}
+}
+
+class BaseImporterTests: XCTestCase {
+    var importerService: NewImportService!
+    var bankTransactionService: BankTransactionService!
+    var statusReportsService: StatusReportsService!
+    var group: UserGroup!
+    var app: Application?
+
+    func getTestFile(file: String) -> String {
+        let pwd = URL(fileURLWithPath: #file).pathComponents
+            .prefix(while: { $0 != "app-tests" }).joined(separator: "/").dropFirst()
+        return "\(pwd)/\(file)"
+    }
+    
+    func getParsers() throws -> [ParserFactory] {
+        throw TestError(message: "A class must overwrite getParsers")
+    }
+    
+    override func setUp() async throws {
+        let app = try await Application.make(.testing)
+        try await configure(app)
+        self.app = app
+
+        self.group = UserGroup(name: "Test User Group")
+        try await self.group.save(on: app.db)
+
+        let testParsers: [ParserFactory] = try getParsers()
+        importerService = NewImportService(parsers: testParsers)
+        bankTransactionService = BankTransactionService()
+        statusReportsService = StatusReportsService()
+    }
+
+    override func tearDown() async throws {
+        try await self.app?.asyncShutdown()
+        self.app = nil
+    }
+
+    func getDb() throws -> Database {
+        guard let app = app else {
+            throw TestError()
+        }
+        return app.db
+    }
+    
+    
 }

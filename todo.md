@@ -39,12 +39,14 @@
   * [ ] Fix ui
 * [ ] Imports
   * [x] Import caixa enginyers
-  * [ ] Import n26
-  * [ ] Import commerzbank
+  * [x] Import n26
+  * [x] Import commerzbank
   * [ ] Import qif
+  * [ ] Crud api
   * [ ] Call to apply rules
 * [ ] Bank transactions
   * [x] get bank transactions data
+  * [] add/remove label
 * [ ] labels
   * [x] get labels
   * [ ] create label

@@ -6,7 +6,12 @@ import XCTest
 
 @testable import App
 
-class TestError: Error {}
+class TestError: Error {
+    let message: String?
+    init(message: String? = nil) {
+        self.message = message
+    }
+}
 
 func createUser(
 	app: Application, username: String, email: String, password: String,
