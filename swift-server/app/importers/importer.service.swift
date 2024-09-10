@@ -10,24 +10,25 @@ class StatusReportsService {
 		var query = StatusReport.query(on: db)
 			.filter(\.$groupOwnerId ~~ groupIds)
 			.limit(limit)
-            .sort(\.$createdAt, .descending)
+			.sort(\.$createdAt, .descending)
 			.sort(\.$id, .descending)
 
-        if let cursor = cursor {
-            let cursorData = try self.cursorHandler.parse(cursor)
-            if let dateString = cursorData["created"], let date = Date(rfc1123: dateString),
-               let idString = cursorData["id"], let id = UUID(uuidString: idString)
-            {
-                query = query.group(.or) { group in
-                    group.group(.and) { subGroup in
-                        subGroup.filter(\.$createdAt == date)
-                            .filter(\.$id < id)
-                    }
-                    group.filter(\.$createdAt < date)
-                }
-                print(query)
-            }
-        }
+		if let cursor = cursor {
+			let cursorData = try self.cursorHandler.parse(cursor)
+			if let dateString = cursorData["created"],
+				let date = Date(rfc1123: dateString),
+				let idString = cursorData["id"], let id = UUID(uuidString: idString)
+			{
+				query = query.group(.or) { group in
+					group.group(.and) { subGroup in
+						subGroup.filter(\.$createdAt == date)
+							.filter(\.$id < id)
+					}
+					group.filter(\.$createdAt < date)
+				}
+				print(query)
+			}
+		}
 
 		let reports = try await query.all()
 

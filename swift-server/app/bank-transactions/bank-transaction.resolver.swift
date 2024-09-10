@@ -56,10 +56,10 @@ class BankTransactionTypes {
 		}
 	}
 	struct GetLabels: Codable, GetLabelsResponse {
-		let labels: [GqlLabel]
+		let results: [GqlLabel]
 
 		init(_ labels: [GqlLabel]) {
-			self.labels = labels
+			self.results = labels
 		}
 	}
 	protocol GetLabelsResponse {}
@@ -95,7 +95,7 @@ class BankTransactionTypes {
 			}
 
 			Type(GetLabels.self) {
-				Field("results", at: \.labels)
+				Field("results", at: \.results)
 			}
 
 			Union(GetLabelsResponse.self, members: GetLabels.self)

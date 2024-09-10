@@ -24,22 +24,6 @@ struct ErrorHandlerMiddleware: AsyncMiddleware {
 	}
 }
 
-struct GqlErrorHandlerMiddleware: AsyncMiddleware {
-	func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response
-	{
-		do {
-			return try await next.respond(to: request)
-		} catch let error as NotIdentifiedError {
-			print(error)
-			return try await GraphQLResult(errors: [GraphQLError(error)])
-				.encodeResponse(for: request)
-		} catch let error as Exception {
-			print("Daleks")
-			print(error)
-			throw error
-		}
-	}
-}
 
 func routes(_ app: Application) throws {
 
@@ -53,7 +37,7 @@ func routes(_ app: Application) throws {
 	])
 
 	// Register the schema and its resolver.
-	app.grouped(GqlErrorHandlerMiddleware()).register(
+	app.register(
 		graphQLSchema: mrScroogeSchema, withResolver: MrScroogeResolver())
 
 	// Enable GraphiQL web page to send queries to the GraphQL endpoint

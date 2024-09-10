@@ -25,6 +25,7 @@ let package = Package(
 
 		// Parser libs
 		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.6.0"),
+		.package(url: "https://github.com/yaslab/CSV.swift.git", from: "2.5.0"),
 
 		// Tools
 		.package(url: "https://github.com/apple/swift-format", from: "510.1.0"),
@@ -44,6 +45,7 @@ let package = Package(
 				.product(name: "GraphQLKit", package: "graphql-kit"),
 				.product(name: "GraphiQLVapor", package: "graphiql-vapor"),
 				"SwiftSoup",
+				.product(name: "CSV", package: "CSV.swift"),
 			],
 			path: "app",
 			swiftSettings: [
