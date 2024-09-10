@@ -122,8 +122,12 @@ final class CaixaEnginyersImporterTests: XCTestCase {
 		XCTAssertEqual(transaction?.movementName, "PAYPAL *SOMEHOBBY")
 	}
 
-	/*
+}
+
+final class CaixaEnginyersUnitTests: XCTestCase {
 	func testCaixaEnginyersAccountSplitMessage() {
+		let caixaEnginyersImporter = CaixaEnginyersAccountImporter()
+		
 		let (details1, movementName1) = caixaEnginyersImporter.splitMessage("R/ Some bill")
 		XCTAssertEqual(details1, "Bill")
 		XCTAssertEqual(movementName1, "Some bill")
@@ -143,6 +147,4 @@ final class CaixaEnginyersImporterTests: XCTestCase {
 		XCTAssertEqual(details4, "")
 		XCTAssertEqual(movementName4, "Regular transaction")
 	}
-	*/
-
 }
