@@ -1,6 +1,11 @@
 import Fluent
 import Vapor
 
+enum StatusReportStatus : String, Codable {
+    case ok, warn, error
+    
+}
+
 final class StatusReport: Model, Content {
 	static let schema = "status_report"
 
@@ -22,8 +27,8 @@ final class StatusReport: Model, Content {
 	@Field(key: "kind")
 	var kind: String
 
-	@Field(key: "status")
-	var status: String
+	@Enum(key: "status")
+	var status: StatusReportStatus
 
 	@OptionalField(key: "stack")
 	var stack: String?
@@ -35,7 +40,7 @@ final class StatusReport: Model, Content {
 
 	init(
 		id: UUID? = nil, description: String, fileName: String, groupOwnerId: UUID,
-		kind: String, status: String
+		kind: String, status: StatusReportStatus
 	) {
 		self.id = id
 		self.description = description
