@@ -28,7 +28,7 @@ let errorDictionary: [ErrorCode: ErrorInfo] = [
 	.E10008: ErrorInfo(message: "Input Stream cannot be created for CSV parsing"),
 	.E10009: ErrorInfo(message: "Csv row seems cannot be processed for N26"),
 	.E10010: ErrorInfo(message: "Csv cannot be parsed"),
-    .E10011: ErrorInfo(message: "Csv row seems cannot be processed for Commerz Bank En"),
+	.E10011: ErrorInfo(message: "Csv row seems cannot be processed for Commerz Bank En"),
 ]
 
 extension ErrorCode {

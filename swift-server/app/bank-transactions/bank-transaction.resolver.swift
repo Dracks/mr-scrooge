@@ -2,12 +2,6 @@ import Foundation
 import Graphiti
 import Vapor
 
-// GetPageResponse
-struct GetPageResponse<T: Codable>: Codable {
-	let results: [T]
-	let next: String?
-}
-
 class BankTransactionTypes {
 	static let bankTransactionService: BankTransactionService = BankTransactionService()
 	static let labelService = LabelService()
@@ -44,26 +38,6 @@ class BankTransactionTypes {
 		let limit: Int?
 	}
 
-	struct GqlLabel: Codable {
-		let id: UUID
-		let name: String
-		let groupOwnerId: UUID
-
-		init(label: Label) throws {
-			self.id = try label.requireID()
-			self.name = label.name
-			self.groupOwnerId = label.$groupOwner.id
-		}
-	}
-	struct GetLabels: Codable, GetLabelsResponse {
-		let results: [GqlLabel]
-
-		init(_ labels: [GqlLabel]) {
-			self.results = labels
-		}
-	}
-	protocol GetLabelsResponse {}
-
 	class Schema: PartialSchema<MrScroogeResolver, Request> {
 		@TypeDefinitions
 		override var types: Types {
@@ -88,18 +62,6 @@ class BankTransactionTypes {
 				GetBankTransactionsResponse.self,
 				members: BankTransactionsResponse.self, WrongOwnerId.self)
 
-			Type(GqlLabel.self, as: "Label") {
-				Field("id", at: \.id)
-				Field("name", at: \.name)
-				Field("groupOwnerId", at: \.groupOwnerId)
-			}
-
-			Type(GetLabels.self) {
-				Field("results", at: \.results)
-			}
-
-			Union(GetLabelsResponse.self, members: GetLabels.self)
-
 		}
 
 		@FieldDefinitions
@@ -109,7 +71,6 @@ class BankTransactionTypes {
 				Argument("cursor", at: \.cursor)
 				Argument("limit", at: \.limit)
 			}
-			Field("labels", at: MrScroogeResolver.labels)
 		}
 	}
 }
@@ -146,19 +107,6 @@ extension MrScroogeResolver {
 		}
 		return BankTransactionTypes.BankTransactionsResponse(
 			results: results, next: data.next)
-	}
-
-	func labels(req: Request, arguments: NoArguments) async throws
-		-> BankTransactionTypes.GetLabelsResponse
-	{
-		let user = try await getUser(fromRequest: req)
-		let validGroupsIds = try user.groups.map { return try $0.requireID() }
-		let data = try await BankTransactionTypes.labelService.getAll(
-			on: req.db, groupIds: validGroupsIds)
-		let list = try data.map({ label in
-			return try BankTransactionTypes.GqlLabel(label: label)
-		})
-		return BankTransactionTypes.GetLabels(list)
 	}
 }
 

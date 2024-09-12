@@ -32,13 +32,16 @@ struct PartialBankTransaction {
 
 class NewImportService {
 	private var parsersMap: [String: ParserFactory]
+	private let bankTransactionService: BankTransactionService
 
 	init(parsers: [ParserFactory]) {
 		self.parsersMap = Dictionary(uniqueKeysWithValues: parsers.map { ($0.key, $0) })
 		self.bankTransactionService = BankTransactionService()
 	}
 
-	private let bankTransactionService: BankTransactionService
+	func getParsers() -> [ParserFactory] {
+		return Array(parsersMap.values)
+	}
 
 	func generateStatusTransaction(status: StatusReport, transaction: PartialBankTransaction)
 		-> StatusReportRow

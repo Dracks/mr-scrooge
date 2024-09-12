@@ -11,10 +11,11 @@ struct AdminMiddleware: AsyncMiddleware {
 }
 
 struct UserIdentifiedMiddleware: AsyncMiddleware {
+
 	func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response
 	{
 		guard request.auth.get(User.self) != nil else {
-			return request.redirect(to: "/login?redirect=\(request.url.path)")
+			throw Abort(.unauthorized)
 		}
 		return try await next.respond(to: request)
 	}

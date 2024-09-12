@@ -7,21 +7,6 @@ import XCTest
 @testable import App
 
 final class BankTransactionTests: AbstractBaseTestsClass {
-	let query = """
-		query($groupIds: [UUID!]!, $limit: Int, $cursor: String) {
-		  bankTransaction(groupIds: $groupIds, limit: $limit, cursor: $cursor) {
-		    ... on BankTransactionResponse {
-		    results {
-		      id
-		      date
-		      value
-		movementName
-		    }
-		    next
-		}
-		  }
-		}
-		"""
 
 	private func createTestBankTransactions() async throws -> [BankTransaction] {
 		let testGroupId = try testGroup.requireID()
@@ -61,7 +46,10 @@ final class BankTransactionTests: AbstractBaseTestsClass {
 	}
 
 	func testBasicPagination() async throws {
-
+		let query = try GraphQLFileLoader.sharedInstance.getContent(of: [
+			"/bank-transactions/bank-transaction.fragment.graphql",
+			"/bank-transactions/get-transactions.graphql",
+		])
 		let app = try getApp()
 
 		// Create test bank transactions
@@ -91,6 +79,10 @@ final class BankTransactionTests: AbstractBaseTestsClass {
 	}
 
 	func getCursor(headers identifiedHeaders: HTTPHeaders) async throws -> String {
+		let query = try GraphQLFileLoader.sharedInstance.getContent(of: [
+			"/bank-transactions/bank-transaction.fragment.graphql",
+			"/bank-transactions/get-transactions.graphql",
+		])
 		let res = try await app?.queryGql(
 			GraphQLRequest(
 				query: query,
@@ -101,6 +93,10 @@ final class BankTransactionTests: AbstractBaseTestsClass {
 	}
 
 	func testCursorWithDuplicatedDate() async throws {
+		let query = try GraphQLFileLoader.sharedInstance.getContent(of: [
+			"/bank-transactions/bank-transaction.fragment.graphql",
+			"/bank-transactions/get-transactions.graphql",
+		])
 		let app = try getApp()
 
 		// Create test bank transactions

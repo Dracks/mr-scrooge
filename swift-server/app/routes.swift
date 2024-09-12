@@ -24,7 +24,6 @@ struct ErrorHandlerMiddleware: AsyncMiddleware {
 	}
 }
 
-
 func routes(_ app: Application) throws {
 
 	app.middleware.use(ErrorHandlerMiddleware())
@@ -33,7 +32,7 @@ func routes(_ app: Application) throws {
 
 	let mrScroogeSchema = try Schema.create(from: [
 		SessionTypes.Schema(), BaseSchema(), BankTransactionTypes.Schema(),
-		GraphTypes.Schema(), ImporterTypes.Schema(),
+		GraphTypes.Schema(), ImporterTypes.Schema(), LabelTypes.Schema(),
 	])
 
 	// Register the schema and its resolver.
@@ -45,5 +44,6 @@ func routes(_ app: Application) throws {
 		app.enableGraphiQL(on: "graphiql")
 	}
 
+	try app.register(collection: ImporterController())
 	try app.register(collection: ReactController())
 }

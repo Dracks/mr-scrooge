@@ -6,12 +6,12 @@ import XCTest
 @testable import App
 
 final class ImporterServiceTests: BaseImporterTests {
-    override func getParsers() throws -> [any ParserFactory] {
-        return [
-            TestBasicImporter(),
-            TestBasicImporter(key: "test-invalid-data", data: [["a": "b"]]),
-        ]
-    }
+	override func getParsers() throws -> [any ParserFactory] {
+		return [
+			TestBasicImporter(),
+			TestBasicImporter(key: "test-invalid-data", data: [["a": "b"]]),
+		]
+	}
 
 	func testImportEverythingFine() async throws {
 		let groupOwnerId = try self.group.requireID()

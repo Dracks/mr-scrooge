@@ -22,12 +22,12 @@ func parseToDouble(_ value: Any?) -> Double? {
 	return nil
 }
 
-class TransformHelper< D: IndexedCollection> {
-    
-    let mapping: FieldsMap<D.IndexType>
+class TransformHelper<D: IndexedCollection> {
+
+	let mapping: FieldsMap<D.IndexType>
 	let dateFormatter: DateFormatter
 
-    init(_ mapping: FieldsMap<D.IndexType>, dateFormat: String) {
+	init(_ mapping: FieldsMap<D.IndexType>, dateFormat: String) {
 		self.mapping = mapping
 		dateFormatter = DateFormatter()
 		dateFormatter.dateFormat = dateFormat
@@ -43,13 +43,13 @@ class TransformHelper< D: IndexedCollection> {
 		var details: String?
 		var description: String?
 
-        if let name = row.get(mapping.movementName) as? String {
+		if let name = row.get(mapping.movementName) as? String {
 			movementName = name
 		} else {
 			errorFields.append("movementName")
 		}
 
-        if let dateString = row.get(mapping.date) as? String,
+		if let dateString = row.get(mapping.date) as? String,
 			let parsedDate = dateFormatter.date(from: dateString)
 		{
 			date = parsedDate
@@ -57,14 +57,14 @@ class TransformHelper< D: IndexedCollection> {
 			errorFields.append("date")
 		}
 
-        if let parsedValue = parseToDouble(row.get(mapping.value)) {
+		if let parsedValue = parseToDouble(row.get(mapping.value)) {
 			value = parsedValue
 		} else {
 			errorFields.append("value")
 		}
 
 		if let dateValueKey = mapping.dateValue {
-            if let dateValueString = row.get(dateValueKey) as? String,
+			if let dateValueString = row.get(dateValueKey) as? String,
 				let parsedDateValue = dateFormatter.date(from: dateValueString)
 			{
 				dateValue = parsedDateValue
@@ -72,13 +72,13 @@ class TransformHelper< D: IndexedCollection> {
 		}
 
 		if let detailsKey = mapping.details {
-            if let parsedDetails = row.get(detailsKey) as? String {
+			if let parsedDetails = row.get(detailsKey) as? String {
 				details = parsedDetails
 			}
 		}
 
 		if let descriptionKey = mapping.description {
-            if let parsedDescription = row.get(descriptionKey) as? String {
+			if let parsedDescription = row.get(descriptionKey) as? String {
 				description = parsedDescription
 			}
 		}

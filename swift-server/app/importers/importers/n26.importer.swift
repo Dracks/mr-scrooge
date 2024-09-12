@@ -3,7 +3,7 @@ import Foundation
 import Vapor
 
 class N26Importer: ParserFactory {
-    let transformHelper: TransformHelper<[String]>
+	let transformHelper: TransformHelper<[String]>
 	let key: String = "n26/es"
 	let fileRegex: String = "n26-csv-transactions.*\\.csv"
 

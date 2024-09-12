@@ -19,5 +19,6 @@ func getUser(fromRequest req: Request) async throws -> User {
 		throw NotIdentifiedError()
 	}
 	try await user.$groups.load(on: req.db)
+	try await user.$defaultGroup.load(on: req.db)
 	return user
 }

@@ -8,7 +8,7 @@ struct HTMLRowData {
 
 class CaixaEnginyersAbstractImporter: ParserFactory {
 
-    let transformHelper: TransformHelper<[Int:String]>
+	let transformHelper: TransformHelper<[Int: String]>
 	let key: String
 	let fileRegex: String
 	let skipAfterHeader: Int

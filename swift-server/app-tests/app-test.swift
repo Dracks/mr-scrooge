@@ -7,10 +7,12 @@ import XCTest
 @testable import App
 
 class TestError: Error {
-    let message: String?
-    init(message: String? = nil) {
-        self.message = message
-    }
+	let message: String?
+	let context: [String: String]?
+	init(message: String? = nil, context: [String: String]? = nil) {
+		self.message = message
+		self.context = context
+	}
 }
 
 func createUser(
@@ -213,5 +215,78 @@ func toMap(_ value: Codable) -> Map? {
 		return .dictionary(dictionary.toOrdered())
 	} else {
 		return .string(String(describing: value))
+	}
+}
+
+class GraphQLFileLoader {
+	private let files: [String: String]
+	private let path: String
+
+	init() {
+		let fileManager = FileManager.default
+		let pwd = URL(fileURLWithPath: #file).pathComponents
+			.prefix(while: { $0 != "swift-server" }).joined(separator: "/").dropFirst()
+		let path = "\(pwd)/src/view/api/client"
+		let fileExtension = "graphql"
+		var files: [String: String] = [:]
+
+		func searchDirectory(_ directory: String) {
+			do {
+				let items = try fileManager.contentsOfDirectory(atPath: directory)
+				for item in items {
+					let fullPath = "\(directory)/\(item)"
+					var isDirectory: ObjCBool = false
+					if fileManager.fileExists(
+						atPath: fullPath, isDirectory: &isDirectory)
+					{
+						if isDirectory.boolValue {
+							searchDirectory(fullPath)
+						} else if item.hasSuffix(fileExtension) {
+							files[
+								String(
+									fullPath.dropFirst(
+										path.count))] =
+								try String(
+									contentsOfFile: fullPath,
+									encoding: .utf8)
+						}
+					}
+				}
+			} catch {
+				print("Error searching directory: \(error)")
+			}
+		}
+
+		searchDirectory(path)
+		print(files.keys)
+		self.files = files
+		self.path = path
+	}
+
+	func getContent(of files: [String]) throws -> String {
+		var content = ""
+		for file in files {
+			if let fileContents = self.files[file] {
+				content += fileContents
+			} else {
+				throw TestError(
+					message: "File \(file) not found",
+					context: [
+						"available": self.files.keys.joined(separator: ";")
+					])
+			}
+		}
+		return content
+	}
+
+	static let sharedInstance = GraphQLFileLoader()
+}
+
+final class TestGraphQLHelper: XCTestCase {
+	func testGraphQLFileLoader() throws {
+		let loader = GraphQLFileLoader.sharedInstance
+		let content = try loader.getContent(of: ["/imports/get-import-kind.graphql"])
+		XCTAssertNotNil(content)
+		XCTAssertNotEqual(content, "")
 	}
 }

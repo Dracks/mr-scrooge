@@ -6,12 +6,12 @@ import XCTest
 @testable import App
 
 final class CaixaEnginyersImporterTests: BaseImporterTests {
-    
-    override func getParsers() throws -> [any ParserFactory] {
-        return [
-            CaixaEnginyersAccountImporter(), CaixaEnginiersCreditImporter(),
-        ]
-    }
+
+	override func getParsers() throws -> [any ParserFactory] {
+		return [
+			CaixaEnginyersAccountImporter(), CaixaEnginiersCreditImporter(),
+		]
+	}
 
 	func testCaixaEnginyersAccountImport() async throws {
 		let groupOwnerId = try self.group.requireID()
@@ -92,7 +92,7 @@ final class CaixaEnginyersImporterTests: BaseImporterTests {
 final class CaixaEnginyersUnitTests: XCTestCase {
 	func testCaixaEnginyersAccountSplitMessage() {
 		let caixaEnginyersImporter = CaixaEnginyersAccountImporter()
-		
+
 		let (details1, movementName1) = caixaEnginyersImporter.splitMessage("R/ Some bill")
 		XCTAssertEqual(details1, "Bill")
 		XCTAssertEqual(movementName1, "Some bill")

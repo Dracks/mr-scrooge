@@ -6,10 +6,10 @@ import XCTest
 @testable import App
 
 final class N26ImporterTests: BaseImporterTests {
-    
-    override func getParsers() throws -> [any ParserFactory] {
-        return [N26Importer()]
-    }
+
+	override func getParsers() throws -> [any ParserFactory] {
+		return [N26Importer()]
+	}
 
 	func testN26Import() async throws {
 		let groupOwnerId = try self.group.requireID()

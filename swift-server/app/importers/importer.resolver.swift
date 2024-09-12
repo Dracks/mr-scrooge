@@ -2,6 +2,12 @@ import Graphiti
 import Vapor
 
 class ImporterTypes {
+	static let importerService = NewImportService(parsers: [
+		N26Importer(),
+		CommerzBankEnImporter(),
+		CaixaEnginiersCreditImporter(),
+		CaixaEnginyersAccountImporter(),
+	])
 	struct ImportKind: Codable {
 		let name: String
 		let regex: String
@@ -25,7 +31,7 @@ class ImporterTypes {
 
 extension MrScroogeResolver {
 	func importKinds(req: Request, arguments: NoArguments) -> [ImporterTypes.ImportKind] {
-		let parsers: [ParserFactory] = []
+		let parsers: [ParserFactory] = ImporterTypes.importerService.getParsers()
 		return parsers.map { parser in
 			ImporterTypes.ImportKind(
 				name: parser.key, regex: parser.fileRegex.description)

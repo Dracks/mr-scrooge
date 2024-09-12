@@ -1,6 +1,6 @@
-import XCTest
-import XCTVapor
 import Fluent
+import XCTVapor
+import XCTest
 
 @testable import App
 
@@ -16,7 +16,7 @@ class TestBasicImporter: ParserFactory {
 	let fileRegex = ""
 	let key: String
 
-    let transformHelper: TransformHelper<[String: Any]>
+	let transformHelper: TransformHelper<[String: Any]>
 
 	let data: [[String: Any]]
 
@@ -72,47 +72,46 @@ class TestDynamicImporter: ParserFactory {
 }
 
 class BaseImporterTests: XCTestCase {
-    var importerService: NewImportService!
-    var bankTransactionService: BankTransactionService!
-    var statusReportsService: StatusReportsService!
-    var group: UserGroup!
-    var app: Application?
+	var importerService: NewImportService!
+	var bankTransactionService: BankTransactionService!
+	var statusReportsService: StatusReportsService!
+	var group: UserGroup!
+	var app: Application?
 
-    func getTestFile(file: String) -> String {
-        let pwd = URL(fileURLWithPath: #file).pathComponents
-            .prefix(while: { $0 != "app-tests" }).joined(separator: "/").dropFirst()
-        return "\(pwd)/\(file)"
-    }
-    
-    func getParsers() throws -> [ParserFactory] {
-        throw TestError(message: "A class must overwrite getParsers")
-    }
-    
-    override func setUp() async throws {
-        let app = try await Application.make(.testing)
-        try await configure(app)
-        self.app = app
+	func getTestFile(file: String) -> String {
+		let pwd = URL(fileURLWithPath: #file).pathComponents
+			.prefix(while: { $0 != "app-tests" }).joined(separator: "/").dropFirst()
+		return "\(pwd)/\(file)"
+	}
 
-        self.group = UserGroup(name: "Test User Group")
-        try await self.group.save(on: app.db)
+	func getParsers() throws -> [ParserFactory] {
+		throw TestError(message: "A class must overwrite getParsers")
+	}
 
-        let testParsers: [ParserFactory] = try getParsers()
-        importerService = NewImportService(parsers: testParsers)
-        bankTransactionService = BankTransactionService()
-        statusReportsService = StatusReportsService()
-    }
+	override func setUp() async throws {
+		let app = try await Application.make(.testing)
+		try await configure(app)
+		self.app = app
 
-    override func tearDown() async throws {
-        try await self.app?.asyncShutdown()
-        self.app = nil
-    }
+		self.group = UserGroup(name: "Test User Group")
+		try await self.group.save(on: app.db)
 
-    func getDb() throws -> Database {
-        guard let app = app else {
-            throw TestError()
-        }
-        return app.db
-    }
-    
-    
+		let testParsers: [ParserFactory] = try getParsers()
+		importerService = NewImportService(parsers: testParsers)
+		bankTransactionService = BankTransactionService()
+		statusReportsService = StatusReportsService()
+	}
+
+	override func tearDown() async throws {
+		try await self.app?.asyncShutdown()
+		self.app = nil
+	}
+
+	func getDb() throws -> Database {
+		guard let app = app else {
+			throw TestError()
+		}
+		return app.db
+	}
+
 }
