@@ -1,4 +1,4 @@
-"Fecha","Beneficiario","Número de cuenta","Tipo de transacción","Referencia de pago","Cantidad (EUR)","Cantidad (Divisa extranjera)","Tipo de divisa extranjera","Tipo de cambio"
-"2019-01-08","Dr Who","ES9271020570520240752219","Ingreso"," ","10.0","","",""
-"2019-01-20","Dr Who","ES9271020570520240752219","Ingreso","RENTAL FLAT","120.0","","",""
-"2019-01-28","Dalek","DE717287002202217671300","Transferencia saliente","Dr Who","-140.0","","",""
+"Booking Date","Value Date","Partner Name","Partner Iban","Type","PaymentReference","Account Name","Amount (EUR)","Original Amount","Original Currency","Exchange Rate"
+"2019-01-08","2019-01-08","Dr Who","ES9271020570520240752219","Ingreso",," ","10.0","","",""
+"2019-01-20","2019-01-20","Dr Who","ES9271020570520240752219","Ingreso",,"RENTAL FLAT","120.0","","",""
+"2019-01-28","2019-01-28","Dalek","DE717287002202217671300","Transferencia saliente",,"Dr Who","-140.0","","",""

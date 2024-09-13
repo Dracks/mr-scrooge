@@ -5,14 +5,15 @@ import Vapor
 class N26Importer: ParserFactory {
 	let transformHelper: TransformHelper<[String]>
 	let key: String = "n26/es"
-	let fileRegex: String = "n26-csv-transactions.*\\.csv"
+	let fileRegex: String = "Cuenta.*\\.csv"
 
 	init() {
 		let fieldsMap = FieldsMap<Int>(
-			movementName: 1,
+			movementName: 2,
 			date: 0,
-			dateValue: 0,
-			value: 5
+			dateValue: 1,
+			details: 5,
+			value: 7
 		)
 		self.transformHelper = TransformHelper(fieldsMap, dateFormat: "yyyy-MM-dd")
 	}
