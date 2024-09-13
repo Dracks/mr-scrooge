@@ -35,6 +35,6 @@ class BaseSchema: PartialSchema<MrScroogeResolver, Request> {
 		Type(DeleteConfirmation.self) {
 			Field("confirm", at: \.confirm)
 		}
-        Scalar(Date.self)
+		Scalar(Date.self)
 	}
 }

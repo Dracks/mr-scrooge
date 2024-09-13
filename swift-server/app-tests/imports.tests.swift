@@ -11,8 +11,11 @@ final class ImportTests: AbstractBaseTestsClass {
 		return "\(pwd)/\(file)"
 	}
 
-	func sendImportRequest(app: Application, headers immutableHeaders: HTTPHeaders, file: String, andKind kind: String) async throws -> XCTHTTPResponse {
-        var headers = immutableHeaders
+	func sendImportRequest(
+		app: Application, headers immutableHeaders: HTTPHeaders, file: String,
+		andKind kind: String
+	) async throws -> XCTHTTPResponse {
+		var headers = immutableHeaders
 		let testFilePath = getTestFile(file: file)
 		let fileURL = URL(fileURLWithPath: testFilePath)
 		let fileData = try Data(contentsOf: fileURL)
@@ -46,17 +49,19 @@ final class ImportTests: AbstractBaseTestsClass {
 	func testUploadFile() async throws {
 		let app = try getApp()
 
-				// Get headers for authenticated request
+		// Get headers for authenticated request
 		let headers = try await app.getHeaders(
 			forUser: SessionTypes.Credentials(
 				username: testUser.username, password: "test-password"))
 
-        let response = try await sendImportRequest(app: app, headers: headers, file: "test_files/n26_es.csv", andKind: "n26/es")
+		let response = try await sendImportRequest(
+			app: app, headers: headers, file: "test_files/n26_es.csv", andKind: "n26/es"
+		)
 
 		XCTAssertEqual(response.status, .ok)
 	}
-    
-    func testGetImports() async throws {
+
+	func testGetImports() async throws {
 		let query = try GraphQLFileLoader.sharedInstance.getContent(of: [
 			"/imports/get-import-status.graphql"
 		])
@@ -67,7 +72,9 @@ final class ImportTests: AbstractBaseTestsClass {
 			forUser: SessionTypes.Credentials(
 				username: testUser.username, password: "test-password"))
 
-		let _ = try await sendImportRequest(app: app, headers: headers, file: "test_files/commerz_bank.CSV", andKind: "commerz-bank/en")
+		let _ = try await sendImportRequest(
+			app: app, headers: headers, file: "test_files/commerz_bank.CSV",
+			andKind: "commerz-bank/en")
 
 		let response = try await app.queryGql(
 			GraphQLRequest(query: query), headers: headers)
@@ -80,16 +87,16 @@ final class ImportTests: AbstractBaseTestsClass {
 
 		XCTAssertEqual(data.errors, [])
 
-		let imports = try XCTUnwrap(data.data?["getImports"]["results"].array)
+		let imports = try XCTUnwrap(data.data?["imports"]["results"].array)
 		XCTAssertGreaterThan(imports.count, 0)  // Assuming there are some imports to test
 
 		for importResult in imports {
 			XCTAssertNotNil(importResult["id"].string)
 			XCTAssertNotNil(importResult["description"].string)
 			XCTAssertNotNil(importResult["status"].string)
-			XCTAssertNotNil(importResult["context"].string)
 			XCTAssertNotNil(importResult["rows"].array)
+			XCTAssertGreaterThan(importResult["rows"].array?.count ?? 0, 0)
 		}
-        
-    }
+
+	}
 }

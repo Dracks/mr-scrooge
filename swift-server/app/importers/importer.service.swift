@@ -12,6 +12,7 @@ class StatusReportsService {
 			.limit(limit)
 			.sort(\.$createdAt, .descending)
 			.sort(\.$id, .descending)
+			.with(\.$rows)
 
 		if let cursor = cursor {
 			let cursorData = try self.cursorHandler.parse(cursor)

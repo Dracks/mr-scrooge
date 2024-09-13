@@ -24,7 +24,7 @@ final class N26ImporterTests: BaseImporterTests {
 		let reports = try await statusReportsService.getAll(
 			on: db, groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
-        XCTAssertEqual(reports.list.first?.status, .ok)
+		XCTAssertEqual(reports.list.first?.status, .ok)
 
 		let transactions = try await bankTransactionService.getAll(
 			on: db, groupIds: [groupOwnerId])
@@ -50,7 +50,7 @@ final class N26ImporterTests: BaseImporterTests {
 		let reports = try await statusReportsService.getAll(
 			on: db, groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
-        XCTAssertEqual(reports.list.first?.status, .error)
+		XCTAssertEqual(reports.list.first?.status, .error)
 		XCTAssertEqual(reports.list.first?.fileName, "n26-file.csv")
 		XCTAssertContains(
 			reports.list.first?.description, "E10010: Csv cannot be parsed at")

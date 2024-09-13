@@ -23,7 +23,7 @@ final class ImporterServiceTests: BaseImporterTests {
 		let reports = try await statusReportsService.getAll(
 			on: db, groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
-        XCTAssertEqual(reports.list.first?.status, .ok)
+		XCTAssertEqual(reports.list.first?.status, .ok)
 		XCTAssertEqual(reports.list.first?.description, "")
 		XCTAssertEqual(reports.list.first?.context, nil)
 
@@ -45,7 +45,7 @@ final class ImporterServiceTests: BaseImporterTests {
 		print(reports)
 		XCTAssertEqual(reports.list.count, 1)
 		let importReport = reports.list.first
-        XCTAssertEqual(importReport?.status, .error)
+		XCTAssertEqual(importReport?.status, .error)
 		XCTAssertContains(importReport?.description, "E10000: Parser not found")
 		XCTAssertEqual(importReport?.context, "{\"parserKey\":\"invalid-key\"}")
 	}
@@ -70,7 +70,7 @@ final class ImporterServiceTests: BaseImporterTests {
 		let reports = try await statusReportsService.getAll(
 			on: db, groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
-        XCTAssertEqual(reports.list.first?.status, .ok)
+		XCTAssertEqual(reports.list.first?.status, .ok)
 
 		// Check transactions
 		let transactions = try await bankTransactionService.getAll(
@@ -104,9 +104,9 @@ final class ImporterServiceTests: BaseImporterTests {
 		let reports = try await statusReportsService.getAll(
 			on: db, groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 2)
-        XCTAssertEqual(reports.list[1].status, .ok)
+		XCTAssertEqual(reports.list[1].status, .ok)
 		XCTAssertEqual(reports.list[1].description, "")
-        XCTAssertEqual(reports.list[0].status, .warn)
+		XCTAssertEqual(reports.list[0].status, .warn)
 		XCTAssertEqual(reports.list[0].description, "")
 
 		// Check transactions
@@ -135,7 +135,7 @@ final class ImporterServiceTests: BaseImporterTests {
 
 		let report = reports.list.first
 
-        XCTAssertEqual(report?.status, .error)
+		XCTAssertEqual(report?.status, .error)
 		XCTAssertNotNil(report?.description)
 		XCTAssertTrue(report?.description.contains("E10004") ?? false)
 		XCTAssertEqual(

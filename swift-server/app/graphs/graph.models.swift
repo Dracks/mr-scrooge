@@ -24,7 +24,7 @@ enum GraphDateRange: String, Codable, CaseIterable {
 	case twoYears = "twoYears"
 }
 
-final class Graph: Model, Content {
+final class Graph: Model, Content, @unchecked Sendable {
 	static let schema = "graph_graph"
 
 	@ID(key: .id)
@@ -72,7 +72,7 @@ protocol AbstractGroup: Model, Content {
 	var hideOthers: Bool? { get set }
 }
 
-final class GraphGroup: Model, Content, AbstractGroup {
+final class GraphGroup: Model, Content, AbstractGroup, @unchecked Sendable {
 
 	static let schema = "graph_group"
 
@@ -97,7 +97,7 @@ final class GraphGroup: Model, Content, AbstractGroup {
 	}
 }
 
-final class GraphHorizontalGroup: Model, Content, AbstractGroup {
+final class GraphHorizontalGroup: Model, Content, AbstractGroup, @unchecked Sendable {
 
 	static let schema = "graph_horizontal_group"
 
@@ -128,7 +128,7 @@ final class GraphHorizontalGroup: Model, Content, AbstractGroup {
 		self.accumulate = accumulate
 	}
 }
-final class GraphGroupLabels: Model, Content {
+final class GraphGroupLabels: Model, Content, @unchecked Sendable {
 	static let schema = "graph_group_labels"
 
 	@ID(custom: "graph_id")
@@ -152,7 +152,7 @@ final class GraphGroupLabels: Model, Content {
 	}
 }
 
-final class GraphHorizontalGroupLabels: Model, Content {
+final class GraphHorizontalGroupLabels: Model, Content, @unchecked Sendable {
 	static let schema = "graph_horizontal_group_labels"
 
 	@ID(custom: "graph_id")

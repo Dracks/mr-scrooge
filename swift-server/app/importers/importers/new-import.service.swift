@@ -65,7 +65,7 @@ class NewImportService {
 			fileName: fileName,
 			groupOwnerId: groupOwnerId,
 			kind: key,
-            status: .ok
+			status: .ok
 		)
 		try await status.create(on: db)
 
@@ -90,7 +90,7 @@ class NewImportService {
 				{
 					if discarting {
 						let msg = "repeated row, not inserted"
-                        status.status = .warn
+						status.status = .warn
 						statusTransaction.message = msg
 						if let previousStateValidated = previousState {
 							previousStateValidated.message = msg
@@ -140,7 +140,7 @@ class NewImportService {
 					withJSONObject: error.allContext, options: [])
 				status.context = String(data: jsonData, encoding: .utf8)
 			}
-            status.status = .error
+			status.status = .error
 			try await status.save(on: db)
 		}
 

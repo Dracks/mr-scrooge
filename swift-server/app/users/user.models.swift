@@ -1,7 +1,7 @@
 import Fluent
 import Vapor
 
-final class User: Model, Content {
+final class User: Model, Content, @unchecked Sendable {
 	static let schema = "users"
 
 	@ID(key: .id)
@@ -82,7 +82,7 @@ extension User: SessionAuthenticatable {
 	}
 }
 
-final class UserGroup: Model, Content {
+final class UserGroup: Model, Content, @unchecked Sendable {
 	static let schema = "user_groups"
 
 	@ID(key: .id)
@@ -108,7 +108,7 @@ final class UserGroup: Model, Content {
 	}
 }
 
-final class UserGroupPivot: Model {
+final class UserGroupPivot: Model, @unchecked Sendable {
 	static let schema = "user_group_pivot"
 
 	@ID(key: .id)

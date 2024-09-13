@@ -19,7 +19,7 @@ final class CommerzBankEnImporterTests: BaseImporterTests {
 		let reports = try await statusReportsService.getAll(
 			on: db, groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
-        XCTAssertEqual(reports.list.first?.status, .ok)
+		XCTAssertEqual(reports.list.first?.status, .ok)
 		XCTAssertEqual(reports.list.first?.description, "")
 		XCTAssertNil(reports.list.first?.context)
 

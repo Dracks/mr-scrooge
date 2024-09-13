@@ -171,7 +171,7 @@ class SessionTypes {
 		}
 	}
 
-	struct NotIdentified: Content, MyProfileResponse {
+	struct NotIdentified: MyProfileResponse {
 		let username = "anonymous"
 	}
 

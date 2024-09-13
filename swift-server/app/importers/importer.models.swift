@@ -1,12 +1,12 @@
 import Fluent
 import Vapor
 
-enum StatusReportStatus : String, Codable {
-    case ok, warn, error
-    
+enum StatusReportStatus: String, Codable {
+	case ok, warn, error
+
 }
 
-final class StatusReport: Model, Content {
+final class StatusReport: Model, Content, @unchecked Sendable {
 	static let schema = "status_report"
 
 	@ID(key: .id)
@@ -36,6 +36,9 @@ final class StatusReport: Model, Content {
 	@OptionalField(key: "context")
 	var context: String?
 
+	@Children(for: \.$report)
+	var rows: [StatusReportRow]
+
 	init() {}
 
 	init(
@@ -52,7 +55,7 @@ final class StatusReport: Model, Content {
 	}
 }
 
-final class StatusReportRow: Model {
+final class StatusReportRow: Model, @unchecked Sendable {
 	static let schema = "status_report_row"
 
 	@ID(key: .id)

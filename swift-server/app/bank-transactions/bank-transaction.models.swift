@@ -1,7 +1,7 @@
 import Fluent
 import Vapor
 
-final class BankTransaction: Model, Content {
+final class BankTransaction: Model, Content, @unchecked Sendable {
 	static let schema = "core_bank_transaction"
 
 	@ID(key: .id)
@@ -82,7 +82,7 @@ enum FilterConditionals: String, Codable {
 	case suffix = "s"
 }
 
-final class Condition: Model, Content {
+final class Condition: Model, Content, @unchecked Sendable {
 	static let schema = "core_condition"
 
 	@ID(key: .id)
@@ -102,7 +102,7 @@ final class Condition: Model, Content {
 	}
 }
 
-final class Rule: Model, Content {
+final class Rule: Model, Content, @unchecked Sendable {
 	static let schema = "core_rule"
 
 	@ID(key: .id)
@@ -140,7 +140,7 @@ final class Rule: Model, Content {
 	}
 }
 
-final class Label: Model, Content {
+final class Label: Model, Content, @unchecked Sendable {
 	static let schema = "graph_label"
 
 	@ID(key: .id)
@@ -161,7 +161,7 @@ final class Label: Model, Content {
 	}
 }
 
-final class LabelTransaction: Model, Content {
+final class LabelTransaction: Model, Content, @unchecked Sendable {
 	static let schema = "graph_label_transaction"
 
 	@ID(key: .id)
