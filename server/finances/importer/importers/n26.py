@@ -3,16 +3,16 @@ from ..parsers import CsvSourceFile
 
 class Number26(AbstractImporter):
     key = "n26/es"
-    file_regex = "n26-csv-transactions.*\.csv"
+    file_regex = "Cuenta.*\.csv"
 
     _discard = 1
 
     _mapping = {
-        'movement_name': 1,
+        'movement_name': 2,
         'date': 0,
-        'date_value': 0,
-        'value': 5,
-        # 'details': 4
+        'date_value': 1,
+        'value': 7,
+        'details': 5
     }
 
     def _creator(self, file_name):
