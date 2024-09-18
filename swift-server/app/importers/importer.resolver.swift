@@ -51,6 +51,16 @@ class ImporterTypes {
 
 	}
 
+	struct DeleteImportArgs: Codable {
+		let id: UUID
+	}
+
+	struct DeleteImport: DeleteImportResponse {
+		let ok: Bool
+	}
+
+	protocol DeleteImportResponse {}
+
 	class Schema: PartialSchema<MrScroogeResolver, Request> {
 		@TypeDefinitions
 		override var types: Types {
@@ -94,6 +104,11 @@ class ImporterTypes {
 			}
 
 			Union(GetImportsResponse.self, members: GetImports.self)
+
+			Type(DeleteImport.self){
+				Field("ok", at: \.ok)
+			}
+			Union(DeleteImportResponse.self, members: DeleteImport.self)
 		}
 
 		@FieldDefinitions
@@ -102,6 +117,13 @@ class ImporterTypes {
 			Field("imports", at: MrScroogeResolver.imports) {
 				Argument("cursor", at: \.cursor)
 				Argument("limit", at: \.limit)
+			}
+		}
+
+		@FieldDefinitions
+		override var mutation: Fields {
+			Field("deleteImport", at: MrScroogeResolver.deleteImport){
+				Argument("id", at: \.id)
 			}
 		}
 	}
@@ -146,5 +168,14 @@ extension MrScroogeResolver {
 							transactionId: $0.transactionId)
 					}))
 			}), next: data.next)
+	}
+
+	func deleteImport(req: Request, arguments: ImporterTypes.DeleteImportArgs) async throws -> ImporterTypes.DeleteImportResponse {
+		let user = try await getUser(fromRequest: req)
+		let validGroupsId = try user.groups.map { return try $0.requireID() }
+
+		try await ImporterTypes.statusReportsService.delete(on: req.db, groupIds: validGroupsId, importId: arguments.id)
+
+		return ImporterTypes.DeleteImport(ok: true)
 	}
 }

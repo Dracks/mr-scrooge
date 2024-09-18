@@ -1,10 +1,16 @@
 import GraphQL
 import Graphiti
 import XCTVapor
+import Fluent
 
 @testable import App
 
 final class ImportTests: AbstractBaseTestsClass {
+	// Todo: Search a way to use the type from the controller
+	struct CreateImport: Content {
+		var id: UUID
+	}
+
 	func getTestFile(file: String) -> String {
 		let pwd = URL(fileURLWithPath: #file).pathComponents
 			.prefix(while: { $0 != "app-tests" }).joined(separator: "/").dropFirst()
@@ -58,7 +64,10 @@ final class ImportTests: AbstractBaseTestsClass {
 			app: app, headers: headers, file: "test_files/n26_es.csv", andKind: "n26/es"
 		)
 
-		XCTAssertEqual(response.status, .ok)
+		XCTAssertEqual(response.status, .created)
+		let body = try response.content.decode(CreateImport.self)
+		XCTAssertNotNil(body)
+
 	}
 
 	func testGetImports() async throws {
@@ -97,6 +106,49 @@ final class ImportTests: AbstractBaseTestsClass {
 			XCTAssertNotNil(importResult["rows"].array)
 			XCTAssertGreaterThan(importResult["rows"].array?.count ?? 0, 0)
 		}
+	}
+
+	func testDeleteImport() async throws {
+		let query = try GraphQLFileLoader.sharedInstance.getContent(of: [
+			"/imports/delete-import-status.graphql"
+		])
+		let app = try getApp()
+
+		// Get headers for authenticated request
+		let headers = try await app.getHeaders(
+			forUser: SessionTypes.Credentials(
+				username: testUser.username, password: "test-password"))
+
+		let firstImportResponse = try await sendImportRequest(
+			app: app, headers: headers, file: "test_files/commerz_bank.CSV",
+			andKind: "commerz-bank/en")
+
+		let secondImportResponse = try await sendImportRequest(
+			app: app, headers: headers, file: "test_files/commerz_bank.CSV",
+			andKind: "commerz-bank/en")
+
+		let firstImport = try firstImportResponse.content.decode(CreateImport.self)
+		let secondImport = try secondImportResponse.content.decode(CreateImport.self)
+
+		let response = try await app.queryGql(
+			GraphQLRequest(query: query, variables: toVars(["importId": secondImport.id])), headers: headers)
+
+		XCTAssertEqual(response.status, .ok)
+
+		let body = try XCTUnwrap(response.body)
+		let data = try JSONDecoder().decode(GraphQLResult.self, from: Data(buffer: body))
+
+		XCTAssertEqual(data.errors, [])
+
+		let allCount = try await StatusReport.query(on: app.db).count()
+		XCTAssertEqual(allCount, 1)
+
+		let firstImportCount = try await StatusReport.query(on: app.db).filter(\.$id == firstImport.id).count()
+		XCTAssertEqual(firstImportCount, 1)
+
+		let secondImportCount = try await StatusReport.query(on: app.db).filter(\.$id == secondImport.id).count()
+		XCTAssertEqual(secondImportCount, 0)
+
 
 	}
 }

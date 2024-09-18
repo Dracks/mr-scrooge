@@ -59,7 +59,7 @@ class NewImportService {
 
 	func importFromFile(
 		on db: Database, groupOwnerId: UUID, key: String, fileName: String, filePath: String
-	) async throws {
+	) async throws -> UUID {
 		let status = StatusReport(
 			description: "",
 			fileName: fileName,
@@ -145,5 +145,7 @@ class NewImportService {
 		}
 
 		try await status.save(on: db)
+
+		return try status.requireID()
 	}
 }

@@ -42,14 +42,14 @@
   * [x] Import n26
   * [x] Import commerzbank
   * [ ] Import qif
-  * [ ] Crud api
+  * [x] Crud api
   * [ ] Call to apply rules
 * [ ] Bank transactions
   * [x] get bank transactions data
   * [] add/remove label
 * [ ] labels
   * [x] get labels
-  * [ ] create label
+  * [x] create label
   * [ ] modify label
 * [ ] rules engine
   * [ ] new transactions are applied with the rules engine

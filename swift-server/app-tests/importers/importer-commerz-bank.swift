@@ -63,6 +63,8 @@ final class CommerzBankUnitTests: XCTestCase {
 			"Kartenzahlung ARAL Some address 2020-02-09T21:13:19 KFN 1 VJ 2442 Kartenzahlung"
 		)
 		XCTAssertEqual(msg, "ARAL Some address")
+		XCTAssertEqual(details, nil)
+		XCTAssertEqual(date, "09.02.2020")
 
 	}
 }

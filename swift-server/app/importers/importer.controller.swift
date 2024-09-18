@@ -8,12 +8,16 @@ struct ImporterController: RouteCollection {
 		var file: File
 	}
 
+	struct CreateImport: Content {
+		var id: UUID
+	}
+
 	func boot(routes: RoutesBuilder) throws {
 		let importers = routes.grouped(UserIdentifiedMiddleware()).grouped("import")
 		importers.post("upload", use: uploadFile)
 	}
 
-	func uploadFile(req: Request) async throws -> HTTPStatus {
+	func uploadFile(req: Request) async throws -> Response {
 		let upload = try req.content.decode(UploadData.self)
 
 		let tmpDir = NSTemporaryDirectory()
@@ -33,11 +37,15 @@ struct ImporterController: RouteCollection {
 
 		let user = try await getUser(fromRequest: req)
 
-		try await ImporterTypes.importerService.importFromFile(
+		let importId = try await ImporterTypes.importerService.importFromFile(
 			on: req.db, groupOwnerId: user.defaultGroup.requireID(), key: upload.kind,
 			fileName: upload.file.filename, filePath: filePath)
+		let response = Response(status: .created)
+		try response.content.encode(CreateImport(id: importId))
 
-		return .ok
+
+		//return .init(status: .created, content: CreateImport(id: importId))
+		return response
 
 	}
 }
