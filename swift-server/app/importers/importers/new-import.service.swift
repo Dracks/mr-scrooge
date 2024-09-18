@@ -89,11 +89,10 @@ class NewImportService {
 					on: db, transaction: transaction)
 				{
 					if discarting {
-						let msg = "repeated row, not inserted"
+						let msg = "Repeated row, not inserted"
 						status.status = .warn
 						statusTransaction.message = msg
 						if let previousStateValidated = previousState {
-                            // Todo some test is not passing here.
 							previousStateValidated.message = msg
 							try await previousStateValidated.save(
 								on: db)

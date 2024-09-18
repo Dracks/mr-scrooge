@@ -87,6 +87,49 @@ final class ImporterServiceTests: BaseImporterTests {
 		XCTAssertEqual(repeatedRow?.message, "Repeated row, but inserted")
 	}
 
+	func testImportWithMultipleDuplicatesDuplicated() async throws {
+		let groupOwnerId = try self.group.requireID()
+		let db = try getDb()
+
+		// Create a repeated transaction
+		let repeatedTransaction = try TestBasicImporter().transformHelper.map(
+			SAMPLE_DATA[1]
+		)
+		.toBankTransaction(kind: "test-account", groupOwnerId: groupOwnerId)
+		let repeatedTransaction2 = try TestBasicImporter().transformHelper.map(
+			SAMPLE_DATA[2]
+		).toBankTransaction(kind: "test-account", groupOwnerId: groupOwnerId)
+		let _ = try await bankTransactionService.addTransaction(
+			on: db, transaction: repeatedTransaction)
+		let _ = try await bankTransactionService.addTransaction(
+			on: db, transaction: repeatedTransaction2)
+
+		// Import the file
+		try await importerService.importFromFile(
+			on: db, groupOwnerId: groupOwnerId, key: "test-account",
+			fileName: "something", filePath: "some-more")
+
+		// Check import status
+		let reports = try await statusReportsService.getAll(
+			on: db, groupIds: [groupOwnerId])
+		XCTAssertEqual(reports.list.count, 1)
+		XCTAssertEqual(reports.list.first?.status, .warn)
+
+		// Check transactions
+		let transactions = try await bankTransactionService.getAll(
+			on: db, groupIds: [groupOwnerId])
+		XCTAssertEqual(transactions.list.count, 4)
+
+		// Check status report rows
+		let statusRows = try await StatusReportRow.query(on: db).all()
+		XCTAssertEqual(statusRows.count, 4)
+
+		let repeatedRow = try await StatusReportRow.query(on: db)
+			.filter(\.$movementName == repeatedTransaction.movementName)
+			.first()
+		XCTAssertEqual(repeatedRow?.message, "Repeated row, not inserted")
+	}
+
 	func testDoNotInsertMultipleDuplicates() async throws {
 		let groupOwnerId = try self.group.requireID()
 		let db = try getDb()
