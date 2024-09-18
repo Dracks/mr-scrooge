@@ -4,16 +4,16 @@ export interface GraphUiRepresentation {
     dateRange?: GQLGraphDateRange;
     groupHideOthers?: boolean | null;
     groupKind?: GQLGraphGroup;
-    groupLabels?: number[];
+    groupLabels?: string[];
     horizontalAccumulate?: boolean;
     horizontalGroupHideOthers?: boolean | null;
 
     horizontalGroupKind?: GQLGraphGroup;
-    horizontalGroupLabels?: number[];
+    horizontalGroupLabels?: string[];
     id?: number;
 
     kind?: GQLGraphKind;
-    labelFilter?: number | null;
+    labelFilterId?: string | null;
     name?: string;
 }
 
@@ -21,7 +21,7 @@ export const graphToUi = ({
     group,
     horizontalGroup,
     kind,
-    labelFilter: tagFilter,
+    labelFilterId: tagFilter,
     ...graph
 }: Partial<GQLNewGraph>): GraphUiRepresentation => ({
     ...graph,
@@ -33,7 +33,7 @@ export const graphToUi = ({
     horizontalGroupKind: horizontalGroup?.group as GQLGraphGroup,
     horizontalGroupLabels: horizontalGroup?.labels ?? undefined,
     kind,
-    labelFilter: tagFilter ?? undefined,
+    labelFilterId: tagFilter ?? undefined,
 });
 
 export const uiToGraph = ({

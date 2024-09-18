@@ -1,9 +1,9 @@
 import { EnrichedGraph, EnrichedGroup } from '../../../api/client/graphs/types';
-import { GQLGroup, GQLLabel, GQLNewGraph } from '../../../api/graphql/generated';
+import { GQLGroup, GQLLabel, GQLNewGraph, Scalars } from '../../../api/graphql/generated';
 
 export const enrichGroup = <T extends Omit<GQLGroup, '__typename'>>(
     { labels: oldLabels, ...group }: T,
-    labelsMap: Map<number, GQLLabel>,
+    labelsMap: Map<Scalars["UUID"], GQLLabel>,
 ): EnrichedGroup => {
     const labels = (oldLabels?.map(label => labelsMap.get(label)).filter(Boolean) as GQLLabel[]) ?? [];
 

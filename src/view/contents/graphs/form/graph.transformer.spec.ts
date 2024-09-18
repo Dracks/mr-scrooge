@@ -1,32 +1,35 @@
 import { GQLGraph, GQLGraphDateRange, GQLGraphGroup, GQLGraphKind, GQLNewGraph } from '../../../api/graphql/generated';
+import { listLabelIds } from '../../../utils/data-factory/label.factory';
+import { mainGroupOwnerId } from '../../../utils/data-factory/user-group.factory';
+import { generateUUID } from '../../../utils/data-factory/uuid.factory';
 import { graphToUi, uiToGraph } from './graph.transformer';
 
 describe('[graph.transformer]', () => {
     const subjectDataMinimum: GQLGraph = {
-        dateRange: GQLGraphDateRange.HalfYear,
+        dateRange: GQLGraphDateRange.Six,
         group: {
             group: GQLGraphGroup.Month,
         },
-        groupOwnerId: 1,
-        id: 34,
+        groupOwnerId: mainGroupOwnerId,
+        id: generateUUID(34, "graph"),
         kind: GQLGraphKind.Pie,
         name: 'minimum',
     };
 
     const subjectWithAllFields: GQLGraph = {
-        dateRange: GQLGraphDateRange.OneYear,
+        dateRange: GQLGraphDateRange.Year,
         group: {
             group: GQLGraphGroup.Labels,
             hideOthers: false,
-            labels: [1, 2],
+            labels: [1, 2].map(idx =>listLabelIds[idx]),
         },
-        groupOwnerId: 1,
+        groupOwnerId: mainGroupOwnerId,
         horizontalGroup: {
             group: GQLGraphGroup.Labels,
             hideOthers: true,
-            labels: [3, 4],
+            labels: [3, 4].map(idx =>listLabelIds[idx]),
         },
-        id: 34,
+        id: generateUUID(34, "graph"),
         kind: GQLGraphKind.Line,
         name: 'max',
     };
@@ -41,7 +44,7 @@ describe('[graph.transformer]', () => {
 
     it('graphData with all fields should match after transform', () => {
         const graphUi = graphToUi(subjectWithAllFields);
-        expect(graphUi.horizontalGroupLabels).toEqual([3, 4]);
+        expect(graphUi.horizontalGroupLabels).toEqual([3, 4].map(idx => listLabelIds[idx]));
         expect(uiToGraph(graphUi)).toEqual(subjectWithAllFields);
     });
 });

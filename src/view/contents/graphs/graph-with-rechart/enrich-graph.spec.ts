@@ -1,5 +1,6 @@
 import { GQLGraphDateRange, GQLGraphGroup, GQLGraphKind, GQLLabel } from '../../../api/graphql/generated';
-import { labelFactory } from '../../../utils/data-factory/label.factory';
+import { labelFactory, listLabelIds } from '../../../utils/data-factory/label.factory';
+import { mainGroupOwnerId } from '../../../utils/data-factory/user-group.factory';
 import { enrichGraph } from './enrich-graph';
 
 describe('enrichGraph', () => {
@@ -7,10 +8,10 @@ describe('enrichGraph', () => {
 
     beforeEach(() => {
         labelsList = [
-            labelFactory.build({ id: 1, name: 'tag1' }),
-            labelFactory.build({ id: 2, name: 'tag2' }),
-            labelFactory.build({ id: 3, name: 'tag3' }),
-            labelFactory.build({ id: 4, name: 'tag4' }),
+            labelFactory.build({ id: listLabelIds[1], name: 'tag1' }),
+            labelFactory.build({ id: listLabelIds[2], name: 'tag2' }),
+            labelFactory.build({ id: listLabelIds[3], name: 'tag3' }),
+            labelFactory.build({ id: listLabelIds[4], name: 'tag4' }),
         ];
     });
     it('A graph with group type tags and preserving the order', () => {
@@ -18,10 +19,10 @@ describe('enrichGraph', () => {
             {
                 dateRange: GQLGraphDateRange.All,
                 group: {
-                    labels: [3, 1],
+                    labels: [3, 1].map(idx => listLabelIds[idx]),
                     group: GQLGraphGroup.Labels,
                 },
-                groupOwnerId: 1,
+                groupOwnerId: mainGroupOwnerId,
                 kind: GQLGraphKind.Pie,
                 name: 'some graph',
             },

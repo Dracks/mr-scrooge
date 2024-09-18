@@ -93,6 +93,7 @@ class NewImportService {
 						status.status = .warn
 						statusTransaction.message = msg
 						if let previousStateValidated = previousState {
+                            // Todo some test is not passing here.
 							previousStateValidated.message = msg
 							try await previousStateValidated.save(
 								on: db)

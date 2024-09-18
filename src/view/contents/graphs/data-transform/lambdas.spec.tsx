@@ -1,6 +1,7 @@
 import { parse } from 'date-fns';
 
 import { GQLLabel } from '../../../api/graphql/generated';
+import { listLabelIds } from '../../../utils/data-factory/label.factory';
 import { getRangeFilter, groupLambdas, sortLambdas } from './lambdas';
 import { DTInputData } from './types';
 
@@ -16,21 +17,21 @@ describe('[Lambdas]', () => {
                 { labelIds: [43], name: 'Cylons', value: 3, date: new Date() },
                 { labelIds: [1, 2, 3], name: 'Prota', value: 4, date: new Date() },
                 { labelIds: [3], name: 'Reapers', value: 5, date: new Date() },
-            ];
+                ].map(dtInput => ({...dtInput, labelIds: dtInput.labelIds.map(idx => listLabelIds[idx])}));
         });
 
         it('Group by tags', () => {
             const labels = [
-                { id: 1, name: 'Dr Who' },
-                { id: 2, name: 'Farscape' },
-                { id: 3, name: 'Firefly' },
+                { id: listLabelIds[1], name: 'Dr Who' },
+                { id: listLabelIds[2], name: 'Farscape' },
+                { id: listLabelIds[3], name: 'Firefly' },
             ] as Partial<GQLLabel>[] as GQLLabel[];
 
-            let result = data.map(subject.Labels(labels, false));
+            let result = data.map(subject.labels(labels, false));
 
             expect(result).toEqual(['Dr Who', 'Farscape', 'Others', 'Dr Who', 'Firefly']);
 
-            result = data.map(subject.Labels(labels, true));
+            result = data.map(subject.labels(labels, true));
 
             expect(result).toEqual(['Dr Who', 'Farscape', false, 'Dr Who', 'Firefly']);
         });
@@ -79,13 +80,13 @@ describe('[Lambdas]', () => {
 
         it('sort customized with all the same', () => {
             const data = ['ping', 'pam', 'pum'];
-            const result = data.sort(subject.Labels(valuesToSort));
+            const result = data.sort(subject.labels(valuesToSort));
             expect(result).toEqual(['pum', 'ping', 'pam']);
         });
 
         it('sort customized with others', () => {
             const data = ['ping', 'others', 'pam', 'pum'];
-            const result = data.sort(subject.Labels(valuesToSort));
+            const result = data.sort(subject.labels(valuesToSort));
             expect(result).toEqual(['pum', 'ping', 'pam', 'others']);
         });
     });

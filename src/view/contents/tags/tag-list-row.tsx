@@ -1,6 +1,7 @@
 import { Button, TableCell, TableRow } from 'grommet';
 import React from 'react';
 import { useNavigate } from 'react-router';
+import { UUID } from 'short-uuid';
 
 import { Tag } from '../../api/client/tag/types';
 import { useDeleteTag } from '../../api/client/tag/use-delete-tag';
@@ -10,7 +11,7 @@ import { ConfirmationButton } from '../../utils/ui/confirmation-button';
 interface TagListRowArgs {
     refresh: () => void;
     tag: Tag;
-    tagHash: Record<number, Tag>;
+    tagHash: Record<UUID, Tag>;
 }
 
 export const TagListRow: React.FC<TagListRowArgs> = ({ tag, tagHash, refresh }) => {

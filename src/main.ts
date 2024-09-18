@@ -4,7 +4,7 @@ import { TscWatchClient } from 'tsc-watch/client';
 import webpack from 'webpack';
 
 import WebpackConfig from '../config/webpack.config';
-
+/*
 const tsc = new TscWatchClient();
 
 // eslint-disable-next-line init-declarations
@@ -19,7 +19,7 @@ tsc.on('success', () => {
 });
 
 tsc.start('--project', './tsconfig.server.json');
-
+*/
 WebpackConfig.watch = true;
 
 webpack(WebpackConfig, (err, stats) => {
@@ -37,5 +37,3 @@ webpack(WebpackConfig, (err, stats) => {
         }),
     );
 });
-
-//*/

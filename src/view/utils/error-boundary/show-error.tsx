@@ -12,11 +12,7 @@ interface ShowErrorProps {
 const ShowError: React.FC<ShowErrorProps> = ({ error, info }) => {
     const logger = useLogger();
 
-    logger.error({
-        msg: 'React error',
-        error,
-        info,
-    });
+    logger.error('React error', { error, info });
 
     if (DEBUG) {
         return <ErrorScreen />;

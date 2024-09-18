@@ -10,7 +10,7 @@ export type DSDoubleGroup<K extends string, SK extends string> = GenericDSGroup<
 
 export interface DTInputData {
     date: Date;
-    labelIds?: number[];
+    labelIds?: string[];
     value: number;
 }
 

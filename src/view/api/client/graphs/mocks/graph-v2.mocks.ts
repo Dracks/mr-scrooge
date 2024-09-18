@@ -1,14 +1,17 @@
+import { listLabelIds } from '../../../../utils/data-factory/label.factory';
+import { mainGroupOwnerId } from '../../../../utils/data-factory/user-group.factory';
 import { GQLGraph, GQLGraphDateRange, GQLGraphGroup, GQLGraphKind } from '../../../graphql/generated';
+
 
 export const GraphV2Pie: Omit<GQLGraph, 'id'> = {
     dateRange: GQLGraphDateRange.All,
     group: {
         group: GQLGraphGroup.Labels,
-        labels: [4, 5, 8],
+        labels: [4, 5, 8].map(idx => listLabelIds[idx]),
     },
-    groupOwnerId: 1,
+    groupOwnerId: mainGroupOwnerId,
     kind: GQLGraphKind.Pie,
-    labelFilter: 2,
+    labelFilterId: listLabelIds[2],
     name: 'Percentatge',
 };
 
@@ -17,13 +20,13 @@ export const GraphV2Line: Omit<GQLGraph, 'id'> = {
     group: {
         group: GQLGraphGroup.Month,
     },
-    groupOwnerId: 1,
+    groupOwnerId: mainGroupOwnerId,
     horizontalGroup: {
         accumulate: true,
         group: GQLGraphGroup.Day,
     },
     kind: GQLGraphKind.Line,
-    labelFilter: 2,
+    labelFilterId: listLabelIds[2],
     name: 'Compare by day',
 };
 
@@ -32,12 +35,12 @@ export const GraphV2Bar: Omit<GQLGraph, 'id'> = {
     group: {
         group: GQLGraphGroup.Sign,
     },
-    groupOwnerId: 1,
+    groupOwnerId: mainGroupOwnerId,
     horizontalGroup: {
         accumulate: false,
         group: GQLGraphGroup.Month,
     },
     kind: GQLGraphKind.Bar,
-    labelFilter: 1,
+    labelFilterId: listLabelIds[1],
     name: 'Income vs outcome',
 };

@@ -12,13 +12,7 @@ generates:
       withHooks: true
       typesPrefix: GQL
       nonOptionalTypename: false
-  src/server/common/test-graphql/generated.ts:
-    plugins:
-      - typescript
-      - typescript-urql
-      - typescript-operations
-    config:
-      withComponent: false
-      withHooks: false
-      typesPrefix: GQL
-      nonOptionalTypename: false
+      scalars:
+        Date: Date
+        DateOnly: string
+        UUID: string

@@ -7,11 +7,8 @@ mutation updateGraph($graph: UpdateGraph!){
         ... on WrongOwnerId{
             ...WrongOwnerIdFragment
         },
-        ... on InvalidLabel{
+        ... on InvalidLabels{
             ...InvalidLabelFragment
-        }
-        ... on InvalidGraph {
-            availableGraphsId
         }
     }
 }

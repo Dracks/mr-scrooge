@@ -5,8 +5,8 @@ query getGraphs {
 }
 
 
-query getGraphsById($graphsIds: [Int!]) {
-    graphs(graphsIds: $graphsIds) {
+query getGraphsById($graphsIds: [UUID!]) {
+    graphs(graphIds: $graphsIds) {
         ...GraphFragment
     }
 }
