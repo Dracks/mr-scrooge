@@ -6,10 +6,6 @@ import Fluent
 @testable import App
 
 final class ImportTests: AbstractBaseTestsClass {
-	// Todo: Search a way to use the type from the controller
-	struct CreateImport: Content {
-		var id: UUID
-	}
 
 	func getTestFile(file: String) -> String {
 		let pwd = URL(fileURLWithPath: #file).pathComponents
@@ -65,7 +61,7 @@ final class ImportTests: AbstractBaseTestsClass {
 		)
 
 		XCTAssertEqual(response.status, .created)
-		let body = try response.content.decode(CreateImport.self)
+        let body = try response.content.decode(ImporterController.CreateImport.self)
 		XCTAssertNotNil(body)
 
 	}
@@ -127,8 +123,8 @@ final class ImportTests: AbstractBaseTestsClass {
 			app: app, headers: headers, file: "test_files/commerz_bank.CSV",
 			andKind: "commerz-bank/en")
 
-		let firstImport = try firstImportResponse.content.decode(CreateImport.self)
-		let secondImport = try secondImportResponse.content.decode(CreateImport.self)
+        let firstImport = try firstImportResponse.content.decode(ImporterController.CreateImport.self)
+        let secondImport = try secondImportResponse.content.decode(ImporterController.CreateImport.self)
 
 		let response = try await app.queryGql(
 			GraphQLRequest(query: query, variables: toVars(["importId": secondImport.id])), headers: headers)

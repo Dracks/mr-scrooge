@@ -25,7 +25,7 @@ const RdsContext = React.createContext<RdsContextType>({
 
 export const useRdsData = (): RdsContextType => useContext(RdsContext);
 
-const replaceOrAdd = (state: TransactionsEnriched[], stateIndexes: number[]) => (rds: TransactionsEnriched) => {
+const replaceOrAdd = (state: TransactionsEnriched[], stateIndexes: string[]) => (rds: TransactionsEnriched) => {
     const index = stateIndexes.indexOf(rds.id);
     if (index < 0) {
         state.push(rds);
@@ -38,7 +38,7 @@ const replaceOrAdd = (state: TransactionsEnriched[], stateIndexes: number[]) => 
 export const ProvideRdsData: React.FC<PropsWithChildren> = ({ children }) => {
     const [state, setState] = React.useState<{
         data: TransactionsEnriched[];
-        index: number[];
+        index: string[];
     }>({ data: [], index: [] });
     const eventEmitter = useEventEmitter();
     const labels = useLabelsListContext();
