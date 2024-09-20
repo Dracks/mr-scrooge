@@ -1,6 +1,6 @@
 import Graphiti
 import Vapor
-
+/*
 class ImporterTypes {
 	static let importerService = NewImportService(parsers: [
 		N26Importer(),
@@ -130,6 +130,7 @@ class ImporterTypes {
 }
 
 extension MrScroogeResolver {
+
 	func importKinds(req: Request, arguments: NoArguments) -> [ImporterTypes.ImportKind] {
 		let parsers: [ParserFactory] = ImporterTypes.importerService.getParsers()
 		return parsers.map { parser in
@@ -179,3 +180,4 @@ extension MrScroogeResolver {
 		return ImporterTypes.DeleteImport(ok: true)
 	}
 }
+*/

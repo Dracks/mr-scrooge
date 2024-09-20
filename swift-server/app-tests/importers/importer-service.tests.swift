@@ -16,7 +16,7 @@ final class ImporterServiceTests: BaseImporterTests {
 	func testImportEverythingFine() async throws {
 		let groupOwnerId = try self.group.requireID()
 		let db = try getDb()
-		try await importerService.importFromFile(
+        let _ = try await importerService.importFromFile(
 			on: db, groupOwnerId: groupOwnerId, key: "test-account",
 			fileName: "test-file.csv", filePath: "whatever")
 
@@ -36,7 +36,7 @@ final class ImporterServiceTests: BaseImporterTests {
 		let groupOwnerId = try self.group.requireID()
 		let db = try getDb()
 
-		try await importerService.importFromFile(
+        let _ = try await importerService.importFromFile(
 			on: db, groupOwnerId: groupOwnerId, key: "invalid-key",
 			fileName: "some-file", filePath: "someother")
 
@@ -62,7 +62,7 @@ final class ImporterServiceTests: BaseImporterTests {
 			on: db, transaction: repeatedTransaction)
 
 		// Import the file
-		try await importerService.importFromFile(
+        let _ = try await importerService.importFromFile(
 			on: db, groupOwnerId: groupOwnerId, key: "test-account",
 			fileName: "something", filePath: "some-more")
 
@@ -105,7 +105,7 @@ final class ImporterServiceTests: BaseImporterTests {
 			on: db, transaction: repeatedTransaction2)
 
 		// Import the file
-		try await importerService.importFromFile(
+        let _ = try await importerService.importFromFile(
 			on: db, groupOwnerId: groupOwnerId, key: "test-account",
 			fileName: "something", filePath: "some-more")
 
@@ -135,11 +135,11 @@ final class ImporterServiceTests: BaseImporterTests {
 		let db = try getDb()
 
 		// Import the file twice
-		try await importerService.importFromFile(
+        let _ = try await importerService.importFromFile(
 			on: db, groupOwnerId: groupOwnerId, key: "test-account",
 			fileName: "some-file", filePath: "someother")
 
-		try await importerService.importFromFile(
+        let _ = try await importerService.importFromFile(
 			on: db, groupOwnerId: groupOwnerId, key: "test-account",
 			fileName: "some-file", filePath: "someother")
 
@@ -167,7 +167,7 @@ final class ImporterServiceTests: BaseImporterTests {
 		let db = try getDb()
 
 		// Attempt to import invalid data
-		try await importerService.importFromFile(
+		let _ = try await importerService.importFromFile(
 			on: db, groupOwnerId: groupOwnerId, key: "test-invalid-data",
 			fileName: "invalid-file.csv", filePath: "invalid-data")
 

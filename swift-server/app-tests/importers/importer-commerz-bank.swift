@@ -12,7 +12,7 @@ final class CommerzBankEnImporterTests: BaseImporterTests {
 
 		let filePath = getTestFile(file: "test_files/commerz_bank.CSV")
 
-		try await importerService.importFromFile(
+        let _ = try await importerService.importFromFile(
 			on: db, groupOwnerId: groupOwnerId, key: "commerz-bank/en",
 			fileName: "CommerzBank", filePath: filePath)
 

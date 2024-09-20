@@ -45,9 +45,12 @@ class StatusReportsService {
 	}
 
 	func delete(on db: Database, groupIds: [UUID], importId: UUID) async throws {
-		let exists = try await StatusReport.query(on: db).filter(\.$id == importId).filter(\.$groupOwnerId ~~ groupIds).count()
+		let exists = try await StatusReport.query(on: db).filter(\.$id == importId).filter(
+			\.$groupOwnerId ~~ groupIds
+		).count()
 		if exists > 0 {
-			try await StatusReportRow.query(on: db).filter(\.$report.$id == importId).delete()
+			try await StatusReportRow.query(on: db).filter(\.$report.$id == importId)
+				.delete()
 			try await StatusReport.query(on: db).filter(\.$id == importId).delete()
 		}
 

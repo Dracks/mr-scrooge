@@ -19,7 +19,7 @@ final class CaixaEnginyersImporterTests: BaseImporterTests {
 
 		let filePath = getTestFile(file: "test_files/MovimientosCuenta.xls")
 
-		try await importerService.importFromFile(
+        let _ = try await importerService.importFromFile(
 			on: db, groupOwnerId: groupOwnerId, key: "caixa-enginyers/account",
 			fileName: "MovimientosCuenta.xls", filePath: filePath)
 
@@ -64,7 +64,7 @@ final class CaixaEnginyersImporterTests: BaseImporterTests {
 
 		let filePath = getTestFile(file: "test_files/MovimientosTarjetaCredito.xls")
 
-		try await importerService.importFromFile(
+        let _ = try await importerService.importFromFile(
 			on: db, groupOwnerId: groupOwnerId, key: "caixa-enginyers/credit",
 			fileName: "MovimientosTarjetaCredito.xls", filePath: filePath)
 

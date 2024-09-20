@@ -15,7 +15,7 @@ final class LabelResolverTests: AbstractBaseTestsClass {
 
 		// Get headers for authenticated request
 		let headers = try await app.getHeaders(
-			forUser: SessionTypes.Credentials(
+			forUser: SessionController.Credentials(
 				username: testUser.username, password: "test-password"))
 
 		let response = try await app.queryGql(
@@ -53,7 +53,7 @@ final class LabelResolverTests: AbstractBaseTestsClass {
 
 		// Get headers for authenticated request
 		let headers = try await app.getHeaders(
-			forUser: SessionTypes.Credentials(
+			forUser: SessionController.Credentials(
 				username: testUser.username, password: "test-password"))
 
 		let response = try await app.queryGql(

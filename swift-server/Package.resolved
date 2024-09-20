@@ -230,8 +230,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-cmark.git",
       "state" : {
-        "revision" : "3bc2f3e25df0cecc5dc269f7ccae65d0f386f06a",
-        "version" : "0.4.0"
+        "revision" : "3ccff77b2dc5b96b77db3da0d68d28068593fa53",
+        "version" : "0.5.0"
       }
     },
     {
@@ -255,7 +255,7 @@
     {
       "identity" : "swift-format",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-format",
+      "location" : "https://github.com/swiftlang/swift-format",
       "state" : {
         "revision" : "7996ac678197d293f6c088a1e74bb778b4e10139",
         "version" : "510.1.0"
@@ -284,8 +284,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-markdown.git",
       "state" : {
-        "revision" : "4aae40bf6fff5286e0e1672329d17824ce16e081",
-        "version" : "0.4.0"
+        "revision" : "8f79cb175981458a0a27e76cb42fee8e17b1a993",
+        "version" : "0.5.0"
       }
     },
     {
@@ -379,6 +379,15 @@
       }
     },
     {
+      "identity" : "swiftopenapi",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Dracks/SwiftOpenAPI.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "4ba38bf312fc8505394981287a713c9c0acdc1b1"
+      }
+    },
+    {
       "identity" : "swiftsoup",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/scinfu/SwiftSoup.git",
@@ -394,6 +403,15 @@
       "state" : {
         "revision" : "236025b6a213f372f81b732ff792f95789c089d4",
         "version" : "4.104.0"
+      }
+    },
+    {
+      "identity" : "vaportoopenapi",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Dracks/VaporToOpenAPI.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "fc2af2a96c5673379063f63e7bb6a5750d9c2ddd"
       }
     },
     {

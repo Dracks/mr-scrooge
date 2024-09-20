@@ -155,7 +155,7 @@ class GraphTests: AbstractBaseTestsClass {
 		try await generateGraphs()
 
 		let headers = try await app.getHeaders(
-			forUser: SessionTypes.Credentials(
+			forUser: SessionController.Credentials(
 				username: testUser.username, password: "test-password"))
 
 		let response = try await app.queryGql(
@@ -200,7 +200,7 @@ class GraphTests: AbstractBaseTestsClass {
 		try await generateGraphs()
 
 		let headers = try await app.getHeaders(
-			forUser: SessionTypes.Credentials(
+			forUser: SessionController.Credentials(
 				username: testUser.username, password: "test-password"))
 
 		let response = try await app.queryGql(
@@ -254,7 +254,7 @@ class GraphTests: AbstractBaseTestsClass {
 			].toOrdered())
 
 		let headers = try await app.getHeaders(
-			forUser: SessionTypes.Credentials(
+			forUser: SessionController.Credentials(
 				username: testUser.username, password: "test-password"))
 
 		let response = try await app.queryGql(
@@ -294,7 +294,7 @@ class GraphTests: AbstractBaseTestsClass {
 		)
 
 		let headers = try await app.getHeaders(
-			forUser: SessionTypes.Credentials(
+			forUser: SessionController.Credentials(
 				username: testUser.username, password: "test-password"))
 
 		let response = try await app.queryGql(
@@ -339,7 +339,7 @@ class GraphTests: AbstractBaseTestsClass {
 			].toOrdered())
 
 		let headers = try await app.getHeaders(
-			forUser: SessionTypes.Credentials(
+			forUser: SessionController.Credentials(
 				username: testUser.username, password: "test-password"))
 
 		let response = try await app.queryGql(
@@ -398,7 +398,7 @@ class GraphTests: AbstractBaseTestsClass {
 			].toOrdered())
 
 		let headers = try await app.getHeaders(
-			forUser: SessionTypes.Credentials(
+			forUser: SessionController.Credentials(
 				username: testUser.username, password: "test-password"))
 
 		let response = try await app.queryGql(
@@ -454,7 +454,7 @@ class GraphTests: AbstractBaseTestsClass {
 			].toOrdered())
 
 		let headers = try await app.getHeaders(
-			forUser: SessionTypes.Credentials(
+			forUser: SessionController.Credentials(
 				username: testUser.username, password: "test-password"))
 
 		let response = try await app.queryGql(
@@ -479,7 +479,7 @@ class GraphTests: AbstractBaseTestsClass {
 		let graphId = testIds["graph"]!
 
 		let headers = try await app.getHeaders(
-			forUser: SessionTypes.Credentials(
+			forUser: SessionController.Credentials(
 				username: testUser.username, password: "test-password"))
 
 		let response = try await app.queryGql(
@@ -505,7 +505,7 @@ class GraphTests: AbstractBaseTestsClass {
 		let invalidGraphId = UUID()
 
 		let headers = try await app.getHeaders(
-			forUser: SessionTypes.Credentials(
+			forUser: SessionController.Credentials(
 				username: testUser.username, password: "test-password"))
 
 		let response = try await app.queryGql(
@@ -531,7 +531,7 @@ class GraphTests: AbstractBaseTestsClass {
 		let notOwnedGraphId = testIds["otherOwnerGraph"]!
 
 		let headers = try await app.getHeaders(
-			forUser: SessionTypes.Credentials(
+			forUser: SessionController.Credentials(
 				username: testUser.username, password: "test-password"))
 
 		let response = try await app.queryGql(

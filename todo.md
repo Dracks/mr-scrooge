@@ -12,24 +12,19 @@
 * [ ] Add translations
 * [ ] Save of a new graph is not redirecting to the edition of the graph once get the new id
 * [x] Imports missing the import raw data to get the errors
-
-# Server tasks (nestjs)
-* [x] graphs
-  * [x] Modify graph
-  * [x] Create graph
-  * [x] Add validations on the selected labels
+* [ ] graphs
+  * [ ] Fix ui
 * [ ] Imports
-  * [ ] Import caixa enginyers
-  * [x] Import n26
-  * [x] Import commerzbank
-  * [ ] Import qif
+  * [ ] Fix ui
 * [ ] Bank transactions
-  * [ ] new transactions are applied with the rules engine
+  * [ ] Fix ui
 * [ ] labels
-  * [ ] create label
-  * [ ] modify label
+  * [ ] Fix ui
 * [ ] rules engine
-* [ ] import django data
+  * [ ] Fix ui
+* [ ] users
+  * [ ] Fix ui
+
 
 # Server tasks (swift)
 * [ ] graphs

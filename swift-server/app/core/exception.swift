@@ -1,6 +1,7 @@
 import GraphQL
 
 class Exception: Error, CustomStringConvertible {
+
 	let errorCode: ErrorCode
 	let context: [String: Any]
 	var allContext: [String: Any] {

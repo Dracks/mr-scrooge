@@ -1,0 +1,1192 @@
+openapi: 3.0.0
+info:
+  title: Mr Scrooge API
+  version: 0.0.0
+tags:
+  - name: session
+  - name: profile
+  - name: bank-transactions
+  - name: labels
+  - name: graphs
+  - name: imports
+paths:
+  /bank-transactions:
+    get:
+      operationId: ApiBankTransactions_list
+      parameters:
+        - name: groupIds
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/UUID'
+          explode: false
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int16
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BankTransaction'
+                  next:
+                    type: string
+      tags:
+        - bank-transactions
+  /bank-transactions/{transactionId}/label/{labelId}:
+    post:
+      operationId: ApiBankTransactions_linkLabel
+      description: Link a label to a transaction
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+        - name: labelId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankTransaction'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/NotFoundLabel'
+                  - $ref: '#/components/schemas/NotFoundBankTransaction'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - bank-transactions
+    delete:
+      operationId: ApiBankTransactions_unlinkLabel
+      description: Remove a label from a transaction
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+        - name: labelId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankTransaction'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - bank-transactions
+  /graphs:
+    get:
+      operationId: ApiGraphs_list
+      parameters:
+        - name: graphIds
+          in: query
+          required: false
+          schema:
+            type: array
+            items: {}
+          explode: false
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 100
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Graph'
+                  next:
+                    type: string
+      tags:
+        - graphs
+    post:
+      operationId: ApiGraphs_new
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Graph'
+        '401':
+          description: Unauthorized, usually when using a group that the user doesn't have access to
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidGroupOwnerId'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundLabels'
+      tags:
+        - graphs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GraphParam'
+  /graphs/{id}:
+    patch:
+      operationId: ApiGraphs_update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Graph'
+        '401':
+          description: Unauthorized, usually when using a group that the user doesn't have access to
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidGroupOwnerId'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/NotFoundLabels'
+                  - $ref: '#/components/schemas/Error'
+      tags:
+        - graphs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GraphParamUpdate'
+    delete:
+      operationId: ApiGraphs_delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: boolean
+      tags:
+        - graphs
+  /groups:
+    get:
+      operationId: ApiGroup_list
+      parameters:
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int16
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserGroup'
+      tags:
+        - profile
+    post:
+      operationId: ApiGroup_create
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroup'
+      tags:
+        - profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserGroup'
+  /groups/orphaned:
+    get:
+      operationId: ApiGroup_listOrphaned
+      description: List all groups that are not assigned to a user
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserGroup'
+      tags:
+        - profile
+  /groups/{id}:
+    delete:
+      operationId: ApiGroup_delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+      tags:
+        - profile
+  /imports:
+    post:
+      operationId: ApiImports_upload
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileImport'
+        '401':
+          description: Unauthorized, usually when using a group that the user doesn't have access to
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidGroupOwnerId'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - imports
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UploadDataMultiPart'
+    get:
+      operationId: ApiImports_list
+      parameters:
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int16
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FileImport'
+                  next:
+                    type: string
+      tags:
+        - imports
+  /imports/parsers:
+    get:
+      operationId: ApiImports_parserTypes
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListFileParsers'
+      tags:
+        - imports
+  /imports/{id}:
+    delete:
+      operationId: ApiImports_delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: boolean
+      tags:
+        - imports
+  /labels:
+    get:
+      operationId: ApiLabels_list
+      parameters:
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int16
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Label'
+                  next:
+                    type: string
+      tags:
+        - labels
+    post:
+      operationId: ApiLabels_create
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Label'
+      tags:
+        - labels
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLabel'
+  /profiles:
+    post:
+      operationId: ApiProfile_create
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+      tags:
+        - profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BaseUserData'
+    get:
+      operationId: ApiProfile_get
+      parameters:
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int16
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserProfile'
+                  next:
+                    type: string
+      tags:
+        - profile
+  /profiles/{id}:
+    patch:
+      operationId: ApiProfile_update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+      tags:
+        - profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  $ref: '#/components/schemas/BaseUserDataUpdate'
+    delete:
+      operationId: ApiProfile_delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: boolean
+      tags:
+        - profile
+  /profiles/{id}/group/{groupId}:
+    delete:
+      operationId: ApiProfile_deleteGroup
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+      tags:
+        - profile
+    post:
+      operationId: ApiProfile_addGroup
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+      tags:
+        - profile
+  /session:
+    post:
+      operationId: ApiSession_login
+      description: Login
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidCredentials'
+      tags:
+        - session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCredentials'
+    get:
+      operationId: ApiSession_me
+      description: Check if the user is logged in
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckMyProfile'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - session
+    delete:
+      operationId: ApiSession_logout
+      description: Logout
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: boolean
+      tags:
+        - session
+components:
+  schemas:
+    BankTransaction:
+      type: object
+      required:
+        - id
+        - groupOwnerId
+        - movementName
+        - date
+        - value
+        - kind
+        - labelIds
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        groupOwnerId:
+          $ref: '#/components/schemas/UUID'
+        movementName:
+          type: string
+        date:
+          $ref: '#/components/schemas/DateOnly'
+        dateValue:
+          $ref: '#/components/schemas/DateOnly'
+        details:
+          type: string
+        value:
+          type: number
+          format: decimal
+        kind:
+          type: string
+        description:
+          type: string
+        labelIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
+    BaseUserData:
+      type: object
+      required:
+        - username
+        - email
+        - isActive
+        - isAdmin
+        - defaultGroupId
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        isActive:
+          type: boolean
+        isAdmin:
+          type: boolean
+        defaultGroupId:
+          $ref: '#/components/schemas/UUID'
+    BaseUserDataUpdate:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        isActive:
+          type: boolean
+        isAdmin:
+          type: boolean
+        defaultGroupId:
+          $ref: '#/components/schemas/UUID'
+    CheckMyProfile:
+      oneOf:
+        - $ref: '#/components/schemas/GetMyProfile'
+        - $ref: '#/components/schemas/NotIdentified'
+      discriminator:
+        propertyName: user
+        mapping:
+          identified: '#/components/schemas/GetMyProfile'
+          anonymous: '#/components/schemas/NotIdentified'
+    CreateLabel:
+      type: object
+      required:
+        - name
+        - groupOwnerId
+      properties:
+        name:
+          type: string
+        groupOwnerId:
+          $ref: '#/components/schemas/UUID'
+    Date:
+      type: string
+      format: date-time
+    DateOnly:
+      type: string
+      format: date
+    Error:
+      type: object
+      required:
+        - message
+        - code
+      properties:
+        message:
+          type: string
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+    ErrorCode:
+      type: string
+      description: something
+    FileImport:
+      type: object
+      required:
+        - id
+        - createdAt
+        - description
+        - fileName
+        - groupOwnerId
+        - kind
+        - status
+        - context
+        - rows
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        createdAt:
+          $ref: '#/components/schemas/Date'
+        description:
+          type: string
+        fileName:
+          type: string
+        groupOwnerId:
+          $ref: '#/components/schemas/UUID'
+        kind:
+          type: string
+        status:
+          $ref: '#/components/schemas/ImportStatus'
+        context:
+          type: string
+          nullable: true
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileImportTransaction'
+    FileImportTransaction:
+      type: object
+      required:
+        - movementName
+        - date
+        - value
+      properties:
+        movementName:
+          type: string
+        date:
+          type: string
+        dateValue:
+          type: string
+        details:
+          type: string
+        value:
+          type: number
+          format: decimal
+        description:
+          type: string
+        message:
+          type: string
+        transactionId:
+          $ref: '#/components/schemas/UUID'
+    FileParserType:
+      type: object
+      required:
+        - name
+        - fileNameRegex
+      properties:
+        name:
+          type: string
+        fileNameRegex:
+          type: string
+    GetMyProfile:
+      type: object
+      required:
+        - user
+        - profile
+      properties:
+        user:
+          type: string
+          enum:
+            - identified
+        profile:
+          $ref: '#/components/schemas/UserProfile'
+    Graph:
+      type: object
+      required:
+        - id
+        - groupOwnerId
+        - name
+        - kind
+        - dateRange
+        - group
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        groupOwnerId:
+          $ref: '#/components/schemas/UUID'
+        name:
+          type: string
+        kind:
+          $ref: '#/components/schemas/GraphKind'
+        labelFilterId:
+          $ref: '#/components/schemas/UUID'
+        dateRange:
+          $ref: '#/components/schemas/GraphDateRange'
+        group:
+          $ref: '#/components/schemas/Group'
+        horizontalGroup:
+          $ref: '#/components/schemas/HorizontalGroup'
+    GraphDateRange:
+      type: string
+      enum:
+        - all
+        - halfYear
+        - oneMonth
+        - oneYear
+        - sixYears
+        - twoYears
+    GraphGroupType:
+      type: string
+      enum:
+        - day
+        - labels
+        - month
+        - sign
+        - year
+    GraphKind:
+      type: string
+      enum:
+        - bar
+        - line
+        - pie
+    GraphParam:
+      type: object
+      required:
+        - groupOwnerId
+        - name
+        - kind
+        - dateRange
+        - group
+      properties:
+        groupOwnerId:
+          $ref: '#/components/schemas/UUID'
+        name:
+          type: string
+        kind:
+          $ref: '#/components/schemas/GraphKind'
+        labelFilterId:
+          $ref: '#/components/schemas/UUID'
+        dateRange:
+          $ref: '#/components/schemas/GraphDateRange'
+        group:
+          $ref: '#/components/schemas/Group'
+        horizontalGroup:
+          $ref: '#/components/schemas/HorizontalGroup'
+    GraphParamUpdate:
+      type: object
+      properties:
+        groupOwnerId:
+          $ref: '#/components/schemas/UUID'
+        name:
+          type: string
+        kind:
+          $ref: '#/components/schemas/GraphKind'
+        labelFilterId:
+          $ref: '#/components/schemas/UUID'
+        dateRange:
+          $ref: '#/components/schemas/GraphDateRange'
+        group:
+          $ref: '#/components/schemas/GroupUpdate'
+        horizontalGroup:
+          $ref: '#/components/schemas/HorizontalGroupUpdate'
+    Group:
+      type: object
+      required:
+        - group
+        - hideOthers
+        - labels
+      properties:
+        group:
+          $ref: '#/components/schemas/GraphGroupType'
+        hideOthers:
+          type: boolean
+          nullable: true
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
+          nullable: true
+    GroupUpdate:
+      type: object
+      properties:
+        group:
+          $ref: '#/components/schemas/GraphGroupType'
+        hideOthers:
+          type: boolean
+          nullable: true
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
+          nullable: true
+    HorizontalGroup:
+      type: object
+      required:
+        - group
+        - hideOthers
+        - labels
+        - accumulate
+      properties:
+        group:
+          $ref: '#/components/schemas/GraphGroupType'
+        hideOthers:
+          type: boolean
+          nullable: true
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
+          nullable: true
+        accumulate:
+          type: boolean
+          nullable: true
+    HorizontalGroupUpdate:
+      type: object
+      properties:
+        group:
+          $ref: '#/components/schemas/GraphGroupType'
+        hideOthers:
+          type: boolean
+          nullable: true
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
+          nullable: true
+        accumulate:
+          type: boolean
+          nullable: true
+    ImportStatus:
+      type: string
+      enum:
+        - ok
+        - warning
+        - error
+    InvalidCredentials:
+      type: object
+      required:
+        - details
+      properties:
+        details:
+          type: string
+    InvalidGroupOwnerId:
+      type: object
+      required:
+        - message
+        - code
+        - validGroupOwners
+      properties:
+        message:
+          type: string
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        validGroupOwners:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
+      description: Unauthorized, usually when using a group that the user doesn't have access to
+    Label:
+      type: object
+      required:
+        - id
+        - name
+        - groupOwnerId
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        name:
+          type: string
+        groupOwnerId:
+          $ref: '#/components/schemas/UUID'
+    ListFileParsers:
+      type: object
+      required:
+        - parsers
+      properties:
+        parsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileParserType'
+    NotFoundBankTransaction:
+      type: object
+      required:
+        - message
+        - code
+        - bankTransactionSuplied
+      properties:
+        message:
+          type: string
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        bankTransactionSuplied:
+          $ref: '#/components/schemas/UUID'
+    NotFoundLabel:
+      type: object
+      required:
+        - message
+        - code
+        - labelSuplied
+      properties:
+        message:
+          type: string
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        labelSuplied:
+          $ref: '#/components/schemas/UUID'
+    NotFoundLabels:
+      type: object
+      required:
+        - message
+        - code
+        - validLabels
+        - invalidLabels
+      properties:
+        message:
+          type: string
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        validLabels:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
+        invalidLabels:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
+    NotIdentified:
+      type: object
+      required:
+        - user
+      properties:
+        user:
+          type: string
+          enum:
+            - anonymous
+    UUID:
+      type: string
+      format: uuid
+    UploadDataMultiPart:
+      type: object
+      required:
+        - kind
+        - file
+      properties:
+        kind:
+          type: string
+        file:
+          type: string
+          format: binary
+    UserCredentials:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    UserGroup:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        name:
+          type: string
+    UserProfile:
+      type: object
+      required:
+        - id
+        - username
+        - email
+        - isActive
+        - isAdmin
+        - defaultGroupId
+        - groups
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        username:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        isActive:
+          type: boolean
+        isAdmin:
+          type: boolean
+        defaultGroupId:
+          $ref: '#/components/schemas/UUID'
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserGroup'
+servers:
+  - url: /api
+    description: Development
+    variables: {}

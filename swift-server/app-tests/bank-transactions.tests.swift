@@ -57,7 +57,7 @@ final class BankTransactionTests: AbstractBaseTestsClass {
 
 		// Test basic pagination
 		let identifiedHeaders = try await app.getHeaders(
-			forUser: SessionTypes.Credentials(
+			forUser: SessionController.Credentials(
 				username: "test-user", password: "test-password"))
 		let res = try await app.queryGql(
 			GraphQLRequest(
@@ -103,7 +103,7 @@ final class BankTransactionTests: AbstractBaseTestsClass {
 		let _ = try await createTestBankTransactions()
 
 		let identifiedHeaders = try await app.getHeaders(
-			forUser: SessionTypes.Credentials(
+			forUser: SessionController.Credentials(
 				username: "test-user", password: "test-password"))
 
 		let cursor = try await getCursor(headers: identifiedHeaders)

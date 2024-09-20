@@ -17,7 +17,7 @@ final class N26ImporterTests: BaseImporterTests {
 
 		let filePath = getTestFile(file: "test_files/n26_es.csv")
 
-		try await importerService.importFromFile(
+        let _ = try await importerService.importFromFile(
 			on: db, groupOwnerId: groupOwnerId, key: "n26/es",
 			fileName: "n26-file.csv", filePath: filePath)
 
@@ -43,7 +43,7 @@ final class N26ImporterTests: BaseImporterTests {
 
 		let filePath = "invalid"
 
-		try await importerService.importFromFile(
+        let _ = try await importerService.importFromFile(
 			on: db, groupOwnerId: groupOwnerId, key: "n26/es",
 			fileName: "n26-file.csv", filePath: filePath)
 

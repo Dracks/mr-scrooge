@@ -16,6 +16,9 @@ let package = Package(
 		.package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.0.0"),
 		.package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0"),
 
+		// Swagger
+		.package(url: "https://github.com/Dracks/VaporToOpenAPI.git", branch: "main"),
+
 		// 🚀 A GraphQL server library for Swift
 		.package(url: "https://github.com/alexsteinerde/graphql-kit.git", from: "3.0.0"),
 		.package(url: "https://github.com/alexsteinerde/graphiql-vapor.git", from: "2.0.0"),
@@ -28,7 +31,11 @@ let package = Package(
 		.package(url: "https://github.com/yaslab/CSV.swift.git", from: "2.5.0"),
 
 		// Tools
-		.package(url: "https://github.com/apple/swift-format", from: "510.1.0"),
+		.package(url: "https://github.com/swiftlang/swift-format", from: "510.1.0"),
+
+		// Dependencies from externals
+		// .package(url: "https://github.com/Dracks/SwiftOpenAPI.git", branch: "main"),
+		//.package(url: "https://github.com/pointfreeco/swift-custom-dump.git", from: "0.10.3"),
 	],
 	targets: [
 		.executableTarget(
@@ -46,6 +53,7 @@ let package = Package(
 				.product(name: "GraphiQLVapor", package: "graphiql-vapor"),
 				"SwiftSoup",
 				.product(name: "CSV", package: "CSV.swift"),
+				"VaporToOpenAPI",
 			],
 			path: "app",
 			swiftSettings: [

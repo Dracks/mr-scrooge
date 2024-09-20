@@ -117,29 +117,38 @@ extension Application {
 		)
 	}
 
-	func getHeaders(forUser credentials: SessionTypes.Credentials) async throws -> HTTPHeaders {
+	func sendRequest(
+		_ method: HTTPMethod,
+		_ path: String,
+		body: any Content,
+		headers immutableHeaders: HTTPHeaders = [:],
+		file: StaticString = #file,
+		line: UInt = #line,
+		beforeRequest: (inout XCTHTTPRequest) async throws -> Void = { _ in }
+	) async throws -> XCTHTTPResponse {
+		var headers = immutableHeaders
+		headers.add(name: "content-type", value: "application/json")
+		return try await self.sendRequest(
+			method, path, headers: headers,
+			body: ByteBuffer(data: try JSONEncoder().encode(body)),
+			file: file, line: line,
+			beforeRequest: beforeRequest
+		)
+	}
+
+    func getHeaders(forUser credentials: SessionController.Credentials) async throws -> HTTPHeaders {
 		var headers: HTTPHeaders = [:]
-		let cookie = try await loginWithUser(
-			user: credentials.username, password: credentials.password)
+		let cookie = try await loginWithUser(credentials: credentials)
 		headers.add(name: "cookie", value: cookie)
 		return headers
 	}
 
-	func loginWithUser(user: String, password: String) async throws -> String {
-		let mutation = """
-			mutation($username: String!, $password: String!) {
-			  login(credentials: { username: $username, password: $password }) {
-			    __typename
-			    ... on MyProfile {
-			      username
-			    }
-			  }
-			}
-			"""
-		let res = try await self.queryGql(
-			GraphQLRequest(
-				query: mutation,
-				variables: toVars(["username": user, "password": password])))
+    func loginWithUser(user: String, password: String) async throws -> String {
+        return try await loginWithUser(credentials: SessionController.Credentials(username: user, password: password))
+    }
+    
+    func loginWithUser(credentials: SessionController.Credentials) async throws -> String {
+        let res = try await self.sendRequest(.POST, "/api/session/login", body: credentials)
 		XCTAssertEqual(res.headers.contains(name: "set-cookie"), true)
 		let cookiesList: [String] = res.headers["set-cookie"]
 		let cookie: String = cookiesList[0]
