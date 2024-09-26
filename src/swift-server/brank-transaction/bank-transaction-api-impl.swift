@@ -6,12 +6,6 @@ import Vapor
 let bankTransactionService = BankTransactionService()
 extension MrScroogeAPIImpl {
 
-	func ApiBankTransactions_unlinkLabel(
-		_ input: Operations.ApiBankTransactions_unlinkLabel.Input
-	) async throws -> Operations.ApiBankTransactions_unlinkLabel.Output {
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
 	func ApiBankTransactions_linkLabel(_ input: Operations.ApiBankTransactions_linkLabel.Input)
 		async throws -> Operations.ApiBankTransactions_linkLabel.Output
 	{
@@ -66,6 +60,55 @@ extension MrScroogeAPIImpl {
 							message:
 								"The transaction and the label should be in the same group owner Id",
 							code: ApiError.API10002.rawValue))))
+		}
+	}
+
+	func ApiBankTransactions_unlinkLabel(
+		_ input: Operations.ApiBankTransactions_unlinkLabel.Input
+	) async throws -> Operations.ApiBankTransactions_unlinkLabel.Output {
+		let user = try await getUser(fromRequest: request)
+		let validGroupsIds = try user.groups.map { return try $0.requireID() }
+		guard let transactionId = UUID(uuidString: input.path.transactionId),
+			let labelId = UUID(uuidString: input.path.labelId)
+		else {
+			return .undocumented(statusCode: 400, UndocumentedPayload())
+		}
+		let unlinkState = try await bankTransactionService.unlink(on: request.db, transaction: transactionId, fromLabel: labelId, withValidGroups: validGroupsIds)
+		switch unlinkState {
+		case .ok:
+			let (transaction, labelIds) = try await bankTransactionService.getAll(
+				on: request.db, groupIds: validGroupsIds,
+				transactionIds: [transactionId])
+			return .ok(
+				.init(
+					body: .json(
+						.init(
+							bankTransactionId: transactionId,
+							bankTransaction: transaction.list.first!,
+							labelIds: labelIds[transactionId]!))))
+		case .transactionNotFound:
+		return .notFound(
+			.init(
+				body: .json(
+					.init(
+						value2: .init(
+							message: "Transaction not found",
+							code: ApiError.API10001.rawValue,
+							bankTransactionSuplied:
+								transactionId.uuidString)))))
+		case .linkNotFound:
+		return .notFound(
+			.init(
+				body: .json(
+					.init(
+						value1: .init(
+							message: "There is not link between transaction and label",
+							code: ApiError.API10003.rawValue
+						)
+					)
+				)
+			)
+		)
 		}
 	}
 

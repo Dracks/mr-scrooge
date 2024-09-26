@@ -56,5 +56,5 @@ interface ApiBankTransactions {
   unlinkLabel(
     @path transactionId: UUID,
     @path labelId: UUID,
-  ): BankTransaction | NotFound;
+  ): BankTransaction | NotFound | NotFoundBankTransaction;
 }

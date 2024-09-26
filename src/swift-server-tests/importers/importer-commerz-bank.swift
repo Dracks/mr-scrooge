@@ -11,12 +11,12 @@ final class CommerzBankEnImporterTests: BaseImporterTests {
 		let groupOwnerId = try self.group.requireID()
 		let db = try getDb()
 
-		let filePath = try XCTUnwrap(Bundle.module.url(forResource: "commerz_bank", withExtension: "CSV"))
-        
+		let filePath : URL = try XCTUnwrap(Bundle.module.url(forResource: "commerz_bank", withExtension: "CSV"))
+
 
         let _ = try await importerService.importFromFile(
 			on: db, groupOwnerId: groupOwnerId, key: "commerz-bank/en",
-            fileName: "CommerzBank", filePath: filePath.path())
+            fileName: "CommerzBank", filePath: filePath.path)
 
 		let reports = try await statusReportsService.getAll(
 			on: db, groupIds: [groupOwnerId])
