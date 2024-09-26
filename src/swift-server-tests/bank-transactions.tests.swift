@@ -189,4 +189,47 @@ final class BankTransactionTests: AbstractBaseTestsClass {
 		//XCTAssertContains(data.results.first?.labelIds, labels[0].requireID().uuidString)
 	}
 
+
+
+	func testUnlinkLabel() async throws {
+			let app = try getApp()
+
+			let transactions = BankTransactionFactory().createSequence(2) { transaction in
+				transaction.$groupOwner.id = self.testGroup.id!
+				return transaction
+			}
+			for transaction in transactions {
+				try await transaction.save(on: app.db)
+				try await transaction.$labels.attach(labels[3], on: app.db) {pivot in
+					pivot.linkReason = .automatic
+				}
+			}
+			let transactionIds = try transactions.map { try $0.requireID() }
+
+			let identifiedHeaders = try await app.getHeaders(
+				forUser: Components.Schemas.UserCredentials(
+					username: "test-user", password: "test-password"))
+
+			let createRes = try await app.sendRequest(
+				.DELETE,
+				"/api/bank-transactions/\(transactionIds.first!.uuidString)/label/\(labels[3].requireID().uuidString)",
+				headers: identifiedHeaders)
+			XCTAssertEqual(createRes.status, .ok)
+
+			let res = try await app.sendRequest(
+				.GET,
+				"/api/bank-transactions?limit=5&groupIds[]=\(testGroup.requireID().uuidString)",
+				headers: identifiedHeaders)
+
+			XCTAssertEqual(res.status, .ok)
+			let data = try res.content.decode(
+				Operations.ApiBankTransactions_list.Output.Ok.Body.jsonPayload.self)
+
+			XCTAssertEqual(data.results.last?.id, transactionIds.first?.uuidString)
+			XCTAssertEqual(data.results.first?.labelIds.count, 1)
+			XCTAssertEqual(data.results.last?.labelIds.count, 0)
+
+			//XCTAssertContains(data.results.first?.labelIds, labels[0].requireID().uuidString)
+		}
+
 }

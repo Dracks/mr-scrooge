@@ -118,7 +118,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                anyOf:
+                  - $ref: '#/components/schemas/Error'
+                  - $ref: '#/components/schemas/NotFoundBankTransaction'
       tags:
         - bank-transactions
   /graphs:

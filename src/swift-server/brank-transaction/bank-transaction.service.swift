@@ -160,4 +160,36 @@ class BankTransactionService {
 
 		return .ok
 	}
+
+	enum UnlinkReturn {
+		case ok
+		case transactionNotFound
+		case linkNotFound
+	}
+
+	func unlink(
+		on db: Database, transaction transactionId: UUID, fromLabel labelId: UUID,
+		withValidGroups groupIds: [UUID]
+	) async throws -> UnlinkReturn{
+		let transaction = try await BankTransaction.query(on: db).filter(
+			\.$id == transactionId
+		).filter(\.$groupOwner.$id ~~ groupIds).first()
+		guard let _ = transaction else {
+			return .transactionNotFound
+		}
+
+		let labelPivot = try await LabelTransaction.query(on: db).filter(
+			\.$label.$id == labelId
+		).filter(\.$transaction.$id == transactionId).first()
+		if let labelPivot = labelPivot {
+			if labelPivot.linkReason == .automatic {
+				labelPivot.linkReason = .manualDisabled
+				try await labelPivot.save(on: db)
+				return .ok
+			} else {
+				try await labelPivot.delete(on: db)
+			}
+		}
+		return .linkNotFound
+	}
 }
