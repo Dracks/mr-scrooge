@@ -29,6 +29,6 @@ model NotFoundLabel {
 @route("/labels")
 @tag("labels")
 interface ApiLabels {
-  @get list(@query cursor?: string, @query limit?: int16): PageList<Label>;
-  @post create(...CreateLabel): Label;
+  @get list(@query cursor?: string, @query limit?: uint16): PageList<Label>;
+  @post create(...CreateLabel): Label | InvalidGroupOwnerId;
 }

@@ -23,3 +23,14 @@ class CursorHandler<T, R: Hashable> {
 		return fields.compactMap { data[$0] }.joined(separator: ":")
 	}
 }
+
+struct PageQuery {
+    var limit: Int = 100
+    var cursor: String? = nil
+    
+    func getListWithCursor<T>(data: [T], generateCursor: (T)->String) -> ListWithCursor<T> {
+        let hasMore = data.count >= limit
+
+        return ListWithCursor(list: data, next: hasMore ? generateCursor(data.last!) : nil)
+    }
+}

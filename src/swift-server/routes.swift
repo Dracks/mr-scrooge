@@ -50,42 +50,6 @@ struct MrScroogeAPIImpl {
 		return .undocumented(statusCode: 501, UndocumentedPayload())
 	}
 
-	func ApiLabels_create(_ input: Operations.ApiLabels_create.Input) async throws
-		-> Operations.ApiLabels_create.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiLabels_list(_ input: Operations.ApiLabels_list.Input) async throws
-		-> Operations.ApiLabels_list.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiGraphs_delete(_ input: Operations.ApiGraphs_delete.Input) async throws
-		-> Operations.ApiGraphs_delete.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiGraphs_update(_ input: Operations.ApiGraphs_update.Input) async throws
-		-> Operations.ApiGraphs_update.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiGraphs_new(_ input: Operations.ApiGraphs_new.Input) async throws
-		-> Operations.ApiGraphs_new.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiGraphs_list(_ input: Operations.ApiGraphs_list.Input) async throws
-		-> Operations.ApiGraphs_list.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
 	func ApiProfile_deleteGroup(_ input: Operations.ApiProfile_deleteGroup.Input) async throws
 		-> Operations.ApiProfile_deleteGroup.Output
 	{
@@ -133,11 +97,17 @@ struct MrScroogeAPIImpl {
 	{
 		return .undocumented(statusCode: 501, UndocumentedPayload())
 	}
+    
+    func ApiImports_rollbackImport(_ input: Operations.ApiImports_rollbackImport.Input) async throws -> Operations.ApiImports_rollbackImport.Output {
+        return .undocumented(statusCode: 501, UndocumentedPayload())
+    }
+    
+    func ApiImports_applyRow(_ input: Operations.ApiImports_applyRow.Input) async throws -> Operations.ApiImports_applyRow.Output {
+        return .undocumented(statusCode: 501, UndocumentedPayload())
+    }
 }
 
-extension MrScroogeAPIImpl: APIProtocol {
-    
-}
+extension MrScroogeAPIImpl: APIProtocol {}
 
 func routes(_ app: Application) throws {
 

@@ -1,7 +1,7 @@
 import Fluent
 import Vapor
 
-struct ListWithCursor<T: Content> {
+struct ListWithCursor<T> {
 	let list: [T]
 	let next: String?
 }
@@ -33,13 +33,13 @@ class BankTransactionService {
 
 	func getAll(
 		on db: Database, groupIds: [UUID], transactionIds: [UUID]? = nil,
-		cursor: String? = nil, limit: Int = 100,
+        pageQuery: PageQuery = .init(),
 		query: [String: Any] = [:]
 	) async throws -> (ListWithCursor<BankTransaction>, [UUID: [UUID]]) {
 		var query = BankTransaction.query(on: db)
 			.filter(\.$groupOwner.$id ~~ groupIds)
 
-		if let cursor = cursor {
+        if let cursor = pageQuery.cursor {
 			let cursorData = try self.cursorHandler.parse(cursor)
 			if let dateString = cursorData["date"], let date = DateOnly(dateString),
 				let idString = cursorData["id"], let id = UUID(uuidString: idString)
@@ -63,26 +63,26 @@ class BankTransactionService {
 			// .with(\.$labels)
 			.sort(\.$_date, .descending)
 			.sort(\.$id, .descending)
-			.limit(limit)
+            .limit(pageQuery.limit)
 			.all()
 
-		let hasMore = data.count >= limit
+		/*let hasMore = data.count >= limit
 		let cursorElement = hasMore ? data.last : nil
 		let nextCursor = cursorElement.map {
 			self.cursorHandler.stringify([
 				"date": $0.date.toString(),
 				"id": $0.id?.uuidString ?? "",
 			])
-		}
+		}*/
 
 		let relations = try await getActiveLabels(
 			on: db, transactionsIds: data.map { try $0.requireID() })
 
 		return (
-			ListWithCursor(
-				list: data,
-				next: nextCursor
-			), relations
+            pageQuery.getListWithCursor(data: data, generateCursor: {cursorHandler.stringify([
+                "date": $0.date.toString(),
+                "id": $0.id?.uuidString ?? "",
+            ])}), relations
 		)
 
 	}

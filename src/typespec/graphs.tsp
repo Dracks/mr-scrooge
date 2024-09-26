@@ -69,12 +69,12 @@ model NotFoundLabels {
 @tag("graphs")
 @route("/graphs")
 interface ApiGraphs {
+  @post create(...GraphParam): {@statusCode _: 201, ...Graph} | InvalidGroupOwnerId | NotFoundLabels;
   @get list(
-    @query graphIds?: [UUID],
+    @query graphIds?: UUID[],
     @query cursor?: string,
-    @query limit?: int32 = 100,
+    @query limit?: uint16 = 100,
   ): PageList<Graph>;
-  @post new(...GraphParam): Graph | InvalidGroupOwnerId | NotFoundLabels;
-  @route("/{id}") @patch update(@path id: UUID, ...GraphParam): Graph | InvalidGroupOwnerId | NotFoundLabels | NotFound;
-  @route("/{id}") @delete delete(@path id: UUID): boolean;
+  @route("/{id}") @put update(@path id: UUID, ...GraphParam): Graph | InvalidGroupOwnerId | NotFoundLabels | NotFound;
+  @route("/{id}") @delete delete(@path id: UUID): boolean | NotFound;
 }

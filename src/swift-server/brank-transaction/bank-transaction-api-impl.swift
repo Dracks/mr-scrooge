@@ -85,8 +85,7 @@ extension MrScroogeAPIImpl {
 			return .undocumented(statusCode: 400, UndocumentedPayload())
 		}
 		let (data, labelIds) = try await bankTransactionService.getAll(
-			on: req.db, groupIds: groupIds, cursor: input.query.cursor,
-			limit: input.query.limit ?? 100)
+            on: req.db, groupIds: groupIds, pageQuery: .init(limit: input.query.limit ?? 100, cursor: input.query.cursor))
 		let results = try data.list.map { movement in
 			let movementId = try movement.requireID()
 			let labels: [UUID] = labelIds[movementId]!

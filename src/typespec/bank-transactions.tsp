@@ -40,7 +40,7 @@ interface ApiBankTransactions {
   @get list(
     @query groupIds?: UUID[],
     @query cursor?: string,
-    @query limit?: int16,
+    @query limit?: uint16=100,
   ): PageList<BankTransaction>;
   @doc("Link a label to a transaction")
   @route("{transactionId}/label/{labelId}")

@@ -5,6 +5,8 @@ enum ErrorCode: String, CaseIterable {
 
 enum ApiError: String {
 	case API10000, API10001, API10002
+    case API10004, API10005, API10006, API10007, API10008, API10009
+    case API10010
 }
 
 class ErrorInfo {

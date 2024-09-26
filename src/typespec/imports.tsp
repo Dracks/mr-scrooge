@@ -16,6 +16,7 @@ enum ImportStatus {
   error,
 }
 
+// Todo: add the groupOwnerId
 model UploadData {
   kind: string;
   file: bytes;
@@ -61,4 +62,8 @@ interface ApiImports {
   @get list(@query cursor?: string, @query limit?: int16): PageList<FileImport>;
   @route("parsers") @get parserTypes(): ListFileParsers;
   @delete delete(@path id: UUID): boolean;
+  @doc("This will allow to delete a transaction using the file-import rowId")
+  @route("{id}/rollback/{rowId}") @delete rollbackImport(@path id: UUID, @path rowId: UUID): boolean;
+  @doc("This will allow to create a transaction from the file-import rowId")
+  @route("{id}/apply/{rowId}") @post applyRow(@path id: UUID, @path rowId: UUID): boolean;
 }

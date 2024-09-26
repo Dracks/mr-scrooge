@@ -107,7 +107,7 @@ class GraphTests: AbstractBaseTestsClass {
 				username: testUser.username, password: "test-password"))
 
 		let response = try await app.sendRequest(
-			.GET, "/api/graphs/?graphIds[]=\(testIds["graph"]!)",
+			.GET, "/api/graphs/?graphIds=\(testIds["graph"]!)",
 			headers: headers)
 
 		XCTAssertEqual(response.status, .ok)
@@ -142,19 +142,12 @@ class GraphTests: AbstractBaseTestsClass {
 		let app = try getApp()
 
 		let updateGraph = Components.Schemas.GraphParam(
-            groupOwnerId: testGroup.id!.uuidString, name: "New Graph", kind: .bar, dateRange: .all,
-			group: .init(group: .month, hideOthers: false, labels: nil))
-		/*let variables = try map(
-			from: [
-				"name": "New Graph",
-				"groupOwnerId": testGroup.id!,
-				"dateRange": "all",
-				"kind": "bar",
-				"group": [
-					"group": "month",
-					"hideOthers": false,
-				].toOrdered(),
-			].toOrdered())*/
+            groupOwnerId: testGroup.id!.uuidString, 
+            name: "New Graph",
+            kind: .bar,
+            dateRange: .all,
+			group: .init(group: .month, hideOthers: false, labels: nil)
+        )
 
 		let headers = try await app.getHeaders(
 			forUser: .init(
@@ -181,20 +174,11 @@ class GraphTests: AbstractBaseTestsClass {
 		let app = try getApp()
 
 		let updateGraph = Components.Schemas.GraphParam(
-            groupOwnerId: testGroup2.id!.uuidString, name: "New Graph", kind: .bar, dateRange: .all,
+            groupOwnerId: testGroup2.id!.uuidString, 
+            name: "New Graph",
+            kind: .bar,
+            dateRange: .all,
 			group: .init(group: .month, hideOthers: false, labels: nil))
-		/*let variables = try map(
-			from: [
-				"name": "Invalid Graph",
-				"groupOwnerId": try testGroup2.requireID(),  // Invalid owner ID
-				"dateRange": "all",
-				"kind": "bar",
-				"group": [
-					"group": "month",
-					"hideOthers": false,
-				].toOrdered(),
-			].toOrdered()
-		)*/
 
 		let headers = try await app.getHeaders(
 			forUser: .init(
@@ -206,13 +190,8 @@ class GraphTests: AbstractBaseTestsClass {
 
         let data = try response.content.decode(Components.Schemas.InvalidGroupOwnerId.self)
 
-		/*
-		ToDo: check and transform when needed
-		let createdGraph = data.data?["newGraph"]
-		XCTAssertEqual(createdGraph?["__typename"].string, "WrongOwnerId")
-		XCTAssertEqual(
-			createdGraph?["validOwners"].array!, [try map(from: testGroup.requireID())])*/
-
+        XCTAssertNotNil(data)
+        XCTAssertEqual(data.code, "API10004")
 	}
 
 	func testUpdateGraph() async throws {
@@ -224,8 +203,12 @@ class GraphTests: AbstractBaseTestsClass {
 		try await generateGraphs()
 
 		let updateGraph = Components.Schemas.GraphParam(
-            groupOwnerId: testGroup.id!.uuidString, name: "Updated Graph", kind: .line, dateRange: .halfYear,
-			group: .init(group: .labels, hideOthers: false, labels: [labels[2], labels[4]]), horizontalGroup: .init(group: .labels, hideOthers: true, labels: [labels[3], labels[5]]))
+            groupOwnerId: testGroup.id!.uuidString, 
+            name: "Updated Graph",
+            kind: .line,
+            dateRange: .halfYear,
+			group: .init(group: .labels, hideOthers: false, labels: [labels[2], labels[4]]),
+            horizontalGroup: .init(group: .labels, hideOthers: true, labels: [labels[3], labels[5]]))
 
 		/*let updatedGraph = try map(
 			from: [
@@ -250,7 +233,7 @@ class GraphTests: AbstractBaseTestsClass {
 			forUser: .init(
 				username: testUser.username, password: "test-password"))
 
-		let response = try await app.sendRequest(.PATCH, "/api/graphs/\(testIds["graph"]!)", body: updateGraph, headers: headers)
+		let response = try await app.sendRequest(.PUT, "/api/graphs/\(testIds["graph"]!)", body: updateGraph, headers: headers)
 
 		XCTAssertEqual(response.status, .ok)
 
@@ -306,7 +289,7 @@ class GraphTests: AbstractBaseTestsClass {
 			forUser: .init(
 				username: testUser.username, password: "test-password"))
 
-		let response = try await app.sendRequest(.PATCH, "/api/graphs/\(testIds["graph"]!)", body: updatedGraph, headers: headers)
+		let response = try await app.sendRequest(.PUT, "/api/graphs/\(testIds["graph"]!)", body: updatedGraph, headers: headers)
 
 		XCTAssertEqual(response.status, .notFound)
 
@@ -336,8 +319,12 @@ class GraphTests: AbstractBaseTestsClass {
 		let nonExistingGraphId = UUID()
 
 		let updateGraph = Components.Schemas.GraphParam(
-            groupOwnerId: testGroup.id!.uuidString, name: "Non-Existing Graph", kind: .line, dateRange: .halfYear,
-			group: .init(group: .labels, hideOthers: false, labels: [labels[0], labels[1]]), horizontalGroup: .init(group: .labels, hideOthers: true, labels: [labels[2], labels[3]]))
+            groupOwnerId: testGroup.id!.uuidString, 
+            name: "Non-Existing Graph",
+            kind: .line,
+            dateRange: .halfYear,
+			group: .init(group: .labels, hideOthers: false, labels: [labels[0], labels[1]]), 
+            horizontalGroup: .init(group: .labels, hideOthers: true, labels: [labels[2], labels[3]]))
 
 		/*let updatedGraph = try map(
 			from: [
@@ -362,11 +349,14 @@ class GraphTests: AbstractBaseTestsClass {
 			forUser: .init(
 				username: testUser.username, password: "test-password"))
 
-		let response = try await app.sendRequest(.PATCH, "/api/graphs/\(nonExistingGraphId)", body: updateGraph, headers: headers)
+		let response = try await app.sendRequest(.PUT, "/api/graphs/\(nonExistingGraphId)", body: updateGraph, headers: headers)
 
 		XCTAssertEqual(response.status, .notFound)
 
         let data = try response.content.decode(Components.Schemas._Error.self)
+        
+        XCTAssertNotNil(data)
+        XCTAssertEqual(data.code, "API10008")
 		/*
 		ToDo: check and transform when needed
 		let result = data.data?["updateGraph"]

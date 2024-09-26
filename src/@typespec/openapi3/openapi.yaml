@@ -33,7 +33,8 @@ paths:
           required: false
           schema:
             type: integer
-            format: int16
+            format: uint16
+            default: 100
           explode: false
       responses:
         '200':
@@ -121,54 +122,12 @@ paths:
       tags:
         - bank-transactions
   /graphs:
-    get:
-      operationId: ApiGraphs_list
-      parameters:
-        - name: graphIds
-          in: query
-          required: false
-          schema:
-            type: array
-            items: {}
-          explode: false
-        - name: cursor
-          in: query
-          required: false
-          schema:
-            type: string
-          explode: false
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-            default: 100
-          explode: false
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - results
-                properties:
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Graph'
-                  next:
-                    type: string
-      tags:
-        - graphs
     post:
-      operationId: ApiGraphs_new
+      operationId: ApiGraphs_create
       parameters: []
       responses:
-        '200':
-          description: The request has succeeded.
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
           content:
             application/json:
               schema:
@@ -193,8 +152,51 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/GraphParam'
+    get:
+      operationId: ApiGraphs_list
+      parameters:
+        - name: graphIds
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/UUID'
+          explode: false
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint16
+            default: 100
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Graph'
+                  next:
+                    type: string
+      tags:
+        - graphs
   /graphs/{id}:
-    patch:
+    put:
       operationId: ApiGraphs_update
       parameters:
         - name: id
@@ -230,7 +232,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GraphParamUpdate'
+              $ref: '#/components/schemas/GraphParam'
     delete:
       operationId: ApiGraphs_delete
       parameters:
@@ -246,6 +248,12 @@ paths:
             application/json:
               schema:
                 type: boolean
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
       tags:
         - graphs
   /groups:
@@ -420,6 +428,54 @@ paths:
                 type: boolean
       tags:
         - imports
+  /imports/{id}/apply/{rowId}:
+    post:
+      operationId: ApiImports_applyRow
+      description: This will allow to create a transaction from the file-import rowId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+        - name: rowId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: boolean
+      tags:
+        - imports
+  /imports/{id}/rollback/{rowId}:
+    delete:
+      operationId: ApiImports_rollbackImport
+      description: This will allow to delete a transaction using the file-import rowId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+        - name: rowId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: boolean
+      tags:
+        - imports
   /labels:
     get:
       operationId: ApiLabels_list
@@ -435,7 +491,7 @@ paths:
           required: false
           schema:
             type: integer
-            format: int16
+            format: uint16
           explode: false
       responses:
         '200':
@@ -465,6 +521,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Label'
+        '401':
+          description: Unauthorized, usually when using a group that the user doesn't have access to
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidGroupOwnerId'
       tags:
         - labels
       requestBody:
@@ -931,42 +993,12 @@ components:
           $ref: '#/components/schemas/Group'
         horizontalGroup:
           $ref: '#/components/schemas/HorizontalGroup'
-    GraphParamUpdate:
-      type: object
-      properties:
-        groupOwnerId:
-          $ref: '#/components/schemas/UUID'
-        name:
-          type: string
-        kind:
-          $ref: '#/components/schemas/GraphKind'
-        labelFilterId:
-          $ref: '#/components/schemas/UUID'
-        dateRange:
-          $ref: '#/components/schemas/GraphDateRange'
-        group:
-          $ref: '#/components/schemas/GroupUpdate'
-        horizontalGroup:
-          $ref: '#/components/schemas/HorizontalGroupUpdate'
     Group:
       type: object
       required:
         - group
         - hideOthers
         - labels
-      properties:
-        group:
-          $ref: '#/components/schemas/GraphGroupType'
-        hideOthers:
-          type: boolean
-          nullable: true
-        labels:
-          type: array
-          items:
-            $ref: '#/components/schemas/UUID'
-          nullable: true
-    GroupUpdate:
-      type: object
       properties:
         group:
           $ref: '#/components/schemas/GraphGroupType'
@@ -985,22 +1017,6 @@ components:
         - hideOthers
         - labels
         - accumulate
-      properties:
-        group:
-          $ref: '#/components/schemas/GraphGroupType'
-        hideOthers:
-          type: boolean
-          nullable: true
-        labels:
-          type: array
-          items:
-            $ref: '#/components/schemas/UUID'
-          nullable: true
-        accumulate:
-          type: boolean
-          nullable: true
-    HorizontalGroupUpdate:
-      type: object
       properties:
         group:
           $ref: '#/components/schemas/GraphGroupType'
