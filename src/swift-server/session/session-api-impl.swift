@@ -26,7 +26,7 @@ extension MrScroogeAPIImpl {
 		}
 
 		return .unauthorized(
-			.init(body: .json(.init(details: "User or passwrod not valid"))))
+			.init(body: .json(.init(details: "User or password not valid"))))
 	}
 
 	func ApiSession_me(_ input: Operations.ApiSession_me.Input) async throws

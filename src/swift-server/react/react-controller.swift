@@ -5,6 +5,8 @@ struct ReactContext: Content {
 	let debug: Bool
 	let staticPath: String
 	var version: String?
+	let environment: String
+	let decimalCount: UInt8
 }
 
 struct ReactController: RouteCollection {
@@ -17,7 +19,9 @@ struct ReactController: RouteCollection {
 		self.ctx = ReactContext(
 			debug: true,  // Todo: get from app env
 			staticPath: "/",
-			version: buildInfo.appVersion
+			version: buildInfo.appVersion,
+			environment: "development",
+			decimalCount: 2
 		)
 	}
 

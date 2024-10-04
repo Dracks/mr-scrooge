@@ -40,5 +40,6 @@ struct CreateUserCommand: Command {
 		try user.setPassword(pwd: password)
 		try user.save(on: context.application.db).wait()
 		try user.$groups.attach(group, on: context.application.db).wait()
+		try user.save(on: context.application.db).wait()
 	}
 }

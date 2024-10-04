@@ -5,17 +5,14 @@
         "ts",
         "tsx"
     ],
-    "rootDir": "../",
+    "rootDir": "..",
     "testRegex": ".spec.tsx?$",
     "transform": {
-        "^.+\\.tsx?$": "ts-jest"
+        "^.+\\.tsx?$": ["ts-jest", {
+          "tsconfig": "./tsconfig.json"
+        }]
     },
-    "setupFilesAfterEnv": ["<rootDir>/../config/setupTests.js"],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "jsdom",
-    "globals": {
-        "ts-jest": {
-          "tsConfig": "./config/tsconfig.json"
-        }
-    }
+    "setupFilesAfterEnv": ["<rootDir>/config/setupTests.js"],
+    "coverageDirectory": "/coverage/react-view",
+    "testEnvironment": "jsdom"
 }

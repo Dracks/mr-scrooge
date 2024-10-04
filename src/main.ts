@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
-import { ChildProcess, fork } from 'child_process';
-import { TscWatchClient } from 'tsc-watch/client';
-import webpack from 'webpack';
+// import { ChildProcess, fork } from "child_process";
+// import { TscWatchClient } from "tsc-watch/client";
+import webpack from "webpack";
 
-import WebpackConfig from '../config/webpack.config';
+import WebpackConfig from "../config/webpack5.config";
 /*
 const tsc = new TscWatchClient();
 
@@ -21,6 +21,7 @@ tsc.on('success', () => {
 tsc.start('--project', './tsconfig.server.json');
 */
 WebpackConfig.watch = true;
+WebpackConfig.mode = 'development'
 
 webpack(WebpackConfig, (err, stats) => {
     if (err) {

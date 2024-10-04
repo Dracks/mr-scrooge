@@ -97,17 +97,18 @@ struct MrScroogeAPIImpl {
 	{
 		return .undocumented(statusCode: 501, UndocumentedPayload())
 	}
-    
+
     func ApiImports_rollbackImport(_ input: Operations.ApiImports_rollbackImport.Input) async throws -> Operations.ApiImports_rollbackImport.Output {
         return .undocumented(statusCode: 501, UndocumentedPayload())
     }
-    
+
     func ApiImports_applyRow(_ input: Operations.ApiImports_applyRow.Input) async throws -> Operations.ApiImports_applyRow.Output {
         return .undocumented(statusCode: 501, UndocumentedPayload())
     }
 }
 
 extension MrScroogeAPIImpl: APIProtocol {}
+
 
 func routes(_ app: Application) throws {
 

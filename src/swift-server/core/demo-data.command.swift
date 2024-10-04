@@ -36,7 +36,7 @@ struct DemoDataCommand: Command {
 		var labelIdMap: [String: UUID] = [:]
 
 		for (label, config) in labelConfigMap {
-			let labelId = try generateTagAndTransactions(
+			let labelId = try generateLabelsAndTransactions(
 				app: app,
 				groupOwnerId: groupOwnerId,
 				label: label,
@@ -49,7 +49,7 @@ struct DemoDataCommand: Command {
 		try generateGraphs(app: app, groupOwnerId: groupOwnerId, labelIdMap: labelIdMap)
 	}
 
-	private func generateTagAndTransactions(
+	private func generateLabelsAndTransactions(
 		app: Application, groupOwnerId: UUID, label: String,
 		amountRange: ClosedRange<Double>, periodicity: String
 	) throws -> UUID {

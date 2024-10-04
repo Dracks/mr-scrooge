@@ -7,9 +7,8 @@ node_modules
 coverage
 
 # production
-build
-static/react
-templates/react.hbs
+Public/react
+Resources/Views/react.leaf
 
 # misc
 .DS_Store

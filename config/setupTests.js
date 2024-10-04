@@ -3,9 +3,9 @@ const EnzymeAdapter = require("enzyme-adapter-react-16")
 
 Enzyme.configure({ adapter: new EnzymeAdapter() })
 //*/
-require('reflect-metadata')
+//require('reflect-metadata')
 
-jest.mock("../src/view/constants", () => ({
+jest.mock("../src/react-view/constants", () => ({
     LOGOUT_URL: "/logout",
     STATIC_URL: "",
 }))
