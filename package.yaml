@@ -1,10 +1,10 @@
 name: mr-scrooge
 version: 3.0.0
 scripts:
-  build:typespec: tsp compile src/typespec --output-dir src
   build:api-models: >-
     openapi-typescript src/@typespec/openapi3/openapi.yaml --output
     src/react-view/api/generated-models.ts
+  build:typespec: tsp compile src/typespec --output-dir src
   build:view: NODE_ENV=production webpack --config config/webpack5.config.ts
   start:dev: DEBUG=true ts-node src/main.ts
   lint: eslint 'src/react-view/**/*.{ts,tsx}' --no-warn-ignored

@@ -4,7 +4,7 @@ info:
   version: 0.0.0
 tags:
   - name: session
-  - name: profile
+  - name: user
   - name: bank-transactions
   - name: labels
   - name: graphs
@@ -54,6 +54,40 @@ paths:
                     type: string
       tags:
         - bank-transactions
+  /bank-transactions/{transactionId}:
+    patch:
+      operationId: ApiBankTransactions_comment
+      description: Set a comment into the transaction
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankTransaction'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundBankTransaction'
+      tags:
+        - bank-transactions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
   /bank-transactions/{transactionId}/label/{labelId}:
     post:
       operationId: ApiBankTransactions_linkLabel
@@ -285,7 +319,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/UserGroup'
       tags:
-        - profile
+        - user
     post:
       operationId: ApiGroup_create
       parameters: []
@@ -297,7 +331,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserGroup'
       tags:
-        - profile
+        - user
       requestBody:
         required: true
         content:
@@ -319,7 +353,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/UserGroup'
       tags:
-        - profile
+        - user
   /groups/{id}:
     delete:
       operationId: ApiGroup_delete
@@ -333,7 +367,7 @@ paths:
         '204':
           description: 'There is no content to send for this request, but the headers may be useful. '
       tags:
-        - profile
+        - user
   /imports:
     post:
       operationId: ApiImports_upload
@@ -537,140 +571,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateLabel'
-  /profiles:
-    post:
-      operationId: ApiProfile_create
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserProfile'
-      tags:
-        - profile
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BaseUserData'
-    get:
-      operationId: ApiProfile_get
-      parameters:
-        - name: cursor
-          in: query
-          required: false
-          schema:
-            type: string
-          explode: false
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int16
-          explode: false
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - results
-                properties:
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserProfile'
-                  next:
-                    type: string
-      tags:
-        - profile
-  /profiles/{id}:
-    patch:
-      operationId: ApiProfile_update
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            $ref: '#/components/schemas/UUID'
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserProfile'
-      tags:
-        - profile
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                body:
-                  $ref: '#/components/schemas/BaseUserDataUpdate'
-    delete:
-      operationId: ApiProfile_delete
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            $ref: '#/components/schemas/UUID'
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                type: boolean
-      tags:
-        - profile
-  /profiles/{id}/group/{groupId}:
-    delete:
-      operationId: ApiProfile_deleteGroup
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            $ref: '#/components/schemas/UUID'
-        - name: groupId
-          in: path
-          required: true
-          schema:
-            $ref: '#/components/schemas/UUID'
-      responses:
-        '204':
-          description: 'There is no content to send for this request, but the headers may be useful. '
-      tags:
-        - profile
-    post:
-      operationId: ApiProfile_addGroup
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            $ref: '#/components/schemas/UUID'
-        - name: groupId
-          in: path
-          required: true
-          schema:
-            $ref: '#/components/schemas/UUID'
-      responses:
-        '204':
-          description: 'There is no content to send for this request, but the headers may be useful. '
-      tags:
-        - profile
   /session:
     post:
       operationId: ApiSession_login
@@ -729,6 +629,184 @@ paths:
                 type: boolean
       tags:
         - session
+  /users:
+    post:
+      operationId: ApiUser_create
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BaseUserData'
+    get:
+      operationId: ApiUser_list
+      parameters:
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int16
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserProfile'
+                  next:
+                    type: string
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - user
+  /users/{id}:
+    patch:
+      operationId: ApiUser_update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  $ref: '#/components/schemas/BaseUserDataUpdate'
+    delete:
+      operationId: ApiUser_delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - user
+  /users/{id}/group/{groupId}:
+    delete:
+      operationId: ApiUser_deleteGroup
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - user
+    post:
+      operationId: ApiUser_addGroup
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - user
 components:
   schemas:
     BankTransaction:

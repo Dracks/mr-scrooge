@@ -1,3 +1,4 @@
+import Fluent
 import Vapor
 import XCTVapor
 import XCTest
@@ -34,6 +35,7 @@ class AbstractBaseTestsClass: XCTestCase {
 	var app: Application?
 
 	var testUser: User!
+	var testAdmin: User!
 	var testGroup: UserGroup!
 	var testGroup2: UserGroup!
 	var labels: [Label]!
@@ -59,12 +61,16 @@ class AbstractBaseTestsClass: XCTestCase {
 			let testGroupId2 = try testGroup2.requireID()
 
 			// Create users
-			/*_ = try await createUser(app: app, username: "admin", email: "j@k.com", password: "admin", isAdmin: true)
-             _ = try await createUser(app: app, username: "demo", email: "d@k.com", password: "demo")*/
 			testUser = try await createUser(
 				app: app, username: "test-user", email: "test@example.com",
 				password: "test-password", defaultGroupId: testGroupId)
 			try await testUser.$groups.attach(testGroup, on: app.db)
+
+			testAdmin = try await createUser(
+				app: app, username: "admin", email: "admin@example.com",
+				password: "test-admin-password", defaultGroupId: testGroupId,
+				isAdmin: true)
+			try await testAdmin.$groups.attach(testGroup, on: app.db)
 
 			// Create labels
 			let labelFactory = LabelFactory()
@@ -102,6 +108,38 @@ final class MrScroogeServerTest: AbstractBaseTestsClass {
 		let app = try getApp()
 		let res = try await app.sendRequest(.POST, "/api/session", body: "")
 		XCTAssertEqual(res.status, .badRequest)
+	}
+
+	func testCreateUserCommand() async throws {
+		guard let app = app else {
+			throw TestError()
+		}
+
+		let command = CreateUserCommand()
+		let arguments = ["demo_user"]
+
+		let console = TestConsole()
+		let input = CommandInput(arguments: arguments)
+		var context = CommandContext(
+			console: console,
+			input: input
+		)
+		context.application = app
+
+		try await console.run(command, with: context)
+
+		let output = console
+			.testOutputQueue
+			.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+
+		XCTAssertContains(output[0], "User \"demo\" created with groupId: ")
+		let users = try await User.query(on: app.db).filter(\.$username == "demo").all()
+
+		XCTAssertEqual(users.count, 1)
+		let user = users.first!
+		let groups = try await user.$groups.get(on: app.db)
+		XCTAssertEqual(groups.count, 1)
+		XCTAssertEqual(user.isAdmin, false)
 	}
 }
 

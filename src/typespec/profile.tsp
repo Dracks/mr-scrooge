@@ -28,25 +28,25 @@ model UserProfile {
   groups: UserGroup[];
 }
 
-@route("/profiles")
-@tag("profile")
-interface ApiProfile {
-  @post create(...BaseUserData): UserProfile;
-  @route("{id}") @patch update(@path id: UUID, body: BaseUserData): UserProfile;
+@route("/users")
+@tag("user")
+interface ApiUser {
+  @post create(...BaseUserData): UserProfile | Unauthorized;
+  @get list(@query cursor?: string, @query limit?: int16): PageList<UserProfile> | Unauthorized;
+  @route("{id}") @patch update(@path id: UUID, body: BaseUserData): UserProfile| Unauthorized;
   @route("{id}/group/{groupId}") @delete deleteGroup(
     @path id: UUID,
     @path groupId: UUID,
-  ): void;
+  ): UserProfile | Unauthorized;
   @route("{id}/group/{groupId}") @post addGroup(
     @path id: UUID,
     @path groupId: UUID,
-  ): void;
-  @get get(@query cursor?: string, @query limit?: int16): PageList<UserProfile>;
-  @route("{id}") @delete delete(@path id: UUID): boolean;
+  ): UserProfile | Unauthorized;
+  @route("{id}") @delete delete(@path id: UUID): boolean | Unauthorized;
 }
 
 @route("/groups")
-@tag("profile")
+@tag("user")
 interface ApiGroup {
   @get list(@query cursor?: string, @query limit?: int16): UserGroup[];
   @doc("List all groups that are not assigned to a user")

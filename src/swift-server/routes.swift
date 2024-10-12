@@ -38,42 +38,6 @@ struct ErrorHandlerMiddleware: AsyncMiddleware {
 struct MrScroogeAPIImpl {
 	@Dependency(\.request) var request
 
-	func ApiProfile_update(_ input: Operations.ApiProfile_update.Input) async throws
-		-> Operations.ApiProfile_update.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiProfile_get(_ input: Operations.ApiProfile_get.Input) async throws
-		-> Operations.ApiProfile_get.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiProfile_deleteGroup(_ input: Operations.ApiProfile_deleteGroup.Input) async throws
-		-> Operations.ApiProfile_deleteGroup.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiProfile_addGroup(_ input: Operations.ApiProfile_addGroup.Input) async throws
-		-> Operations.ApiProfile_addGroup.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiProfile_delete(_ input: Operations.ApiProfile_delete.Input) async throws
-		-> Operations.ApiProfile_delete.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiProfile_create(_ input: Operations.ApiProfile_create.Input) async throws
-		-> Operations.ApiProfile_create.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
 	func ApiGroup_delete(_ input: Operations.ApiGroup_delete.Input) async throws
 		-> Operations.ApiGroup_delete.Output
 	{
@@ -98,17 +62,20 @@ struct MrScroogeAPIImpl {
 		return .undocumented(statusCode: 501, UndocumentedPayload())
 	}
 
-    func ApiImports_rollbackImport(_ input: Operations.ApiImports_rollbackImport.Input) async throws -> Operations.ApiImports_rollbackImport.Output {
-        return .undocumented(statusCode: 501, UndocumentedPayload())
-    }
+	func ApiImports_rollbackImport(_ input: Operations.ApiImports_rollbackImport.Input)
+		async throws -> Operations.ApiImports_rollbackImport.Output
+	{
+		return .undocumented(statusCode: 501, UndocumentedPayload())
+	}
 
-    func ApiImports_applyRow(_ input: Operations.ApiImports_applyRow.Input) async throws -> Operations.ApiImports_applyRow.Output {
-        return .undocumented(statusCode: 501, UndocumentedPayload())
-    }
+	func ApiImports_applyRow(_ input: Operations.ApiImports_applyRow.Input) async throws
+		-> Operations.ApiImports_applyRow.Output
+	{
+		return .undocumented(statusCode: 501, UndocumentedPayload())
+	}
 }
 
 extension MrScroogeAPIImpl: APIProtocol {}
-
 
 func routes(_ app: Application) throws {
 

@@ -73,7 +73,9 @@ extension MrScroogeAPIImpl {
 		else {
 			return .undocumented(statusCode: 400, UndocumentedPayload())
 		}
-		let unlinkState = try await bankTransactionService.unlink(on: request.db, transaction: transactionId, fromLabel: labelId, withValidGroups: validGroupsIds)
+		let unlinkState = try await bankTransactionService.unlink(
+			on: request.db, transaction: transactionId, fromLabel: labelId,
+			withValidGroups: validGroupsIds)
 		switch unlinkState {
 		case .ok:
 			let (transaction, labelIds) = try await bankTransactionService.getAll(
@@ -87,28 +89,30 @@ extension MrScroogeAPIImpl {
 							bankTransaction: transaction.list.first!,
 							labelIds: labelIds[transactionId]!))))
 		case .transactionNotFound:
-		return .notFound(
-			.init(
-				body: .json(
-					.init(
-						value2: .init(
-							message: "Transaction not found",
-							code: ApiError.API10001.rawValue,
-							bankTransactionSuplied:
-								transactionId.uuidString)))))
+			return .notFound(
+				.init(
+					body: .json(
+						.init(
+							value2: .init(
+								message: "Transaction not found",
+								code: ApiError.API10001.rawValue,
+								bankTransactionSuplied:
+									transactionId.uuidString))))
+			)
 		case .linkNotFound:
-		return .notFound(
-			.init(
-				body: .json(
-					.init(
-						value1: .init(
-							message: "There is not link between transaction and label",
-							code: ApiError.API10003.rawValue
+			return .notFound(
+				.init(
+					body: .json(
+						.init(
+							value1: .init(
+								message:
+									"There is not link between transaction and label",
+								code: ApiError.API10003.rawValue
+							)
 						)
 					)
 				)
 			)
-		)
 		}
 	}
 
@@ -127,9 +131,11 @@ extension MrScroogeAPIImpl {
 			//return WrongOwnerId(validOwners: validGroupsIds)
 			return .undocumented(statusCode: 400, UndocumentedPayload())
 		}
-		print(input.query)
+
 		let (data, labelIds) = try await bankTransactionService.getAll(
-            on: req.db, groupIds: groupIds, pageQuery: .init(limit: input.query.limit ?? 100, cursor: input.query.cursor))
+			on: req.db, groupIds: groupIds,
+			pageQuery: .init(
+				limit: input.query.limit ?? 100, cursor: input.query.cursor))
 		let results = try data.list.map { movement in
 			let movementId = try movement.requireID()
 			let labels: [UUID] = labelIds[movementId]!
@@ -138,6 +144,55 @@ extension MrScroogeAPIImpl {
 				labelIds: labels)
 		}
 		return .ok(.init(body: .json(.init(results: results, next: data.next))))
+	}
+
+	func ApiBankTransactions_comment(_ input: Operations.ApiBankTransactions_comment.Input)
+		async throws -> Operations.ApiBankTransactions_comment.Output
+	{
+		let req = request
+		let user = try await getUser(fromRequest: req)
+		let validGroupsIds = try user.groups.map { return try $0.requireID() }
+		guard let transactionId = UUID(uuidString: input.path.transactionId) else {
+			return .notFound(
+				.init(
+					body: .json(
+						.init(
+							message: "Not valid id",
+							code: ApiError.API10011.rawValue,
+							bankTransactionSuplied: input.path
+								.transactionId))))
+		}
+		var comment: String?
+		switch input.body {
+		case let .json(body):
+			comment = body.comment
+		}
+
+		let result = try await bankTransactionService.setComment(
+			on: request.db, for: transactionId, andComment: comment,
+			withValidGroups: validGroupsIds)
+		switch result {
+		case .notFound:
+			return .notFound(
+				.init(
+					body: .json(
+						.init(
+							message: "Transaction not found",
+							code: ApiError.API10012.rawValue,
+							bankTransactionSuplied: input.path
+								.transactionId))))
+		case .ok:
+			let (transaction, labelIds) = try await bankTransactionService.getAll(
+				on: request.db, groupIds: validGroupsIds,
+				transactionIds: [transactionId])
+			return .ok(
+				.init(
+					body: .json(
+						.init(
+							bankTransactionId: transactionId,
+							bankTransaction: transaction.list.first!,
+							labelIds: labelIds[transactionId]!))))
+		}
 	}
 }
 

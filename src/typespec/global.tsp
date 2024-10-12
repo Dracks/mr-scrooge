@@ -31,6 +31,12 @@ model NotFound {
   ...Error;
 }
 
+@error
+model Unauthorized {
+    @statusCode _ : 401;
+    ...Error,
+}
+
 model PageList<Item> {
   results: Item[];
   next?: string;

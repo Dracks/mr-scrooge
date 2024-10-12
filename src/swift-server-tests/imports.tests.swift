@@ -37,50 +37,54 @@ final class ImportTests: AbstractBaseTestsClass {
 		return try await app.sendRequest(
 			.POST, "/api/imports", headers: headers, body: ByteBuffer(data: body))
 	}
-    
-    func testGetParsersList() async throws {
-        let app = try getApp()
-        
-        let headers = try await app.getHeaders(
-            forUser: .init(
-                username: testUser.username, password: "test-password"))
-        
-        let parsersResponse = try await app.sendRequest(.GET, "/api/imports/parsers", headers: headers)
-        XCTAssertEqual(parsersResponse.status, .ok)
-        
-        let responseData = try parsersResponse.content.decode(Components.Schemas.ListFileParsers.self)
-        
-        XCTAssertNotEqual(responseData.parsers.count, 0)
-    }
+
+	func testGetParsersList() async throws {
+		let app = try getApp()
+
+		let headers = try await app.getHeaders(
+			forUser: .init(
+				username: testUser.username, password: "test-password"))
+
+		let parsersResponse = try await app.sendRequest(
+			.GET, "/api/imports/parsers", headers: headers)
+		XCTAssertEqual(parsersResponse.status, .ok)
+
+		let responseData = try parsersResponse.content.decode(
+			Components.Schemas.ListFileParsers.self)
+
+		XCTAssertNotEqual(responseData.parsers.count, 0)
+	}
 
 	func testUploadFile() async throws {
 		let app = try getApp()
 
 		// Get headers for authenticated request
 		let headers = try await app.getHeaders(
-            forUser: .init(
+			forUser: .init(
 				username: testUser.username, password: "test-password"))
-        
-        let fileUrl = try XCTUnwrap(Bundle.module.url(forResource: "n26_es", withExtension: "csv"))
+
+		let fileUrl = try XCTUnwrap(
+			Bundle.module.url(forResource: "n26_es", withExtension: "csv"))
 		let response = try await sendImportRequest(
 			app: app, headers: headers, file: fileUrl, andKind: "n26/es"
 		)
 
 		XCTAssertEqual(response.status, .created)
-        let body = try response.content.decode(Components.Schemas.FileImport.self)
+		let body = try response.content.decode(Components.Schemas.FileImport.self)
 		XCTAssertNotNil(body)
 
 	}
-    
+
 	func testGetImports() async throws {
 		let app = try getApp()
 
 		// Get headers for authenticated request
 		let headers = try await app.getHeaders(
-            forUser: .init(
+			forUser: .init(
 				username: testUser.username, password: "test-password"))
-        
-        let commerzBankPath = try XCTUnwrap(Bundle.module.url(forResource: "commerz_bank", withExtension: "CSV"))
+
+		let commerzBankPath = try XCTUnwrap(
+			Bundle.module.url(forResource: "commerz_bank", withExtension: "CSV"))
 
 		let _ = try await sendImportRequest(
 			app: app, headers: headers, file: commerzBankPath,
@@ -90,7 +94,8 @@ final class ImportTests: AbstractBaseTestsClass {
 			.GET, "/api/imports", headers: headers)
 
 		print(String(buffer: response.body))
-		let data = try response.content.decode(Operations.ApiImports_list.Output.Ok.Body.jsonPayload.self)
+		let data = try response.content.decode(
+			Operations.ApiImports_list.Output.Ok.Body.jsonPayload.self)
 
 		XCTAssertGreaterThan(data.results.count, 0)  // Assuming there are some imports to test
 
@@ -108,10 +113,11 @@ final class ImportTests: AbstractBaseTestsClass {
 
 		// Get headers for authenticated request
 		let headers = try await app.getHeaders(
-            forUser: .init(
+			forUser: .init(
 				username: testUser.username, password: "test-password"))
-        
-        let commerzBankPath = try XCTUnwrap(Bundle.module.url(forResource: "commerz_bank", withExtension: "CSV"))
+
+		let commerzBankPath = try XCTUnwrap(
+			Bundle.module.url(forResource: "commerz_bank", withExtension: "CSV"))
 
 		let firstImportResponse = try await sendImportRequest(
 			app: app, headers: headers, file: commerzBankPath,
@@ -122,9 +128,9 @@ final class ImportTests: AbstractBaseTestsClass {
 			andKind: "commerz-bank/en")
 
 		let firstImport = try firstImportResponse.content.decode(
-            Components.Schemas.FileImport.self)
+			Components.Schemas.FileImport.self)
 		let secondImport = try secondImportResponse.content.decode(
-            Components.Schemas.FileImport.self)
+			Components.Schemas.FileImport.self)
 
 		let response = try await app.sendRequest(
 			.DELETE, "/api/imports/\(secondImport.id)", headers: headers)
@@ -140,7 +146,7 @@ final class ImportTests: AbstractBaseTestsClass {
 		XCTAssertEqual(allCount, 1)
 
 		let firstImportCount = try await FileImportReport.query(on: app.db).filter(
-            \.$id == UUID(firstImport.id)!
+			\.$id == UUID(firstImport.id)!
 		).count()
 		XCTAssertEqual(firstImportCount, 1)
 
@@ -150,4 +156,3 @@ final class ImportTests: AbstractBaseTestsClass {
 		XCTAssertEqual(secondImportCount, 0)
 	}
 }
-

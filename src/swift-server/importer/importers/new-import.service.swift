@@ -43,10 +43,12 @@ class NewImportService {
 		return Array(parsersMap.values)
 	}
 
-	func generateStatusTransaction(status: FileImportReport, transaction: PartialBankTransaction)
+	func generateStatusTransaction(
+		status: FileImportReport, transaction: PartialBankTransaction
+	)
 		-> FileImportRow
 	{
-        return .init(
+		return .init(
 			reportId: status.id!,
 			movementName: transaction.movementName,
 			date: transaction.date,

@@ -57,4 +57,8 @@ interface ApiBankTransactions {
     @path transactionId: UUID,
     @path labelId: UUID,
   ): BankTransaction | NotFound | NotFoundBankTransaction;
+  @doc("Set a comment into the transaction")
+  @route("{transactionId}")
+  @patch
+  comment(@path transactionId: UUID, comment?: string): BankTransaction | NotFoundBankTransaction
 }
