@@ -3,7 +3,7 @@ import { FormClose } from 'grommet-icons';
 import React from 'react';
 
 export interface ITagModel {
-    id: number;
+    id: string;
     name: string;
 }
 

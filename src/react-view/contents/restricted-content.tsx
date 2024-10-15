@@ -7,7 +7,7 @@ import { DataProvider } from './common/data-provider';
 import NotFound from './extra/not-found';
 import Headers from './headers';
 import { Imports } from './imports/imports';
-import { RawDataList } from './raw-data-list/raw-data-list';
+import {  TransactionList } from './transaction-list/transaction-list';
 /*
 
 import { VERSION } from '../constants';
@@ -49,7 +49,7 @@ const RestrictedContent: React.FC = () => (
         <Main>
         <Routes>
             <Route path="/import/*" element={<Imports />} />
-            <Route path="/movement" element={<RawDataList />} />
+            <Route path="/movement" element={<TransactionList />} />
             <Route path="*" element={<NotFound />} />
         </Routes>
         </Main>

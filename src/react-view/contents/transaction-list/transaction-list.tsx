@@ -1,10 +1,11 @@
 import { InfiniteScroll, Select, Table, TableBody, TableCell, TableHeader, TableRow, TextInput } from 'grommet';
 import React, { useState } from 'react';
+import { useAsync } from 'react-async-hook';
 
-import { useGetImportKindsQuery } from '../../api/graphql/generated';
+import { useApi } from '../../api/client';
 import { useLabelsListContext } from '../common/label.context';
-import { BankTransactionEnriched, useRdsData } from '../common/raw-data-source.context';
-import { TransactionRow } from './raw-data-row';
+import { BankTransactionEnriched, useTransactionsData } from '../common/transaction.context';
+import { TransactionRow } from './transaction-row';
 
 interface TransactionListFilters {
     kind?: string;
@@ -13,8 +14,9 @@ interface TransactionListFilters {
 }
 
 export const TransactionList: React.FC = () => {
-    const { data: results, replace } = useRdsData();
-    const [kindRequest] = useGetImportKindsQuery();
+    const { data: results, replace } = useTransactionsData();
+    const client = useApi()
+    const kindRequest = useAsync(()=>client.GET("/imports/parsers"));
     const labels = useLabelsListContext();
     const [filters, setFilters] = useState<TransactionListFilters>({});
 
@@ -24,8 +26,8 @@ export const TransactionList: React.FC = () => {
     }
 
     if (filters.label) {
-        filteredResults = filteredResults.filter(({ labelIds: rdsLabels }) =>
-            rdsLabels.includes(filters.label as number),
+        filteredResults = filteredResults.filter(({ labelIds: transactionLabels }) =>
+            transactionLabels.includes(filters.label as number),
         );
     }
 
@@ -95,7 +97,7 @@ export const TransactionList: React.FC = () => {
             <TableBody>
                 <InfiniteScroll items={filteredResults}>
                     {(result: BankTransactionEnriched) => (
-                        <TransactionRow rds={result} labels={labels} onChange={replace} key={result.id} />
+                        <TransactionRow transaction={result} labels={labels} onChange={replace} key={result.id} />
                     )}
                 </InfiniteScroll>
             </TableBody>
