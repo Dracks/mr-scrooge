@@ -2,126 +2,127 @@ import Fluent
 import Vapor
 
 extension GraphGroupType {
-    func toApi() -> Components.Schemas.GraphGroupType {
-        switch self {
-        case .day:
-            return .day
-        case .labels:
-            return .labels
-        case .month:
-            return .month
-        case .sign:
-            return .sign
-        case .year:
-            return .year
-        }
-    }
+	func toApi() -> Components.Schemas.GraphGroupType {
+		switch self {
+		case .day:
+			return .day
+		case .labels:
+			return .labels
+		case .month:
+			return .month
+		case .sign:
+			return .sign
+		case .year:
+			return .year
+		}
+	}
 }
 
 extension GraphKind {
-    func toApi() -> Components.Schemas.GraphKind {
-        switch self {
-        case .bar:
-            return .bar
-        case .line:
-            return .line
-        case .pie:
-            return .pie
-        }
-    }
+	func toApi() -> Components.Schemas.GraphKind {
+		switch self {
+		case .bar:
+			return .bar
+		case .line:
+			return .line
+		case .pie:
+			return .pie
+		}
+	}
 }
 
 extension GraphDateRange {
-    func toApi() -> Components.Schemas.GraphDateRange {
-        switch self {
-        case .all:
-            return .all
-        case .halfYear:
-            return .halfYear
-        case .oneMonth:
-            return .oneMonth
-        case .oneYear:
-            return .oneYear
-        case .sixYears:
-            return .sixYears
-        case .twoYears:
-            return .twoYears
-        }
-    }
+	func toApi() -> Components.Schemas.GraphDateRange {
+		switch self {
+		case .all:
+			return .all
+		case .halfYear:
+			return .halfYear
+		case .oneMonth:
+			return .oneMonth
+		case .oneYear:
+			return .oneYear
+		case .sixYears:
+			return .sixYears
+		case .twoYears:
+			return .twoYears
+		}
+	}
 }
 
 extension Components.Schemas.GraphGroupType {
-    func toInternal() -> GraphGroupType {
-        switch self {
-        case .day:
-            return .day
-        case .labels:
-            return .labels
-        case .month:
-            return .month
-        case .sign:
-            return .sign
-        case .year:
-            return .year
-        }
-    }
+	func toInternal() -> GraphGroupType {
+		switch self {
+		case .day:
+			return .day
+		case .labels:
+			return .labels
+		case .month:
+			return .month
+		case .sign:
+			return .sign
+		case .year:
+			return .year
+		}
+	}
 }
 
 extension Components.Schemas.GraphKind {
-    func toInternal() -> GraphKind {
-        switch self {
-        case .bar:
-            return .bar
-        case .line:
-            return .line
-        case .pie:
-            return .pie
-        }
-    }
+	func toInternal() -> GraphKind {
+		switch self {
+		case .bar:
+			return .bar
+		case .line:
+			return .line
+		case .pie:
+			return .pie
+		}
+	}
 }
 
 extension Components.Schemas.GraphDateRange {
-    func toInternal() -> GraphDateRange {
-        switch self {
-        case .all:
-            return .all
-        case .halfYear:
-            return .halfYear
-        case .oneMonth:
-            return .oneMonth
-        case .oneYear:
-            return .oneYear
-        case .sixYears:
-            return .sixYears
-        case .twoYears:
-            return .twoYears
-        }
-    }
+	func toInternal() -> GraphDateRange {
+		switch self {
+		case .all:
+			return .all
+		case .halfYear:
+			return .halfYear
+		case .oneMonth:
+			return .oneMonth
+		case .oneYear:
+			return .oneYear
+		case .sixYears:
+			return .sixYears
+		case .twoYears:
+			return .twoYears
+		}
+	}
 }
 
-
 class GraphBuilder {
-    var graph: Components.Schemas.Graph {
-        var horizontalGroup: Components.Schemas.HorizontalGroup?
+	var graph: Components.Schemas.Graph {
+		var horizontalGroup: Components.Schemas.HorizontalGroup?
 		if let _horizontalGroup = _horizontalGroup {
 			horizontalGroup = Components.Schemas.HorizontalGroup(
-                group: _horizontalGroup.group.toApi(),
+				group: _horizontalGroup.group.toApi(),
 				hideOthers: _horizontalGroup.hideOthers,
-                labels: _horizontalGroupLabelIds?.map{ $0.uuidString },
+				labels: _horizontalGroupLabelIds?.map { $0.uuidString },
 				accumulate: _horizontalGroup.accumulate
 			)
 		}
-        return .init(
-            id: _graph.id!.uuidString,
-            groupOwnerId: _graph.$groupOwner.id.uuidString,
+		print(horizontalGroup)
+		print(_horizontalGroup)
+		return .init(
+			id: _graph.id!.uuidString,
+			groupOwnerId: _graph.$groupOwner.id.uuidString,
 			name: _graph.name,
-            kind: _graph.kind.toApi(),
-            labelFilterId: _graph.$labelFilter.id?.uuidString,
-            dateRange: _graph.dateRange.toApi(),
-            group: Components.Schemas.Group(
-                group: _group.group.toApi(),
+			kind: _graph.kind.toApi(),
+			labelFilterId: _graph.$labelFilter.id?.uuidString,
+			dateRange: _graph.dateRange.toApi(),
+			group: Components.Schemas.Group(
+				group: _group.group.toApi(),
 				hideOthers: _group.hideOthers,
-                labels: _groupLabelIds?.map{$0.uuidString}
+				labels: _groupLabelIds?.map { $0.uuidString }
 			),
 			horizontalGroup: horizontalGroup
 		)
@@ -147,6 +148,7 @@ class GraphBuilder {
 	}
 
 	func setHorizontalGroup(_ horizontalGroup: GraphHorizontalGroup) {
+		print("Setting the horizontal group")
 		_horizontalGroup = horizontalGroup
 	}
 
@@ -159,37 +161,36 @@ class GraphBuilder {
 	}
 }
 
-
 class GraphService {
-    private let cursorHandler = CursorHandler<Label, String>(["id"])
-    
-    struct InvalidLabels {
-        let validLabels: [String]
-        let invalidLabels: [String]
-    }
+	private let cursorHandler = CursorHandler<Label, String>(["id"])
 
-    enum CreateGraphResponse: Sendable {
-        case invalidLabels(data: InvalidLabels)
-        case ok(data: Components.Schemas.Graph)
-    }
+	struct InvalidLabels {
+		let validLabels: [String]
+		let invalidLabels: [String]
+	}
 
-    enum UpdateGraphResponse: Sendable {
-        case notFound(graphId: UUID)
-        case invalidLabels(data: InvalidLabels)
-        case ok(data: Components.Schemas.Graph)
-    }
-    
-    enum DeleteGraphResponse: Sendable {
-        case notFound(graphId: UUID)
-        case ok
-    }
-    
+	enum CreateGraphResponse: Sendable {
+		case invalidLabels(data: InvalidLabels)
+		case ok(data: Components.Schemas.Graph)
+	}
+
+	enum UpdateGraphResponse: Sendable {
+		case notFound(graphId: UUID)
+		case invalidLabels(data: InvalidLabels)
+		case ok(data: Components.Schemas.Graph)
+	}
+
+	enum DeleteGraphResponse: Sendable {
+		case notFound(graphId: UUID)
+		case ok
+	}
+
 	private func validateLabels(
-        on db: Database, groupOwnerId: UUID, group: Components.Schemas.Group,
+		on db: Database, groupOwnerId: UUID, group: Components.Schemas.Group,
 		horizontalGroup:
-        Components.Schemas.HorizontalGroup?,
-        rootLabel: String?
-    ) async throws -> InvalidLabels? {
+			Components.Schemas.HorizontalGroup?,
+		rootLabel: String?
+	) async throws -> InvalidLabels? {
 		var searchLabelIds = Set<String>()
 		if let labels = group.labels {
 			labels.forEach { searchLabelIds.insert($0) }
@@ -197,19 +198,19 @@ class GraphService {
 		if let horizontalGroup = horizontalGroup, let labels = horizontalGroup.labels {
 			labels.forEach { searchLabelIds.insert($0) }
 		}
-        if let rootLabel = rootLabel {
-            searchLabelIds.insert(rootLabel)
-        }
+		if let rootLabel = rootLabel {
+			searchLabelIds.insert(rootLabel)
+		}
 
 		let dbLabels = try await Label.query(on: db)
-            .filter(\.$id ~~ searchLabelIds.map{ UUID(uuidString: $0) ?? UUID()})
+			.filter(\.$id ~~ searchLabelIds.map { UUID(uuidString: $0) ?? UUID() })
 			.filter(\.$groupOwner.$id == groupOwnerId)
 			.all()
-        let foundLabelIds = Set(dbLabels.compactMap { try? $0.requireID().uuidString })
+		let foundLabelIds = Set(dbLabels.compactMap { try? $0.requireID().uuidString })
 
 		if foundLabelIds.count != searchLabelIds.count {
 			let missingLabels = searchLabelIds.subtracting(foundLabelIds)
-            return .init(
+			return .init(
 				validLabels: Array(foundLabelIds),
 				invalidLabels: Array(missingLabels))
 		}
@@ -217,85 +218,96 @@ class GraphService {
 		return nil
 	}
 
-    func createGraph(on db: Database, _ newGraph: Components.Schemas.GraphParam) async throws
+	func createGraph(on db: Database, _ newGraph: Components.Schemas.GraphParam) async throws
 		-> CreateGraphResponse
 	{
-        let groupOwnerId = UUID(uuidString: newGraph.groupOwnerId)!
-        if let invalid = try await self.validateLabels(
-            on: db, groupOwnerId: groupOwnerId,
-            group: newGraph.group, horizontalGroup: newGraph.horizontalGroup, rootLabel: newGraph.labelFilterId)
-        {
-            return .invalidLabels(data: invalid)
-        }
+		let groupOwnerId = UUID(uuidString: newGraph.groupOwnerId)!
+		if let invalid = try await self.validateLabels(
+			on: db, groupOwnerId: groupOwnerId,
+			group: newGraph.group, horizontalGroup: newGraph.horizontalGroup,
+			rootLabel: newGraph.labelFilterId)
+		{
+			return .invalidLabels(data: invalid)
+		}
 
-        return .ok(data: try await db.transaction { transaction in
-            var labelFilterId: UUID?
-            if let _labelFilterId = newGraph.labelFilterId {
-                labelFilterId = UUID(uuidString: _labelFilterId)
-            }
-			
-			let graph = Graph(
-				groupOwnerId: groupOwnerId,
-				name: newGraph.name,
-                kind: newGraph.kind.toInternal(),
-                labelFilterId: labelFilterId,
-                dateRange: newGraph.dateRange.toInternal()
-			)
-			try await graph.save(on: transaction)
-
-			let group = GraphGroup(
-				graphId: graph.id!,
-                group: newGraph.group.group.toInternal(),
-				hideOthers: newGraph.group.hideOthers
-			)
-			try await group.save(on: transaction)
-
-			let graphBuilder = GraphBuilder(graph: graph, group: group)
-
-			if let labels = newGraph.group.labels {
-				var count = 0
-                var uuidLabels : [UUID] = []
-				for labelId in labels {
-					let graphGroupLabel = GraphGroupLabels(
-                        graphId: group.id!, labelId: UUID(uuidString: labelId)!, order: count)
-					count += 1
-                    uuidLabels.append(graphGroupLabel.$label.id)
-					try await graphGroupLabel.save(on: transaction)
+		return .ok(
+			data: try await db.transaction { transaction in
+				var labelFilterId: UUID?
+				if let _labelFilterId = newGraph.labelFilterId {
+					labelFilterId = UUID(uuidString: _labelFilterId)
 				}
-				graphBuilder.setGroupLabels(uuidLabels)
-			}
 
-			if let newHorizontalGroup = newGraph.horizontalGroup {
-				let horizontalGroup = GraphHorizontalGroup(
-					graphId: graph.id!,
-                    group: newHorizontalGroup.group.toInternal(),
-					hideOthers: newHorizontalGroup.hideOthers,
-					accumulate: newHorizontalGroup.accumulate ?? false
+				let graph = Graph(
+					groupOwnerId: groupOwnerId,
+					name: newGraph.name,
+					kind: newGraph.kind.toInternal(),
+					labelFilterId: labelFilterId,
+					dateRange: newGraph.dateRange.toInternal()
 				)
-				try await horizontalGroup.save(on: transaction)
+				try await graph.save(on: transaction)
 
-				graphBuilder.setHorizontalGroup(horizontalGroup)
+				let group = GraphGroup(
+					graphId: graph.id!,
+					group: newGraph.group.group.toInternal(),
+					hideOthers: newGraph.group.hideOthers
+				)
+				try await group.save(on: transaction)
 
-				if let labels = newHorizontalGroup.labels {
+				let graphBuilder = GraphBuilder(graph: graph, group: group)
+
+				if let labels = newGraph.group.labels {
 					var count = 0
-                    var uuidLabels : [UUID] = []
+					var uuidLabels: [UUID] = []
 					for labelId in labels {
-						let graphGroupLabel = GraphHorizontalGroupLabels(
-							graphId: group.id!, labelId: UUID(uuidString: labelId)!,
+						let graphGroupLabel = GraphGroupLabels(
+							graphId: group.id!,
+							labelId: UUID(uuidString: labelId)!,
 							order: count)
 						count += 1
-                        uuidLabels.append(graphGroupLabel.$label.id)
+						uuidLabels.append(graphGroupLabel.$label.id)
 						try await graphGroupLabel.save(on: transaction)
 					}
-					graphBuilder.setHorizontalGroupLabels(uuidLabels)
+					graphBuilder.setGroupLabels(uuidLabels)
 				}
-			}
 
-            return graphBuilder.graph
-		})
+				if let newHorizontalGroup = newGraph.horizontalGroup {
+					let horizontalGroup = GraphHorizontalGroup(
+						graphId: graph.id!,
+						group: newHorizontalGroup.group.toInternal(),
+						hideOthers: newHorizontalGroup.hideOthers,
+						accumulate: newHorizontalGroup.accumulate ?? false
+					)
+					try await horizontalGroup.save(on: transaction)
+
+					graphBuilder.setHorizontalGroup(horizontalGroup)
+
+					if let labels = newHorizontalGroup.labels {
+						var count = 0
+						var uuidLabels: [UUID] = []
+						for labelId in labels {
+							let graphGroupLabel =
+								GraphHorizontalGroupLabels(
+									graphId: group.id!,
+									labelId: UUID(
+										uuidString: labelId)!,
+									order: count)
+							count += 1
+							uuidLabels.append(graphGroupLabel.$label.id)
+							try await graphGroupLabel.save(
+								on: transaction)
+						}
+						graphBuilder.setHorizontalGroupLabels(uuidLabels)
+					}
+				}
+
+				return graphBuilder.graph
+			})
 	}
 
-	func getGraphs(on db: Database, pageQuery: PageQuery = .init(), groupsId: [UUID], graphsIds: [UUID]?) async throws
+	func getGraphs(
+		on db: Database, pageQuery: PageQuery = .init(), groupsId: [UUID],
+		graphsIds: [UUID]?
+	) async throws
 		-> ListWithCursor<Components.Schemas.Graph>
 	{
 		let graphsQuery = Graph.query(on: db)
@@ -303,14 +315,14 @@ class GraphService {
 		if let graphsIds = graphsIds {
 			graphsQuery.filter(\.$id ~~ graphsIds)
 		}
-        
-        if let cursor = pageQuery.cursor {
-            let cursorData = try self.cursorHandler.parse(cursor)
-            if let idString = cursorData["id"], let id=UUID(uuidString: idString) {
-                graphsQuery.filter(\.$id < id)
-            }
-        }
-        
+
+		if let cursor = pageQuery.cursor {
+			let cursorData = try self.cursorHandler.parse(cursor)
+			if let idString = cursorData["id"], let id = UUID(uuidString: idString) {
+				graphsQuery.filter(\.$id < id)
+			}
+		}
+
 		let graphs =
 			try await graphsQuery
 			.with(\.$group)
@@ -364,14 +376,15 @@ class GraphService {
 			for try await gqlGraph in group {
 				result.append(gqlGraph)
 			}
-            return pageQuery.getListWithCursor(data: result) { graph in
-                cursorHandler.stringify(["id": graph.id])
-            }
+			return pageQuery.getListWithCursor(data: result) { graph in
+				cursorHandler.stringify(["id": graph.id])
+			}
 		}
 	}
 
 	func updateGraph(
-        on db: Database, withId id: UUID, graph updatedGraph: Components.Schemas.GraphParam, forUser user: User
+		on db: Database, withId id: UUID, graph updatedGraph: Components.Schemas.GraphParam,
+		forUser user: User
 	) async throws -> UpdateGraphResponse {
 		return try await db.transaction { transaction in
 			let validGroupsId = try user.groups.map { try $0.requireID() }
@@ -382,38 +395,38 @@ class GraphService {
 				.with(\.$horizontalGroup)
 				.first()
 			guard let graph = graph else {
-                return .notFound(graphId: id)
+				return .notFound(graphId: id)
 			}
 
 			if let invalid = try await self.validateLabels(
-				on: transaction, groupOwnerId: UUID(uuidString: updatedGraph.groupOwnerId)!,
+				on: transaction,
+				groupOwnerId: UUID(uuidString: updatedGraph.groupOwnerId)!,
 				group: updatedGraph.group,
 				horizontalGroup: updatedGraph.horizontalGroup,
-                rootLabel: updatedGraph.labelFilterId
-            )
-			{
-                return .invalidLabels(data: invalid)
+				rootLabel: updatedGraph.labelFilterId
+			) {
+				return .invalidLabels(data: invalid)
 			}
 
 			// Update graph properties
 			graph.name = updatedGraph.name
-            graph.kind = updatedGraph.kind.toInternal()
-            if let labelFilterId = updatedGraph.labelFilterId {
-                graph.$labelFilter.id = UUID(uuidString: labelFilterId)
-            }
-            graph.dateRange = updatedGraph.dateRange.toInternal()
+			graph.kind = updatedGraph.kind.toInternal()
+			if let labelFilterId = updatedGraph.labelFilterId {
+				graph.$labelFilter.id = UUID(uuidString: labelFilterId)
+			}
+			graph.dateRange = updatedGraph.dateRange.toInternal()
 
 			try await graph.save(on: transaction)
 
 			// Update or create graph group
 			if let group = try await graph.$group.get(on: transaction) {
-                group.group = updatedGraph.group.group.toInternal()
+				group.group = updatedGraph.group.group.toInternal()
 				group.hideOthers = updatedGraph.group.hideOthers
 				try await group.save(on: transaction)
 			} else {
 				let newGroup = GraphGroup(
 					graphId: try graph.requireID(),
-                    group: updatedGraph.group.group.toInternal(),
+					group: updatedGraph.group.group.toInternal(),
 					hideOthers: updatedGraph.group.hideOthers)
 				try await newGroup.save(on: transaction)
 			}
@@ -425,7 +438,8 @@ class GraphService {
 			if let groupLabels = updatedGraph.group.labels {
 				for (index, labelId) in groupLabels.enumerated() {
 					let groupLabel = GraphGroupLabels(
-						graphId: try graph.requireID(), labelId: UUID(uuidString: labelId)!,
+						graphId: try graph.requireID(),
+						labelId: UUID(uuidString: labelId)!,
 						order: index)
 					try await groupLabel.save(on: transaction)
 				}
@@ -436,7 +450,8 @@ class GraphService {
 				if let existingHorizontalGroup = try await graph.$horizontalGroup
 					.get(on: transaction)
 				{
-                    existingHorizontalGroup.group = horizontalGroup.group.toInternal()
+					existingHorizontalGroup.group = horizontalGroup.group
+						.toInternal()
 					existingHorizontalGroup.hideOthers =
 						horizontalGroup.hideOthers
 					existingHorizontalGroup.accumulate =
@@ -445,7 +460,7 @@ class GraphService {
 				} else {
 					let newHorizontalGroup = GraphHorizontalGroup(
 						graphId: try graph.requireID(),
-                        group: horizontalGroup.group.toInternal(),
+						group: horizontalGroup.group.toInternal(),
 						hideOthers: horizontalGroup.hideOthers,
 						accumulate: horizontalGroup.accumulate ?? false
 					)
@@ -460,7 +475,8 @@ class GraphService {
 					for (index, labelId) in horizontalLabels.enumerated() {
 						let horizontalLabel = GraphHorizontalGroupLabels(
 							graphId: try graph.requireID(),
-							labelId: UUID(uuidString: labelId)!, order: index)
+							labelId: UUID(uuidString: labelId)!,
+							order: index)
 						try await horizontalLabel.save(on: transaction)
 					}
 				}
@@ -506,7 +522,7 @@ class GraphService {
 				}
 			}
 
-            return .ok(data: graphBuilder.graph)
+			return .ok(data: graphBuilder.graph)
 		}
 
 	}
@@ -524,7 +540,7 @@ class GraphService {
 				.with(\.$horizontalGroup)
 				.first()
 			guard let graph = graph else {
-                return .notFound(graphId: graphId)
+				return .notFound(graphId: graphId)
 			}
 
 			// Delete horizontal group labels
@@ -549,7 +565,7 @@ class GraphService {
 
 			try await graph.delete(on: transaction)
 
-            return .ok
+			return .ok
 		}
 	}
 }

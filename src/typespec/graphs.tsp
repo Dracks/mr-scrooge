@@ -50,13 +50,13 @@ model Graph {
 
 model Group {
   group: GraphGroupType;
-  hideOthers: boolean | null;
-  labels: UUID[] | null;
+  hideOthers?: boolean;
+  labels?: UUID[];
 }
 
 model HorizontalGroup {
   ...Group;
-  accumulate: boolean | null;
+  accumulate?: boolean;
 }
 
 

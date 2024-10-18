@@ -1,10 +1,10 @@
-import { GQLGraphDateRange, GQLGraphGroup, GQLGraphKind, GQLLabel } from '../../../api/graphql/generated';
+import { ApiUUID, Label } from '../../../api/models';
 import { labelFactory, listLabelIds } from '../../../utils/data-factory/label.factory';
 import { mainGroupOwnerId } from '../../../utils/data-factory/user-group.factory';
 import { enrichGraph } from './enrich-graph';
 
 describe('enrichGraph', () => {
-    let labelsList: GQLLabel[];
+    let labelsList: Label[];
 
     beforeEach(() => {
         labelsList = [
@@ -17,13 +17,13 @@ describe('enrichGraph', () => {
     it('A graph with group type tags and preserving the order', () => {
         const result = enrichGraph(
             {
-                dateRange: GQLGraphDateRange.All,
+                dateRange: "all",
                 group: {
-                    labels: [3, 1].map(idx => listLabelIds[idx]),
-                    group: GQLGraphGroup.Labels,
+                    labels: [3, 1].map(idx => listLabelIds[idx] as ApiUUID),
+                    group: "labels",
                 },
                 groupOwnerId: mainGroupOwnerId,
-                kind: GQLGraphKind.Pie,
+                kind: "pie",
                 name: 'some graph',
             },
             labelsList,

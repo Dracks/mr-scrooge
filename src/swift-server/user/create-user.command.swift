@@ -1,7 +1,7 @@
 import Fluent
 import Vapor
 
-struct CreateUserCommand: Command {
+struct CreateUserCommand: AsyncCommand {
 	struct Signature: CommandSignature {
 		@Option(name: "username", short: "u")
 		var user: String?
@@ -20,16 +20,16 @@ struct CreateUserCommand: Command {
 		"Creates a user in the database"
 	}
 
-	func run(using context: CommandContext, signature: Signature) throws {
+	func run(using context: CommandContext, signature: Signature) async throws {
 		let groupName = signature.groupName ?? "default group"
 
-		let group =
-			try UserGroup.query(on: context.application.db)
+		let group = try await
+			UserGroup.query(on: context.application.db)
 			.filter(\.$name == groupName)
-			.first().wait() ?? UserGroup(name: groupName)
+			.first() ?? UserGroup(name: groupName)
 
 		if group.id == nil {
-			try group.save(on: context.application.db).wait()
+			try await group.save(on: context.application.db)
 		}
 		let username = signature.user ?? "demo"
 		let password = signature.password ?? "demo"
@@ -38,8 +38,11 @@ struct CreateUserCommand: Command {
 			username: username, isAdmin: signature.isAdmin,
 			defaultGroupId: group.requireID())
 		try user.setPassword(pwd: password)
-		try user.save(on: context.application.db).wait()
-		try user.$groups.attach(group, on: context.application.db).wait()
-		try user.save(on: context.application.db).wait()
+		try await user.save(on: context.application.db)
+		try await user.$groups.attach(group, on: context.application.db)
+		print("User created with group \(group.id)")
+
+		// When not executed, the group attach seems to not work
+		let _ = try await User.query(on: context.application.db).first()
 	}
 }

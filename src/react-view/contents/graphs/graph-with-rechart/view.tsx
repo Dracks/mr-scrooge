@@ -16,11 +16,11 @@ import {
     YAxis,
 } from 'recharts';
 
-import { EnrichedGraph } from '../../../api/client/graphs/types';
-import { GQLGraphKind, GQLNewGraph } from '../../../api/graphql/generated';
+import { ApiUUID, GraphKind, GraphParam } from '../../../api/models';
 import { DECIMAL_COUNT } from '../../../constants';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { DSDoubleGroup } from '../data-transform/types';
+import { EnrichedGraph } from '../types';
 import { useGraphDataGenerator } from '../use-graph-data';
 
 interface GraphRenderArgs {
@@ -28,17 +28,17 @@ interface GraphRenderArgs {
 }
 
 interface GraphViewerArgs {
-    graph: EnrichedGraph<GQLNewGraph>;
+    graph: EnrichedGraph<GraphParam>;
 }
 
 const genericToRecharts = <K extends string, SK extends string>(
     inputData: DSDoubleGroup<K, SK>[],
-): { data: Array<Record<string, number>>; firstKey: string; keys: SK[] } => {
+): { data: Record<string, ApiUUID>[]; firstKey: string; keys: SK[] } => {
     const keys: Set<SK> = new Set();
     const [first] = inputData;
     const data = inputData.map(group => ({
         [group.groupName]: group.label,
-        ...group.value.reduce<Record<SK, number>>((acc, cur) => {
+        ...group.value.reduce<Partial<Record<SK, ApiUUID>>>((acc, cur) => {
             keys.add(cur.label);
             return { ...acc, [cur.label]: cur.value };
         }, {}),
@@ -92,7 +92,7 @@ const BarGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
 };
 
 const LineGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
-    const logger = useLogger();
+    const logger = useLogger("LineGraphRender");
     const { keys, firstKey, data } = genericToRecharts<string, string>(graphData);
     const [hidenElements, touch] = useHideLogic();
 
@@ -144,7 +144,7 @@ const PieGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
                     label={({ value }) => value.toFixed(DECIMAL_COUNT)}
                 >
                     {keys.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={schemeTableau10[index]} />
+                        <Cell key={`cell-${String(index)}`} fill={schemeTableau10[index]} />
                     ))}
                 </Pie>
             </PieChart>
@@ -152,10 +152,10 @@ const PieGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
     );
 };
 
-const ComponentHash: Record<GQLGraphKind, React.FC<GraphRenderArgs>> = {
-    [GQLGraphKind.Line]: LineGraphRender,
-    [GQLGraphKind.Bar]: BarGraphRender,
-    [GQLGraphKind.Pie]: PieGraphRender,
+const ComponentHash: Record<GraphKind, React.FC<GraphRenderArgs>> = {
+    "line": LineGraphRender,
+    "bar": BarGraphRender,
+    "pie": PieGraphRender,
 };
 
 export const GraphViewer: React.FC<GraphViewerArgs> = ({ graph }) => {

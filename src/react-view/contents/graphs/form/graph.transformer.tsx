@@ -1,19 +1,19 @@
-import { GQLGraphDateRange, GQLGraphGroup, GQLGraphKind, GQLNewGraph } from '../../../api/graphql/generated';
+import { GraphDateRange, GraphKind, GraphParam, Group, GroupType, HorizontalGroup } from "../../../api/models";
 
 export interface GraphUiRepresentation {
-    dateRange?: GQLGraphDateRange;
-    groupHideOthers?: boolean | null;
-    groupKind?: GQLGraphGroup;
+    dateRange?: GraphDateRange;
+    groupHideOthers?: boolean;
+    groupType?: GroupType;
     groupLabels?: string[];
     horizontalAccumulate?: boolean;
-    horizontalGroupHideOthers?: boolean | null;
+    horizontalGroupHideOthers?: boolean;
 
-    horizontalGroupKind?: GQLGraphGroup;
+    horizontalGroupType?: GroupType;
     horizontalGroupLabels?: string[];
     id?: number;
 
-    kind?: GQLGraphKind;
-    labelFilterId?: string | null;
+    kind?: GraphKind;
+    labelFilterId?: string;
     name?: string;
 }
 
@@ -23,44 +23,44 @@ export const graphToUi = ({
     kind,
     labelFilterId: tagFilter,
     ...graph
-}: Partial<GQLNewGraph>): GraphUiRepresentation => ({
+}: Partial<GraphParam>): GraphUiRepresentation => ({
     ...graph,
     groupHideOthers: group?.hideOthers,
-    groupKind: group?.group as GQLGraphGroup,
-    groupLabels: group?.labels ?? undefined,
-    horizontalAccumulate: horizontalGroup?.accumulate ?? undefined,
+    groupType: group?.group,
+    groupLabels: group?.labels,
+    horizontalAccumulate: horizontalGroup?.accumulate,
     horizontalGroupHideOthers: horizontalGroup?.hideOthers,
-    horizontalGroupKind: horizontalGroup?.group as GQLGraphGroup,
-    horizontalGroupLabels: horizontalGroup?.labels ?? undefined,
+    horizontalGroupType: horizontalGroup?.group,
+    horizontalGroupLabels: horizontalGroup?.labels,
     kind,
-    labelFilterId: tagFilter ?? undefined,
+    labelFilterId: tagFilter,
 });
 
 export const uiToGraph = ({
-    groupKind,
+    groupType: groupKind,
     groupHideOthers,
     groupLabels,
     horizontalGroupHideOthers,
-    horizontalGroupKind,
+    horizontalGroupType,
     horizontalGroupLabels,
     horizontalAccumulate,
     ...graphUi
-}: GraphUiRepresentation): Partial<GQLNewGraph> => ({
+}: GraphUiRepresentation): Partial<GraphParam> => ({
     ...graphUi,
     group: groupKind
         ? {
               group: groupKind,
               hideOthers: groupHideOthers,
               labels: groupLabels,
-          }
+          } as Group
         : undefined,
     horizontalGroup:
-        horizontalGroupKind && graphUi.kind !== GQLGraphKind.Pie
+        horizontalGroupType && graphUi.kind !== "pie"
             ? {
-                  group: horizontalGroupKind,
+                  group: horizontalGroupType,
                   hideOthers: horizontalGroupHideOthers,
                   labels: horizontalGroupLabels,
                   accumulate: horizontalAccumulate,
-              }
+              } as HorizontalGroup
             : undefined,
 });

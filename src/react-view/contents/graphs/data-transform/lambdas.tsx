@@ -1,6 +1,6 @@
 import { format, lastDayOfMonth, sub } from 'date-fns';
 
-import { GQLGraphGroup, GQLLabel } from '../../../api/graphql/generated';
+import { GroupType, Label } from '../../../api/models';
 import { DTGroupFn, DTInputData } from './types';
 
 export const getRangeFilter: (months: number, reference: Date) => (record: DTInputData) => boolean = (
@@ -14,22 +14,22 @@ export const getRangeFilter: (months: number, reference: Date) => (record: DTInp
     return record => record.date >= start && record.date <= end;
 };
 
-type GroupKeys = GQLGraphGroup;
+type GroupKeys = GroupType;
 
 type LabelSign = 'expenses' | 'income';
 
 export const groupLambdas: Record<
     GroupKeys | 'identity',
-    (labelsList?: GQLLabel[], others?: boolean) => DTGroupFn<string>
+    (labelsList?: Label[], others?: boolean) => DTGroupFn<string>
 > = {
-    [GQLGraphGroup.Month]: () => record => format(record.date, 'yyyy-MM'),
-    [GQLGraphGroup.Day]: () => record => `${record.date.getDate()}`,
-    [GQLGraphGroup.Year]: () => record => `${record.date.getFullYear()}`,
-    [GQLGraphGroup.Sign]:
+    "month": () => record => format(record.date, 'yyyy-MM'),
+    "day": () => record => String(record.date.getDate()),
+    "year": () => record => String(record.date.getFullYear()),
+    "sign":
         () =>
         (record): LabelSign =>
             record.value < 0 ? 'expenses' : 'income',
-    [GQLGraphGroup.Labels]: (labelsList = [], hideOthers = false) => {
+    "labels": (labelsList = [], hideOthers = false) => {
         const othersKey = hideOthers ? false : 'Others';
         return record => {
             const tags = record.labelIds ?? [];
@@ -66,9 +66,9 @@ const customSort = (data: string[]) => {
 };
 
 export const sortLambdas: Record<GroupKeys, (p: string[]) => (a: string, b: string) => number> = {
-    [GQLGraphGroup.Month]: () => (a: string, b: string) => a.localeCompare(b),
-    [GQLGraphGroup.Day]: () => (a: string, b: string) => parseInt(a, 10) - parseInt(b, 10),
-    [GQLGraphGroup.Year]: () => (a: string, b: string) => a.localeCompare(b),
-    [GQLGraphGroup.Sign]: () => customSort(['expenses', 'income']),
-    [GQLGraphGroup.Labels]: customSort,
+    "month": () => (a: string, b: string) => a.localeCompare(b),
+    "day": () => (a: string, b: string) => parseInt(a, 10) - parseInt(b, 10),
+    "year": () => (a: string, b: string) => a.localeCompare(b),
+    "sign": () => customSort(['expenses', 'income']),
+    "labels": customSort,
 };

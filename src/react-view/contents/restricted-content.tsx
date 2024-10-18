@@ -5,6 +5,8 @@ import { Route, Routes } from 'react-router-dom';
 import { VERSION } from '../constants';
 import { DataProvider } from './common/data-provider';
 import NotFound from './extra/not-found';
+import { GraphRouter } from './graphs/graph-router';
+import { Graphs } from './graphs/graphs';
 import Headers from './headers';
 import { Imports } from './imports/imports';
 import {  TransactionList } from './transaction-list/transaction-list';
@@ -12,8 +14,6 @@ import {  TransactionList } from './transaction-list/transaction-list';
 
 import { VERSION } from '../constants';
 import { DataProvider } from './common/data-provider';
-import { GraphRouter } from './graphs/graph-router';
-import { Graphs } from './graphs/graphs';
 import { EditProfile } from './profile/edit-profile';
 import { Tags } from './tags/tags';
 */
@@ -48,6 +48,8 @@ const RestrictedContent: React.FC = () => (
         <Headers />
         <Main>
         <Routes>
+            <Route path="" element={<Graphs />} />
+            <Route path="/graph/*" element={<GraphRouter />} />
             <Route path="/import/*" element={<Imports />} />
             <Route path="/movement" element={<TransactionList />} />
             <Route path="*" element={<NotFound />} />

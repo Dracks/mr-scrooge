@@ -2,7 +2,7 @@ import Fluent
 import Foundation
 import Vapor
 
-struct DemoDataCommand: Command {
+struct DemoDataCommand: AsyncCommand {
 	struct Signature: CommandSignature {
 		@Option(name: "group-owner-id", short: "g")
 		var groupOwnerId: UUID?
@@ -12,7 +12,7 @@ struct DemoDataCommand: Command {
 		"Generates demo data for bank transactions and graphs"
 	}
 
-	func run(using context: CommandContext, signature: Signature) throws {
+	func run(using context: CommandContext, signature: Signature) async throws {
 		guard let groupOwnerId = signature.groupOwnerId else {
 			context.console.error("Group owner ID is required")
 			return
@@ -21,10 +21,10 @@ struct DemoDataCommand: Command {
 		let app = context.application
 
 		// Generate demo data
-		try generateDemoData(app: app, groupOwnerId: groupOwnerId)
+		try await generateDemoData(app: app, groupOwnerId: groupOwnerId)
 	}
 
-	private func generateDemoData(app: Application, groupOwnerId: UUID) throws {
+	private func generateDemoData(app: Application, groupOwnerId: UUID) async throws {
 		let labelConfigMap: [String: (ClosedRange<Double>, String)] = [
 			"gasoline": (-100...(-30), "days"),
 			"groceries": (-100...(-10), "days"),
@@ -36,7 +36,7 @@ struct DemoDataCommand: Command {
 		var labelIdMap: [String: UUID] = [:]
 
 		for (label, config) in labelConfigMap {
-			let labelId = try generateLabelsAndTransactions(
+			let labelId = try await generateLabelsAndTransactions(
 				app: app,
 				groupOwnerId: groupOwnerId,
 				label: label,
@@ -46,15 +46,18 @@ struct DemoDataCommand: Command {
 			labelIdMap[label] = labelId
 		}
 
-		try generateGraphs(app: app, groupOwnerId: groupOwnerId, labelIdMap: labelIdMap)
+		try await generateGraphs(app: app, groupOwnerId: groupOwnerId, labelIdMap: labelIdMap)
+
+		// When not executed, the group attach seems to not work
+		let _ = try await Graph.query(on: app.db).first()
 	}
 
 	private func generateLabelsAndTransactions(
 		app: Application, groupOwnerId: UUID, label: String,
 		amountRange: ClosedRange<Double>, periodicity: String
-	) throws -> UUID {
+	) async throws -> UUID {
 		let label = Label(groupOwnerId: groupOwnerId, name: label)
-		try label.save(on: app.db).wait()
+		try await label.save(on: app.db)
 
 		let calendar = Calendar.current
 		var date = Date()
@@ -68,12 +71,12 @@ struct DemoDataCommand: Command {
 				value: Double.random(in: amountRange),
 				kind: "demo"
 			)
-			try transaction.save(on: app.db).wait()
+			try await transaction.save(on: app.db)
 
 			let labelTransaction = LabelTransaction(
 				labelId: label.id!, transactionId: transaction.id!,
 				linkReason: .automatic)
-			try labelTransaction.save(on: app.db).wait()
+			try await labelTransaction.save(on: app.db)
 
 			if periodicity == "days" {
 				date = calendar.date(
@@ -90,26 +93,26 @@ struct DemoDataCommand: Command {
 
 	private func generateGraphs(
 		app: Application, groupOwnerId: UUID, labelIdMap: [String: UUID]
-	) throws {
+	) async throws {
 		let incomeVsExpensesGraph = Graph(
 			groupOwnerId: groupOwnerId,
 			name: "Income vs expenses",
 			kind: .bar,
 			dateRange: .halfYear
 		)
-		try incomeVsExpensesGraph.save(on: app.db).wait()
+		try await incomeVsExpensesGraph.save(on: app.db)
 
 		let incomeVsExpensesGroup = GraphGroup(
 			graphId: incomeVsExpensesGraph.id!,
 			group: .sign
 		)
-		try incomeVsExpensesGroup.save(on: app.db).wait()
+		try await incomeVsExpensesGroup.save(on: app.db)
 
 		let incomeVsExpensesHorizontalGroup = GraphHorizontalGroup(
 			graphId: incomeVsExpensesGraph.id!,
 			group: .month
 		)
-		try incomeVsExpensesHorizontalGroup.save(on: app.db).wait()
+		try await incomeVsExpensesHorizontalGroup.save(on: app.db)
 
 		let compareLabelsGraph = Graph(
 			groupOwnerId: groupOwnerId,
@@ -117,30 +120,30 @@ struct DemoDataCommand: Command {
 			kind: .line,
 			dateRange: .twoYears
 		)
-		try compareLabelsGraph.save(on: app.db).wait()
+		try await compareLabelsGraph.save(on: app.db)
 
 		let compareLabelsGroup = GraphGroup(
 			graphId: compareLabelsGraph.id!,
 			group: .labels
 		)
-		try compareLabelsGroup.save(on: app.db).wait()
+		try await compareLabelsGroup.save(on: app.db)
 
 		if let groceriesId = labelIdMap["groceries"],
 			let gasolineId = labelIdMap["gasoline"]
 		{
 			let groceriesLabel = GraphGroupLabels(
 				graphId: compareLabelsGroup.id!, labelId: groceriesId, order: 0)
-			try groceriesLabel.save(on: app.db).wait()
+			try await groceriesLabel.save(on: app.db)
 
 			let gasolineLabel = GraphGroupLabels(
 				graphId: compareLabelsGroup.id!, labelId: gasolineId, order: 1)
-			try gasolineLabel.save(on: app.db).wait()
+			try await gasolineLabel.save(on: app.db)
 		}
 
 		let compareLabelsHorizontalGroup = GraphHorizontalGroup(
 			graphId: compareLabelsGraph.id!,
 			group: .month
 		)
-		try compareLabelsHorizontalGroup.save(on: app.db).wait()
+		try await compareLabelsHorizontalGroup.save(on: app.db)
 	}
 }

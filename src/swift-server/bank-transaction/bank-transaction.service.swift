@@ -33,13 +33,13 @@ class BankTransactionService {
 
 	func getAll(
 		on db: Database, groupIds: [UUID], transactionIds: [UUID]? = nil,
-        pageQuery: PageQuery = .init(),
+		pageQuery: PageQuery = .init(),
 		query: [String: Any] = [:]
 	) async throws -> (ListWithCursor<BankTransaction>, [UUID: [UUID]]) {
 		var query = BankTransaction.query(on: db)
 			.filter(\.$groupOwner.$id ~~ groupIds)
 
-        if let cursor = pageQuery.cursor {
+		if let cursor = pageQuery.cursor {
 			let cursorData = try self.cursorHandler.parse(cursor)
 			if let dateString = cursorData["date"], let date = DateOnly(dateString),
 				let idString = cursorData["id"], let id = UUID(uuidString: idString)
@@ -63,7 +63,7 @@ class BankTransactionService {
 			// .with(\.$labels)
 			.sort(\.$_date, .descending)
 			.sort(\.$id, .descending)
-            .limit(pageQuery.limit)
+			.limit(pageQuery.limit)
 			.all()
 
 		/*let hasMore = data.count >= limit
@@ -79,10 +79,14 @@ class BankTransactionService {
 			on: db, transactionsIds: data.map { try $0.requireID() })
 
 		return (
-            pageQuery.getListWithCursor(data: data, generateCursor: {cursorHandler.stringify([
-                "date": $0.date.toString(),
-                "id": $0.id?.uuidString ?? "",
-            ])}), relations
+			pageQuery.getListWithCursor(
+				data: data,
+				generateCursor: {
+					cursorHandler.stringify([
+						"date": $0.date.toString(),
+						"id": $0.id?.uuidString ?? "",
+					])
+				}), relations
 		)
 
 	}
@@ -170,7 +174,7 @@ class BankTransactionService {
 	func unlink(
 		on db: Database, transaction transactionId: UUID, fromLabel labelId: UUID,
 		withValidGroups groupIds: [UUID]
-	) async throws -> UnlinkReturn{
+	) async throws -> UnlinkReturn {
 		let transaction = try await BankTransaction.query(on: db).filter(
 			\.$id == transactionId
 		).filter(\.$groupOwner.$id ~~ groupIds).first()

@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import React, { ErrorInfo } from 'react';
+import React, { PropsWithChildren } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 
 import { getGlobalLogger } from '../logger/logger.context';
-import { ReactChildren } from '../react-children';
 
 const Fallback: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) => {
     return (
@@ -15,7 +14,7 @@ const Fallback: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) => {
     );
 };
 
-const MyErrorBoundary: React.FC<ReactChildren> = ({ children }) => {
+const MyErrorBoundary: React.FC<PropsWithChildren> = ({ children }) => {
     const logger = getGlobalLogger();
     return (
         <ErrorBoundary

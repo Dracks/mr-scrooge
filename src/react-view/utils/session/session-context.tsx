@@ -2,9 +2,11 @@ import React, { PropsWithChildren, useContext } from 'react';
 import { useAsync, useAsyncCallback } from 'react-async-hook';
 
 import { useApi } from '../../api/client';
-import { SessionInfo } from '../../api/models';
+import { SessionInfo, UserProfile } from '../../api/models';
 import { useLogger } from '../logger/logger.context';
 import { LoadingPage } from '../ui/loading';
+
+class NotAuthenticatedError extends Error { }
 
 interface SessionContext {
     session: SessionInfo;
@@ -17,6 +19,8 @@ const SessionContext = React.createContext<SessionContext>({
     refresh: () => undefined,
     logout: () => undefined,
 });
+
+
 export const SessionProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const client = useApi();
     const session = useAsync(() => client.GET('/session'), [client]);
@@ -52,6 +56,14 @@ export const SessionProvider: React.FC<PropsWithChildren> = ({ children }) => {
 export const useSession = (): SessionContext => {
     return useContext(SessionContext);
 };
+
+export const useUserProfileOrThrows = (): UserProfile => {
+    const {session} = useContext(SessionContext)
+    if (session.user === "anonymous"){
+        throw new NotAuthenticatedError()
+    }
+    return session.profile;
+}
 
 export const useIsAuthenticated = (): boolean => {
     const info = useContext(SessionContext);

@@ -1,22 +1,19 @@
-import { EnrichedGraph } from '../../api/client/graphs/types';
-import { GQLGraphDateRange, GQLLabel, GQLNewGraph } from '../../api/graphql/generated';
-import { useRdsData } from '../common/raw-data-source.context';
+import { GraphDateRange, GraphParam, Label } from '../../api/models';
+import { useTransactionsData } from '../common/transaction.context';
 import { accumulateFn } from './data-transform/accumulate';
 import { createGroupWithSubGroup } from './data-transform/create-groups';
 import { getRangeFilter, groupLambdas, sortLambdas } from './data-transform/lambdas';
 import { sumGroups } from './data-transform/sum-groups';
 import { DSDoubleGroup } from './data-transform/types';
+import { EnrichedGraph } from './types';
 
-const hashDateRange: Record<GQLGraphDateRange, number | undefined> = {
-    [GQLGraphDateRange.Month]: 1,
-    [GQLGraphDateRange.Six]: 6,
-    [GQLGraphDateRange.Year]: 12,
-
-    [GQLGraphDateRange.TwoYears]: 24,
-
-    [GQLGraphDateRange.SixYears]: 12 * 6,
-
-    [GQLGraphDateRange.All]: undefined,
+const hashDateRange: Record<GraphDateRange, number | undefined> = {
+    "oneMonth": 1,
+    "halfYear": 6,
+    "oneYear": 12,
+    "twoYears": 24,
+    "sixYears": 12 * 6,
+    "all": undefined,
 };
 
 const normalizeSubGroups = (data: DSDoubleGroup<string, string>[]): DSDoubleGroup<string, string>[] => {
@@ -52,17 +49,17 @@ const normalizeSubGroups = (data: DSDoubleGroup<string, string>[]): DSDoubleGrou
     return newData;
 };
 
-const labelMap = ({ name }: GQLLabel) => name;
+const labelMap = ({ name }: Label) => name;
 
-export const useGraphDataGenerator = <T extends GQLNewGraph>({
+export const useGraphDataGenerator = <T extends GraphParam>({
     labelFilterId,
     dateRange,
     horizontalGroup,
     group,
     groupOwnerId,
 }: EnrichedGraph<T>) => {
-    const { data } = useRdsData();
-    const monthRange = hashDateRange[dateRange];
+    const { data } = useTransactionsData();
+    const monthRange : number | undefined = hashDateRange[dateRange];
     let rdsList = labelFilterId ? data.filter(rds => rds.labelIds.indexOf(labelFilterId) >= 0) : data;
     rdsList = rdsList.filter(rds => rds.groupOwnerId === groupOwnerId);
     rdsList = monthRange ? rdsList.filter(getRangeFilter(monthRange, new Date())) : rdsList;
@@ -84,8 +81,8 @@ export const useGraphDataGenerator = <T extends GQLNewGraph>({
     const normalizedRdsGroupedSum = horizontalGroup ? normalizeSubGroups(rdsGroupedSum) : rdsGroupedSum;
 
     const sortLambda = horizontalGroup
-        ? sortLambdas[horizontalGroup.group](horizontalGroup.labels.map(labelMap))
-        : sortLambdas[group.group](group.labels.map(labelMap));
+        ? sortLambdas[horizontalGroup.group](horizontalGroup.labels?.map(labelMap) ?? [])
+        : sortLambdas[group.group](group.labels?.map(labelMap) ?? []);
     let rdsSorted = normalizedRdsGroupedSum.sort((first, second) => sortLambda(first.label, second.label));
 
     const { accumulate } = horizontalGroup ?? { accumulate: false };

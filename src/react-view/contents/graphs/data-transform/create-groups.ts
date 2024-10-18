@@ -4,23 +4,23 @@ export const createGroup = <K extends string>(
     data: DTInputData[],
     lambda: { callback: DTGroupFn<K>; name: string },
 ): GenericDSGroup<K, DTInputData[]>[] => {
-    const hashMap = {} as Record<K, DTInputData[]>;
+    const hashMap = new Map<K, DTInputData[]>;
     data.forEach(record => {
         const key = lambda.callback(record);
         if (key) {
-            let group = hashMap[key];
+            let group = hashMap.get(key);
             if (!group) {
                 group = [];
-                hashMap[key] = group;
+                hashMap.set(key, group);
             }
             group.push(record);
         }
     });
-    return (Object.keys(hashMap) as K[]).map(label => ({
+    return Array.from(hashMap.keys()).map(label => ({
         label,
-        value: hashMap[label],
+        value: hashMap.get(label),
         groupName: lambda.name,
-    }));
+    } as GenericDSGroup<K, DTInputData[]>));
 };
 
 export const createGroupWithSubGroup = <K extends string, SK extends string>(

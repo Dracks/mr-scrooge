@@ -72,7 +72,7 @@ export const InputTag: React.FC<TagInputProps> = ({ value = [], onAdd, onChange,
                     onChange={updateCurrentTag as any}
                     value={currentTag}
                     onSuggestionSelect={event => {
-                        const { value: suggestionId, label }: { label: string; value: number } = event.suggestion;
+                        const { value: suggestionId, label }: { label: string; value: string } = event.suggestion;
                         onAddTag({ id: suggestionId, name: label });
                         setCurrentTag('');
                     }}

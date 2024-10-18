@@ -1,51 +1,60 @@
 import React from 'react';
+import { useAsync, useAsyncCallback } from 'react-async-hook';
 
-import { GQLGraph, useGetGraphsByIdQuery, useUpdateGraphMutation } from '../../../api/graphql/generated';
+import { useApi } from '../../../api/client';
+import { ApiUUID, Graph, GraphParam } from '../../../api/models';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { LoadingPage } from '../../../utils/ui/loading';
 import NotFound from '../../extra/not-found';
 import { GraphForm } from './graph.form';
 
 interface EditGraphProps {
-    id: number;
+    id: ApiUUID;
 }
 export const EditGraph: React.FC<EditGraphProps> = ({ id }) => {
     const logger = useLogger();
-    const [graph] = useGetGraphsByIdQuery({ variables: { graphsIds: [id] } });
-    const [, updateGraph] = useUpdateGraphMutation();
-    const [graphData, setGraphData] = React.useState<GQLGraph>();
+    const client = useApi();
+    const graphQuery = useAsync(()=>client.GET("/graphs", {params: {query: {graphIds: [id]}}}), [id, client]);
+    const updateGraph = useAsyncCallback((id: ApiUUID, graph: GraphParam)=>{
+        return client.PUT("/graphs/{id}", {
+            params: { path: { id }, },
+            body: graph
+        })
+    })
+
+   const [graphData, setGraphData] = React.useState<Graph>();
 
     React.useEffect(() => {
-        if (!graph.fetching && graph.data) {
-            const { graphs } = graph.data;
+        if (graphQuery.status == "success" ) {
+            const { results: graphs } = graphQuery.result?.data ?? {results: []};
             if (graphs.length === 1) {
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const [{ __typename, ...loadedGraph }] = graphs;
-                setGraphData(loadedGraph);
+                setGraphData(graphs[0]);
             } else if (graphs.length > 1) {
                 logger.error('More than one graph found', { graphs });
+            } else {
+                setGraphData(undefined)
             }
         }
-    }, [graph.data, id]);
+    }, [graphQuery, id]);
 
-    if (graphData) {
+
+    if (graphQuery.status === "loading") {
+        return <LoadingPage />;
+    } else if (graphData) {
         return (
-            <GraphForm<GQLGraph>
+            <GraphForm<Graph>
                 graphData={graphData}
                 update={setGraphData}
                 save={async () => {
-                    await updateGraph({
-                        graph: graphData,
-                    });
+                    await updateGraph.execute(id, graphData);
                 }}
             />
         );
-    }
-    if (graph.fetching) {
-        return <LoadingPage />;
-    }
-    if (graph.data?.graphs.length === 0) {
+    } else if (graphQuery.status === "error") {
+        logger.error("Error getting the graph", graphQuery.result?.error)
+        return <div> Error getting the graph </div>
+    } else {
         return <NotFound />;
+
     }
-    return <div>Some error happened</div>;
 };

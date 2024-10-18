@@ -60,8 +60,8 @@ public func configure(_ app: Application) async throws {
 		app.sessions.use(.fluent)
 		app.views.use(.leaf)
 
-		app.commands.use(CreateUserCommand(), as: "demo_user")
-		app.commands.use(DemoDataCommand(), as: "demo_data")
+		app.asyncCommands.use(CreateUserCommand(), as: "demo_user")
+		app.asyncCommands.use(DemoDataCommand(), as: "demo_data")
 
 		// register routes
 		try routes(app)

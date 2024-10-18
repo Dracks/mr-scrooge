@@ -98,23 +98,28 @@ struct MrScroogeAPIImpl {
 		return .undocumented(statusCode: 501, UndocumentedPayload())
 	}
 
-    func ApiImports_rollbackImport(_ input: Operations.ApiImports_rollbackImport.Input) async throws -> Operations.ApiImports_rollbackImport.Output {
-        return .undocumented(statusCode: 501, UndocumentedPayload())
-    }
+	func ApiImports_rollbackImport(_ input: Operations.ApiImports_rollbackImport.Input)
+		async throws -> Operations.ApiImports_rollbackImport.Output
+	{
+		return .undocumented(statusCode: 501, UndocumentedPayload())
+	}
 
-    func ApiImports_applyRow(_ input: Operations.ApiImports_applyRow.Input) async throws -> Operations.ApiImports_applyRow.Output {
-        return .undocumented(statusCode: 501, UndocumentedPayload())
-    }
+	func ApiImports_applyRow(_ input: Operations.ApiImports_applyRow.Input) async throws
+		-> Operations.ApiImports_applyRow.Output
+	{
+		return .undocumented(statusCode: 501, UndocumentedPayload())
+	}
 }
 
 extension MrScroogeAPIImpl: APIProtocol {}
-
 
 func routes(_ app: Application) throws {
 
 	app.middleware.use(ErrorHandlerMiddleware())
 	app.middleware.use(SessionsMiddleware(session: app.sessions.driver))
 	app.middleware.use(UserSessionAuthenticator())
+
+	app.routes.defaultMaxBodySize = 5_000_000
 
 	let requestInjectionMiddleware = OpenAPIRequestInjectionMiddleware()
 
@@ -128,5 +133,8 @@ func routes(_ app: Application) throws {
 	// handlers to the app.
 	try handler.registerHandlers(on: transport, serverURL: Servers.server1())
 
+	try app.register(collection: ImportUpload())
+
 	try app.register(collection: ReactController())
+
 }

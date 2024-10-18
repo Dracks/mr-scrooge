@@ -4,14 +4,14 @@
  */
 
 export interface paths {
-    '/bank-transactions': {
+    "/bank-transactions": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations['ApiBankTransactions_list'];
+        get: operations["ApiBankTransactions_list"];
         put?: never;
         post?: never;
         delete?: never;
@@ -20,7 +20,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    '/bank-transactions/{transactionId}/label/{labelId}': {
+    "/bank-transactions/{transactionId}/label/{labelId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -30,31 +30,31 @@ export interface paths {
         get?: never;
         put?: never;
         /** @description Link a label to a transaction */
-        post: operations['ApiBankTransactions_linkLabel'];
+        post: operations["ApiBankTransactions_linkLabel"];
         /** @description Remove a label from a transaction */
-        delete: operations['ApiBankTransactions_unlinkLabel'];
+        delete: operations["ApiBankTransactions_unlinkLabel"];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    '/graphs': {
+    "/graphs": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations['ApiGraphs_list'];
+        get: operations["ApiGraphs_list"];
         put?: never;
-        post: operations['ApiGraphs_new'];
+        post: operations["ApiGraphs_create"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    '/graphs/{id}': {
+    "/graphs/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -62,31 +62,31 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put?: never;
+        put: operations["ApiGraphs_update"];
         post?: never;
-        delete: operations['ApiGraphs_delete'];
+        delete: operations["ApiGraphs_delete"];
         options?: never;
         head?: never;
-        patch: operations['ApiGraphs_update'];
+        patch?: never;
         trace?: never;
     };
-    '/groups': {
+    "/groups": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations['ApiGroup_list'];
+        get: operations["ApiGroup_list"];
         put?: never;
-        post: operations['ApiGroup_create'];
+        post: operations["ApiGroup_create"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    '/groups/orphaned': {
+    "/groups/orphaned": {
         parameters: {
             query?: never;
             header?: never;
@@ -94,7 +94,7 @@ export interface paths {
             cookie?: never;
         };
         /** @description List all groups that are not assigned to a user */
-        get: operations['ApiGroup_listOrphaned'];
+        get: operations["ApiGroup_listOrphaned"];
         put?: never;
         post?: never;
         delete?: never;
@@ -103,7 +103,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    '/groups/{id}': {
+    "/groups/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -113,36 +113,20 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete: operations['ApiGroup_delete'];
+        delete: operations["ApiGroup_delete"];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    '/imports': {
+    "/imports": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations['ApiImports_list'];
-        put?: never;
-        post: operations['ApiImports_upload'];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    '/imports/parsers': {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations['ApiImports_parserTypes'];
+        get: operations["ApiImports_list"];
         put?: never;
         post?: never;
         delete?: never;
@@ -151,7 +135,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    '/imports/{id}': {
+    "/imports/parsers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ApiImports_parserTypes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/imports/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -161,45 +161,30 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete: operations['ApiImports_delete'];
+        delete: operations["ApiImports_delete"];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    '/labels': {
+    "/imports/{id}/apply/{rowId}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations['ApiLabels_list'];
+        get?: never;
         put?: never;
-        post: operations['ApiLabels_create'];
+        /** @description This will allow to create a transaction from the file-import rowId */
+        post: operations["ApiImports_applyRow"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    '/profiles': {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations['ApiProfile_get'];
-        put?: never;
-        post: operations['ApiProfile_create'];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    '/profiles/{id}': {
+    "/imports/{id}/rollback/{rowId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -209,13 +194,46 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete: operations['ApiProfile_delete'];
+        /** @description This will allow to delete a transaction using the file-import rowId */
+        delete: operations["ApiImports_rollbackImport"];
         options?: never;
         head?: never;
-        patch: operations['ApiProfile_update'];
+        patch?: never;
         trace?: never;
     };
-    '/profiles/{id}/group/{groupId}': {
+    "/labels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ApiLabels_list"];
+        put?: never;
+        post: operations["ApiLabels_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/profiles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ApiProfile_get"];
+        put?: never;
+        post: operations["ApiProfile_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/profiles/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -224,14 +242,30 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations['ApiProfile_addGroup'];
-        delete: operations['ApiProfile_deleteGroup'];
+        post?: never;
+        delete: operations["ApiProfile_delete"];
+        options?: never;
+        head?: never;
+        patch: operations["ApiProfile_update"];
+        trace?: never;
+    };
+    "/profiles/{id}/group/{groupId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ApiProfile_addGroup"];
+        delete: operations["ApiProfile_deleteGroup"];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    '/session': {
+    "/session": {
         parameters: {
             query?: never;
             header?: never;
@@ -239,12 +273,12 @@ export interface paths {
             cookie?: never;
         };
         /** @description Check if the user is logged in */
-        get: operations['ApiSession_me'];
+        get: operations["ApiSession_me"];
         put?: never;
         /** @description Login */
-        post: operations['ApiSession_login'];
+        post: operations["ApiSession_login"];
         /** @description Logout */
-        delete: operations['ApiSession_logout'];
+        delete: operations["ApiSession_logout"];
         options?: never;
         head?: never;
         patch?: never;
@@ -255,17 +289,17 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         BankTransaction: {
-            id: components['schemas']['UUID'];
-            groupOwnerId: components['schemas']['UUID'];
+            id: components["schemas"]["UUID"];
+            groupOwnerId: components["schemas"]["UUID"];
             movementName: string;
-            date: components['schemas']['DateOnly'];
-            dateValue?: components['schemas']['DateOnly'];
+            date: components["schemas"]["DateOnly"];
+            dateValue?: components["schemas"]["DateOnly"];
             details?: string;
             /** Format: decimal */
             value: number;
             kind: string;
             description?: string;
-            labelIds: components['schemas']['UUID'][];
+            labelIds: components["schemas"]["UUID"][];
         };
         BaseUserData: {
             username: string;
@@ -274,7 +308,7 @@ export interface components {
             lastName?: string;
             isActive: boolean;
             isAdmin: boolean;
-            defaultGroupId: components['schemas']['UUID'];
+            defaultGroupId: components["schemas"]["UUID"];
         };
         BaseUserDataUpdate: {
             username?: string;
@@ -283,12 +317,12 @@ export interface components {
             lastName?: string;
             isActive?: boolean;
             isAdmin?: boolean;
-            defaultGroupId?: components['schemas']['UUID'];
+            defaultGroupId?: components["schemas"]["UUID"];
         };
-        CheckMyProfile: components['schemas']['GetMyProfile'] | components['schemas']['NotIdentified'];
+        CheckMyProfile: components["schemas"]["GetMyProfile"] | components["schemas"]["NotIdentified"];
         CreateLabel: {
             name: string;
-            groupOwnerId: components['schemas']['UUID'];
+            groupOwnerId: components["schemas"]["UUID"];
         };
         /** Format: date-time */
         Date: string;
@@ -296,20 +330,20 @@ export interface components {
         DateOnly: string;
         Error: {
             message: string;
-            code: components['schemas']['ErrorCode'];
+            code: components["schemas"]["ErrorCode"];
         };
         /** @description something */
         ErrorCode: string;
         FileImport: {
-            id: components['schemas']['UUID'];
-            createdAt: components['schemas']['Date'];
+            id: components["schemas"]["UUID"];
+            createdAt: components["schemas"]["Date"];
             description: string;
             fileName: string;
-            groupOwnerId: components['schemas']['UUID'];
+            groupOwnerId: components["schemas"]["UUID"];
             kind: string;
-            status: components['schemas']['ImportStatus'];
+            status: components["schemas"]["ImportStatus"];
             context: string | null;
-            rows: components['schemas']['FileImportTransaction'][];
+            rows: components["schemas"]["FileImportTransaction"][];
         };
         FileImportTransaction: {
             movementName: string;
@@ -320,7 +354,7 @@ export interface components {
             value: number;
             description?: string;
             message?: string;
-            transactionId?: components['schemas']['UUID'];
+            transactionId?: components["schemas"]["UUID"];
         };
         FileParserType: {
             name: string;
@@ -331,112 +365,92 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            user: 'identified';
-            profile: components['schemas']['UserProfile'];
+            user: "identified";
+            profile: components["schemas"]["UserProfile"];
         };
         Graph: {
-            id: components['schemas']['UUID'];
-            groupOwnerId: components['schemas']['UUID'];
+            id: components["schemas"]["UUID"];
+            groupOwnerId: components["schemas"]["UUID"];
             name: string;
-            kind: components['schemas']['GraphKind'];
-            labelFilterId?: components['schemas']['UUID'];
-            dateRange: components['schemas']['GraphDateRange'];
-            group: components['schemas']['Group'];
-            horizontalGroup?: components['schemas']['HorizontalGroup'];
+            kind: components["schemas"]["GraphKind"];
+            labelFilterId?: components["schemas"]["UUID"];
+            dateRange: components["schemas"]["GraphDateRange"];
+            group: components["schemas"]["Group"];
+            horizontalGroup?: components["schemas"]["HorizontalGroup"];
         };
         /** @enum {string} */
-        GraphDateRange: 'all' | 'halfYear' | 'oneMonth' | 'oneYear' | 'sixYears' | 'twoYears';
+        GraphDateRange: "all" | "halfYear" | "oneMonth" | "oneYear" | "sixYears" | "twoYears";
         /** @enum {string} */
-        GraphGroupType: 'day' | 'labels' | 'month' | 'sign' | 'year';
+        GraphGroupType: "day" | "labels" | "month" | "sign" | "year";
         /** @enum {string} */
-        GraphKind: 'bar' | 'line' | 'pie';
+        GraphKind: "bar" | "line" | "pie";
         GraphParam: {
-            groupOwnerId: components['schemas']['UUID'];
+            groupOwnerId: components["schemas"]["UUID"];
             name: string;
-            kind: components['schemas']['GraphKind'];
-            labelFilterId?: components['schemas']['UUID'];
-            dateRange: components['schemas']['GraphDateRange'];
-            group: components['schemas']['Group'];
-            horizontalGroup?: components['schemas']['HorizontalGroup'];
-        };
-        GraphParamUpdate: {
-            groupOwnerId?: components['schemas']['UUID'];
-            name?: string;
-            kind?: components['schemas']['GraphKind'];
-            labelFilterId?: components['schemas']['UUID'];
-            dateRange?: components['schemas']['GraphDateRange'];
-            group?: components['schemas']['GroupUpdate'];
-            horizontalGroup?: components['schemas']['HorizontalGroupUpdate'];
+            kind: components["schemas"]["GraphKind"];
+            labelFilterId?: components["schemas"]["UUID"];
+            dateRange: components["schemas"]["GraphDateRange"];
+            group: components["schemas"]["Group"];
+            horizontalGroup?: components["schemas"]["HorizontalGroup"];
         };
         Group: {
-            group: components['schemas']['GraphGroupType'];
-            hideOthers: boolean | null;
-            labels: components['schemas']['UUID'][] | null;
-        };
-        GroupUpdate: {
-            group?: components['schemas']['GraphGroupType'];
-            hideOthers?: boolean | null;
-            labels?: components['schemas']['UUID'][] | null;
+            group: components["schemas"]["GraphGroupType"];
+            hideOthers?: boolean;
+            labels?: components["schemas"]["UUID"][];
         };
         HorizontalGroup: {
-            group: components['schemas']['GraphGroupType'];
-            hideOthers: boolean | null;
-            labels: components['schemas']['UUID'][] | null;
-            accumulate: boolean | null;
-        };
-        HorizontalGroupUpdate: {
-            group?: components['schemas']['GraphGroupType'];
-            hideOthers?: boolean | null;
-            labels?: components['schemas']['UUID'][] | null;
-            accumulate?: boolean | null;
+            group: components["schemas"]["GraphGroupType"];
+            hideOthers?: boolean;
+            labels?: components["schemas"]["UUID"][];
+            accumulate?: boolean;
         };
         /** @enum {string} */
-        ImportStatus: 'ok' | 'warning' | 'error';
+        ImportStatus: "ok" | "warning" | "error";
         InvalidCredentials: {
             details: string;
         };
         /** @description Unauthorized, usually when using a group that the user doesn't have access to */
         InvalidGroupOwnerId: {
             message: string;
-            code: components['schemas']['ErrorCode'];
-            validGroupOwners: components['schemas']['UUID'][];
+            code: components["schemas"]["ErrorCode"];
+            validGroupOwners: components["schemas"]["UUID"][];
         };
         Label: {
-            id: components['schemas']['UUID'];
+            id: components["schemas"]["UUID"];
             name: string;
-            groupOwnerId: components['schemas']['UUID'];
+            groupOwnerId: components["schemas"]["UUID"];
         };
         ListFileParsers: {
-            parsers: components['schemas']['FileParserType'][];
+            parsers: components["schemas"]["FileParserType"][];
         };
         NotFoundBankTransaction: {
             message: string;
-            code: components['schemas']['ErrorCode'];
-            bankTransactionSuplied: components['schemas']['UUID'];
+            code: components["schemas"]["ErrorCode"];
+            bankTransactionSuplied: components["schemas"]["UUID"];
         };
         NotFoundLabel: {
             message: string;
-            code: components['schemas']['ErrorCode'];
-            labelSuplied: components['schemas']['UUID'];
+            code: components["schemas"]["ErrorCode"];
+            labelSuplied: components["schemas"]["UUID"];
         };
         NotFoundLabels: {
             message: string;
-            code: components['schemas']['ErrorCode'];
-            validLabels: components['schemas']['UUID'][];
-            invalidLabels: components['schemas']['UUID'][];
+            code: components["schemas"]["ErrorCode"];
+            validLabels: components["schemas"]["UUID"][];
+            invalidLabels: components["schemas"]["UUID"][];
         };
         NotIdentified: {
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            user: 'anonymous';
+            user: "anonymous";
         };
         /** Format: uuid */
         UUID: string;
-        UploadDataMultiPart: {
+        UploadData: {
             kind: string;
-            /** Format: binary */
+            /** Format: byte */
             file: string;
         };
         UserCredentials: {
@@ -444,19 +458,19 @@ export interface components {
             password: string;
         };
         UserGroup: {
-            id: components['schemas']['UUID'];
+            id: components["schemas"]["UUID"];
             name: string;
         };
         UserProfile: {
-            id: components['schemas']['UUID'];
+            id: components["schemas"]["UUID"];
             username: string;
             email: string;
             firstName?: string;
             lastName?: string;
             isActive: boolean;
             isAdmin: boolean;
-            defaultGroupId: components['schemas']['UUID'];
-            groups: components['schemas']['UserGroup'][];
+            defaultGroupId: components["schemas"]["UUID"];
+            groups: components["schemas"]["UserGroup"][];
         };
     };
     responses: never;
@@ -470,7 +484,7 @@ export interface operations {
     ApiBankTransactions_list: {
         parameters: {
             query?: {
-                groupIds?: components['schemas']['UUID'][];
+                groupIds?: components["schemas"]["UUID"][];
                 cursor?: string;
                 limit?: number;
             };
@@ -486,8 +500,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': {
-                        results: components['schemas']['BankTransaction'][];
+                    "application/json": {
+                        results: components["schemas"]["BankTransaction"][];
                         next?: string;
                     };
                 };
@@ -499,8 +513,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                transactionId: components['schemas']['UUID'];
-                labelId: components['schemas']['UUID'];
+                transactionId: components["schemas"]["UUID"];
+                labelId: components["schemas"]["UUID"];
             };
             cookie?: never;
         };
@@ -512,7 +526,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['BankTransaction'];
+                    "application/json": components["schemas"]["BankTransaction"];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -521,9 +535,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json':
-                        | components['schemas']['NotFoundLabel']
-                        | components['schemas']['NotFoundBankTransaction'];
+                    "application/json": components["schemas"]["NotFoundLabel"] | components["schemas"]["NotFoundBankTransaction"];
                 };
             };
             /** @description The request conflicts with the current state of the server. */
@@ -532,7 +544,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['Error'];
+                    "application/json": components["schemas"]["Error"];
                 };
             };
         };
@@ -542,8 +554,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                transactionId: components['schemas']['UUID'];
-                labelId: components['schemas']['UUID'];
+                transactionId: components["schemas"]["UUID"];
+                labelId: components["schemas"]["UUID"];
             };
             cookie?: never;
         };
@@ -555,7 +567,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['BankTransaction'];
+                    "application/json": components["schemas"]["BankTransaction"];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -564,9 +576,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json':
-                        | components['schemas']['Error']
-                        | components['schemas']['NotFoundBankTransaction'];
+                    "application/json": components["schemas"]["Error"] | components["schemas"]["NotFoundBankTransaction"];
                 };
             };
         };
@@ -574,7 +584,7 @@ export interface operations {
     ApiGraphs_list: {
         parameters: {
             query?: {
-                graphIds?: unknown[];
+                graphIds?: components["schemas"]["UUID"][];
                 cursor?: string;
                 limit?: number;
             };
@@ -590,15 +600,15 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': {
-                        results: components['schemas']['Graph'][];
+                    "application/json": {
+                        results: components["schemas"]["Graph"][];
                         next?: string;
                     };
                 };
             };
         };
     };
-    ApiGraphs_new: {
+    ApiGraphs_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -607,7 +617,51 @@ export interface operations {
         };
         requestBody: {
             content: {
-                'application/json': components['schemas']['GraphParam'];
+                "application/json": components["schemas"]["GraphParam"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded and a new resource has been created as a result. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Graph"];
+                };
+            };
+            /** @description Unauthorized, usually when using a group that the user doesn't have access to */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvalidGroupOwnerId"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundLabels"];
+                };
+            };
+        };
+    };
+    ApiGraphs_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["schemas"]["UUID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GraphParam"];
             };
         };
         responses: {
@@ -617,7 +671,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['Graph'];
+                    "application/json": components["schemas"]["Graph"];
                 };
             };
             /** @description Unauthorized, usually when using a group that the user doesn't have access to */
@@ -626,7 +680,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['InvalidGroupOwnerId'];
+                    "application/json": components["schemas"]["InvalidGroupOwnerId"];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -635,7 +689,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['NotFoundLabels'];
+                    "application/json": components["schemas"]["NotFoundLabels"] | components["schemas"]["Error"];
                 };
             };
         };
@@ -645,7 +699,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: components['schemas']['UUID'];
+                id: components["schemas"]["UUID"];
             };
             cookie?: never;
         };
@@ -657,42 +711,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': boolean;
-                };
-            };
-        };
-    };
-    ApiGraphs_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: components['schemas']['UUID'];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                'application/json': components['schemas']['GraphParamUpdate'];
-            };
-        };
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    'application/json': components['schemas']['Graph'];
-                };
-            };
-            /** @description Unauthorized, usually when using a group that the user doesn't have access to */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    'application/json': components['schemas']['InvalidGroupOwnerId'];
+                    "application/json": boolean;
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -701,7 +720,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['NotFoundLabels'] | components['schemas']['Error'];
+                    "application/json": components["schemas"]["Error"];
                 };
             };
         };
@@ -724,7 +743,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['UserGroup'][];
+                    "application/json": components["schemas"]["UserGroup"][];
                 };
             };
         };
@@ -738,7 +757,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                'application/json': components['schemas']['UserGroup'];
+                "application/json": components["schemas"]["UserGroup"];
             };
         };
         responses: {
@@ -748,7 +767,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['UserGroup'];
+                    "application/json": components["schemas"]["UserGroup"];
                 };
             };
         };
@@ -768,7 +787,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['UserGroup'][];
+                    "application/json": components["schemas"]["UserGroup"][];
                 };
             };
         };
@@ -778,7 +797,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: components['schemas']['UUID'];
+                id: components["schemas"]["UUID"];
             };
             cookie?: never;
         };
@@ -811,52 +830,10 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': {
-                        results: components['schemas']['FileImport'][];
+                    "application/json": {
+                        results: components["schemas"]["FileImport"][];
                         next?: string;
                     };
-                };
-            };
-        };
-    };
-    ApiImports_upload: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                'multipart/form-data': components['schemas']['UploadDataMultiPart'];
-            };
-        };
-        responses: {
-            /** @description The request has succeeded and a new resource has been created as a result. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    'application/json': components['schemas']['FileImport'];
-                };
-            };
-            /** @description Unauthorized, usually when using a group that the user doesn't have access to */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    'application/json': components['schemas']['InvalidGroupOwnerId'];
-                };
-            };
-            /** @description The server cannot find the requested resource. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -876,7 +853,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['ListFileParsers'];
+                    "application/json": components["schemas"]["ListFileParsers"];
                 };
             };
         };
@@ -886,7 +863,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: components['schemas']['UUID'];
+                id: components["schemas"]["UUID"];
             };
             cookie?: never;
         };
@@ -898,7 +875,53 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': boolean;
+                    "application/json": boolean;
+                };
+            };
+        };
+    };
+    ApiImports_applyRow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["schemas"]["UUID"];
+                rowId: components["schemas"]["UUID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": boolean;
+                };
+            };
+        };
+    };
+    ApiImports_rollbackImport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["schemas"]["UUID"];
+                rowId: components["schemas"]["UUID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": boolean;
                 };
             };
         };
@@ -921,8 +944,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': {
-                        results: components['schemas']['Label'][];
+                    "application/json": {
+                        results: components["schemas"]["Label"][];
                         next?: string;
                     };
                 };
@@ -938,7 +961,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                'application/json': components['schemas']['CreateLabel'];
+                "application/json": components["schemas"]["CreateLabel"];
             };
         };
         responses: {
@@ -948,7 +971,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['Label'];
+                    "application/json": components["schemas"]["Label"];
+                };
+            };
+            /** @description Unauthorized, usually when using a group that the user doesn't have access to */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvalidGroupOwnerId"];
                 };
             };
         };
@@ -971,8 +1003,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': {
-                        results: components['schemas']['UserProfile'][];
+                    "application/json": {
+                        results: components["schemas"]["UserProfile"][];
                         next?: string;
                     };
                 };
@@ -988,7 +1020,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                'application/json': components['schemas']['BaseUserData'];
+                "application/json": components["schemas"]["BaseUserData"];
             };
         };
         responses: {
@@ -998,7 +1030,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['UserProfile'];
+                    "application/json": components["schemas"]["UserProfile"];
                 };
             };
         };
@@ -1008,7 +1040,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: components['schemas']['UUID'];
+                id: components["schemas"]["UUID"];
             };
             cookie?: never;
         };
@@ -1020,7 +1052,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': boolean;
+                    "application/json": boolean;
                 };
             };
         };
@@ -1030,14 +1062,14 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: components['schemas']['UUID'];
+                id: components["schemas"]["UUID"];
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                'application/json': {
-                    body?: components['schemas']['BaseUserDataUpdate'];
+                "application/json": {
+                    body?: components["schemas"]["BaseUserDataUpdate"];
                 };
             };
         };
@@ -1048,7 +1080,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['UserProfile'];
+                    "application/json": components["schemas"]["UserProfile"];
                 };
             };
         };
@@ -1058,8 +1090,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: components['schemas']['UUID'];
-                groupId: components['schemas']['UUID'];
+                id: components["schemas"]["UUID"];
+                groupId: components["schemas"]["UUID"];
             };
             cookie?: never;
         };
@@ -1079,8 +1111,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: components['schemas']['UUID'];
-                groupId: components['schemas']['UUID'];
+                id: components["schemas"]["UUID"];
+                groupId: components["schemas"]["UUID"];
             };
             cookie?: never;
         };
@@ -1110,7 +1142,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['CheckMyProfile'];
+                    "application/json": components["schemas"]["CheckMyProfile"];
                 };
             };
             /** @description An unexpected error response. */
@@ -1119,7 +1151,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['Error'];
+                    "application/json": components["schemas"]["Error"];
                 };
             };
         };
@@ -1133,7 +1165,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                'application/json': components['schemas']['UserCredentials'];
+                "application/json": components["schemas"]["UserCredentials"];
             };
         };
         responses: {
@@ -1143,7 +1175,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['UserProfile'];
+                    "application/json": components["schemas"]["UserProfile"];
                 };
             };
             /** @description Access is unauthorized. */
@@ -1152,7 +1184,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['InvalidCredentials'];
+                    "application/json": components["schemas"]["InvalidCredentials"];
                 };
             };
         };
@@ -1172,7 +1204,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': boolean;
+                    "application/json": boolean;
                 };
             };
         };
