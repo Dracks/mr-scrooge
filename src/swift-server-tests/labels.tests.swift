@@ -18,8 +18,8 @@ final class LabelResolverTests: AbstractBaseTestsClass {
 		// Assert the response
 		XCTAssertEqual(response.status, .ok)
 
-		
-		let data = try response.content.decode(Operations.ApiLabels_list.Output.Ok.Body.jsonPayload.self)
+		let data = try response.content.decode(
+			Operations.ApiLabels_list.Output.Ok.Body.jsonPayload.self)
 
 		let labels = data.results
 		XCTAssertEqual(labels.count, 10)  // Only labels from testGroup should be returned
@@ -43,7 +43,7 @@ final class LabelResolverTests: AbstractBaseTestsClass {
 		let headers = try await app.getHeaders(
 			forUser: .init(
 				username: testUser.username, password: "test-password"))
-		
+
 		let newLabel = Components.Schemas.CreateLabel(
 			name: "Some Label Name",
 			groupOwnerId: try testGroup.requireID().uuidString
@@ -53,16 +53,14 @@ final class LabelResolverTests: AbstractBaseTestsClass {
 			.POST, "/api/labels",
 			body: newLabel,
 			headers: headers
-			)
+		)
 
 		// Assert the response
 		XCTAssertEqual(response.status, .ok)
 
-		
 		let data = try response.content.decode(Components.Schemas.Label.self)
 
 		XCTAssertEqual(data.name, "Some Label Name")
 
 	}
 }
-

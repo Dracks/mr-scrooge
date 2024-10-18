@@ -58,7 +58,7 @@ model ListFileParsers {
 @route("imports")
 @tag("imports")
 interface ApiImports {
-  @post upload(@header contentType: "multipart/form-data", ...UploadData): {@statusCode _: 201, ...FileImport} | InvalidGroupOwnerId | NotFound;
+  // @post upload(@header contentType: "multipart/form-data", ...UploadData): {@statusCode _: 201, ...FileImport} | InvalidGroupOwnerId | NotFound;
   @get list(@query cursor?: string, @query limit?: int16): PageList<FileImport>;
   @route("parsers") @get parserTypes(): ListFileParsers;
   @delete delete(@path id: UUID): boolean;

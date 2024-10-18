@@ -17,14 +17,15 @@ final class CaixaEnginyersImporterTests: BaseImporterTests {
 		let groupOwnerId = try self.group.requireID()
 		let db = try getDb()
 
-        let filePath = try XCTUnwrap(Bundle.module.url(forResource: "MovimientosCuenta", withExtension: "xls"))
+		let filePath = try XCTUnwrap(
+			Bundle.module.url(forResource: "MovimientosCuenta", withExtension: "xls"))
 		// let filePath = getTestFile(file: "test_files/MovimientosCuenta.xls")
 
-        let _ = try await importerService.importFromFile(
+		let _ = try await importerService.importFromFile(
 			on: db, groupOwnerId: groupOwnerId, key: "caixa-enginyers/account",
-            fileName: "MovimientosCuenta.xls", filePath: filePath.path)
+			fileName: "MovimientosCuenta.xls", filePath: filePath.path)
 
-        let reports = try await statusReportsService.getAll(
+		let reports = try await statusReportsService.getAll(
 			on: db, groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
 		XCTAssertEqual(reports.list.first?.status, .ok)
@@ -64,13 +65,15 @@ final class CaixaEnginyersImporterTests: BaseImporterTests {
 		let db = try getDb()
 
 		//let filePath = getTestFile(file: "test_files/MovimientosTarjetaCredito.xls")
-        let filePath = try XCTUnwrap(Bundle.module.url(forResource: "MovimientosTarjetaCredito", withExtension: "xls"))
+		let filePath = try XCTUnwrap(
+			Bundle.module.url(
+				forResource: "MovimientosTarjetaCredito", withExtension: "xls"))
 
-        let _ = try await importerService.importFromFile(
+		let _ = try await importerService.importFromFile(
 			on: db, groupOwnerId: groupOwnerId, key: "caixa-enginyers/credit",
-            fileName: "MovimientosTarjetaCredito.xls", filePath: filePath.path)
+			fileName: "MovimientosTarjetaCredito.xls", filePath: filePath.path)
 
-        let reports = try await statusReportsService.getAll(
+		let reports = try await statusReportsService.getAll(
 			on: db, groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
 		XCTAssertEqual(reports.list.first?.status, .ok)

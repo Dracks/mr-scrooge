@@ -31,8 +31,8 @@ struct ReactController: RouteCollection {
 
 	}
 
-	func getReact(req: Request) throws -> EventLoopFuture<View> {
+	func getReact(req: Request) async throws -> View {
 		logger.info("Rendering react with context: \(self.ctx)")
-		return req.view.render("react", self.ctx)
+		return try await req.view.render("react", self.ctx)
 	}
 }

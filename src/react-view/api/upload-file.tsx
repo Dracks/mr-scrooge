@@ -10,9 +10,6 @@ export const usePostUploadFile = () => {
             '/api/imports/',
             {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
                 body: form
             });
     });

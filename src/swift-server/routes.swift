@@ -98,23 +98,30 @@ struct MrScroogeAPIImpl {
 		return .undocumented(statusCode: 501, UndocumentedPayload())
 	}
 
-    func ApiImports_rollbackImport(_ input: Operations.ApiImports_rollbackImport.Input) async throws -> Operations.ApiImports_rollbackImport.Output {
-        return .undocumented(statusCode: 501, UndocumentedPayload())
-    }
+	func ApiImports_rollbackImport(_ input: Operations.ApiImports_rollbackImport.Input)
+		async throws -> Operations.ApiImports_rollbackImport.Output
+	{
+		return .undocumented(statusCode: 501, UndocumentedPayload())
+	}
 
-    func ApiImports_applyRow(_ input: Operations.ApiImports_applyRow.Input) async throws -> Operations.ApiImports_applyRow.Output {
-        return .undocumented(statusCode: 501, UndocumentedPayload())
-    }
+	func ApiImports_applyRow(_ input: Operations.ApiImports_applyRow.Input) async throws
+		-> Operations.ApiImports_applyRow.Output
+	{
+		return .undocumented(statusCode: 501, UndocumentedPayload())
+	}
 }
 
 extension MrScroogeAPIImpl: APIProtocol {}
 
+struct UploadImportResponse: Content {}
 
 func routes(_ app: Application) throws {
 
 	app.middleware.use(ErrorHandlerMiddleware())
 	app.middleware.use(SessionsMiddleware(session: app.sessions.driver))
 	app.middleware.use(UserSessionAuthenticator())
+
+	app.routes.defaultMaxBodySize = 5_000_000
 
 	let requestInjectionMiddleware = OpenAPIRequestInjectionMiddleware()
 
@@ -128,5 +135,44 @@ func routes(_ app: Application) throws {
 	// handlers to the app.
 	try handler.registerHandlers(on: transport, serverURL: Servers.server1())
 
+	try app.register(collection: ImportUpload())
+
 	try app.register(collection: ReactController())
+
+}
+
+struct ImportUpload: RouteCollection {
+	func boot(routes: RoutesBuilder) throws {
+		routes.grouped("api").post("imports", use: uploadFile)
+	}
+
+	func uploadFile(request: Request) async throws -> UploadImportResponse {
+
+		let upload = try request.content.decode(UploadData.self)
+
+		let tmpDir = NSTemporaryDirectory()
+		let filePath =
+			"\(tmpDir)/mr-scrooge-\(UUID().uuidString).\(upload.file.extension ?? "unknown")"
+		// print(filePath)
+
+		try await request.fileio.writeFile(upload.file.data, at: filePath)
+
+		defer {
+			do {
+				try FileManager.default.removeItem(atPath: filePath)
+			} catch {
+				print(error)
+			}
+		}
+
+		let user = try await getUser(fromRequest: request)
+
+		let importData = try await fileImporterService.createFileImport(
+			on: request.db, groupOwnerId: user.defaultGroup.requireID(),
+			key: upload.kind,
+			fileName: upload.file.filename, filePath: filePath)
+
+		return UploadImportResponse()
+
+	}
 }

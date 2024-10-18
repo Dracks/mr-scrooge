@@ -73,7 +73,9 @@ extension MrScroogeAPIImpl {
 		else {
 			return .undocumented(statusCode: 400, UndocumentedPayload())
 		}
-		let unlinkState = try await bankTransactionService.unlink(on: request.db, transaction: transactionId, fromLabel: labelId, withValidGroups: validGroupsIds)
+		let unlinkState = try await bankTransactionService.unlink(
+			on: request.db, transaction: transactionId, fromLabel: labelId,
+			withValidGroups: validGroupsIds)
 		switch unlinkState {
 		case .ok:
 			let (transaction, labelIds) = try await bankTransactionService.getAll(
@@ -87,28 +89,30 @@ extension MrScroogeAPIImpl {
 							bankTransaction: transaction.list.first!,
 							labelIds: labelIds[transactionId]!))))
 		case .transactionNotFound:
-		return .notFound(
-			.init(
-				body: .json(
-					.init(
-						value2: .init(
-							message: "Transaction not found",
-							code: ApiError.API10001.rawValue,
-							bankTransactionSuplied:
-								transactionId.uuidString)))))
+			return .notFound(
+				.init(
+					body: .json(
+						.init(
+							value2: .init(
+								message: "Transaction not found",
+								code: ApiError.API10001.rawValue,
+								bankTransactionSuplied:
+									transactionId.uuidString))))
+			)
 		case .linkNotFound:
-		return .notFound(
-			.init(
-				body: .json(
-					.init(
-						value1: .init(
-							message: "There is not link between transaction and label",
-							code: ApiError.API10003.rawValue
+			return .notFound(
+				.init(
+					body: .json(
+						.init(
+							value1: .init(
+								message:
+									"There is not link between transaction and label",
+								code: ApiError.API10003.rawValue
+							)
 						)
 					)
 				)
 			)
-		)
 		}
 	}
 
@@ -129,7 +133,9 @@ extension MrScroogeAPIImpl {
 		}
 		print(input.query)
 		let (data, labelIds) = try await bankTransactionService.getAll(
-            on: req.db, groupIds: groupIds, pageQuery: .init(limit: input.query.limit ?? 100, cursor: input.query.cursor))
+			on: req.db, groupIds: groupIds,
+			pageQuery: .init(
+				limit: input.query.limit ?? 100, cursor: input.query.cursor))
 		let results = try data.list.map { movement in
 			let movementId = try movement.requireID()
 			let labels: [UUID] = labelIds[movementId]!

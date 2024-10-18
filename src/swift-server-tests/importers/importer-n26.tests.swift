@@ -16,11 +16,12 @@ final class N26ImporterTests: BaseImporterTests {
 		let db = try getDb()
 
 		//let filePath = getTestFile(file: "test_files/n26_es.csv")
-        let filePath = try XCTUnwrap(Bundle.module.url(forResource: "n26_es", withExtension: "csv"))
+		let filePath = try XCTUnwrap(
+			Bundle.module.url(forResource: "n26_es", withExtension: "csv"))
 
-        let _ = try await importerService.importFromFile(
+		let _ = try await importerService.importFromFile(
 			on: db, groupOwnerId: groupOwnerId, key: "n26/es",
-            fileName: "n26-file.csv", filePath: filePath.path)
+			fileName: "n26-file.csv", filePath: filePath.path)
 
 		let reports = try await statusReportsService.getAll(
 			on: db, groupIds: [groupOwnerId])
@@ -44,7 +45,7 @@ final class N26ImporterTests: BaseImporterTests {
 
 		let filePath = "invalid"
 
-        let _ = try await importerService.importFromFile(
+		let _ = try await importerService.importFromFile(
 			on: db, groupOwnerId: groupOwnerId, key: "n26/es",
 			fileName: "n26-file.csv", filePath: filePath)
 

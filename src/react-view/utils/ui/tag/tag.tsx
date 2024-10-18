@@ -1,13 +1,13 @@
 import { Box, Button, Text } from 'grommet';
 import { FormClose } from 'grommet-icons';
-import React from 'react';
+import React, {PropsWithChildren} from 'react';
 
 export interface ITagModel {
     id: string;
     name: string;
 }
 
-export const Tag: React.FC<{ onRemove?: () => void }> = ({ children, onRemove }) => {
+export const Tag: React.FC<PropsWithChildren<{ onRemove?: () => void }>> = ({ children, onRemove }) => {
     return (
         <Box
             direction="row"

@@ -51,11 +51,11 @@ let package = Package(
 				.product(name: "CSV", package: "CSV.swift"),
 			],
 			path: "src/swift-server",
-            resources: [
-                .process("openapi-generator-config.yaml"),
-                .process("openapi.yaml"),
-            ],
-            plugins: [
+			resources: [
+				.process("openapi-generator-config.yaml"),
+				.process("openapi.yaml"),
+			],
+			plugins: [
 				.plugin(
 					name: "OpenAPIGenerator", package: "swift-openapi-generator"
 				)
@@ -66,15 +66,15 @@ let package = Package(
 			dependencies: [
 				.target(name: "MrScroogeServer"),
 				.product(name: "XCTVapor", package: "vapor"),
-			], 
-            path: "src/swift-server-tests",
-            resources: [
-                .process("test_files/commerz_bank.CSV"),
-                .process("test_files/MovimientosCuenta.xls"),
+			],
+			path: "src/swift-server-tests",
+			resources: [
+				.process("test_files/commerz_bank.CSV"),
+				.process("test_files/MovimientosCuenta.xls"),
 				.process("test_files/MovimientosTarjetaCredito.xls"),
 				.process("test_files/n26_es.csv"),
-            ]
-        ),
-            
+			]
+		),
+
 	]
 )

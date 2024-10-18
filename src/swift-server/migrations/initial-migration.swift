@@ -142,7 +142,10 @@ struct InitialMigration: AsyncMigration {
 
 		try await database.schema("import_fileimport_row")
 			.id()
-			.field("report_id", .uuid, .required, .references("import_fileimport", "id"))
+			.field(
+				"report_id", .uuid, .required,
+				.references("import_fileimport", "id")
+			)
 			.field("movement_name", .string, .required)
 			.field("date", .date, .required)
 			.field("date_value", .date)

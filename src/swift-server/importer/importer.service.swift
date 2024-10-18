@@ -3,21 +3,27 @@ import Vapor
 
 class FileImportService {
 	private let cursorHandler = CursorHandler<FileImportReport, String>(["created", "id"])
-    private let uploadImportService = NewImportService(parsers: [CommerzBankEnImporter(), CaixaEnginiersCreditImporter(), CaixaEnginyersAccountImporter(), N26Importer()])
-    
-    func getParsers() -> [ParserFactory] {
-        return uploadImportService.getParsers()
-    }
+	private let uploadImportService = NewImportService(parsers: [
+		CommerzBankEnImporter(), CaixaEnginiersCreditImporter(),
+		CaixaEnginyersAccountImporter(), N26Importer(),
+	])
 
-    func createFileImport(
-        on db: Database, groupOwnerId: UUID, key: String, fileName: String, filePath: String
-    ) async throws -> FileImportReport {
-        let importId = try await uploadImportService.importFromFile(on: db, groupOwnerId: groupOwnerId, key: key, fileName: fileName, filePath: filePath)
-        let importReport = try await FileImportReport.query(on: db).filter(\.$id == importId).with(\.$rows).first()
-        return importReport!
-    }
-    
-    
+	func getParsers() -> [ParserFactory] {
+		return uploadImportService.getParsers()
+	}
+
+	func createFileImport(
+		on db: Database, groupOwnerId: UUID, key: String, fileName: String, filePath: String
+	) async throws -> FileImportReport {
+		let importId = try await uploadImportService.importFromFile(
+			on: db, groupOwnerId: groupOwnerId, key: key, fileName: fileName,
+			filePath: filePath)
+		let importReport = try await FileImportReport.query(on: db).filter(
+			\.$id == importId
+		).with(\.$rows).first()
+		return importReport!
+	}
+
 	func getAll(on db: Database, groupIds: [UUID], cursor: String? = nil, limit: Int = 100)
 		async throws -> ListWithCursor<FileImportReport>
 	{
@@ -59,9 +65,10 @@ class FileImportService {
 	}
 
 	func delete(on db: Database, groupIds: [UUID], importId: UUID) async throws {
-		let exists = try await FileImportReport.query(on: db).filter(\.$id == importId).filter(
-			\.$groupOwnerId ~~ groupIds
-		).count()
+		let exists = try await FileImportReport.query(on: db).filter(\.$id == importId)
+			.filter(
+				\.$groupOwnerId ~~ groupIds
+			).count()
 		if exists > 0 {
 			try await FileImportRow.query(on: db).filter(\.$report.$id == importId)
 				.delete()
