@@ -33,5 +33,6 @@ server/static/react
 # swift
 .build
 .swiftpm
-swift-server/Resources/Views/react.leaf
-swift-server/Public/react
+Resources/Views/react.leaf
+Public/react
+

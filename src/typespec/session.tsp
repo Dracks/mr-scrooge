@@ -46,6 +46,7 @@ interface ApiSession {
   @doc("Check if the user is logged in")
   @get
   me(): CheckMyProfile | Error;
+  @route("me") @put updateMe(...BaseUserData, defaultGroupId: UUID): UserProfile | InvalidGroupId;
   @doc("Logout")
   @delete
   logout(): boolean;

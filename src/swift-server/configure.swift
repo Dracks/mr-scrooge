@@ -46,7 +46,6 @@ public func registerMigrations(_ app: Application) async throws {
 public func configure(_ app: Application) async throws {
 	do {
 		// uncomment to serve files from /Public folder
-		print(app.directory.publicDirectory)
 		app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
 
 		try await registerMigrations(app)

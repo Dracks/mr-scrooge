@@ -147,7 +147,6 @@ class GraphBuilder {
 	}
 
 	func setHorizontalGroup(_ horizontalGroup: GraphHorizontalGroup) {
-		print("Setting the horizontal group")
 		_horizontalGroup = horizontalGroup
 	}
 

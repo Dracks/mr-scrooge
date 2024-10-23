@@ -51,6 +51,61 @@ final class SessionTests: AbstractBaseTestsClass {
 		XCTAssertEqual(notIdentified.user, .anonymous)
 	}
 
+	func testUpdateMe() async throws {
+		let app = try getApp()
+
+		try await testUser.$groups.attach(testGroup2, on: app.db)
+
+		let headers = try await app.getHeaders(
+			forUser: .init(username: testUser.username, password: "test-password"))
+
+		let newUserInfo = Operations.ApiSession_updateMe.Input.Body.jsonPayload(
+			username: testUser.username,
+			email: "test@tests-change.com",
+			firstName: "First name 2",
+			lastName: "Last Name 2",
+			defaultGroupId: testGroup2.id!.uuidString
+		)
+
+		let response = try await app.sendRequest(
+			.PUT, "/api/session/me", body: newUserInfo,
+			headers: headers)
+
+		XCTAssertEqual(response.status, .ok)
+
+		let user = try response.content.decode(Components.Schemas.UserProfile.self)
+		XCTAssertEqual(user.email, "test@tests-change.com")
+		XCTAssertEqual(user.firstName, "First name 2")
+		XCTAssertEqual(user.lastName, "Last Name 2")
+		XCTAssertEqual(user.isActive, true)
+		XCTAssertEqual(user.isAdmin, false)
+		XCTAssertEqual(user.defaultGroupId, testGroup2.id!.uuidString)
+	}
+
+	func testUpdateMeInvalidGroupId() async throws {
+		let app = try getApp()
+
+		let headers = try await app.getHeaders(
+			forUser: .init(username: testUser.username, password: "test-password"))
+
+		let newUserInfo = Operations.ApiSession_updateMe.Input.Body.jsonPayload(
+			username: testUser.username,
+			email: "test@tests-change.com",
+			firstName: "First name 2",
+			lastName: "Last Name 2",
+			defaultGroupId: "1111111"
+		)
+
+		let response = try await app.sendRequest(
+			.PUT, "/api/session/me", body: newUserInfo,
+			headers: headers)
+
+		XCTAssertEqual(response.status, .badRequest)
+
+		let error = try response.content.decode(Components.Schemas._Error.self)
+		XCTAssertEqual(error.code, "API10017")
+	}
+
 	func testLogoutEndpoint() async throws {
 		let app = try getApp()
 
