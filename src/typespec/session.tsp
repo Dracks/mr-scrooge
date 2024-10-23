@@ -30,6 +30,14 @@ model NotIdentified {
   user: "anonymous";
 }
 
+model UpdateMyProfile{
+    ...BaseUserData;
+    defaultGroupId: UUID;
+    newPassword?: string;
+    password?: string;
+}
+
+
 @discriminator("user")
 @oneOf
 union CheckMyProfile {
@@ -46,6 +54,7 @@ interface ApiSession {
   @doc("Check if the user is logged in")
   @get
   me(): CheckMyProfile | Error;
+  @route("me") @put updateMe(...UpdateMyProfile): UserProfile | InvalidGroupId;
   @doc("Logout")
   @delete
   logout(): boolean;

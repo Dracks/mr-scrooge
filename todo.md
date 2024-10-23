@@ -31,7 +31,6 @@
   * [x] Modify graph
   * [x] Create graph
   * [x] Add validations on the selected labels
-  * [ ] Fix ui
 * [ ] Imports
   * [x] Import caixa enginyers
   * [x] Import n26
@@ -41,7 +40,7 @@
   * [ ] Call to apply rules
 * [ ] Bank transactions
   * [x] get bank transactions data
-  * [] add/remove label
+  * [ ] add/remove label
 * [ ] labels
   * [x] get labels
   * [x] create label
@@ -52,4 +51,10 @@
 * [ ] users
   * [x] login/logout
   * [ ] admin users
-  * [ ] edit my user
+    * [x] list
+    * [x] modify
+    * [ ] create
+    * [ ] delete
+  * [x] edit my profile
+  * [ ] Command to change the password
+  * [ ] Reset my password

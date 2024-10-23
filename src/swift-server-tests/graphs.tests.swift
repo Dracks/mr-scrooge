@@ -1,3 +1,4 @@
+import Fluent
 import OpenAPIRuntime
 import OpenAPIVapor
 import Vapor
@@ -214,25 +215,6 @@ class GraphTests: AbstractBaseTestsClass {
 			horizontalGroup: .init(
 				group: .labels, hideOthers: true, labels: [labels[3], labels[5]]))
 
-		/*let updatedGraph = try map(
-			from: [
-				"id": testIds["graph"]!,
-				"name": "Updated Graph",
-				"dateRange": GraphDateRange.halfYear.rawValue,
-				"kind": GraphKind.line.rawValue,
-				"groupOwnerId": try testGroup.requireID(),
-				"group": [
-					"group": GraphGroupType.labels.rawValue,
-					"hideOthers": false,
-					"labels": [labels[2], labels[4]],
-				].toOrdered(),
-				"horizontalGroup": [
-					"group": GraphGroupType.labels.rawValue,
-					"hideOthers": true,
-					"labels": [labels[3], labels[5]],
-				].toOrdered(),
-			].toOrdered())*/
-
 		let headers = try await app.getHeaders(
 			forUser: .init(
 				username: testUser.username, password: "test-password"))
@@ -278,24 +260,6 @@ class GraphTests: AbstractBaseTestsClass {
 			horizontalGroup: .init(
 				group: .labels, hideOthers: true,
 				labels: [labels[3], labels[5], labels[12]]))
-		/*let updatedGraph = try map(
-			from: [
-				"id": testIds["graph"]!,
-				"name": "Updated Graph",
-				"dateRange": GraphDateRange.halfYear.rawValue,
-				"kind": GraphKind.line.rawValue,
-				"groupOwnerId": try testGroup.requireID(),
-				"group": [
-					"group": GraphGroupType.labels.rawValue,
-					"hideOthers": false,
-					"labels": [labels[2], labels[4], labels[11]],
-				].toOrdered(),
-				"horizontalGroup": [
-					"group": GraphGroupType.labels.rawValue,
-					"hideOthers": true,
-					"labels": [labels[3], labels[5], labels[12]],
-				].toOrdered(),
-			].toOrdered())*/
 
 		let headers = try await app.getHeaders(
 			forUser: .init(
@@ -343,25 +307,6 @@ class GraphTests: AbstractBaseTestsClass {
 			horizontalGroup: .init(
 				group: .labels, hideOthers: true, labels: [labels[2], labels[3]]))
 
-		/*let updatedGraph = try map(
-			from: [
-				"id": nonExistingGraphId,
-				"name": "Non-Existing Graph",
-				"dateRange": GraphDateRange.halfYear.rawValue,
-				"kind": GraphKind.line.rawValue,
-				"groupOwnerId": try testGroup.requireID(),
-				"group": [
-					"group": GraphGroupType.labels.rawValue,
-					"hideOthers": false,
-					"labels": [labels[0], labels[1]],
-				].toOrdered(),
-				"horizontalGroup": [
-					"group": GraphGroupType.labels.rawValue,
-					"hideOthers": true,
-					"labels": [labels[2], labels[3]],
-				].toOrdered(),
-			].toOrdered())*/
-
 		let headers = try await app.getHeaders(
 			forUser: .init(
 				username: testUser.username, password: "test-password"))
@@ -402,18 +347,11 @@ class GraphTests: AbstractBaseTestsClass {
 		XCTAssertEqual(response.status, .ok)
 
 		let data = try response.content.decode(Bool.self)
-		/*
-		let data = try JSONDecoder().decode(GraphQLResult.self, from: response.body)
-		XCTAssertEqual(data.errors, [])
 
-		let result = data.data?["deleteGraph"]
-		XCTAssertEqual(result?["__typename"].string, "DeleteConfirmation")
-		XCTAssertNotNil(result?["confirm"].bool)
+		XCTAssertEqual(data, true)
 
-		// Verify the graph is deleted
-		//let graphService = try app.make(GraphService.self)
-		//XCTAssertThrowsError(try await graphService.getGraphById(graphId))
-		*/
+		let count = try await Graph.query(on: app.db).filter(\.$id == graphId).count()
+		XCTAssertEqual(count, 0)
 	}
 
 	func testDeleteInvalidGraph() async throws {
@@ -431,15 +369,8 @@ class GraphTests: AbstractBaseTestsClass {
 		XCTAssertEqual(response.status, .notFound)
 
 		let data = try response.content.decode(Components.Schemas._Error.self)
-		/*
-		let data = try JSONDecoder().decode(GraphQLResult.self, from: response.body)
-		let data = try JSONDecoder().decode(GraphQLResult.self, from: response.body)
-		XCTAssertEqual(data.errors, [])
 
-		let result = data.data?["deleteGraph"]
-		XCTAssertEqual(result?["__typename"].string, "GraphNotFound")
-		// XCTAssertNotNil(result?["availableGraphsId"].array)
-		*/
+		XCTAssertEqual(data.code, "API10010")
 	}
 
 	func testDeleteGraphNotOwned() async throws {
@@ -460,20 +391,8 @@ class GraphTests: AbstractBaseTestsClass {
 		XCTAssertEqual(response.status, .notFound)
 
 		let data = try response.content.decode(Components.Schemas._Error.self)
-		/*
-		let response = try await app.queryGql(
-			GraphQLRequest(
-				query: deleteGraphMutation,
-				variables: ["graphId": map(from: notOwnedGraphId)]),
-			headers: headers)
 
-		let data = try JSONDecoder().decode(GraphQLResult.self, from: response.body)
-		XCTAssertEqual(data.errors, [])
-
-		let result = data.data?["deleteGraph"]
-		XCTAssertEqual(result?["__typename"].string, "GraphNotFound")
-		// XCTAssertNotNil(result?["availableGraphsId"].array)
-         */
+		XCTAssertEqual(data.code, "API10010")
 	}
 
 }

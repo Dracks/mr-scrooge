@@ -46,7 +46,8 @@ struct DemoDataCommand: AsyncCommand {
 			labelIdMap[label] = labelId
 		}
 
-		try await generateGraphs(app: app, groupOwnerId: groupOwnerId, labelIdMap: labelIdMap)
+		try await generateGraphs(
+			app: app, groupOwnerId: groupOwnerId, labelIdMap: labelIdMap)
 
 		// When not executed, the group attach seems to not work
 		let _ = try await Graph.query(on: app.db).first()

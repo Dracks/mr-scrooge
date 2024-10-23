@@ -13,27 +13,39 @@ model UserGroup {
 }
 
 model BaseUserData {
-  username: string;
-  email: string;
-  firstName?: string;
-  lastName?: string;
-  isActive: boolean;
-  isAdmin: boolean;
+    username: string;
+    email: string;
+    firstName?: string;
+    lastName?: string;
+}
+
+model CreateUserData {
+    ...BaseUserData;
+    isActive: boolean;
+    isAdmin: boolean;
+}
+
+model UpdateUserData {
+    ...CreateUserData;
+  password?: string;
   defaultGroupId: UUID;
 }
 
 model UserProfile {
   id: UUID;
   ...BaseUserData;
+  isAdmin: boolean;
+  isActive: boolean;
   groups: UserGroup[];
+  defaultGroupId: UUID;
 }
 
 @route("/users")
 @tag("user")
 interface ApiUser {
-  @post create(...BaseUserData): UserProfile | Unauthorized;
+  @post create(...CreateUserData, password: string): UserProfile | Unauthorized;
   @get list(@query cursor?: string, @query limit?: int16): PageList<UserProfile> | Unauthorized;
-  @route("{id}") @patch update(@path id: UUID, body: BaseUserData): UserProfile| Unauthorized;
+  @route("{id}") @put update(@path id: UUID, ... UpdateUserData): UserProfile| Unauthorized | NotFound | InvalidGroupId;
   @route("{id}/group/{groupId}") @delete deleteGroup(
     @path id: UUID,
     @path groupId: UUID,

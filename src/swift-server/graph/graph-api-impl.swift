@@ -94,8 +94,6 @@ extension MrScroogeAPIImpl {
 		}
 
 		guard let graphId = UUID(uuidString: input.path.id) else {
-			print("InvalidGraphId")
-			print(input.path.id)
 			return .notFound(
 				.init(
 					body: .json(
@@ -159,7 +157,7 @@ extension MrScroogeAPIImpl {
 							message: "Graph ID \(graphId) not found",
 							code: ApiError.API10010.rawValue))))
 		case .ok:
-			return .ok(.init(body: .json(.init())))
+			return .ok(.init(body: .json(.init(true))))
 		}
 	}
 }

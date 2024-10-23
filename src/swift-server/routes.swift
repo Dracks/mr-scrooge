@@ -73,6 +73,12 @@ struct MrScroogeAPIImpl {
 	{
 		return .undocumented(statusCode: 501, UndocumentedPayload())
 	}
+
+	func ApiRule_list(_ input: Operations.ApiRule_list.Input) async throws
+		-> Operations.ApiRule_list.Output
+	{
+		return .undocumented(statusCode: 501, UndocumentedPayload())
+	}
 }
 
 extension MrScroogeAPIImpl: APIProtocol {}

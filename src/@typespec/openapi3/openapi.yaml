@@ -9,6 +9,7 @@ tags:
   - name: labels
   - name: graphs
   - name: imports
+  - name: rule
 paths:
   /bank-transactions:
     get:
@@ -541,6 +542,21 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateLabel'
+  /rules:
+    get:
+      operationId: ApiRule_list
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rule'
+      tags:
+        - rule
   /session:
     post:
       operationId: ApiSession_login
@@ -599,6 +615,31 @@ paths:
                 type: boolean
       tags:
         - session
+  /session/me:
+    put:
+      operationId: ApiSession_updateMe
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Unauthorized, usually when using a group that the user doesn't have access to
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMyProfile'
   /users:
     post:
       operationId: ApiUser_create
@@ -623,7 +664,28 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BaseUserData'
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                isActive:
+                  type: boolean
+                isAdmin:
+                  type: boolean
+                password:
+                  type: string
+              required:
+                - username
+                - email
+                - isActive
+                - isAdmin
+                - password
     get:
       operationId: ApiUser_list
       parameters:
@@ -665,7 +727,7 @@ paths:
       tags:
         - user
   /users/{id}:
-    patch:
+    put:
       operationId: ApiUser_update
       parameters:
         - name: id
@@ -680,8 +742,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Unauthorized, usually when using a group that the user doesn't have access to
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '401':
           description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
           content:
             application/json:
               schema:
@@ -693,10 +767,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                body:
-                  $ref: '#/components/schemas/BaseUserDataUpdate'
+              $ref: '#/components/schemas/UpdateUserData'
     delete:
       operationId: ApiUser_delete
       parameters:
@@ -818,9 +889,6 @@ components:
       required:
         - username
         - email
-        - isActive
-        - isAdmin
-        - defaultGroupId
       properties:
         username:
           type: string
@@ -830,29 +898,6 @@ components:
           type: string
         lastName:
           type: string
-        isActive:
-          type: boolean
-        isAdmin:
-          type: boolean
-        defaultGroupId:
-          $ref: '#/components/schemas/UUID'
-    BaseUserDataUpdate:
-      type: object
-      properties:
-        username:
-          type: string
-        email:
-          type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        isActive:
-          type: boolean
-        isAdmin:
-          type: boolean
-        defaultGroupId:
-          $ref: '#/components/schemas/UUID'
     CheckMyProfile:
       oneOf:
         - $ref: '#/components/schemas/GetMyProfile'
@@ -862,6 +907,24 @@ components:
         mapping:
           identified: '#/components/schemas/GetMyProfile'
           anonymous: '#/components/schemas/NotIdentified'
+    Condition:
+      type: object
+      required:
+        - id
+        - operation
+        - value
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        operation:
+          $ref: '#/components/schemas/Operation'
+        value:
+          type: string
+    ConditionalRelation:
+      type: string
+      enum:
+        - and
+        - notOr
     CreateLabel:
       type: object
       required:
@@ -872,6 +935,26 @@ components:
           type: string
         groupOwnerId:
           $ref: '#/components/schemas/UUID'
+    CreateUserData:
+      type: object
+      required:
+        - username
+        - email
+        - isActive
+        - isAdmin
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        isActive:
+          type: boolean
+        isAdmin:
+          type: boolean
     Date:
       type: string
       format: date-time
@@ -1177,9 +1260,96 @@ components:
           type: string
           enum:
             - anonymous
+    Operation:
+      type: string
+      enum:
+        - greater
+        - greaterEqual
+        - lower
+        - lowerEqual
+        - contains
+        - prefix
+        - regularExpression
+        - suffix
+    Rule:
+      type: object
+      required:
+        - id
+        - groupOwnerId
+        - name
+        - relations
+        - conditions
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        parentRule:
+          $ref: '#/components/schemas/UUID'
+        groupOwnerId:
+          $ref: '#/components/schemas/UUID'
+        name:
+          type: string
+        relations:
+          $ref: '#/components/schemas/ConditionalRelation'
+        conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Condition'
+    SetLabelAction:
+      type: object
+      required:
+        - label
+      properties:
+        label:
+          $ref: '#/components/schemas/UUID'
     UUID:
       type: string
       format: uuid
+    UpdateMyProfile:
+      type: object
+      required:
+        - username
+        - email
+        - defaultGroupId
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        defaultGroupId:
+          $ref: '#/components/schemas/UUID'
+        newPassword:
+          type: string
+        password:
+          type: string
+    UpdateUserData:
+      type: object
+      required:
+        - username
+        - email
+        - isActive
+        - isAdmin
+        - defaultGroupId
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        isActive:
+          type: boolean
+        isAdmin:
+          type: boolean
+        password:
+          type: string
+        defaultGroupId:
+          $ref: '#/components/schemas/UUID'
     UploadData:
       type: object
       required:
@@ -1217,10 +1387,10 @@ components:
         - id
         - username
         - email
-        - isActive
         - isAdmin
-        - defaultGroupId
+        - isActive
         - groups
+        - defaultGroupId
       properties:
         id:
           $ref: '#/components/schemas/UUID'
@@ -1232,16 +1402,16 @@ components:
           type: string
         lastName:
           type: string
-        isActive:
-          type: boolean
         isAdmin:
           type: boolean
-        defaultGroupId:
-          $ref: '#/components/schemas/UUID'
+        isActive:
+          type: boolean
         groups:
           type: array
           items:
             $ref: '#/components/schemas/UserGroup'
+        defaultGroupId:
+          $ref: '#/components/schemas/UUID'
 servers:
   - url: /api
     description: Development

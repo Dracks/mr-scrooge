@@ -22,7 +22,7 @@ extension MrScroogeAPIImpl {
 			try await user.$groups.load(on: req.db)
 			try await user.$defaultGroup.load(on: req.db)
 
-			return .ok(.init(body: .json(.init(from: user))))
+			return .ok(.init(body: .json(.init(user: user))))
 		}
 
 		return .unauthorized(
@@ -44,10 +44,71 @@ extension MrScroogeAPIImpl {
 						.identified(
 							.init(
 								user: .identified,
-								profile: .init(from: user))))))
+								profile: .init(user: user))))))
 		} catch is NotIdentifiedError {
 			return .ok(.init(body: .json(.anonymous(.init(user: .anonymous)))))
 		}
+	}
+
+	func ApiSession_updateMe(_ input: Operations.ApiSession_updateMe.Input) async throws
+		-> Operations.ApiSession_updateMe.Output
+	{
+		let user = try await getUser(fromRequest: request)
+
+		let updateUser: Components.Schemas.UpdateMyProfile
+		switch input.body {
+		case .json(let _updateUser):
+			updateUser = _updateUser
+		}
+
+		guard
+			let newDefaultGroupId = try await userGroupService.validateGroupId(
+				on: request.db, groupId: updateUser.defaultGroupId,
+				forUserId: user.requireID())
+		else {
+			return .badRequest(
+				.init(
+					body: .json(
+						.init(
+							message: "Invalid default Group Id",
+							code: ApiError.API10017.rawValue))))
+		}
+
+		var newPassword: String?
+		if let _newPassword = updateUser.newPassword {
+			newPassword = _newPassword
+			guard let password = updateUser.password else {
+				return .badRequest(
+					.init(
+						body: .json(
+							.init(
+								message:
+									"password is required for changing the password",
+								code: ApiError.API10019.rawValue))))
+			}
+			if !user.verifyPassword(pwd: password) {
+				return .badRequest(
+					.init(
+						body: .json(
+							.init(
+								message:
+									"password should be the old password",
+								code: ApiError.API10020.rawValue))))
+			}
+		}
+
+		user.email = updateUser.email
+		user.firstName = updateUser.firstName
+		user.lastName = updateUser.lastName
+		user.$defaultGroup.id = newDefaultGroupId
+
+		if let newPassword {
+			try user.setPassword(pwd: newPassword)
+		}
+
+		try await user.save(on: request.db)
+
+		return .ok(.init(body: .json(.init(user: user))))
 	}
 
 	func ApiSession_logout(_ input: Operations.ApiSession_logout.Input) async throws
@@ -55,21 +116,5 @@ extension MrScroogeAPIImpl {
 	{
 		request.auth.logout(User.self)
 		return .ok(.init(body: .json(true)))
-	}
-}
-
-extension Components.Schemas.UserProfile {
-	init(from user: User) {
-		self.id = user.id!.uuidString
-		self.username = user.username
-		self.email = user.email
-		self.firstName = user.firstName
-		self.lastName = user.lastName
-		self.isActive = user.isActive
-		self.isAdmin = user.isAdmin
-		self.groups = user.groups.map {
-			Components.Schemas.UserGroup(id: $0.id!.uuidString, name: $0.name)
-		}
-		self.defaultGroupId = user.defaultGroup.id!.uuidString
 	}
 }

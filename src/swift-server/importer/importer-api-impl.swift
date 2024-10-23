@@ -25,7 +25,6 @@ extension MrScroogeAPIImpl {
 								name: $0.key,
 								fileNameRegex: $0.fileRegex)
 						})))))
-		//return .undocumented(statusCode: 501, UndocumentedPayload())
 	}
 
 	/*func ApiImports_upload(_ input: Operations.ApiImports_upload.Input) async throws

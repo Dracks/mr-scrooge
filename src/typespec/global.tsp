@@ -26,6 +26,13 @@ model InvalidGroupOwnerId {
 }
 
 @error
+@doc("Unauthorized, usually when using a group that the user doesn't have access to")
+model InvalidGroupId {
+  @statusCode _: 400;
+  ...Error;
+}
+
+@error
 model NotFound {
   @statusCode _: 404;
   ...Error;
