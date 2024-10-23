@@ -9,7 +9,7 @@ import { GraphNew } from './form/new-graph.form';
 const EditGraphWithRoute = () => {
     const { id } = useParams<{ id: string }>();
 
-    if (id && uuid.validate(id)) {
+    if (id) {
         return <EditGraph id={id} />;
     }
     return <NotFound />;

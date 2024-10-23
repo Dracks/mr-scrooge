@@ -28,58 +28,11 @@ extension MrScroogeAPIImpl {
 		//return .undocumented(statusCode: 501, UndocumentedPayload())
 	}
 
-	func ApiImports_upload(_ input: Operations.ApiImports_upload.Input) async throws
+	/*func ApiImports_upload(_ input: Operations.ApiImports_upload.Input) async throws
 		-> Operations.ApiImports_upload.Output
 	{
-		let upload = try request.content.decode(UploadData.self)
-
-		/*var kind: String
-        var fileUpload: HTTPBody
-        switch input.body {
-        case let .multipartForm(body):
-            for try await part in body{
-                switch part {
-                case .kind(let _kind):
-                    kind=_kind.payload
-                case .file(let _file):
-                    fileUpload=_file.payload.body
-                case .undocumented(let undoc):
-                    print(undoc)
-                }
-            }
-            // upload = body
-        }
-        let upload : Components.Schemas.UploadDataMultiPart*/
-
-		let tmpDir = NSTemporaryDirectory()
-		let filePath =
-			"\(tmpDir)/mr-scrooge-\(UUID().uuidString).\(upload.file.extension ?? "unknown")"
-		// print(filePath)
-
-		try await request.fileio.writeFile(upload.file.data, at: filePath)
-
-		defer {
-			do {
-				try FileManager.default.removeItem(atPath: filePath)
-			} catch {
-				print(error)
-			}
-		}
-
-		let user = try await getUser(fromRequest: request)
-
-		let importData = try await fileImporterService.createFileImport(
-			on: request.db, groupOwnerId: user.defaultGroup.requireID(),
-			key: upload.kind,
-			fileName: upload.file.filename, filePath: filePath)
-
-		return .created(.init(body: .json(.init(file: importData))))
-		/*let response = Response(status: .created)
-        try response.content.encode(CreateImport(id: importId))
-
-        return response*/
-		// return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
+		return .undocumented(statusCode: 501, UndocumentedPayload())
+	}*/
 
 	func ApiImports_list(_ input: Operations.ApiImports_list.Input) async throws
 		-> Operations.ApiImports_list.Output
@@ -117,7 +70,45 @@ extension MrScroogeAPIImpl {
 
 }
 
-extension Components.Schemas.FileImport {
+struct ImportUpload: RouteCollection {
+	func boot(routes: RoutesBuilder) throws {
+		routes.grouped("api").post("imports", use: uploadFile)
+	}
+
+	func uploadFile(request: Request) async throws -> Response {
+
+		let upload = try request.content.decode(UploadData.self)
+
+		let tmpDir = NSTemporaryDirectory()
+		let filePath =
+			"\(tmpDir)/mr-scrooge-\(UUID().uuidString).\(upload.file.extension ?? "unknown")"
+		// print(filePath)
+
+		try await request.fileio.writeFile(upload.file.data, at: filePath)
+
+		defer {
+			do {
+				try FileManager.default.removeItem(atPath: filePath)
+			} catch {
+				print(error)
+			}
+		}
+
+		let user = try await getUser(fromRequest: request)
+
+		let importData = try await fileImporterService.createFileImport(
+			on: request.db, groupOwnerId: user.defaultGroup.requireID(),
+			key: upload.kind,
+			fileName: upload.file.filename, filePath: filePath)
+
+		// return UploadImportResponse()
+		let openApiMod = Components.Schemas.FileImport(file: importData)
+		return try await openApiMod.encodeResponse(status: .created, for: request)
+
+	}
+}
+
+extension Components.Schemas.FileImport: Content {
 	init(file: FileImportReport) {
 		id = file.id!.uuidString
 		createdAt = file.createdAt

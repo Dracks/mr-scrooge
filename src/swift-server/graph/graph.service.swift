@@ -110,6 +110,7 @@ class GraphBuilder {
 				accumulate: _horizontalGroup.accumulate
 			)
 		}
+
 		return .init(
 			id: _graph.id!.uuidString,
 			groupOwnerId: _graph.$groupOwner.id.uuidString,
@@ -146,6 +147,7 @@ class GraphBuilder {
 	}
 
 	func setHorizontalGroup(_ horizontalGroup: GraphHorizontalGroup) {
+		print("Setting the horizontal group")
 		_horizontalGroup = horizontalGroup
 	}
 

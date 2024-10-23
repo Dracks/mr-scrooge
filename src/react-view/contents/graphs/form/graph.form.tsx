@@ -3,18 +3,19 @@ import { Analytics } from 'grommet-icons';
 import React from 'react';
 import { useNavigate } from 'react-router';
 
-import { GQLGraphDateRange, GQLGraphGroup, GQLGraphKind, GQLLabel, GQLNewGraph } from '../../../api/graphql/generated';
+import { GraphDateRange, GraphKind, GraphParam, GroupType, Label } from '../../../api/models';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { ConfirmationButton } from '../../../utils/ui/confirmation-button';
+import { EnumSelectOption } from '../../../utils/ui/enum-option';
 import { InputTag } from '../../../utils/ui/tag/input-tag';
 import { useLabelsContext } from '../../common/label.context';
 import { enrichGraph } from '../graph-with-rechart/enrich-graph';
 import { GraphViewer } from '../graph-with-rechart/view';
 import { graphToUi, GraphUiRepresentation, uiToGraph } from './graph.transformer';
 
-interface GraphFormProps<T extends GQLNewGraph> {
+interface GraphFormProps<T extends GraphParam> {
     graphData: Partial<T>;
-    save: () => Promise<void>;
+    save: () => void;
     update: (graphData: T) => void;
 }
 
@@ -28,16 +29,30 @@ const GraphPlaceholder: React.FC = () => {
     );
 };
 
-const DateRangeOptions: Array<{ id: GQLGraphDateRange; label: string }> = [
-    { id: GQLGraphDateRange.OneMonth, label: 'One month' },
-    { id: GQLGraphDateRange.HalfYear, label: 'Half year' },
-    { id: GQLGraphDateRange.OneYear, label: 'One year' },
-    { id: GQLGraphDateRange.TwoYears, label: 'Two years' },
-    { id: GQLGraphDateRange.All, label: 'all' },
+const DateRangeOptions: EnumSelectOption<GraphDateRange>[] = [
+    { id: "oneMonth", label: 'One month' },
+    { id: "halfYear", label: 'Half year' },
+    { id: "oneYear", label: 'One year' },
+    { id: "twoYears", label: 'Two years' },
+    { id: "all", label: 'all' },
 ];
 
-export const GraphForm: <T extends GQLNewGraph>(p: GraphFormProps<T>) => React.ReactElement<GraphFormProps<T>> = <
-    T extends GQLNewGraph,
+const KindOptions:EnumSelectOption<GraphKind>[] = [
+    {id: "bar", label: 'Bar'},
+    {id: "line", label: 'Line'},
+    { id: "pie", label: "Pie"}
+]
+
+const GroupOptions: EnumSelectOption<GroupType>[] = [
+    {id: "sign", label: "Sign (positive/negative)"},
+    {id: "day", label: 'Day'},
+    {id: "month", label: "Month"},
+    {id: "year", label: "Year"},
+    {id: "labels", label: 'Labels'},
+]
+
+export const GraphForm: <T extends GraphParam>(p: GraphFormProps<T>) => React.ReactElement<GraphFormProps<T>> = <
+    T extends GraphParam,
 >({
     graphData,
     update,
@@ -49,13 +64,13 @@ export const GraphForm: <T extends GQLNewGraph>(p: GraphFormProps<T>) => React.R
     const navigate = useNavigate();
 
     const size = React.useContext(ResponsiveContext);
-    const hasHorizontal = graphData.kind === GQLGraphKind.Bar || graphData.kind === GQLGraphKind.Line;
+    const hasHorizontal = graphData.kind === "bar" || graphData.kind === "line";
     const graphEnabled = graphData.kind && graphData.group && (!hasHorizontal || graphData.horizontalGroup);
     const graphUi = graphToUi(graphData);
     const updateGraph = (data: GraphUiRepresentation) => {
         update(uiToGraph(data) as T);
     };
-    useLogger().info('Graph Form', { graphData, graphUi });
+    useLogger().info('Graph Form', { graphData, graphUi, graphEnabled, hasHorizontal });
 
     return (
         <Form<GraphUiRepresentation>
@@ -63,8 +78,8 @@ export const GraphForm: <T extends GQLNewGraph>(p: GraphFormProps<T>) => React.R
             onChange={newValue => {
                 updateGraph(newValue);
             }}
-            onSubmit={async () => {
-                await save();
+            onSubmit={() => {
+                save();
             }}
         >
             <Box direction={size === 'small' ? 'column' : 'row'} width="fill">
@@ -73,14 +88,20 @@ export const GraphForm: <T extends GQLNewGraph>(p: GraphFormProps<T>) => React.R
                     <FormField name="name" label="Graph name" component={TextInput} />
                     <FormField
                         label="Graph kind"
-                        name="kind"
-                        component={Select}
-                        options={Object.values(GQLGraphKind)}
-                    />
+                        htmlFor="select-for-kind"
+                        >
+                        <Select
+                            id="select-for-kind"
+                            name="kind"
+                            options={KindOptions}
+                            labelKey="label"
+                            valueKey={{ key: 'id', reduce: true }}
+                        />
+                    </FormField>
                     <FormField name="tag" htmlFor="select-for-tag-filter" label="Tag filter">
                         <Select
                             id="select-for-tag-filter"
-                            name="tagFilter"
+                            name="labelFilterId"
                             options={labelsPair}
                             placeholder="No tag filter selected"
                             labelKey="name"
@@ -88,7 +109,7 @@ export const GraphForm: <T extends GQLNewGraph>(p: GraphFormProps<T>) => React.R
                             clear={{ label: 'No filter' }}
                         />
                     </FormField>
-                    <FormField name="dateRange" htmlFor="select-date-range" label="Date range">
+                    <FormField htmlFor="select-date-range" label="Date range">
                         <Select
                             id="select-date-range"
                             options={DateRangeOptions}
@@ -99,18 +120,21 @@ export const GraphForm: <T extends GQLNewGraph>(p: GraphFormProps<T>) => React.R
                     </FormField>
                     <Box>
                         <Heading level={5}>Group data</Heading>
-                        <FormField
-                            label="Group type"
-                            name="groupKind"
-                            options={Object.values(GQLGraphGroup)}
-                            component={Select}
-                        />
-                        {graphUi.groupKind === GQLGraphGroup.Labels && (
+                        <FormField label="Group type" htmlFor='select-for-group-type'>
+                            <Select
+                                id="select-for-group-type"
+                                name="groupType"
+                                options={GroupOptions}
+                                labelKey="label"
+                                valueKey={{ key: 'id', reduce: true }}
+                            />
+                        </FormField>
+                        {graphUi.groupType === "labels" && (
                             <React.Fragment>
                                 <FormField label="Tags to group" htmlFor="select-group-tags">
                                     <InputTag
                                         value={
-                                            graphUi.groupLabels?.map(labelId => labelsMap.get(labelId) as GQLLabel) ??
+                                            graphUi.groupLabels?.map(labelId => labelsMap.get(labelId) as Label) ??
                                             []
                                         }
                                         onAdd={tag => {
@@ -137,22 +161,25 @@ export const GraphForm: <T extends GQLNewGraph>(p: GraphFormProps<T>) => React.R
                     {hasHorizontal && (
                         <Box>
                             <Heading level={5}>X axis</Heading>
-                            <FormField
-                                label="Group type"
-                                name="horizontalGroupKind"
-                                options={Object.values(GQLGraphGroup)}
-                                component={Select}
+                            <FormField label="Group type" htmlFor='select-for-horizontal-group-type'>
+                            <Select
+                                id="select-for-horizontal-group-type"
+                                options={GroupOptions}
+                                name="horizontalGroupType"
+                                labelKey="label"
+                                valueKey={{ key: 'id', reduce: true }}
                             />
-                            {graphUi.kind === GQLGraphKind.Line && (
+                            </FormField>
+                            {graphUi.kind === "line" && (
                                 <FormField label="Acumulate values" name="horizontalAccumulate" component={CheckBox} />
                             )}
-                            {graphUi.horizontalGroupKind === GQLGraphGroup.Labels && (
+                            {graphUi.horizontalGroupType === "labels" && (
                                 <React.Fragment>
                                     <FormField label="Tags to group" htmlFor="select-x-group-tags">
                                         <InputTag
                                             value={
                                                 graphUi.horizontalGroupLabels?.map(
-                                                    labelId => labelsMap.get(labelId) as GQLLabel,
+                                                    labelId => labelsMap.get(labelId) as Label,
                                                 ) ?? []
                                             }
                                             onAdd={tag => {

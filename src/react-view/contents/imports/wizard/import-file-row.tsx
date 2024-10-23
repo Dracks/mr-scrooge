@@ -2,12 +2,12 @@ import { Box, Button, Select, Text } from 'grommet';
 import { Attachment, CircleAlert, StatusCritical, Trash, Upgrade } from 'grommet-icons';
 import React from 'react';
 
-import { Kind } from '../../../api/client/imports/types';
+import { FileParserType } from '../../../api/models';
 import { FileStatus, IFileData } from '../types';
 
 interface ImportFileRowArgs {
     fileData: IFileData;
-    kindsList: Kind[];
+    kindsList: FileParserType[];
     onKindSwitch: (kind: string) => void;
     onRemove: () => void;
 }

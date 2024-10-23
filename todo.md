@@ -15,9 +15,9 @@
 * [ ] graphs
   * [ ] Fix ui
 * [ ] Imports
-  * [ ] Fix ui
+  * [x] Fix ui
 * [ ] Bank transactions
-  * [ ] Fix ui
+  * [x] Fix ui
 * [ ] labels
   * [ ] Fix ui
 * [ ] rules engine
@@ -53,5 +53,3 @@
   * [x] login/logout
   * [ ] admin users
   * [ ] edit my user
-* [ ] Improve Expected errors in graphql
-  * [ ] Add a handler of the graphql generic errors in client

@@ -369,36 +369,6 @@ paths:
       tags:
         - user
   /imports:
-    post:
-      operationId: ApiImports_upload
-      parameters: []
-      responses:
-        '201':
-          description: The request has succeeded and a new resource has been created as a result.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FileImport'
-        '401':
-          description: Unauthorized, usually when using a group that the user doesn't have access to
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InvalidGroupOwnerId'
-        '404':
-          description: The server cannot find the requested resource.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      tags:
-        - imports
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UploadDataMultiPart'
     get:
       operationId: ApiImports_list
       parameters:
@@ -1077,40 +1047,30 @@ components:
       type: object
       required:
         - group
-        - hideOthers
-        - labels
       properties:
         group:
           $ref: '#/components/schemas/GraphGroupType'
         hideOthers:
           type: boolean
-          nullable: true
         labels:
           type: array
           items:
             $ref: '#/components/schemas/UUID'
-          nullable: true
     HorizontalGroup:
       type: object
       required:
         - group
-        - hideOthers
-        - labels
-        - accumulate
       properties:
         group:
           $ref: '#/components/schemas/GraphGroupType'
         hideOthers:
           type: boolean
-          nullable: true
         labels:
           type: array
           items:
             $ref: '#/components/schemas/UUID'
-          nullable: true
         accumulate:
           type: boolean
-          nullable: true
     ImportStatus:
       type: string
       enum:
@@ -1220,7 +1180,7 @@ components:
     UUID:
       type: string
       format: uuid
-    UploadDataMultiPart:
+    UploadData:
       type: object
       required:
         - kind
@@ -1230,7 +1190,7 @@ components:
           type: string
         file:
           type: string
-          format: binary
+          format: byte
     UserCredentials:
       type: object
       required:

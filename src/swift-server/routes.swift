@@ -83,6 +83,8 @@ func routes(_ app: Application) throws {
 	app.middleware.use(SessionsMiddleware(session: app.sessions.driver))
 	app.middleware.use(UserSessionAuthenticator())
 
+	app.routes.defaultMaxBodySize = 5_000_000
+
 	let requestInjectionMiddleware = OpenAPIRequestInjectionMiddleware()
 
 	let transport = VaporTransport(routesBuilder: app.grouped(requestInjectionMiddleware))
@@ -95,5 +97,8 @@ func routes(_ app: Application) throws {
 	// handlers to the app.
 	try handler.registerHandlers(on: transport, serverURL: Servers.server1())
 
+	try app.register(collection: ImportUpload())
+
 	try app.register(collection: ReactController())
+
 }

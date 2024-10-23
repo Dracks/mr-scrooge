@@ -1,11 +1,12 @@
-import { EnrichedGraph, EnrichedGroup } from '../../../api/client/graphs/types';
-import { GQLGroup, GQLLabel, GQLNewGraph, Scalars } from '../../../api/graphql/generated';
+import { ApiUUID, GraphParam, Group, Label } from '../../../api/models';
+import { EnrichedGraph, EnrichedGroup } from '../types';
 
-export const enrichGroup = <T extends Omit<GQLGroup, '__typename'>>(
-    { labels: oldLabels, ...group }: T,
-    labelsMap: Map<Scalars['UUID'], GQLLabel>,
-): EnrichedGroup => {
-    const labels = (oldLabels?.map(label => labelsMap.get(label)).filter(Boolean) as GQLLabel[]) ?? [];
+
+export const enrichGroup = <T extends Group>(
+    { labels: labelIds, ...group }: T,
+    labelsMap: Map<ApiUUID, Label>,
+): EnrichedGroup<T> => {
+    const labels = (labelIds?.map(label => labelsMap.get(label)).filter(Boolean) as Label[]);
 
     return {
         ...group,
@@ -13,7 +14,7 @@ export const enrichGroup = <T extends Omit<GQLGroup, '__typename'>>(
     };
 };
 
-export const enrichGraph = <T extends GQLNewGraph>(graph: T, labelsList: GQLLabel[]): EnrichedGraph<T> => {
+export const enrichGraph = <T extends GraphParam>(graph: T, labelsList: Label[]): EnrichedGraph<T> => {
     const { horizontalGroup, group } = graph;
     const ownedLabels = labelsList.filter(({ groupOwnerId }) => groupOwnerId === graph.groupOwnerId);
     const ownMapedLabels = new Map(ownedLabels.map(label => [label.id, label]));

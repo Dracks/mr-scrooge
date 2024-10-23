@@ -1,6 +1,6 @@
 import { parse } from 'date-fns';
 
-import { GQLLabel } from '../../../api/graphql/generated';
+import { ApiUUID, Label } from '../../../api/models';
 import { listLabelIds } from '../../../utils/data-factory/label.factory';
 import { getRangeFilter, groupLambdas, sortLambdas } from './lambdas';
 import { DTInputData } from './types';
@@ -17,7 +17,7 @@ describe('[Lambdas]', () => {
                 { labelIds: [43], name: 'Cylons', value: 3, date: new Date() },
                 { labelIds: [1, 2, 3], name: 'Prota', value: 4, date: new Date() },
                 { labelIds: [3], name: 'Reapers', value: 5, date: new Date() },
-            ].map(dtInput => ({ ...dtInput, labelIds: dtInput.labelIds.map(idx => listLabelIds[idx]) }));
+            ].map(dtInput => ({ ...dtInput, labelIds: dtInput.labelIds.map(idx => listLabelIds[idx] as ApiUUID) }));
         });
 
         it('Group by tags', () => {
@@ -25,7 +25,7 @@ describe('[Lambdas]', () => {
                 { id: listLabelIds[1], name: 'Dr Who' },
                 { id: listLabelIds[2], name: 'Farscape' },
                 { id: listLabelIds[3], name: 'Firefly' },
-            ] as Partial<GQLLabel>[];
+            ] as Label[];
 
             let result = data.map(subject.labels(labels, false));
 

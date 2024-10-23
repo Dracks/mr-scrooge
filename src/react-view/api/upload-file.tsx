@@ -7,12 +7,9 @@ export const usePostUploadFile = () => {
         form.append('file', file, file.name)
 
         return fetch(
-            '/api/import/',
+            '/api/imports/',
             {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
                 body: form
             });
     });
