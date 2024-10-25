@@ -74,7 +74,7 @@ const BarGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
                 <Tooltip formatter={value => (value as number).toFixed(DECIMAL_COUNT)} />
                 <Legend
                     onClick={({ dataKey }) => {
-                        touch(dataKey);
+                        touch(dataKey as string);
                     }}
                 />
                 {keys.map((key, idx) => (
@@ -103,10 +103,10 @@ const LineGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey={firstKey} />
                 <YAxis />
-                <Tooltip formatter={value => (value as number).toFixed(DECIMAL_COUNT)} />
+                <Tooltip formatter={(value:number) => value.toFixed(DECIMAL_COUNT)} />
                 <Legend
                     onClick={({ dataKey }) => {
-                        touch(dataKey);
+                        touch(dataKey as string);
                     }}
                 />
                 {keys.map((key, idx) => (
@@ -141,7 +141,7 @@ const PieGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
                     nameKey="label"
                     cx="50%"
                     cy="50%"
-                    label={({ value }) => value.toFixed(DECIMAL_COUNT)}
+                    label={({ value }: {value: number}) => value.toFixed(DECIMAL_COUNT)}
                 >
                     {keys.map((_, index) => (
                         <Cell key={`cell-${String(index)}`} fill={schemeTableau10[index]} />

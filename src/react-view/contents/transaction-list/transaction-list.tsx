@@ -48,10 +48,10 @@ export const TransactionList: React.FC = () => {
                         {
                             <Select
                                 placeholder="Filter by importer"
-                                options={['', ...(kindRequest.data?.importKinds ?? []).map(kind => kind.name)]}
+                                options={['', ...(kindRequest.result?.data?.importKinds ?? []).map((kind: {name: string}) => kind.name)]}
                                 value={filters.kind}
                                 onChange={({ option }) => {
-                                    setFilters({ ...filters, kind: option });
+                                    setFilters({ ...filters, kind: option as string });
                                 }}
                             />
                         }

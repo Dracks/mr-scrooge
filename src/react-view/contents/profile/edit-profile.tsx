@@ -1,17 +1,15 @@
 import { Box, Button, Form, FormField, Heading, TextInput } from 'grommet';
 import React from 'react';
 
-import { UserInfoWithPassword } from '../../api/client/me/me.types';
-import { usePatchUserInfo } from '../../api/client/me/use-patch-user-info';
 import { useLogger } from '../../utils/logger/logger.context';
-import useSessionContext from '../session/context';
+import { useSession } from '../../utils/session/session-context';
 
 export const EditProfile = () => {
     const {
-        reload,
+        refresh,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        data: { isAuthenticated, firstName, lastName, ...profile },
-    } = useSessionContext();
+        session,
+    } = useSession();
     const [, updateProfile] = usePatchUserInfo();
     const logger = useLogger();
     const [uiProfile, setUiProfile] = React.useState<UserInfoWithPassword & { newPassword2?: string }>({
@@ -41,7 +39,7 @@ export const EditProfile = () => {
                         newPassword: '',
                         newPassword2: '',
                     });
-                    await reload();
+                    await refresh();
                 }}
             >
                 <Box direction="row-responsive" justify="center" gap="medium">

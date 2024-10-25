@@ -22,7 +22,7 @@ type PaginationLoadStatus = "completed" | "loading" | "error"
 export const usePagination = <T>(cb :(next?: string)=>Promise<RequestedPage<T>> | RequestedPage<T>, options : PaginationLoadOptions<T> = {autostart: true}) => {
     const [loadedData, setLoaded] = useState<T[]>([])
     const request = useAsyncCallback(cb)
-    const [error, setError] = useState<unknown | undefined>()
+    const [error, setError] = useState<unknown>()
     const logger = useLogger()
 
     const process = (data: T[]) => {
@@ -50,7 +50,7 @@ export const usePagination = <T>(cb :(next?: string)=>Promise<RequestedPage<T>> 
     }
 
     const execute = (next?: string) => {
-        request.execute(next).then(data => { process(data.results) }, error => { setError(error) });
+        request.execute(next).then(data => { process(data.results) }, (error: unknown) => { setError(error) });
     }
 
     const start = ()=>{

@@ -1,8 +1,8 @@
-import React, { PropsWithChildren, useContext } from 'react';
+import React, { PropsWithChildren, useContext, useMemo } from 'react';
 import { useAsync, useAsyncCallback } from 'react-async-hook';
 
 import { useApi } from '../../api/client';
-import { SessionInfo, UserProfile } from '../../api/models';
+import { ApiUUID, SessionInfo, UserGroup, UserProfile } from '../../api/models';
 import { useLogger } from '../logger/logger.context';
 import { LoadingPage } from '../ui/loading';
 
@@ -10,12 +10,14 @@ class NotAuthenticatedError extends Error { }
 
 interface SessionContext {
     session: SessionInfo;
+    userGroups: Map<ApiUUID, UserGroup>
     refresh: () => void;
     logout: () => void;
 }
 
 const SessionContext = React.createContext<SessionContext>({
     session: { user: 'anonymous' },
+    userGroups: new Map<ApiUUID, UserGroup>(),
     refresh: () => undefined,
     logout: () => undefined,
 });
@@ -31,13 +33,26 @@ export const SessionProvider: React.FC<PropsWithChildren> = ({ children }) => {
         });
     });
     const logger = useLogger('App');
+    const userGroups = useMemo(() => {
+        const rest = new Map<ApiUUID, UserGroup>()
+        if (session.result){
+            const userInfo = session.result.data
+            if (userInfo?.user == "identified"){
+                userInfo.profile.groups.forEach(group => {
+                    rest.set(group.id, group)
+                })
+            }
+        }
+        return rest
+    }, [session.result]);
     if (session.result && logout.status === 'not-requested') {
         return (
             <SessionContext.Provider
                 value={{
                     session: session.result.data as SessionInfo,
-                    refresh: () => session.execute(),
-                    logout: () => logout.execute(),
+                    userGroups,
+                    refresh: () => { session.execute() },
+                    logout: () => { logout.execute() },
                 }}
             >
                 {children}
@@ -70,3 +85,5 @@ export const useIsAuthenticated = (): boolean => {
     console.log(info)
     return info.session.user !== 'anonymous';
 };
+
+export const useUserGroupsMap = () => useContext(SessionContext).userGroups

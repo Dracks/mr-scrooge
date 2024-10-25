@@ -20,7 +20,7 @@ const Headers: React.FC = () => {
                 <AnchorLink href="/" icon={<Home color="light-1" />} label="Mr Scrooge" color="light-1" />
                 <AnchorLink href="/import" label="Imports" color="light-1" />
                 <AnchorLink href="/movement" label="Movements" color="light-1" />
-                <AnchorLink href="/tag" label="Tags" color="light-1" />
+                <AnchorLink href="/label" label="Labels" color="light-1" />
             </Nav>
             <Box flex />
             <Menu

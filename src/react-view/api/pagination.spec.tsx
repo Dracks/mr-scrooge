@@ -1,3 +1,4 @@
+/** eslint-disable @typescript-eslint/require-await */
 import {fireEvent, render, screen} from '@testing-library/react';
 import React, {act} from 'react';
 

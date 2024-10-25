@@ -22,7 +22,7 @@ export const TransactionRow: React.FC<TransactionRowProps> = ({ transaction, lab
 
     const setComment = useAsyncCallback((comment: string) => Promise.resolve(transaction))
     const { labelIds } = transaction;
-    const updateRdsTag = async (action: "link" | "unlink", labelId: number) => {
+    const updateRdsTag = async (action: "link" | "unlink", labelId: ApiUUID) => {
         onChange({
             ...transaction,
             date: transaction.date.toISOString(),

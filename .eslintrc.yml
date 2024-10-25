@@ -27,7 +27,7 @@ rules:
     typescript-sort-keys/string-enum: warn
     '@typescript-eslint/no-floating-promises':
         - warn
-        - 
+        -
             ignoreIIFE: true
     max-statements:
         - error
@@ -44,14 +44,14 @@ rules:
     simple-import-sort/imports:
         - error
         - groups:
-                - 
+                -
                     - "^@?\\w"
-                - 
+                -
                     - "^(src|lib|test|\\.)"
     max-classes-per-file: 'off'
     no-underscore-dangle:
         - error
-        - 
+        -
             allow:
                 - _id
                 - __v
@@ -66,8 +66,7 @@ rules:
           minKeys: 5
     no-useless-constructor: 'off'
     no-shadow: off
-    '@typescript-eslint/no-shadow':
-        - warn
+    '@typescript-eslint/no-shadow': warn
     '@typescript-eslint/prefer-nullish-coalescing': error
     '@typescript-eslint/no-explicit-any': error
     '@typescript-eslint/no-useless-constructor': 'off'
@@ -77,13 +76,13 @@ rules:
     capitalized-comments: 'off'
     unicorn/filename-case:
         - error
-        - 
+        -
             case: kebabCase
     no-duplicate-imports: warn
     unicorn/no-abusive-eslint-disable: warn
     '@typescript-eslint/no-unnecessary-type-constraint': warn
 overrides:
-    - 
+    -
         files:
             - '*.{e2e-spec,int-spec,test,spec}.{js,jsx,ts,tsx}'
         rules:
@@ -92,7 +91,7 @@ overrides:
             unicorn/consistent-function-scoping: 'off'
             '@typescript-eslint/no-explicit-any': 'off'
             max-lines-per-function: 'off'
-    - 
+    -
         files:
             - '*.{jsx,tsx}'
         extends:
@@ -107,14 +106,14 @@ overrides:
         rules:
             id-length:
                 - error
-                - 
+                -
                     min: 1
             typescript-sort-keys/interface: warn
             typescript-sort-keys/string-enum: warn
             '@typescript-eslint/no-unused-vars': error
             prettier/prettier:
                 - error
-                - 
+                -
                     singleQuote: true
                     tabWidth: 4
                     printWidth: 120

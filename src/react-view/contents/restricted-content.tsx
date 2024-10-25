@@ -9,6 +9,7 @@ import { GraphRouter } from './graphs/graph-router';
 import { Graphs } from './graphs/graphs';
 import Headers from './headers';
 import { Imports } from './imports/imports';
+import { LabelsList } from './labels/labels-list';
 import {  TransactionList } from './transaction-list/transaction-list';
 /*
 
@@ -52,6 +53,7 @@ const RestrictedContent: React.FC = () => (
             <Route path="/graph/*" element={<GraphRouter />} />
             <Route path="/import/*" element={<Imports />} />
             <Route path="/movement" element={<TransactionList />} />
+            <Route path="/label/*" element={<LabelsList />} />
             <Route path="*" element={<NotFound />} />
         </Routes>
         </Main>

@@ -1,10 +1,11 @@
 import createFetchClient from 'openapi-fetch';
 import React from 'react';
-import { createContext, PropsWithChildren, useMemo } from 'react';
+import { createContext, PropsWithChildren } from 'react';
 
 import type { paths } from './generated-models';
 
-const ApiContext = createContext<ReturnType<typeof createFetchClient<paths>>>({} as any);
+type ApiClient = ReturnType<typeof createFetchClient<paths>>
+const ApiContext = createContext<ApiClient>({} as unknown as ApiClient);
 
 export const ProvideApi: React.FC<PropsWithChildren> = ({ children }) => {
     const $api = React.useMemo(() => {

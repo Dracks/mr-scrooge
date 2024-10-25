@@ -12,7 +12,7 @@ interface EditGraphProps {
     id: ApiUUID;
 }
 export const EditGraph: React.FC<EditGraphProps> = ({ id }) => {
-    const logger = useLogger();
+    const logger = useLogger("EditGraph");
     const client = useApi();
     const graphQuery = useAsync(()=>client.GET("/graphs", {params: {query: {graphIds: [id]}}}), [id, client]);
     const updateGraph = useAsyncCallback((id: ApiUUID, graph: GraphParam)=>{
@@ -35,7 +35,7 @@ export const EditGraph: React.FC<EditGraphProps> = ({ id }) => {
                 setGraphData(undefined)
             }
         }
-    }, [graphQuery, id]);
+    }, [graphQuery.status, id]);
 
 
     if (graphQuery.status === "loading") {
@@ -45,8 +45,8 @@ export const EditGraph: React.FC<EditGraphProps> = ({ id }) => {
             <GraphForm<Graph>
                 graphData={graphData}
                 update={setGraphData}
-                save={async () => {
-                    await updateGraph.execute(id, graphData);
+                save={() => {
+                    updateGraph.execute(id, graphData).catch((error: unknown) => { logger.error("Saving the graph", { error }) });
                 }}
             />
         );
