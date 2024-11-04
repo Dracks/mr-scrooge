@@ -1,4 +1,5 @@
 import Fluent
+import Queues
 import XCTVapor
 import XCTest
 
@@ -121,6 +122,13 @@ class BaseImporterTests: XCTestCase {
 			throw TestError()
 		}
 		return app.db
+	}
+
+	func getQueue() throws -> Queue {
+		guard let app = app else {
+			throw TestError()
+		}
+		return app.queues.queue
 	}
 
 }

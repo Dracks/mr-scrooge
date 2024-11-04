@@ -96,7 +96,8 @@ struct ImportUpload: RouteCollection {
 		let user = try await getUser(fromRequest: request)
 
 		let importData = try await fileImporterService.createFileImport(
-			on: request.db, groupOwnerId: user.defaultGroup.requireID(),
+			on: request.db, withQueue: request.queue,
+			groupOwnerId: user.defaultGroup.requireID(),
 			key: upload.kind,
 			fileName: upload.file.filename, filePath: filePath)
 

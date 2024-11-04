@@ -10,24 +10,29 @@ let package = Package(
 	],
 	dependencies: [
 		// OpenAPI
-		.package(url: "https://github.com/apple/swift-openapi-generator", from: "1.0.0"),
-		.package(url: "https://github.com/apple/swift-openapi-runtime", from: "1.0.0"),
+		.package(url: "https://github.com/apple/swift-openapi-generator", from: "1.4.0"),
+		.package(url: "https://github.com/apple/swift-openapi-runtime", from: "1.6.0"),
 		.package(url: "https://github.com/swift-server/swift-openapi-vapor", from: "1.0.0"),
 		// Vapor
-		.package(url: "https://github.com/vapor/vapor", from: "4.89.0"),
+		.package(url: "https://github.com/vapor/vapor", from: "4.106.0"),
 		.package(url: "https://github.com/vapor/leaf.git", from: "4.4.0"),
+		.package(url: "https://github.com/vapor/queues.git", from: "1.16.1"),
 
 		// fluent
-		.package(url: "https://github.com/vapor/fluent.git", from: "4.8.0"),
-		.package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.0.0"),
-		.package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0"),
+		.package(url: "https://github.com/vapor/fluent.git", from: "4.12.0"),
+		.package(
+			url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.10.0"),
+		.package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.8.0"),
+		.package(
+			url: "https://github.com/vapor-community/vapor-queues-fluent-driver",
+			branch: "main"),
 
 		// Parser libs
 		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.6.0"),
 		.package(url: "https://github.com/yaslab/CSV.swift.git", from: "2.5.0"),
 
 		// Tools
-		.package(url: "https://github.com/swiftlang/swift-format", from: "510.1.0"),
+		.package(url: "https://github.com/swiftlang/swift-format", from: "600.0.0"),
 
 		// dependency injection
 		.package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.4.1"),
@@ -47,6 +52,9 @@ let package = Package(
 					package: "fluent-postgres-driver"),
 				.product(
 					name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
+				.product(
+					name: "QueuesFluentDriver",
+					package: "vapor-queues-fluent-driver"),
 				"SwiftSoup",
 				.product(name: "CSV", package: "CSV.swift"),
 			],
@@ -66,6 +74,7 @@ let package = Package(
 			dependencies: [
 				.target(name: "MrScroogeServer"),
 				.product(name: "XCTVapor", package: "vapor"),
+				.product(name: "XCTQueues", package: "queues"),
 			],
 			path: "src/swift-server-tests",
 			resources: [

@@ -30,7 +30,10 @@ class UserService {
 		case ok(user: User)
 	}
 
-	func updateUser(on db: Database, userId: UUID, userData: User, andPassword newPassword: String? = nil) async throws
+	func updateUser(
+		on db: Database, userId: UUID, userData: User,
+		andPassword newPassword: String? = nil
+	) async throws
 		-> updateUserReturn
 	{
 		let user = try await User.query(on: db).filter(\.$id == userId).first()

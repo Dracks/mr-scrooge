@@ -22,7 +22,8 @@ final class CaixaEnginyersImporterTests: BaseImporterTests {
 		// let filePath = getTestFile(file: "test_files/MovimientosCuenta.xls")
 
 		let _ = try await importerService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: "caixa-enginyers/account",
+			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
+			key: "caixa-enginyers/account",
 			fileName: "MovimientosCuenta.xls", filePath: filePath.path)
 
 		let reports = try await statusReportsService.getAll(
@@ -70,7 +71,8 @@ final class CaixaEnginyersImporterTests: BaseImporterTests {
 				forResource: "MovimientosTarjetaCredito", withExtension: "xls"))
 
 		let _ = try await importerService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: "caixa-enginyers/credit",
+			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
+			key: "caixa-enginyers/credit",
 			fileName: "MovimientosTarjetaCredito.xls", filePath: filePath.path)
 
 		let reports = try await statusReportsService.getAll(

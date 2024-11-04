@@ -1,6 +1,6 @@
+import Fluent
 import XCTVapor
 import XCTest
-import Fluent
 
 @testable import MrScroogeServer
 

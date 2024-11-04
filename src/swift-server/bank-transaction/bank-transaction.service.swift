@@ -1,4 +1,5 @@
 import Fluent
+import Queues
 import Vapor
 
 struct ListWithCursor<T> {
@@ -111,10 +112,16 @@ class BankTransactionService {
 		}
 	}
 
-	func addTransaction(on db: Database, transaction: BankTransaction) async throws
+	func addTransaction(on db: Database, withQueue queue: Queue, transaction: BankTransaction)
+		async throws
 		-> BankTransaction
 	{
 		try await transaction.create(on: db)
+		try await queue.dispatch(
+			NewTransactionJob.self,
+			.init(
+				id: transaction.id!, movementName: transaction.movementName,
+				value: transaction.value, groupOwnerId: transaction.groupOwnerId))
 		return transaction
 	}
 

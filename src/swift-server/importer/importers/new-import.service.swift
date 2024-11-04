@@ -1,5 +1,6 @@
 import Fluent
 import Foundation
+import Queues
 import Vapor
 
 protocol ParserFactory {
@@ -60,7 +61,8 @@ class NewImportService {
 	}
 
 	func importFromFile(
-		on db: Database, groupOwnerId: UUID, key: String, fileName: String, filePath: String
+		on db: Database, withQueue queue: Queue, groupOwnerId: UUID, key: String,
+		fileName: String, filePath: String
 	) async throws -> UUID {
 		let status = FileImportReport(
 			description: "",
@@ -114,6 +116,7 @@ class NewImportService {
 							try await bankTransactionService
 							.addTransaction(
 								on: db,
+								withQueue: queue,
 								transaction: previousValidated)
 						previousStateValidated.message =
 							"Repeated row, but inserted"
@@ -126,7 +129,8 @@ class NewImportService {
 					discarting = false
 					let record =
 						try await bankTransactionService.addTransaction(
-							on: db, transaction: transaction
+							on: db, withQueue: queue,
+							transaction: transaction
 
 						)
 					statusTransaction.transactionId = record.id

@@ -8,28 +8,29 @@ final class BankTransactionTests: AbstractBaseTestsClass {
 	private func createTestBankTransactions() async throws -> [BankTransaction] {
 		let testGroupId = try testGroup.requireID()
 		let testGroupId2 = try testGroup2.requireID()
-		var transactions = BankTransactionFactory().createSequence(5) { transaction in
+
+		var transactions = transactionFactory.createSequence(5) { transaction in
 			transaction.$groupOwner.id = testGroupId
 			return transaction
 		}
 		[
-			BankTransactionFactory().build {
+			transactionFactory.build {
 				$0.$groupOwner.id = testGroupId
 				$0.date = DateOnly(year: 2022, month: 2, day: 1)!
 				return $0
 			},
-			BankTransactionFactory().build {
+			transactionFactory.build {
 				$0.$groupOwner.id = testGroupId
 				$0.date = DateOnly(year: 2022, month: 1, day: 30)!
 				$0.movementName = "Hello world!"
 				return $0
 			},
-			BankTransactionFactory().build {
+			transactionFactory.build {
 				$0.$groupOwner.id = testGroupId
 				$0.date = DateOnly(year: 2023, month: 1, day: 30)!
 				return $0
 			},
-			BankTransactionFactory().build {
+			transactionFactory.build {
 				$0.$groupOwner.id = testGroupId2
 				return $0
 			},
@@ -108,7 +109,7 @@ final class BankTransactionTests: AbstractBaseTestsClass {
 	func testShowLabels() async throws {
 		let app = try getApp()
 
-		let transaction: BankTransaction = BankTransactionFactory().build { transaction in
+		let transaction: BankTransaction = transactionFactory.build { transaction in
 			transaction.$groupOwner.id = self.testGroup.id!
 			return transaction
 		}
@@ -150,7 +151,7 @@ final class BankTransactionTests: AbstractBaseTestsClass {
 	func testLinkLabel() async throws {
 		let app = try getApp()
 
-		let transactions = BankTransactionFactory().createSequence(2) { transaction in
+		let transactions = transactionFactory.createSequence(2) { transaction in
 			transaction.$groupOwner.id = self.testGroup.id!
 			return transaction
 		}
@@ -196,7 +197,7 @@ final class BankTransactionTests: AbstractBaseTestsClass {
 	func testUnlinkLabel() async throws {
 		let app = try getApp()
 
-		let transactions = BankTransactionFactory().createSequence(2) { transaction in
+		let transactions = transactionFactory.createSequence(2) { transaction in
 			transaction.$groupOwner.id = self.testGroup.id!
 			return transaction
 		}
@@ -242,7 +243,7 @@ final class BankTransactionTests: AbstractBaseTestsClass {
 	func testSetComment() async throws {
 		let app = try getApp()
 
-		let transactions = BankTransactionFactory().createSequence(2) { transaction in
+		let transactions = transactionFactory.createSequence(2) { transaction in
 			transaction.$groupOwner.id = self.testGroup.id!
 			return transaction
 		}
@@ -287,7 +288,7 @@ final class BankTransactionTests: AbstractBaseTestsClass {
 	func testUnSetComment() async throws {
 		let app = try getApp()
 
-		let transactions = BankTransactionFactory().createSequence(2) { transaction in
+		let transactions = transactionFactory.createSequence(2) { transaction in
 			transaction.$groupOwner.id = self.testGroup.id!
 			transaction.description = "Daleks!"
 			return transaction

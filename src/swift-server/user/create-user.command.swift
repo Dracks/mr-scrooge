@@ -40,7 +40,7 @@ struct CreateUserCommand: AsyncCommand {
 		try user.setPassword(pwd: password)
 		try await user.save(on: context.application.db)
 		try await user.$groups.attach(group, on: context.application.db)
-        context.console.print("User \"\(username)\" created with groupId: \(group.id!)")
+		context.console.print("User \"\(username)\" created with groupId: \(group.id!)")
 
 		// When not executed, the group attach seems to not work
 		let _ = try await User.query(on: context.application.db).first()

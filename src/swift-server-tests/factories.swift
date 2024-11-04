@@ -56,21 +56,15 @@ class LabelFactory: AbstractFactory<Label> {
 		return Label(groupOwnerId: UUID(), name: "Label \(id)")
 	}
 }
-/*
-class GraphFactory: AbstractFactory<Graph> {
-    override func build(modifier: ((Graph) -> Graph)? = nil) -> Graph {
-        let id = nextCounter()
-        let graphId = UUID()
-        let graph = Graph(
-            id: graphId,
-            groupOwnerId: UUID(),
-            dateRange: .halfYear,
-            group: GraphGroup(graphId: graphId, group: .month),
-            kind: .pie,
-            name: "name: \(id)"
-        )
 
-        return modifier?(graph) ?? graph
-    }
+class RuleFactory: AbstractFactory<Rule> {
+	override func create(id: Int) -> Rule {
+		return .init(groupOwnerId: UUID(), name: "Rule \(id)")
+	}
 }
-*/
+
+class RuleConditionFactory: AbstractFactory<Condition> {
+	override func create(id: Int) -> Condition {
+		return .init(ruleId: UUID(), operation: .contains)
+	}
+}

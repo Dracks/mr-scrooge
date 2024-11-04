@@ -557,6 +557,180 @@ paths:
                   $ref: '#/components/schemas/Rule'
       tags:
         - rule
+    post:
+      operationId: ApiRule_create
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '400':
+          description: Unauthorized, usually when using a group that the user doesn't have access to
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - rule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleParam'
+  /rules/{ruleId}:
+    put:
+      operationId: ApiRule_update
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '400':
+          description: Unauthorized, usually when using a group that the user doesn't have access to
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - rule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleParam'
+    delete:
+      operationId: ApiRule_delete
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Date'
+      tags:
+        - rule
+  /rules/{ruleId}/apply:
+    post:
+      operationId: ApiRule_apply
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Date'
+        '400':
+          description: Unauthorized, usually when using a group that the user doesn't have access to
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - rule
+  /rules/{ruleId}/condition:
+    post:
+      operationId: ApiRule_addCondition
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/ConditionFloat'
+                  - $ref: '#/components/schemas/ConditionString'
+      tags:
+        - rule
+  /rules/{ruleId}/condition/{condId}:
+    put:
+      operationId: ApiRule_updateCondition
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+        - name: condId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/ConditionFloat'
+                  - $ref: '#/components/schemas/ConditionString'
+      tags:
+        - rule
+    delete:
+      operationId: ApiRule_deleteCondition
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+        - name: condId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Date'
+      tags:
+        - rule
   /session:
     post:
       operationId: ApiSession_login
@@ -908,6 +1082,10 @@ components:
           identified: '#/components/schemas/GetMyProfile'
           anonymous: '#/components/schemas/NotIdentified'
     Condition:
+      oneOf:
+        - $ref: '#/components/schemas/ConditionFloat'
+        - $ref: '#/components/schemas/ConditionString'
+    ConditionFloat:
       type: object
       required:
         - id
@@ -917,7 +1095,20 @@ components:
         id:
           $ref: '#/components/schemas/UUID'
         operation:
-          $ref: '#/components/schemas/Operation'
+          $ref: '#/components/schemas/OperationFloat'
+        value:
+          type: number
+    ConditionString:
+      type: object
+      required:
+        - id
+        - operation
+        - value
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        operation:
+          $ref: '#/components/schemas/OperationString'
         value:
           type: string
     ConditionalRelation:
@@ -1260,13 +1451,16 @@ components:
           type: string
           enum:
             - anonymous
-    Operation:
+    OperationFloat:
       type: string
       enum:
         - greater
         - greaterEqual
         - lower
         - lowerEqual
+    OperationString:
+      type: string
+      enum:
         - contains
         - prefix
         - regularExpression
@@ -1294,6 +1488,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Condition'
+    RuleParam:
+      type: object
+      required:
+        - groupOwnerId
+        - name
+        - relations
+      properties:
+        parentRule:
+          $ref: '#/components/schemas/UUID'
+        groupOwnerId:
+          $ref: '#/components/schemas/UUID'
+        name:
+          type: string
+        relations:
+          $ref: '#/components/schemas/ConditionalRelation'
     SetLabelAction:
       type: object
       required:

@@ -1,4 +1,5 @@
 import Fluent
+import Queues
 import Vapor
 
 class FileImportService {
@@ -13,10 +14,12 @@ class FileImportService {
 	}
 
 	func createFileImport(
-		on db: Database, groupOwnerId: UUID, key: String, fileName: String, filePath: String
+		on db: Database, withQueue queue: Queue, groupOwnerId: UUID, key: String,
+		fileName: String, filePath: String
 	) async throws -> FileImportReport {
 		let importId = try await uploadImportService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: key, fileName: fileName,
+			on: db, withQueue: queue, groupOwnerId: groupOwnerId, key: key,
+			fileName: fileName,
 			filePath: filePath)
 		let importReport = try await FileImportReport.query(on: db).filter(
 			\.$id == importId

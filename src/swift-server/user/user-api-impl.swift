@@ -92,7 +92,8 @@ extension MrScroogeAPIImpl {
 		)
 
 		let response = try await userService.updateUser(
-			on: request.db, userId: userId, userData: userData, andPassword: updateUser.password)
+			on: request.db, userId: userId, userData: userData,
+			andPassword: updateUser.password)
 		switch response {
 		case .notFound:
 			return .notFound(

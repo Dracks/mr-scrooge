@@ -1,5 +1,6 @@
 import Fluent
 import Vapor
+import XCTQueues
 import XCTVapor
 import XCTest
 
@@ -42,6 +43,11 @@ class AbstractBaseTestsClass: XCTestCase {
 
 	var testIds: [String: UUID]!
 
+	let ruleFactory = RuleFactory()
+	let conditionFactory = RuleConditionFactory()
+	let transactionFactory = BankTransactionFactory()
+	let labelFactory = LabelFactory()
+
 	func getApp() throws -> Application {
 		guard let app = app else {
 			throw TestError()
@@ -54,6 +60,11 @@ class AbstractBaseTestsClass: XCTestCase {
 			testIds = [:]
 			let app = try await Application.make(.testing)
 			try await configure(app)
+
+			// Override the driver being used for testing
+			app.queues.use(.asyncTest)
+			//app.queues.add(NewTransactionJob())
+
 			// Create a test group
 			testGroup2 = try await createGroup(app: app, name: "Other Group")
 			testGroup = try await createGroup(app: app, name: "Test Group")
@@ -73,13 +84,11 @@ class AbstractBaseTestsClass: XCTestCase {
 			try await testAdmin.$groups.attach(testGroup, on: app.db)
 
 			// Create labels
-			let labelFactory = LabelFactory()
-
 			labels = labelFactory.createSequence(10) {
 				$0.$groupOwner.id = testGroupId
 				return $0
 			}
-			LabelFactory().createSequence(8) {
+			labelFactory.createSequence(8) {
 				$0.$groupOwner.id = testGroupId2
 				return $0
 			}.forEach { label in

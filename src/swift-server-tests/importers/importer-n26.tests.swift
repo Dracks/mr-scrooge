@@ -20,7 +20,7 @@ final class N26ImporterTests: BaseImporterTests {
 			Bundle.module.url(forResource: "n26_es", withExtension: "csv"))
 
 		let _ = try await importerService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: "n26/es",
+			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId, key: "n26/es",
 			fileName: "n26-file.csv", filePath: filePath.path)
 
 		let reports = try await statusReportsService.getAll(
@@ -46,7 +46,7 @@ final class N26ImporterTests: BaseImporterTests {
 		let filePath = "invalid"
 
 		let _ = try await importerService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: "n26/es",
+			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId, key: "n26/es",
 			fileName: "n26-file.csv", filePath: filePath)
 
 		let reports = try await statusReportsService.getAll(

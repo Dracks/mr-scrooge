@@ -28,7 +28,8 @@ final class CommerzBankEnImporterTests: BaseImporterTests {
 			Bundle.module.url(forResource: "commerz_bank", withExtension: "CSV"))
 
 		let _ = try await importerService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: "commerz-bank-2024/en",
+			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
+			key: "commerz-bank-2024/en",
 			fileName: "CommerzBank", filePath: filePath.path)
 
 		let reports = try await statusReportsService.getAll(
