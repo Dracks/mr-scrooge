@@ -23,8 +23,8 @@ struct CreateUserCommand: AsyncCommand {
 	func run(using context: CommandContext, signature: Signature) async throws {
 		let groupName = signature.groupName ?? "default group"
 
-		let group = try await
-			UserGroup.query(on: context.application.db)
+		let group =
+			try await UserGroup.query(on: context.application.db)
 			.filter(\.$name == groupName)
 			.first() ?? UserGroup(name: groupName)
 

@@ -1,6 +1,6 @@
 enum ErrorCode: String, CaseIterable {
 	case E10000, E10001, E10002, E10003, E10004, E10005, E10006, E10007, E10008, E10009
-	case E10010, E10011
+	case E10010, E10011, E10012, E10013
 }
 
 enum ApiError: String {
@@ -35,6 +35,8 @@ let errorDictionary: [ErrorCode: ErrorInfo] = [
 	.E10009: ErrorInfo(message: "Csv row seems cannot be processed for N26"),
 	.E10010: ErrorInfo(message: "Csv cannot be parsed"),
 	.E10011: ErrorInfo(message: "Csv row seems cannot be processed for Commerz Bank En"),
+	.E10012: ErrorInfo(message: "Csv is invalid and doesn't contain the original movement row"),
+	.E10013: ErrorInfo(message: "Csv is invalid and doesn't contain the original value row"),
 ]
 
 extension ErrorCode {

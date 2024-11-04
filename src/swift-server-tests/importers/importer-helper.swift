@@ -88,6 +88,15 @@ class BaseImporterTests: XCTestCase {
 		throw TestError(message: "A class must overwrite getParsers")
 	}
 
+	func checkMovement(
+		transactions: [BankTransaction], date: DateOnly, value: Double, movementName: String
+	) {
+		let queryTest = transactions.first(where: { $0.date == date })
+		XCTAssertNotNil(queryTest)
+		XCTAssertEqual(queryTest?.value, value)
+		XCTAssertEqual(queryTest?.movementName, movementName)
+	}
+
 	override func setUp() async throws {
 		let app = try await Application.make(.testing)
 		try await configure(app)

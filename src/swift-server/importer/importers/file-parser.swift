@@ -38,14 +38,14 @@ func parserHtml(filePath: String, encoding: String.Encoding) -> AsyncThrowingStr
 	}
 }
 
-func parseCsv(filePath: String) throws -> CSVReader {
+func parseCsv(filePath: String, delimiter: UnicodeScalar = ",") throws -> CSVReader {
 	do {
 		let stream = InputStream(fileAtPath: filePath)
 		guard let stream = stream else {
 			throw Exception(.E10008, context: ["fileName": filePath])
 		}
 
-		return try CSVReader(stream: stream, hasHeaderRow: true)
+		return try CSVReader(stream: stream, hasHeaderRow: true, delimiter: delimiter)
 	} catch {
 		if let error = error as? Exception {
 			throw error

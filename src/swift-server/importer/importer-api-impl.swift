@@ -70,7 +70,6 @@ extension MrScroogeAPIImpl {
 
 }
 
-
 struct ImportUpload: RouteCollection {
 	func boot(routes: RoutesBuilder) throws {
 		routes.grouped("api").post("imports", use: uploadFile)

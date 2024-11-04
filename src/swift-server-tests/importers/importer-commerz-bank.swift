@@ -7,6 +7,19 @@ final class CommerzBankEnImporterTests: BaseImporterTests {
 	override func getParsers() throws -> [any ParserFactory] {
 		return [CommerzBankEnImporter()]
 	}
+
+	func testRegexFile() async throws {
+		let factory = importerService.getParsers().first
+
+		XCTAssertNotNil(factory)
+
+		let regex = try Regex(factory!.fileRegex)
+
+		let fileTest = "DE19821450020041545900_EUR_11-08-2024_2056.csv"
+		let match = try? regex.firstMatch(in: fileTest)
+		XCTAssertNotNil(match)
+	}
+
 	func testInsertingDataInCommerzBank() async throws {
 		let groupOwnerId = try self.group.requireID()
 		let db = try getDb()
@@ -15,7 +28,7 @@ final class CommerzBankEnImporterTests: BaseImporterTests {
 			Bundle.module.url(forResource: "commerz_bank", withExtension: "CSV"))
 
 		let _ = try await importerService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: "commerz-bank/en",
+			on: db, groupOwnerId: groupOwnerId, key: "commerz-bank-2024/en",
 			fileName: "CommerzBank", filePath: filePath.path)
 
 		let reports = try await statusReportsService.getAll(
@@ -27,46 +40,85 @@ final class CommerzBankEnImporterTests: BaseImporterTests {
 
 		let (transactions, _) = try await bankTransactionService.getAll(
 			on: db, groupIds: [groupOwnerId])
-		XCTAssertEqual(transactions.list.count, 5)
+		XCTAssertEqual(transactions.list.count, 12)
 
-		let queryTest = transactions.list.first(where: { $0.date == DateOnly("2019-05-02") }
+		checkMovement(
+			transactions: transactions.list,
+			date: DateOnly("2024-04-23")!,
+			value: -15.00,
+			movementName: "AUSGABE EINER DEBITKARTE ENTGELT ERSATZKARTE GIROCARD"
 		)
-		XCTAssertEqual(queryTest?.value, 256.01)
-		XCTAssertEqual(queryTest?.movementName, "Concept and more concepts")
 
-		let queryTest2 = transactions.list.first(where: {
-			$0.date == DateOnly("2020-01-09")
-		})
-		XCTAssertEqual(queryTest2?.value, -25)
-		XCTAssertEqual(queryTest2?.movementName, "Commerzbank 0321554")
-
-		let queryTest3 = transactions.list.first(where: {
-			$0.date == DateOnly("2020-01-07")
-		})
-		XCTAssertEqual(queryTest3?.movementName, "Backerei Sipl GmbH Fil.35 GIR 69036")
-
-		let queryTest4 = transactions.list.first(where: {
-			$0.date == DateOnly("2020-02-09")
-		})
-		XCTAssertEqual(queryTest4?.movementName, "ARAL Some address")
-
-		let queryTest5 = transactions.list.first(where: {
-			$0.date == DateOnly("2020-02-07")
-		})
-		XCTAssertEqual(queryTest5?.movementName, "BACKSTUBE WUENSCHE GMBH")
-	}
-}
-
-final class CommerzBankUnitTests: XCTestCase {
-	func testSplitMessage() throws {
-		let importerService = CommerzBankEnImporter()
-
-		let (msg, details, date) = try importerService.splitMessage(
-			"Kartenzahlung ARAL Some address 2020-02-09T21:13:19 KFN 1 VJ 2442 Kartenzahlung"
+		checkMovement(
+			transactions: transactions.list,
+			date: DateOnly("2024-03-12")!,
+			value: -20.55,
+			movementName:
+				"Stadtwerke Ingolstadt Energie GmbH E-Mobility Rechnung Nr. 56315 zu Ve rtrag 704860, Kundennummer 718838"
 		)
-		XCTAssertEqual(msg, "ARAL Some address")
-		XCTAssertEqual(details, nil)
-		XCTAssertEqual(date, "09.02.2020")
 
+		checkMovement(
+			transactions: transactions.list,
+			date: DateOnly("2024-03-10")!,
+			value: -24.93,
+			movementName: "Stadtapotheke Stephan Kurzeder e.K."
+		)
+		checkMovement(
+			transactions: transactions.list,
+			date: DateOnly("2024-03-04")!,
+			value: -20.12,
+			movementName: "85053 EDEKA FANDERL"
+		)
+		checkMovement(
+			transactions: transactions.list,
+			date: DateOnly("2024-03-01")!,
+			value: -45.99,
+			movementName: "M001-MEDIA MARKT"
+		)
+		checkMovement(
+			transactions: transactions.list,
+			date: DateOnly("2024-02-29")!,
+			value: -22.35,
+			movementName:
+				"BAUHAUS SOMEPLACE - DANKE 270217190097028271201056880 ELV6512 0607 27.02 17.19 ME0"
+		)
+		checkMovement(
+			transactions: transactions.list,
+			date: DateOnly("2024-02-18")!,
+			value: -8.00,
+			movementName: "FLUGHAFEN MUENCHEN GMBH GIR 6912847"
+		)
+		checkMovement(
+			transactions: transactions.list,
+			date: DateOnly("2024-02-14")!,
+			value: 0.00,
+			movementName:
+				"Datenschutzhinweis ab 28.02.2024: Wir übermitteln Überweisungsdaten an den Zahlungsdienstleister des Empfängers (ZDE). Eingeschaltete Dienstleister können erforderliche Prüfungen zur Verhinderung von Zah- lungsverkehrsbetrug vornehmen. Der ZDE kann d"
+		)
+		checkMovement(
+			transactions: transactions.list,
+			date: DateOnly("2023-07-08")!,
+			value: -120.00,
+			movementName: "Bargeldauszahlung Commerzbank 00210074"
+		)
+		checkMovement(
+			transactions: transactions.list,
+			date: DateOnly("2023-07-06")!,
+			value: -15.11,
+			movementName: "Kartenzahlung ARAL Some place Stra-e 7"
+		)
+		checkMovement(
+			transactions: transactions.list,
+			date: DateOnly("2023-06-30")!,
+			value: 0.00,
+			movementName:
+				"Periodic balance statement Account  201527900 EUR Bank Code 721 400 52 from 31.03.2023 to 30.06.2023 Balance after closing                     1.283,80  EUR re.: approval of the balancing"
+		)
+		checkMovement(
+			transactions: transactions.list,
+			date: DateOnly("2023-06-20")!,
+			value: 500.00,
+			movementName: "Jaume Singla Valls"
+		)
 	}
 }

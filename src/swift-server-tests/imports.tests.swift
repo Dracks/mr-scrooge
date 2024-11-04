@@ -88,7 +88,7 @@ final class ImportTests: AbstractBaseTestsClass {
 
 		let _ = try await sendImportRequest(
 			app: app, headers: headers, file: commerzBankPath,
-			andKind: "commerz-bank/en")
+			andKind: "commerz-bank-2024/en")
 
 		let response = try await app.sendRequest(
 			.GET, "/api/imports", headers: headers)

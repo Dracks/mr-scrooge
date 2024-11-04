@@ -7,15 +7,15 @@ class CommerzBankEnImporter: ParserFactory {
 		pattern: "(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})T\\d{2}:\\d{2}:\\d{2}",
 		options: [])
 	let transformHelper: TransformHelper<[String?]>
-	let key: String = "commerz-bank/en"
-	let fileRegex: String = "Umsaetze_KtoNr.*\\.CSV"
+	let key: String = "commerz-bank-2024/en"
+	let fileRegex: String = "^[A-Z]{2}(?:[ ]?[0-9]){18,20}_"
 
 	init() {
 		let fieldsMap = FieldsMap<Int>(
-			movementName: 9,
-			date: 11,
+			movementName: 8,
+			date: 10,
 			dateValue: 1,
-			details: 10, value: 4
+			details: 9, value: 4
 		)
 		self.transformHelper = TransformHelper(fieldsMap, dateFormat: "dd.MM.yyyy")
 	}
@@ -23,16 +23,23 @@ class CommerzBankEnImporter: ParserFactory {
 	func splitMessage(_ msg: String) throws -> (String, String?, String?) {
 		var message = msg
 
-		if message.hasPrefix("Auszahlung") {
-			message.removeFirst("Auszahlung".count)
-		} else if message.hasPrefix("Kartenzahlung") {
-			message.removeFirst("Kartenzahlung".count)
+		if message.hasPrefix("/") {
+			let subMsgs = message.components(separatedBy: "//").filter {
+				$0.hasPrefix("Kartenzahlung")
+			}
+			if let msg = subMsgs.first {
+				message = msg
+			}
+		}
+
+		if let doubleSlashIndex = message.range(of: "//") {
+			message = String(message.prefix(upTo: doubleSlashIndex.lowerBound))
 		}
 
 		let dateMatch = DATE_REGEX.firstMatch(
 			in: message, options: [], range: NSRange(location: 0, length: message.count)
 		)
-		if let dateMatch = dateMatch {
+		if let dateMatch {
 			let range = Range(dateMatch.range(at: 0), in: message)
 			guard let range = range else {
 				throw Exception(.E10000)
@@ -53,9 +60,8 @@ class CommerzBankEnImporter: ParserFactory {
 			return (
 				movementName.trimmingCharacters(in: .whitespaces), details, dateInfo
 			)
-		} else if let strRange = message.range(of: "End-to-End-Ref") {
-			let splitMsg = message[..<strRange.lowerBound]
-			return (splitMsg.trimmingCharacters(in: .whitespaces), nil, nil)
+		} else if let endToEndIndex = message.range(of: "End-To-End") {
+			message = String(message.prefix(upTo: endToEndIndex.lowerBound))
 		}
 
 		return (message.trimmingCharacters(in: .whitespaces), nil, nil)
@@ -65,19 +71,32 @@ class CommerzBankEnImporter: ParserFactory {
 		AsyncThrowingStream { continuation in
 			Task {
 				do {
-					let csv = try parseCsv(filePath: filePath)
+					let csv = try parseCsv(filePath: filePath, delimiter: ";")
 
 					var lineCounter = 0
 					while let row = csv.next() {
 						lineCounter += 1
 						do {
 							var mappedData: [String?] = row
+							guard let originalMovement = row.get(3)
+							else {
+								throw Exception(.E10012)
+							}
+
+							guard let originalValue = row.get(4) else {
+								throw Exception(.E10013)
+							}
+
+							mappedData[4] =
+								originalValue.replacingOccurrences(
+									of: ",", with: ".")
 
 							let (movementName, details, newDate) =
 								try splitMessage(
-									mappedData[3] ?? "")
+									originalMovement)
 
-							mappedData.append(movementName)
+							mappedData.append(
+								String(movementName.prefix(250)))
 							mappedData.append(details)
 							if let newDate = newDate {
 								mappedData.append(newDate)
