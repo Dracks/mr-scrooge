@@ -47,17 +47,20 @@ struct InitialMigration: AsyncMigration {
 			.field("description", .string)
 			.create()
 
-		try await database.schema("core_condition")
-			.id()
-			.field("name", .string, .required)
-			.create()
-
 		try await database.schema("core_rule")
 			.id()
 			.field("group_owner_id", .uuid, .required, .references("user_groups", "id"))
 			.field("name", .string, .required)
 			.field("conditions_relation", .string, .required)
 			.field("parent", .uuid, .references("core_rule", "id"))
+			.create()
+
+		try await database.schema("core_condition")
+			.id()
+			.field("rule_id", .uuid, .required, .references("core_rule", "id"))
+			.field("operation", .string, .required)
+			.field("value_str", .string)
+			.field("value_float", .float)
 			.create()
 
 		try await database.schema("graph_graph")
