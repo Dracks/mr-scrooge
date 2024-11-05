@@ -4,10 +4,11 @@
 node_modules
 
 # testing
-/coverage
+coverage
 
 # production
-build
+Public/react
+Resources/Views/react.leaf
 
 # misc
 .DS_Store
@@ -25,6 +26,13 @@ __pycache__
 migrations/*.py
 
 
-server/db.sqlite3
+db.sqlite3
 server/finances/templates/react.html
 server/static/react
+
+# swift
+.build
+.swiftpm
+Resources/Views/react.leaf
+Public/react
+

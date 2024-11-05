@@ -1,0 +1,10 @@
+query getBankTransactions($groupIds: [UUID!],$cursor: String, $limit: Int) {
+    bankTransaction(groupIds: $groupIds, cursor: $cursor, limit: $limit) {
+        ... on BankTransactionResponse {
+            results {
+                ...BankTransactionFragment
+            }
+            next
+        }
+    }
+}

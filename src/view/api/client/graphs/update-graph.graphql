@@ -1,0 +1,14 @@
+mutation updateGraph($graph: UpdateGraph!){
+    updateGraph(graph: $graph){
+        __typename
+        ... on Graph {
+            ...GraphFragment
+        },
+        ... on WrongOwnerId{
+            ...WrongOwnerIdFragment
+        },
+        ... on InvalidLabels{
+            ...InvalidLabelFragment
+        }
+    }
+}

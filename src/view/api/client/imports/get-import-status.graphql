@@ -1,0 +1,23 @@
+query getImportStatus($cursor: String, $limit: Int) {
+  imports(cursor: $cursor, limit: $limit) {
+    ... on GetImports {
+    results {
+      id
+      description
+      status
+      context
+      rows {
+        movementName
+        date
+        dateValue
+        details
+        value
+        description
+        message
+        transactionId
+      }
+    }
+    next
+    }
+  }
+}

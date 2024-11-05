@@ -1,0 +1,9 @@
+
+mutation Login($credentials: Credentials!) {
+    login(credentials: $credentials){
+        __typename
+        ... on MyProfile {
+            ...MyProfileFragment
+        }
+    }
+}

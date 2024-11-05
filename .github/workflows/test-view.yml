@@ -1,51 +1,47 @@
 # This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
 # For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
 
-name: Node.js Package
+name: Test view
 
 on: [pull_request]
 
-defaults:
-  run:
-    working-directory: view
-
 env:
-  NODE_VERSION: 16
+  NODE_VERSION: 20
 
 jobs:
   test:
-    name: Test View
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-      - name: Cache node_modules
-        id: npm-cache
-        uses: actions/cache@v3
-        with:
-          path: ./node_modules
-          key: npm-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: npm-${{ env.NODE_VERSION }}-
-      - run: npm ci
-        if: steps.npm-cache.outputs.cache-hit != 'true'
-      - run: npm test
+          cache: 'pnpm'
+
+      - run: pnpm install
+      - run: pnpm run test:view
   lint:
     name: Lint
     runs-on: ubuntu-latest
     steps:
         - uses: actions/checkout@v3
-        - uses: actions/setup-node@v3
+        - uses: pnpm/action-setup@v4
+          name: Install pnpm
+          with:
+            run_install: false
+
+        - name: Install Node.js
+          uses: actions/setup-node@v4
           with:
             node-version: ${{ env.NODE_VERSION }}
-        - name: Cache node_modules
-          id: npm-cache
-          uses: actions/cache@v3
-          with:
-            path: ./node_modules
-            key: npm-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
-            restore-keys: npm-${{ env.NODE_VERSION }}-
-        - run: npm install
-          if: steps.npm-cache.outputs.cache-hit != 'true'
-        - run: npm run lint
+            cache: 'pnpm'
+
+        - run: pnpm install
+        - run: pnpm run lint

@@ -1,0 +1,23 @@
+name: Test Server
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+on:
+  push:
+    branches:
+      - mr-scrooge-3.0.0
+  pull_request:
+    branches:
+        - main
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    container: swift:5.10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Run tests
+        run: swift test --parallel
+        # run: swift test

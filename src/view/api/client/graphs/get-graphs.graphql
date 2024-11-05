@@ -1,0 +1,12 @@
+query getGraphs {
+    graphs {
+        ...GraphFragment
+    }
+}
+
+
+query getGraphsById($graphsIds: [UUID!]) {
+    graphs(graphIds: $graphsIds) {
+        ...GraphFragment
+    }
+}
