@@ -94,7 +94,7 @@ class BankTransactionService {
 	func existsSimilar(
 		on db: Database, transaction: BankTransaction
 	) async throws -> Bool {
-		let count = try await BankTransaction.query(on: db)
+		let similarCount = try await BankTransaction.query(on: db)
 			.filter(\.$groupOwner.$id == transaction.$groupOwner.id)
 			.filter(\.$_date == transaction.date.toString())
 			.filter(\.$details == transaction.details)
@@ -102,7 +102,7 @@ class BankTransactionService {
 			.filter(\.$movementName == transaction.movementName)
 			.filter(\.$value == transaction.value)
 			.count()
-		return !isEmpty
+		return similarCount > 0
 	}
 
 	func insertBatch(on db: Database, movements: [BankTransaction]) -> EventLoopFuture<Void> {
