@@ -41,7 +41,7 @@ class UserService {
 		userData.id = user.id
 		userData._$idExists = true
 
-		if let newPassword, newPassword.count>0 {
+		if let newPassword, !newPassword.isEmpty {
 			try userData.setPassword(pwd: newPassword)
 		} else {
 			userData.passwordHash = user.passwordHash

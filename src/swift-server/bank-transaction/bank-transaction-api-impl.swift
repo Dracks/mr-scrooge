@@ -127,7 +127,7 @@ extension MrScroogeAPIImpl {
 			inputGroups = inputGroupsStr.map { UUID(uuidString: $0)! }
 		}
 		let groupIds = inputGroups ?? validGroupsIds
-		if groupIds.filter({ return !validGroupsIds.contains($0) }).count > 0 {
+		if !groupIds.filter({ return !validGroupsIds.contains($0) }).isEmpty {
 			//return WrongOwnerId(validOwners: validGroupsIds)
 			return .undocumented(statusCode: 400, UndocumentedPayload())
 		}

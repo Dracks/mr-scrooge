@@ -342,7 +342,7 @@ class GraphService {
 						.filter(\.$graph.$id == graphId)
 						.sort(\.$order, .ascending)
 						.all()
-					if groupLabels.count > 0 {
+					if !groupLabels.isEmpty {
 						graphBuilder.setGroupLabels(
 							groupLabels.map { $0.$label.id })
 					}
@@ -357,7 +357,7 @@ class GraphService {
 							.sort(\.$order, .ascending)
 							.all()
 
-						if horizontalLabels.count > 0 {
+						if !horizontalLabels.isEmpty {
 							graphBuilder.setHorizontalGroupLabels(
 								horizontalLabels.map {
 									$0.$label.id

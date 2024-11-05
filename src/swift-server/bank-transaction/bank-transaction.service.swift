@@ -102,7 +102,7 @@ class BankTransactionService {
 			.filter(\.$movementName == transaction.movementName)
 			.filter(\.$value == transaction.value)
 			.count()
-		return count > 0
+		return !isEmpty
 	}
 
 	func insertBatch(on db: Database, movements: [BankTransaction]) -> EventLoopFuture<Void> {

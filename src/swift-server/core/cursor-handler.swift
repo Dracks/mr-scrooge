@@ -26,7 +26,7 @@ class CursorHandler<T, R: Hashable> {
 
 struct PageQuery {
 	var limit: Int = 100
-	var cursor: String? = nil
+	var cursor: String?
 
 	func getListWithCursor<T>(data: [T], generateCursor: (T) -> String) -> ListWithCursor<T> {
 		let hasMore = data.count >= limit
