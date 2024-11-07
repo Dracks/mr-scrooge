@@ -1,6 +1,5 @@
 import React from 'react';
 import { Route, Routes, useParams } from 'react-router';
-import * as uuid from 'uuid';
 
 import NotFound from '../extra/not-found';
 import { EditGraph } from './form/edit-graph.form';

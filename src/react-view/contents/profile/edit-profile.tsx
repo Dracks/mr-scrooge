@@ -1,18 +1,24 @@
 import { Box, Button, Form, FormField, Heading, TextInput } from 'grommet';
 import React from 'react';
+import { useAsyncCallback } from 'react-async-hook';
 
+import { useApi } from '../../api/client';
+import { UpdateMyProfile } from '../../api/models';
 import { useLogger } from '../../utils/logger/logger.context';
-import { useSession } from '../../utils/session/session-context';
+import { useSession, useUserProfileOrThrows } from '../../utils/session/session-context';
 
 export const EditProfile = () => {
     const {
         refresh,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        session,
     } = useSession();
-    const [, updateProfile] = usePatchUserInfo();
+    const {firstName, lastName, ...profile} = useUserProfileOrThrows()
+
+    const client = useApi()
+    const updateProfile = useAsyncCallback((data: UpdateMyProfile)=>client.PUT("/session/me", {
+        body: data
+    }))
     const logger = useLogger();
-    const [uiProfile, setUiProfile] = React.useState<UserInfoWithPassword & { newPassword2?: string }>({
+    const [uiProfile, setUiProfile] = React.useState<UpdateMyProfile & { newPassword2?: string }>({
         password: '',
         firstName: firstName ? firstName : '',
         lastName: lastName ? lastName : '',
@@ -23,23 +29,27 @@ export const EditProfile = () => {
     return (
         <Box fill align="center" justify="center">
             <Heading level="2">Edit profile</Heading>
-            <Form<UserInfoWithPassword>
+            <Form<UpdateMyProfile>
                 value={uiProfile}
                 onChange={setUiProfile}
-                onSubmit={async () => {
+                onSubmit={() => {
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     const { newPassword2, ...data } = uiProfile;
                     logger.info('New sent data', { data });
-                    await updateProfile({
+                    updateProfile.execute(
                         data,
-                    });
-                    setUiProfile({
-                        ...uiProfile,
-                        password: '',
-                        newPassword: '',
-                        newPassword2: '',
-                    });
-                    await refresh();
+                    ).then(()=>{
+                        setUiProfile({
+                            ...uiProfile,
+                            password: '',
+                            newPassword: '',
+                            newPassword2: '',
+                        });
+                        refresh();
+                    }).catch((error:unknown)=> {
+                        logger.error("Error updating the user info", { error })
+                    })
+                    
                 }}
             >
                 <Box direction="row-responsive" justify="center" gap="medium">

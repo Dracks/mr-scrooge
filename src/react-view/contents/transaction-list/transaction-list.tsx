@@ -6,17 +6,18 @@ import { useApi } from '../../api/client';
 import { useLabelsListContext } from '../common/label.context';
 import { BankTransactionEnriched, useTransactionsData } from '../common/transaction.context';
 import { TransactionRow } from './transaction-row';
+import { ApiUUID } from '../../api/models';
 
 interface TransactionListFilters {
     kind?: string;
-    label?: number;
+    label?: string;
     movement?: string;
 }
 
 export const TransactionList: React.FC = () => {
     const { data: results, replace } = useTransactionsData();
     const client = useApi()
-    const kindRequest = useAsync(()=>client.GET("/imports/parsers"));
+    const kindRequest = useAsync(()=>client.GET("/imports/parsers"), [client]);
     const labels = useLabelsListContext();
     const [filters, setFilters] = useState<TransactionListFilters>({});
 
@@ -27,7 +28,7 @@ export const TransactionList: React.FC = () => {
 
     if (filters.label) {
         filteredResults = filteredResults.filter(({ labelIds: transactionLabels }) =>
-            transactionLabels.includes(filters.label as number),
+            transactionLabels.includes(filters.label as ApiUUID),
         );
     }
 
@@ -48,7 +49,7 @@ export const TransactionList: React.FC = () => {
                         {
                             <Select
                                 placeholder="Filter by importer"
-                                options={['', ...(kindRequest.result?.data?.importKinds ?? []).map((kind: {name: string}) => kind.name)]}
+                                options={['', ...(kindRequest.result?.data?.parsers ?? []).map((kind: {name: string}) => kind.name)]}
                                 value={filters.kind}
                                 onChange={({ option }) => {
                                     setFilters({ ...filters, kind: option as string });
@@ -64,9 +65,9 @@ export const TransactionList: React.FC = () => {
                             options={[{}, ...labels]}
                             labelKey="name"
                             valueKey={{ key: 'id', reduce: true }}
-                            value={filters.label as unknown as string}
+                            value={filters.label}
                             onChange={({ value: label }) => {
-                                setFilters({ ...filters, label });
+                                setFilters({ ...filters, label: label as string });
                             }}
                         />
                     </TableCell>
