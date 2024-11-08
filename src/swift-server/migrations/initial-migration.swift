@@ -78,7 +78,7 @@ struct InitialMigration: AsyncMigration {
 			.field("rule_id", .uuid, .required, .references("core_rule", "id"))
 			.field("operation", .string, .required)
 			.field("value_str", .string)
-			.field("value_float", .float)
+			.field("value_double", .double)
 			// .index("rule_id")
 			.create()
 

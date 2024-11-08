@@ -1,6 +1,6 @@
 enum ErrorCode: String, CaseIterable {
 	case E10000, E10001, E10002, E10003, E10004, E10005, E10006, E10007, E10008, E10009
-	case E10010, E10011, E10012, E10013
+	case E10010, E10011, E10012, E10013, E10014, E10015, E10016
 }
 
 enum ApiError: String {
@@ -39,6 +39,14 @@ let errorDictionary: [ErrorCode: ErrorInfo] = [
 	.E10011: ErrorInfo(message: "Csv row seems cannot be processed for Commerz Bank En"),
 	.E10012: ErrorInfo(message: "Csv is invalid and doesn't contain the original movement row"),
 	.E10013: ErrorInfo(message: "Csv is invalid and doesn't contain the original value row"),
+	.E10014: ErrorInfo(
+		message: "Retrieving an String from a condition when it doesn't have it"),
+	.E10014: ErrorInfo(
+		message: "Retrieving the Double from a condition when it doesn't have it"),
+	.E10016: ErrorInfo(
+		message: "Rule parent cannot be found by the ID",
+		additionalInfo: "this can be because the parent rule is with another groupOwnerId"
+	),
 ]
 
 extension ErrorCode {

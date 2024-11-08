@@ -72,7 +72,7 @@ public func configure(_ app: Application) async throws {
 		app.queues.add(NewTransactionJob())
 		app.queues.configuration.workerCount = 1
 		try app.queues.startInProcessJobs(on: .default)
-		try app.queues.startScheduledJobs()
+		//try app.queues.startScheduledJobs()
 	} catch {
 		print(error)
 		throw error

@@ -14,12 +14,14 @@ final class NewTransactionJob: AsyncJob {
 
 	func dequeue(_ context: QueueContext, _ payload: TransactionSummary) async throws {
 		context.logger.info("Processing rules for \(payload.id)")
-		try await rulesService.applyRules(on: context.application.db, for: payload)
+		try await rulesService.ruleEngine.applyRules(
+			on: context.application.db, for: payload)
 	}
 
 	func error(_ context: QueueContext, _ error: Error, _ payload: TransactionSummary)
 		async throws
 	{
 		print("Some error happened processing \(payload.id) transaction")
+		print(error)
 	}
 }

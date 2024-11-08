@@ -35,29 +35,81 @@ final class Condition: Model, Content, @unchecked Sendable {
 	@Field(key: "value_str")
 	var valueStr: String?
 
-	@Field(key: "value_float")
-	var valueFloat: Double?
+	@Field(key: "value_double")
+	var valueDouble: Double?
 
 	init() {}
 
 	init(
 		id: UUID? = nil, ruleId: UUID, operation: ConditionOperation,
-		valueStr: String? = nil, valueFloat: Double? = nil
+		valueStr: String? = nil, valueDouble: Double? = nil
 	) {
 		self.id = id
 		self.$rule.id = ruleId
 		self.operation = operation
 		self.valueStr = valueStr
-		self.valueFloat = valueFloat
+		self.valueDouble = valueDouble
 	}
 
-	func checkTransaction(_ transaction: TransactionSummary) -> Bool {
+	func getStr() throws -> String {
+		guard let valueStr = self.valueStr else {
+			throw Exception(
+				.E10013, context: ["condition": id as Any, "parent": $rule.id])
+		}
+		return valueStr
+	}
+
+	func getDouble() throws -> Double {
+		guard let valueDouble = self.valueDouble else {
+			throw Exception(
+				.E10014, context: ["condition": id as Any, "parent": $rule.id])
+		}
+		return valueDouble
+	}
+
+	func toClousure() throws -> (_ transaction: TransactionSummary) -> Bool {
 		switch operation {
 		case .prefix:
-			print(self.valueStr!, transaction.movementName)
-			return transaction.movementName.hasPrefix(self.valueStr!)
-		default:
-			return false
+			let value = try getStr()
+			return { transaction in
+				transaction.movementName.hasPrefix(value)
+			}
+		case .contains:
+			let value = try getStr()
+			return { transaction in
+				transaction.movementName.contains(value)
+			}
+		case .suffix:
+			let value = try getStr()
+			return { transaction in
+				transaction.movementName.hasSuffix(value)
+			}
+		case .regularExpression:
+			let value = try getStr()
+			let regex = try Regex(value)
+			return { transaction in
+				transaction.movementName.contains(regex)
+			}
+		case .greater:
+			let value = try getDouble()
+			return { transaction in
+				transaction.value > value
+			}
+		case .greaterEqual:
+			let value = try getDouble()
+			return { transaction in
+				transaction.value >= value
+			}
+		case .lessEqual:
+			let value = try getDouble()
+			return { transaction in
+				transaction.value <= value
+			}
+		case .less:
+			let value = try getDouble()
+			return { transaction in
+				transaction.value < value
+			}
 		}
 	}
 }
@@ -100,20 +152,6 @@ final class Rule: Model, Content, @unchecked Sendable {
 		self.name = name
 		self.conditionsRelation = conditionsRelation
 		self.$parent.id = parentId
-	}
-
-	func checkConditionals(on db: Database, for transaction: TransactionSummary) async throws
-		-> Bool
-	{
-		try await $conditions.load(on: db)
-		let summary = conditions.map { $0.checkTransaction(transaction) }
-		print(summary)
-		switch conditionsRelation {
-		case .or:
-			return summary.contains { $0 }
-		case .notAnd:
-			return false
-		}
 	}
 }
 
