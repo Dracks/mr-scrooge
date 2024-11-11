@@ -26,8 +26,8 @@ model InvalidGroupOwnerId {
 }
 
 @error
-@doc("Unauthorized, usually when using a group that the user doesn't have access to")
-model InvalidGroupId {
+@doc("Bad request, usually when providing an invalid string as UUID")
+model InvalidUUID {
   @statusCode _: 400;
   ...Error;
 }
@@ -40,8 +40,14 @@ model NotFound {
 
 @error
 model Unauthorized {
-    @statusCode _ : 401;
-    ...Error,
+  @statusCode _: 401;
+  ...Error;
+}
+
+@error
+model LabelGroupIdMismatch {
+  @statusCode _: 409;
+  ...Error;
 }
 
 model PageList<Item> {

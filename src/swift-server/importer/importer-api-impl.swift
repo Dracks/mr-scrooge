@@ -3,8 +3,6 @@ import OpenAPIRuntime
 import OpenAPIVapor
 import Vapor
 
-let fileImporterService = FileImportService()
-
 struct UploadData: Content {
 	var kind: String
 	var file: File
@@ -15,7 +13,8 @@ extension MrScroogeAPIImpl {
 	func ApiImports_parserTypes(_ input: Operations.ApiImports_parserTypes.Input) async throws
 		-> Operations.ApiImports_parserTypes.Output
 	{
-		let parserList = fileImporterService.getParsers()
+		let fileImportService = request.application.fileImportService
+		let parserList = fileImportService.getParsers()
 		return .ok(
 			.init(
 				body: .json(
@@ -36,10 +35,11 @@ extension MrScroogeAPIImpl {
 	func ApiImports_list(_ input: Operations.ApiImports_list.Input) async throws
 		-> Operations.ApiImports_list.Output
 	{
+		let fileImportService = request.application.fileImportService
 		let user = try await getUser(fromRequest: request)
 		let validGroupsId = try user.groups.map { return try $0.requireID() }
-		let data = try await fileImporterService.getAll(
-			on: request.db, groupIds: validGroupsId, cursor: input.query.cursor,
+		let data = try await fileImportService.getAll(
+			groupIds: validGroupsId, cursor: input.query.cursor,
 			limit: input.query.limit ?? 100)
 
 		return .ok(
@@ -54,6 +54,7 @@ extension MrScroogeAPIImpl {
 	func ApiImports_delete(_ input: Operations.ApiImports_delete.Input) async throws
 		-> Operations.ApiImports_delete.Output
 	{
+		let fileImportService = request.application.fileImportService
 		let user = try await getUser(fromRequest: request)
 		let validGroupsId = try user.groups.map { return try $0.requireID() }
 		let idString = input.path.id
@@ -61,8 +62,8 @@ extension MrScroogeAPIImpl {
 			return .undocumented(statusCode: 400, UndocumentedPayload())
 		}
 
-		try await fileImporterService.delete(
-			on: request.db, groupIds: validGroupsId, importId: importId)
+		try await fileImportService.delete(
+			groupIds: validGroupsId, importId: importId)
 
 		return .ok(.init(body: .json(.init(true))))
 	}
@@ -77,6 +78,7 @@ struct ImportUpload: RouteCollection {
 	func uploadFile(request: Request) async throws -> Response {
 
 		let upload = try request.content.decode(UploadData.self)
+		let fileImportService = request.application.fileImportService
 
 		let tmpDir = NSTemporaryDirectory()
 		let filePath =
@@ -95,8 +97,7 @@ struct ImportUpload: RouteCollection {
 
 		let user = try await getUser(fromRequest: request)
 
-		let importData = try await fileImporterService.createFileImport(
-			on: request.db, withQueue: request.queue,
+		let importData = try await fileImportService.createFileImport(
 			groupOwnerId: user.defaultGroup.requireID(),
 			key: upload.kind,
 			fileName: upload.file.filename, filePath: filePath)

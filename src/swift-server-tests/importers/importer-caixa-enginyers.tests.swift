@@ -27,12 +27,12 @@ final class CaixaEnginyersImporterTests: BaseImporterTests {
 			fileName: "MovimientosCuenta.xls", filePath: filePath.path)
 
 		let reports = try await statusReportsService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
 		XCTAssertEqual(reports.list.first?.status, .ok)
 
 		let (transactions, _) = try await bankTransactionService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(transactions.list.count, 4)
 
 		// Check specific transactions
@@ -76,14 +76,14 @@ final class CaixaEnginyersImporterTests: BaseImporterTests {
 			fileName: "MovimientosTarjetaCredito.xls", filePath: filePath.path)
 
 		let reports = try await statusReportsService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
 		XCTAssertEqual(reports.list.first?.status, .ok)
 		XCTAssertEqual(reports.list.first?.description, "")
 		XCTAssertNil(reports.list.first?.context)
 
 		let (transactions, _) = try await bankTransactionService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(transactions.list.count, 1)
 
 		// Test specific transaction details

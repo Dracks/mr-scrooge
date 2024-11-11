@@ -1,19 +1,11 @@
 import Fluent
-import Queues
 import Vapor
 
-struct ListWithCursor<T> {
-	let list: [T]
-	let next: String?
-}
-
-class BankTransactionService {
+class BankTransactionService: ServiceWithQueueAndDb {
 	private let logger = Logger(label: "BankTransactionService")
 	private let cursorHandler = CursorHandler<BankTransaction, String>(["date", "id"])
 
-	init() {}
-
-	func getActiveLabels(on db: Database, transactionsIds: [UUID]) async throws -> [UUID:
+	func getActiveLabels(transactionsIds: [UUID]) async throws -> [UUID:
 		[UUID]]
 	{
 		let labelsPivot = try await LabelTransaction.query(on: db).filter(
@@ -33,7 +25,7 @@ class BankTransactionService {
 	}
 
 	func getAll(
-		on db: Database, groupIds: [UUID], transactionIds: [UUID]? = nil,
+		groupIds: [UUID], transactionIds: [UUID]? = nil,
 		pageQuery: PageQuery = .init(),
 		query: [String: Any] = [:]
 	) async throws -> (ListWithCursor<BankTransaction>, [UUID: [UUID]]) {
@@ -67,17 +59,8 @@ class BankTransactionService {
 			.limit(pageQuery.limit)
 			.all()
 
-		/*let hasMore = data.count >= limit
-		let cursorElement = hasMore ? data.last : nil
-		let nextCursor = cursorElement.map {
-			self.cursorHandler.stringify([
-				"date": $0.date.toString(),
-				"id": $0.id?.uuidString ?? "",
-			])
-		}*/
-
 		let relations = try await getActiveLabels(
-			on: db, transactionsIds: data.map { try $0.requireID() })
+			transactionsIds: data.map { try $0.requireID() })
 
 		return (
 			pageQuery.getListWithCursor(
@@ -93,7 +76,7 @@ class BankTransactionService {
 	}
 
 	func existsSimilar(
-		on db: Database, transaction: BankTransaction
+		transaction: BankTransaction
 	) async throws -> Bool {
 		let similarCount = try await BankTransaction.query(on: db)
 			.filter(\.$groupOwner.$id == transaction.$groupOwner.id)
@@ -106,13 +89,13 @@ class BankTransactionService {
 		return similarCount > 0
 	}
 
-	func insertBatch(on db: Database, movements: [BankTransaction]) -> EventLoopFuture<Void> {
+	func insertBatch(movements: [BankTransaction]) -> EventLoopFuture<Void> {
 		return movements.create(on: db).map { _ in
 			self.logger.info("Insert batch", metadata: ["sql": "Bulk insert"])
 		}
 	}
 
-	func addTransaction(on db: Database, withQueue queue: Queue, transaction: BankTransaction)
+	func addTransaction(transaction: BankTransaction)
 		async throws
 		-> BankTransaction
 	{
@@ -133,7 +116,7 @@ class BankTransactionService {
 	}
 
 	func link(
-		on db: Database, transaction transactionId: UUID, toLabel labelId: UUID,
+		transaction transactionId: UUID, toLabel labelId: UUID,
 		withValidGroups groupIds: [UUID]
 	) async throws -> LinkReturn {
 		let transaction = try await BankTransaction.query(on: db).filter(
@@ -179,7 +162,7 @@ class BankTransactionService {
 	}
 
 	func unlink(
-		on db: Database, transaction transactionId: UUID, fromLabel labelId: UUID,
+		transaction transactionId: UUID, fromLabel labelId: UUID,
 		withValidGroups groupIds: [UUID]
 	) async throws -> UnlinkReturn {
 		let transaction = try await BankTransaction.query(on: db).filter(
@@ -209,7 +192,7 @@ class BankTransactionService {
 	}
 
 	func setComment(
-		on db: Database, for transactionId: UUID, andComment comment: String?,
+		for transactionId: UUID, andComment comment: String?,
 		withValidGroups groupIds: [UUID]
 	) async throws -> setCommentReturn {
 		let transaction = try await BankTransaction.query(on: db).filter(

@@ -14,7 +14,8 @@ final class NewTransactionJob: AsyncJob {
 
 	func dequeue(_ context: QueueContext, _ payload: TransactionSummary) async throws {
 		context.logger.info("Processing rules for \(payload.id)")
-		try await rulesService.ruleEngine.applyRules(
+
+		try await context.application.ruleService.ruleEngine.applyRules(
 			on: context.application.db, for: payload)
 	}
 

@@ -2,7 +2,6 @@ import Foundation
 import OpenAPIRuntime
 import OpenAPIVapor
 
-let graphService = GraphService()
 extension MrScroogeAPIImpl {
 	func ApiGraphs_create(_ input: Operations.ApiGraphs_create.Input) async throws
 		-> Operations.ApiGraphs_create.Output
@@ -30,7 +29,7 @@ extension MrScroogeAPIImpl {
 
 		}
 
-		let data = try await graphService.createGraph(on: request.db, graphData)
+		let data = try await request.application.graphService.createGraph(graphData)
 		switch data {
 		case let .invalidLabels(data: info):
 			return .notFound(
@@ -58,8 +57,7 @@ extension MrScroogeAPIImpl {
 			graphIds = inputGraphIds.map { UUID(uuidString: $0)! }
 		}
 
-		let data = try await graphService.getGraphs(
-			on: request.db,
+		let data = try await request.application.graphService.getGraphs(
 			pageQuery: .init(
 				limit: input.query.limit ?? 100, cursor: input.query.cursor),
 			groupsId: validGroupsId, graphsIds: graphIds)
@@ -104,8 +102,8 @@ extension MrScroogeAPIImpl {
 			)
 		}
 
-		let data = try await graphService.updateGraph(
-			on: request.db, withId: graphId, graph: graphData, forUser: user)
+		let data = try await request.application.graphService.updateGraph(
+			withId: graphId, graph: graphData, forUser: user)
 		switch data {
 		case let .invalidLabels(data: info):
 			return .notFound(
@@ -146,8 +144,8 @@ extension MrScroogeAPIImpl {
 							code: ApiError.API10009.rawValue))))
 		}
 
-		let data = try await graphService.deleteGraph(
-			on: request.db, graphId: graphId, forUser: user)
+		let data = try await request.application.graphService.deleteGraph(
+			graphId: graphId, forUser: user)
 		switch data {
 		case let .notFound(graphId: graphId):
 			return .notFound(

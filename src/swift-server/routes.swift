@@ -73,54 +73,6 @@ struct MrScroogeAPIImpl {
 	{
 		return .undocumented(statusCode: 501, UndocumentedPayload())
 	}
-
-	func ApiRule_list(_ input: Operations.ApiRule_list.Input) async throws
-		-> Operations.ApiRule_list.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiRule_update(_ input: Operations.ApiRule_update.Input) async throws
-		-> Operations.ApiRule_update.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiRule_create(_ input: Operations.ApiRule_create.Input) async throws
-		-> Operations.ApiRule_create.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiRule_delete(_ input: Operations.ApiRule_delete.Input) async throws
-		-> Operations.ApiRule_delete.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiRule_apply(_ input: Operations.ApiRule_apply.Input) async throws
-		-> Operations.ApiRule_apply.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiRule_addCondition(_ input: Operations.ApiRule_addCondition.Input) async throws
-		-> Operations.ApiRule_addCondition.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiRule_updateCondition(_ input: Operations.ApiRule_updateCondition.Input) async throws
-		-> Operations.ApiRule_updateCondition.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiRule_deleteCondition(_ input: Operations.ApiRule_deleteCondition.Input) async throws
-		-> Operations.ApiRule_deleteCondition.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
 }
 
 extension MrScroogeAPIImpl: APIProtocol {}

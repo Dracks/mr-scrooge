@@ -107,9 +107,9 @@ class BaseImporterTests: XCTestCase {
 		try await self.group.save(on: app.db)
 
 		let testParsers: [ParserFactory] = try getParsers()
-		importerService = NewImportService(parsers: testParsers)
-		bankTransactionService = BankTransactionService()
-		statusReportsService = FileImportService()
+		importerService = NewImportService(parsers: testParsers, withApp: app)
+		bankTransactionService = app.bankTransactionService
+		statusReportsService = app.fileImportService
 	}
 
 	override func tearDown() async throws {

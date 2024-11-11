@@ -39,6 +39,7 @@ class AbstractBaseTestsClass: XCTestCase {
 	var testAdmin: User!
 	var testGroup: UserGroup!
 	var testGroup2: UserGroup!
+	var testGroup3: UserGroup!
 	var labels: [Label]!
 
 	var testIds: [String: UUID]!
@@ -68,6 +69,7 @@ class AbstractBaseTestsClass: XCTestCase {
 			// Create a test group
 			testGroup2 = try await createGroup(app: app, name: "Other Group")
 			testGroup = try await createGroup(app: app, name: "Test Group")
+			testGroup3 = try await createGroup(app: app, name: "Other group for main")
 			let testGroupId = try testGroup.requireID()
 			let testGroupId2 = try testGroup2.requireID()
 
@@ -76,6 +78,7 @@ class AbstractBaseTestsClass: XCTestCase {
 				app: app, username: "test-user", email: "test@example.com",
 				password: "test-password", defaultGroupId: testGroupId)
 			try await testUser.$groups.attach(testGroup, on: app.db)
+			try await testUser.$groups.attach(testGroup3, on: app.db)
 
 			testAdmin = try await createUser(
 				app: app, username: "admin", email: "admin@example.com",

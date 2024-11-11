@@ -33,14 +33,14 @@ final class CommerzBankEnImporterTests: BaseImporterTests {
 			fileName: "CommerzBank", filePath: filePath.path)
 
 		let reports = try await statusReportsService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
 		XCTAssertEqual(reports.list.first?.status, .ok)
 		XCTAssertEqual(reports.list.first?.description, "")
 		XCTAssertNil(reports.list.first?.context)
 
 		let (transactions, _) = try await bankTransactionService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(transactions.list.count, 12)
 
 		checkMovement(

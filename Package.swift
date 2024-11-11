@@ -1,6 +1,7 @@
 // swift-tools-version: 5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
+import CompilerPluginSupport
 import PackageDescription
 
 let package = Package(
@@ -36,8 +37,22 @@ let package = Package(
 
 		// dependency injection
 		.package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.4.1"),
+		.package(
+			url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0-latest"
+		),
 	],
 	targets: [
+		.macro(
+			name: "swift-macrosMacros",
+			dependencies: [
+				.product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+				.product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+			],
+			path: "src/swift-server-macrosMacros"
+		),
+		.target(
+			name: "swift-macros", dependencies: ["swift-macrosMacros"],
+			path: "src/swift-server-macros"),
 		.executableTarget(
 			name: "MrScroogeServer",
 			dependencies: [
@@ -57,6 +72,7 @@ let package = Package(
 					package: "vapor-queues-fluent-driver"),
 				"SwiftSoup",
 				.product(name: "CSV", package: "CSV.swift"),
+				"swift-macros",
 			],
 			path: "src/swift-server",
 			resources: [

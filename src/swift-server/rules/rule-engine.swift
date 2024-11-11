@@ -6,14 +6,14 @@ class CompiledRule {
 	let parent: UUID?
 	var children: [CompiledRule]
 	let conditions: [(_ transaction: TransactionSummary) -> Bool]
-	let labelIds: [UUID]
+	let ruleLabels: [RuleLabelAction]
 	let conditionsRelation: ConditionalRelationType
 
 	init(_ rule: Rule) throws {
 		id = try rule.requireID()
 		parent = rule.$parent.id
 		children = []
-		labelIds = rule.labels.map { $0.$label.id }
+		ruleLabels = rule.labelPivots
 		conditions = try rule.conditions.map { try $0.toClousure() }
 		conditionsRelation = rule.conditionsRelation
 	}
@@ -38,7 +38,7 @@ class RuleEngine {
 	{
 		let dbRules = try await Rule.query(on: db).filter(
 			\.$groupOwner.$id == groupOwnerId
-		).with(\.$conditions).with(\.$labels).all()
+		).with(\.$conditions).with(\.$labelPivots).all()
 		let rules = try dbRules.map { try CompiledRule($0) }
 		let rulesHash: [UUID: CompiledRule] = rules.reduce(into: [UUID: CompiledRule]()) {
 			$0[$1.id] = $1
@@ -70,18 +70,18 @@ class RuleEngine {
 	}
 
 	private func applyLabels(
-		on db: Database, ruleId: UUID, labelIds: [UUID], for transaction: TransactionSummary
+		on db: Database, ruleId: UUID, ruleLabels: [RuleLabelAction],
+		for transaction: TransactionSummary
 	) async throws {
-		for labelId in labelIds {
+		for labelAction in ruleLabels {
 			let labelTransaction = LabelTransaction(
-				labelId: labelId,
+				labelId: labelAction.$label.id,
 				transactionId: transaction.id,
 				linkReason: .automatic)
 			try await labelTransaction.save(on: db)
-			try await RuleLabelPivot(
-				ruleId: ruleId,
-				labelTransactionId: labelTransaction.id!
-			).save(on: db)
+			try await labelAction.$transactionPivot.attach(
+				labelTransaction,
+				on: db)
 		}
 	}
 
@@ -91,7 +91,7 @@ class RuleEngine {
 		for rule in rules {
 			if rule.checkConditionals(for: transaction) {
 				try await applyLabels(
-					on: db, ruleId: rule.id, labelIds: rule.labelIds,
+					on: db, ruleId: rule.id, ruleLabels: rule.ruleLabels,
 					for: transaction)
 				try await checkAndApply(
 					on: db, rules: rule.children, for: transaction)

@@ -91,12 +91,15 @@ struct InitialMigration: AsyncMigration {
 
 		try await database.schema("core_rule_label_pivot")
 			.id()
-			.field("rule_id", .uuid, .required, .references("core_rule", "id"))
+			.field(
+				"rule_label_id", .uuid, .required,
+				.references("core_rule_label_action", "id")
+			)
 			.field(
 				"label_transaction_id", .uuid, .required,
 				.references("core_label_transaction", "id")
 			)
-			.unique(on: "rule_id", "label_transaction_id")
+			.unique(on: "rule_label_id", "label_transaction_id")
 			.create()
 
 		try await database.schema("graph_graph")

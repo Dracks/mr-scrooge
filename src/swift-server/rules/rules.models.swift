@@ -51,6 +51,13 @@ final class Condition: Model, Content, @unchecked Sendable {
 		self.valueDouble = valueDouble
 	}
 
+	init(_ cond: Rule.BaseCondition, for ruleId: UUID) {
+		$rule.id = ruleId
+		operation = cond.operation
+		valueStr = cond.valueStr
+		valueDouble = cond.valueDouble
+	}
+
 	func getStr() throws -> String {
 		guard let valueStr = self.valueStr else {
 			throw Exception(
@@ -129,8 +136,13 @@ final class Rule: Model, Content, @unchecked Sendable {
 	@Children(for: \.$rule)
 	var conditions: [Condition]
 
+	@Siblings(through: RuleLabelAction.self, from: \.$rule, to: \.$label)
+	var labels: [Label]
+
+	// Not a big fan of this duplication, but since Some parts simply only care about the labels
+	// and other need to work with the pivot, I added this here as a helper.
 	@Children(for: \.$rule)
-	var labels: [RuleLabelAction]
+	var labelPivots: [RuleLabelAction]
 
 	@Enum(key: "conditions_relation")
 	var conditionsRelation: ConditionalRelationType
@@ -153,6 +165,44 @@ final class Rule: Model, Content, @unchecked Sendable {
 		self.conditionsRelation = conditionsRelation
 		self.$parent.id = parentId
 	}
+
+	struct BaseCondition {
+		let operation: ConditionOperation
+		let valueStr: String?
+		let valueDouble: Double?
+
+		init(_ operation: ConditionOperation, valueStr: String) {
+			self.operation = operation
+			self.valueStr = valueStr
+			self.valueDouble = nil
+		}
+
+		init(_ operation: ConditionOperation, valueDouble: Double) {
+			self.operation = operation
+			self.valueStr = nil
+			self.valueDouble = valueDouble
+		}
+	}
+
+	static func createRule(
+		on db: Database, for userGroupId: UUID, name: String = "rule",
+		with conditions: BaseCondition..., toApply labels: Label...
+	) async throws -> Rule {
+		let rule = Rule(groupOwnerId: userGroupId, name: name, conditionsRelation: .or)
+		try await rule.save(on: db)
+		let ruleId = try rule.requireID()
+
+		for cond in conditions {
+			try await rule.$conditions.create(
+				.init(cond, for: ruleId), on: db)
+		}
+
+		for label in labels {
+			try await rule.$labels.attach(label, on: db)
+		}
+
+		return rule
+	}
 }
 
 // This one is to know which labels will be linked
@@ -167,6 +217,9 @@ final class RuleLabelAction: Model, @unchecked Sendable {
 
 	@Parent(key: "label_id")
 	var label: Label
+
+	@Siblings(through: RuleLabelPivot.self, from: \.$ruleLabel, to: \.$labelTransaction)
+	var transactionPivot: [LabelTransaction]
 
 	init() {}
 
@@ -185,17 +238,20 @@ final class RuleLabelPivot: Model, @unchecked Sendable {
 	@ID(key: .id)
 	var id: UUID?
 
-	@Parent(key: "rule_id")
-	var rule: Rule
+	@Parent(key: "rule_label_id")
+	var ruleLabel: RuleLabelAction
 
 	@Parent(key: "label_transaction_id")
 	var labelTransaction: LabelTransaction
 
 	init() {}
 
-	init(id: UUID? = nil, ruleId: Rule.IDValue, labelTransactionId: LabelTransaction.IDValue) {
+	init(
+		id: UUID? = nil, ruleLabelId: RuleLabelAction.IDValue,
+		labelTransactionId: LabelTransaction.IDValue
+	) {
 		self.id = id
-		self.$rule.id = ruleId
+		self.$ruleLabel.id = ruleLabelId
 		self.$labelTransaction.id = labelTransactionId
 	}
 }

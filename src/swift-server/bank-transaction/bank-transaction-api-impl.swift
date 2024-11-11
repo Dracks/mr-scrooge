@@ -1,14 +1,13 @@
 import Foundation
 import OpenAPIRuntime
-import OpenAPIVapor
 import Vapor
 
-let bankTransactionService = BankTransactionService()
 extension MrScroogeAPIImpl {
 
 	func ApiBankTransactions_linkLabel(_ input: Operations.ApiBankTransactions_linkLabel.Input)
 		async throws -> Operations.ApiBankTransactions_linkLabel.Output
 	{
+		let bankTransactionService = request.application.bankTransactionService
 		let user = try await getUser(fromRequest: request)
 		let validGroupsIds = try user.groups.map { return try $0.requireID() }
 		guard let transactionId = UUID(uuidString: input.path.transactionId),
@@ -17,12 +16,12 @@ extension MrScroogeAPIImpl {
 			return .undocumented(statusCode: 400, UndocumentedPayload())
 		}
 		let linkState = try await bankTransactionService.link(
-			on: request.db, transaction: transactionId, toLabel: labelId,
+			transaction: transactionId, toLabel: labelId,
 			withValidGroups: validGroupsIds)
 		switch linkState {
 		case .ok:
 			let (transaction, labelIds) = try await bankTransactionService.getAll(
-				on: request.db, groupIds: validGroupsIds,
+				groupIds: validGroupsIds,
 				transactionIds: [transactionId])
 			return .ok(
 				.init(
@@ -66,6 +65,7 @@ extension MrScroogeAPIImpl {
 	func ApiBankTransactions_unlinkLabel(
 		_ input: Operations.ApiBankTransactions_unlinkLabel.Input
 	) async throws -> Operations.ApiBankTransactions_unlinkLabel.Output {
+		let bankTransactionService = request.application.bankTransactionService
 		let user = try await getUser(fromRequest: request)
 		let validGroupsIds = try user.groups.map { return try $0.requireID() }
 		guard let transactionId = UUID(uuidString: input.path.transactionId),
@@ -74,12 +74,12 @@ extension MrScroogeAPIImpl {
 			return .undocumented(statusCode: 400, UndocumentedPayload())
 		}
 		let unlinkState = try await bankTransactionService.unlink(
-			on: request.db, transaction: transactionId, fromLabel: labelId,
+			transaction: transactionId, fromLabel: labelId,
 			withValidGroups: validGroupsIds)
 		switch unlinkState {
 		case .ok:
 			let (transaction, labelIds) = try await bankTransactionService.getAll(
-				on: request.db, groupIds: validGroupsIds,
+				groupIds: validGroupsIds,
 				transactionIds: [transactionId])
 			return .ok(
 				.init(
@@ -119,6 +119,7 @@ extension MrScroogeAPIImpl {
 	func ApiBankTransactions_list(_ input: Operations.ApiBankTransactions_list.Input)
 		async throws -> Operations.ApiBankTransactions_list.Output
 	{
+		let bankTransactionService = request.application.bankTransactionService
 		let req = request
 		let user = try await getUser(fromRequest: req)
 		let validGroupsIds = try user.groups.map { return try $0.requireID() }
@@ -133,7 +134,7 @@ extension MrScroogeAPIImpl {
 		}
 
 		let (data, labelIds) = try await bankTransactionService.getAll(
-			on: req.db, groupIds: groupIds,
+			groupIds: groupIds,
 			pageQuery: .init(
 				limit: input.query.limit ?? 100, cursor: input.query.cursor))
 		let results = try data.list.map { movement in
@@ -149,6 +150,7 @@ extension MrScroogeAPIImpl {
 	func ApiBankTransactions_comment(_ input: Operations.ApiBankTransactions_comment.Input)
 		async throws -> Operations.ApiBankTransactions_comment.Output
 	{
+		let bankTransactionService = request.application.bankTransactionService
 		let req = request
 		let user = try await getUser(fromRequest: req)
 		let validGroupsIds = try user.groups.map { return try $0.requireID() }
@@ -169,7 +171,7 @@ extension MrScroogeAPIImpl {
 		}
 
 		let result = try await bankTransactionService.setComment(
-			on: request.db, for: transactionId, andComment: comment,
+			for: transactionId, andComment: comment,
 			withValidGroups: validGroupsIds)
 		switch result {
 		case .notFound:
@@ -183,7 +185,7 @@ extension MrScroogeAPIImpl {
 								.transactionId))))
 		case .ok:
 			let (transaction, labelIds) = try await bankTransactionService.getAll(
-				on: request.db, groupIds: validGroupsIds,
+				groupIds: validGroupsIds,
 				transactionIds: [transactionId])
 			return .ok(
 				.init(

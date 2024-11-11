@@ -158,7 +158,7 @@ class GraphBuilder {
 	}
 }
 
-class GraphService {
+class GraphService: ServiceWithDb {
 	private let cursorHandler = CursorHandler<Label, String>(["id"])
 
 	struct InvalidLabels {
@@ -183,11 +183,13 @@ class GraphService {
 	}
 
 	private func validateLabels(
-		on db: Database, groupOwnerId: UUID, group: Components.Schemas.Group,
+		on _db: Database? = nil,
+		groupOwnerId: UUID, group: Components.Schemas.Group,
 		horizontalGroup:
 			Components.Schemas.HorizontalGroup?,
 		rootLabel: String?
 	) async throws -> InvalidLabels? {
+		let db = _db ?? self.db
 		var searchLabelIds = Set<String>()
 		if let labels = group.labels {
 			labels.forEach { searchLabelIds.insert($0) }
@@ -215,7 +217,7 @@ class GraphService {
 		return nil
 	}
 
-	func createGraph(on db: Database, _ newGraph: Components.Schemas.GraphParam) async throws
+	func createGraph(_ newGraph: Components.Schemas.GraphParam) async throws
 		-> CreateGraphResponse
 	{
 		let groupOwnerId = UUID(uuidString: newGraph.groupOwnerId)!
@@ -302,11 +304,12 @@ class GraphService {
 	}
 
 	func getGraphs(
-		on db: Database, pageQuery: PageQuery = .init(), groupsId: [UUID],
+		pageQuery: PageQuery = .init(), groupsId: [UUID],
 		graphsIds: [UUID]?
 	) async throws
 		-> ListWithCursor<Components.Schemas.Graph>
 	{
+		let db = db
 		let graphsQuery = Graph.query(on: db)
 			.filter(\.$groupOwner.$id ~~ groupsId)
 		if let graphsIds = graphsIds {
@@ -380,7 +383,7 @@ class GraphService {
 	}
 
 	func updateGraph(
-		on db: Database, withId id: UUID, graph updatedGraph: Components.Schemas.GraphParam,
+		withId id: UUID, graph updatedGraph: Components.Schemas.GraphParam,
 		forUser user: User
 	) async throws -> UpdateGraphResponse {
 		return try await db.transaction { transaction in
@@ -524,10 +527,10 @@ class GraphService {
 
 	}
 
-	func deleteGraph(on database: Database, graphId: UUID, forUser user: User) async throws
+	func deleteGraph(graphId: UUID, forUser user: User) async throws
 		-> DeleteGraphResponse
 	{
-		return try await database.transaction { transaction in
+		return try await db.transaction { transaction in
 			let validGroupsId = try user.groups.map { try $0.requireID() }
 			// Delete the graph
 			let graph = try await Graph.query(on: transaction)

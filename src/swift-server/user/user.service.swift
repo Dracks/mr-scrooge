@@ -1,10 +1,10 @@
 import Fluent
 import Vapor
 
-class UserService {
+class UserService: ServiceWithDb {
 	private let cursorHandler = CursorHandler<User, String>(["id"])
 
-	func getUsersPage(on db: Database, pageQuery: PageQuery) async throws -> ListWithCursor<
+	func getUsersPage(pageQuery: PageQuery) async throws -> ListWithCursor<
 		User
 	> {
 		let query = User.query(on: db).with(\.$groups)
@@ -31,7 +31,7 @@ class UserService {
 	}
 
 	func updateUser(
-		on db: Database, userId: UUID, userData: User,
+		userId: UUID, userData: User,
 		andPassword newPassword: String? = nil
 	) async throws
 		-> updateUserReturn
@@ -55,20 +55,21 @@ class UserService {
 	}
 }
 
-class UserGroupService {
-	func validateGroupId(on db: Database, groupId: String, forUserId userId: UUID) async throws
+class UserGroupService: ServiceWithDb {
+
+	func validateGroupId(groupId: String, forUserId userId: UUID) async throws
 		-> UUID?
 	{
 		guard let groupId = UUID(uuidString: groupId) else {
 			return nil
 		}
-		if try await validateGroupId(on: db, groupId: groupId, forUserId: userId) {
+		if try await validateGroupId(groupId: groupId, forUserId: userId) {
 			return groupId
 		} else {
 			return nil
 		}
 	}
-	func validateGroupId(on db: Database, groupId: UUID, forUserId userId: UUID) async throws
+	func validateGroupId(groupId: UUID, forUserId userId: UUID) async throws
 		-> Bool
 	{
 		let existsRelation = try await UserGroupPivot.query(on: db).filter(
