@@ -23,10 +23,15 @@ struct ErrorHandlerMiddleware: AsyncMiddleware {
 				if let abort = error.underlyingError as? Abort {
 					throw abort
 				}
+				if let _ = error.underlyingError as? NotIdentifiedError {
+				    throw Abort(.unauthorized, reason: "Not identified")
+				}
+				print("Server Error")
 				print(error.underlyingError)
 				print(type(of: error.underlyingError))
 				throw error
 			default:
+				print("Default error")
 				print(error)
 				print(type(of: error))
 				throw error

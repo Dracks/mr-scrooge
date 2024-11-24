@@ -3,6 +3,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import { VERSION } from '../constants';
+import { AdminContent } from './admin/admin-content';
 import { DataProvider } from './common/data-provider';
 import NotFound from './extra/not-found';
 import { GraphRouter } from './graphs/graph-router';
@@ -10,6 +11,7 @@ import { Graphs } from './graphs/graphs';
 import Headers from './headers';
 import { Imports } from './imports/imports';
 import { LabelsList } from './labels/labels-list';
+import { EditProfile } from './profile/edit-profile';
 import {  TransactionList } from './transaction-list/transaction-list';
 /*
 
@@ -54,6 +56,8 @@ const RestrictedContent: React.FC = () => (
             <Route path="/import/*" element={<Imports />} />
             <Route path="/movement" element={<TransactionList />} />
             <Route path="/label/*" element={<LabelsList />} />
+            <Route path="/profile" element={<EditProfile />} />
+            <Route path="/admin/*" element={<AdminContent />} />
             <Route path="*" element={<NotFound />} />
         </Routes>
         </Main>

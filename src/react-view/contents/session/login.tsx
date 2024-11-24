@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 
 import { useApi } from '../../api/client';
@@ -12,7 +12,10 @@ export const Login: React.FC = () => {
     const client = useApi();
     const loginRequest = useAsyncCallback(async (body: LoginCredentials) => {
         const response = await client.POST('/session', { body });
-        session.refresh();
+        logger.info("Response", { status: response.response.status })
+        if (response.response.status == 200) {
+            session.refresh();
+        }
         return response;
     });
     logger.info('loginData', { loginRequest });
@@ -28,7 +31,7 @@ export const Login: React.FC = () => {
             isLoading={loginRequest.loading}
             invalidCredentials={invalidCredentials}
             login={credentials => {
-                loginRequest.execute(credentials);
+                loginRequest.execute(credentials).catch((error: unknown) => { logger.error("Login Request", { error }) });
             }}
         />
     );

@@ -12,7 +12,7 @@ import { GraphWrapperWithRechart } from './graph-with-rechart/graph';
 
 export const Graphs: React.FC = () => {
     const client = useApi()
-    const logger = useLogger()
+    const logger = useLogger("Graphs")
     const graphs = usePagination(async next => {
         const { data } = await client.GET("/graphs", {params: {query: {cursor: next}}})
         if (data){

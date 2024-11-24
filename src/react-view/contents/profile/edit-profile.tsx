@@ -1,4 +1,4 @@
-import { Box, Button, Form, FormField, Heading, TextInput } from 'grommet';
+import { Box, Button, Form, FormField, Heading, Select, TextInput } from 'grommet';
 import React from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 
@@ -65,7 +65,6 @@ export const EditProfile = () => {
                             name="password"
                             component={TextInput}
                             type="password"
-                            required
                         />
                         <FormField
                             label="New password"
@@ -82,6 +81,17 @@ export const EditProfile = () => {
                             error={passwordError}
                         />
                     </Box>
+                </Box>
+                <Box justify='center'>
+                    <Heading level="3">Groups</Heading>
+                    <FormField label="Default group" htmlFor='select-default-group'>
+                        <Select 
+                        id="select-default-grtoup" 
+                        options={profile.groups} 
+                        name="defaultGroupId"
+                        labelKey="name" 
+                        valueKey={{key: 'id', reduce: true}} />
+                    </FormField>
                 </Box>
                 <Box justify="center" align="center" pad="small">
                     <Button
