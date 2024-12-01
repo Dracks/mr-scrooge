@@ -5,6 +5,7 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
+
 public struct ServiceDependencyMacro: AccessorMacro {
 
 	public static func expansion(
@@ -15,14 +16,14 @@ public struct ServiceDependencyMacro: AccessorMacro {
 		guard let varDecl = declaration.as(VariableDeclSyntax.self) else {
 			let invalidUsageErr = Diagnostic(
 				node: node.root,
-				message: "Invalid declaration" as! DiagnosticMessage)
+				message: MacroExpansionErrorMessage("Invalid declaration"))
 			context.diagnose(invalidUsageErr)
 			return []
 		}
 
 		guard let nodeType = varDecl.bindings.first?.typeAnnotation?.type else {
 			let missingAnnotationErr = Diagnostic(
-				node: node.root, message: "Missing anotation" as! DiagnosticMessage)
+				node: node.root, message: MacroExpansionErrorMessage("Missing anotation"))
 			context.diagnose(missingAnnotationErr)
 			return []
 		}

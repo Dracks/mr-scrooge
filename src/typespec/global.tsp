@@ -18,9 +18,9 @@ model Error {
 }
 
 @error
-@doc("Unauthorized, usually when using a group that the user doesn't have access to")
+@doc("Forbidden, usually when using a group that the user doesn't have access to")
 model InvalidGroupOwnerId {
-  @statusCode _: 401;
+  @statusCode _: 403;
   ...Error;
   validGroupOwners: UUID[];
 }

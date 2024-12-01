@@ -169,8 +169,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Graph'
-        '401':
-          description: Unauthorized, usually when using a group that the user doesn't have access to
+        '403':
+          description: Forbidden, usually when using a group that the user doesn't have access to
           content:
             application/json:
               schema:
@@ -248,8 +248,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Graph'
-        '401':
-          description: Unauthorized, usually when using a group that the user doesn't have access to
+        '403':
+          description: Forbidden, usually when using a group that the user doesn't have access to
           content:
             application/json:
               schema:
@@ -534,8 +534,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized, usually when using a group that the user doesn't have access to
+        '403':
+          description: Forbidden, usually when using a group that the user doesn't have access to
           content:
             application/json:
               schema:
@@ -664,8 +664,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized, usually when using a group that the user doesn't have access to
+        '403':
+          description: Forbidden, usually when using a group that the user doesn't have access to
           content:
             application/json:
               schema:
@@ -706,8 +706,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized, usually when using a group that the user doesn't have access to
+        '403':
+          description: Forbidden, usually when using a group that the user doesn't have access to
           content:
             application/json:
               schema:
@@ -789,8 +789,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized, usually when using a group that the user doesn't have access to
+        '403':
+          description: Forbidden, usually when using a group that the user doesn't have access to
           content:
             application/json:
               schema:
@@ -1684,7 +1684,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UUID'
-      description: Unauthorized, usually when using a group that the user doesn't have access to
+      description: Forbidden, usually when using a group that the user doesn't have access to
     Label:
       type: object
       required:

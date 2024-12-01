@@ -189,7 +189,7 @@ class GraphTests: AbstractBaseTestsClass {
 		let response = try await app.sendRequest(
 			.POST, "/api/graphs", body: updateGraph, headers: headers)
 
-		XCTAssertEqual(response.status, .unauthorized)
+		XCTAssertEqual(response.status, .forbidden)
 
 		let data = try response.content.decode(Components.Schemas.InvalidGroupOwnerId.self)
 

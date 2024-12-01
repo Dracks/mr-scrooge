@@ -24,7 +24,7 @@ extension MrScroogeAPIImpl {
 							message: "GroupOwner ID is not an UUID",
 							code: ApiError.API10025.rawValue))))
 		case .notOwned(let validGroups):
-			return .unauthorized(
+			return .forbidden(
 				.init(
 					body: .json(
 						.init(

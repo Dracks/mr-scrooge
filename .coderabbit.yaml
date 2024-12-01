@@ -24,7 +24,8 @@ reviews:
     ignore_title_keywords: []
     labels: []
     drafts: true
-    base_branches: []
+    base_branches: 
+        - "mr-scrooge-3.0.0"
   tools:
     shellcheck:
       enabled: true

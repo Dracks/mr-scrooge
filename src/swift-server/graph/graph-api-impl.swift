@@ -17,7 +17,7 @@ extension MrScroogeAPIImpl {
 		guard let groupOwnerId = UUID(uuidString: graphData.groupOwnerId),
 			validGroupsId.contains(groupOwnerId)
 		else {
-			return .unauthorized(
+			return .forbidden(
 				.init(
 					body: .json(
 						.init(
@@ -79,7 +79,7 @@ extension MrScroogeAPIImpl {
 		guard let groupOwnerId = UUID(uuidString: graphData.groupOwnerId),
 			validGroupsId.contains(groupOwnerId)
 		else {
-			return .unauthorized(
+			return .forbidden(
 				.init(
 					body: .json(
 						.init(

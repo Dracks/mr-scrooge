@@ -30,7 +30,7 @@ final class ProfileTests: AbstractBaseTestsClass {
 
 		let response = try await app.sendRequest(.GET, "/api/users", headers: headers)
 
-		XCTAssertEqual(response.status, .unauthorized)
+        XCTAssertEqual(response.status, .unauthorized)
 
 		let data = try response.content.decode(Components.Schemas._Error.self)
 
