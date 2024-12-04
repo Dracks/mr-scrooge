@@ -30,7 +30,15 @@ class FileImportService: ServiceWithQueueAndDb {
 		let importReport = try await FileImportReport.query(on: db).filter(
 			\.$id == importId
 		).with(\.$rows).first()
-		return importReport!
+		guard let importReport else {
+			throw Exception(
+				.E10017,
+				context: [
+					"importId": importId, "groupOwnerId": groupOwnerId,
+					"key": key, "fileName": fileName,
+				])
+		}
+		return importReport
 	}
 
 	func getAll(groupIds: [UUID], cursor: String? = nil, limit: Int = 100)

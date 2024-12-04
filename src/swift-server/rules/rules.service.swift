@@ -77,28 +77,32 @@ class RuleService: ServiceWithDb {
 	func deleteRule(withId ruleId: UUID, for validGroupsIds: [UUID]) async throws
 		-> DeleteRuleState
 	{
-		let rule = try await Rule.query(on: db).filter(
-			\.$groupOwner.$id ~~ validGroupsIds
-		).filter(\.$id == ruleId).with(\.$children).first()
-		guard let rule else {
-			return .notFound
+		try await db.transaction { database in
+			let rule = try await Rule.query(on: database).filter(
+				\.$groupOwner.$id ~~ validGroupsIds
+			).filter(\.$id == ruleId).with(\.$children).first()
+			guard let rule else {
+				return .notFound
+			}
+			if !rule.children.isEmpty {
+				return .hasChildren(
+					childrenIds: try rule.children.map { try $0.requireID() })
+			}
+			try await Condition.query(on: database).filter(\.$rule.$id == ruleId)
+				.delete()
+			let ruleLabelQuery = RuleLabelAction.query(on: database).filter(
+				\.$rule.$id == ruleId)
+			let ruleLabelActions = try await ruleLabelQuery.with(\.$transactionPivot)
+				.all()
+			for ruleLabelAction in ruleLabelActions {
+				try await RuleService.removeLabelActionPivot(
+					labelAction: ruleLabelAction, on: database)
+			}
+			try await ruleLabelQuery.delete()
+			try await rule.delete(on: database)
+			return .ok
 		}
-		if !rule.children.isEmpty {
-			return .hasChildren(
-				childrenIds: try rule.children.map { try $0.requireID() })
-		}
-		try await Condition.query(on: db).filter(\.$rule.$id == ruleId).delete()
-		let ruleLabelQuery = RuleLabelAction.query(on: db).filter(\.$rule.$id == ruleId)
-		//let ruleLabelPivotQuery = RuleLabelPivot.query(on: db).filter(\.$rule.$id == ruleId)
-		let ruleLabelActions = try await ruleLabelQuery.with(\.$transactionPivot)
-			.all()
-		for ruleLabelAction in ruleLabelActions {
-			try await removeLabelActionPivot(labelAction: ruleLabelAction)
-		}
-		try await ruleLabelQuery.delete()
-		//try await ruleLabelPivotQuery.delete()
-		try await rule.delete(on: db)
-		return .ok
+
 	}
 
 	enum AddCodingState {
@@ -218,7 +222,7 @@ class RuleService: ServiceWithDb {
 		try await rule.$labels.load(on: db)
 		return .ok(rule: rule)
 	}
-	
+
 	enum RemoveLabelState {
 		case ok(rule: Rule)
 		case notFound
@@ -229,32 +233,37 @@ class RuleService: ServiceWithDb {
 		fromRule ruleId: UUID,
 		for validGroupsIds: [UUID]
 	) async throws -> RemoveLabelState {
-		let rule = try await Rule.query(on: db).filter(
-			\.$groupOwner.$id ~~ validGroupsIds
-		).filter(\.$id == ruleId).first()
-		guard let rule else {
-			return .notFound
+		try await db.transaction { database in
+			let rule = try await Rule.query(on: database).filter(
+				\.$groupOwner.$id ~~ validGroupsIds
+			).filter(\.$id == ruleId).first()
+			guard let rule else {
+				return .notFound
+			}
+
+			let labelAction = try await RuleLabelAction.query(on: database)
+				.filter(\.$rule.$id == ruleId)
+				.filter(\.$label.$id == labelId)
+				.with(\.$transactionPivot)
+				.first()
+
+			if let labelAction {
+				try await RuleService.removeLabelActionPivot(
+					labelAction: labelAction, on: database)
+				try await labelAction.delete(on: database)
+			}
+
+			try await rule.$conditions.load(on: database)
+			try await rule.$labels.load(on: database)
+			return .ok(rule: rule)
 		}
-
-		let labelAction = try await RuleLabelAction.query(on: db)
-			.filter(\.$rule.$id == ruleId)
-			.filter(\.$label.$id == labelId)
-			.with(\.$transactionPivot)
-			.first()
-
-		if let labelAction {
-			try await removeLabelActionPivot(labelAction: labelAction)
-			try await labelAction.delete(on: db)
-		}
-
-		try await rule.$conditions.load(on: db)
-		try await rule.$labels.load(on: db)
-		return .ok(rule: rule)
 	}
 }
 
 extension RuleService {
-	private func removeLabelActionPivot(labelAction: RuleLabelAction) async throws {
+	private static func removeLabelActionPivot(labelAction: RuleLabelAction, on db: Database)
+		async throws
+	{
 		for labelTransaction in labelAction.transactionPivot {
 			labelTransaction.linkReason = .manualEnabled
 			try await labelTransaction.save(on: db)

@@ -103,7 +103,8 @@ class BankTransactionService: ServiceWithQueueAndDb {
 		try await queue.dispatch(
 			NewTransactionJob.self,
 			.init(
-				id: transaction.id!, movementName: transaction.movementName,
+				id: try transaction.requireID(),
+				movementName: transaction.movementName,
 				value: transaction.value, groupOwnerId: transaction.groupOwnerId))
 		return transaction
 	}
