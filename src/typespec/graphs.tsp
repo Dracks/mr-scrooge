@@ -59,7 +59,6 @@ model HorizontalGroup {
   accumulate?: boolean;
 }
 
-
 model NotFoundLabels {
   ...NotFound;
   validLabels: UUID[];
@@ -69,12 +68,19 @@ model NotFoundLabels {
 @tag("graphs")
 @route("/graphs")
 interface ApiGraphs {
-  @post create(...GraphParam): {@statusCode _: 201, ...Graph} | InvalidGroupOwnerId | NotFoundLabels;
+  @post create(...GraphParam): {
+    @statusCode _: 201;
+    ...Graph;
+  } | InvalidGroupOwnerId | NotFoundLabels;
   @get list(
     @query graphIds?: UUID[],
     @query cursor?: string,
     @query limit?: uint16 = 100,
   ): PageList<Graph>;
-  @route("/{id}") @put update(@path id: UUID, ...GraphParam): Graph | InvalidGroupOwnerId | NotFoundLabels | NotFound;
+  @route("/{id}") @put update(@path id: UUID, ...GraphParam):
+    | Graph
+    | InvalidGroupOwnerId
+    | NotFoundLabels
+    | NotFound;
   @route("/{id}") @delete delete(@path id: UUID): boolean | NotFound;
 }

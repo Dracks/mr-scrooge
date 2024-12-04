@@ -20,16 +20,16 @@ final class N26ImporterTests: BaseImporterTests {
 			Bundle.module.url(forResource: "n26_es", withExtension: "csv"))
 
 		let _ = try await importerService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: "n26/es",
+			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId, key: "n26/es",
 			fileName: "n26-file.csv", filePath: filePath.path)
 
 		let reports = try await statusReportsService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
 		XCTAssertEqual(reports.list.first?.status, .ok)
 
 		let (transactions, _) = try await bankTransactionService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(transactions.list.count, 3)
 
 		// Check specific transaction
@@ -46,11 +46,11 @@ final class N26ImporterTests: BaseImporterTests {
 		let filePath = "invalid"
 
 		let _ = try await importerService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: "n26/es",
+			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId, key: "n26/es",
 			fileName: "n26-file.csv", filePath: filePath)
 
 		let reports = try await statusReportsService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
 		XCTAssertEqual(reports.list.first?.status, .error)
 		XCTAssertEqual(reports.list.first?.fileName, "n26-file.csv")

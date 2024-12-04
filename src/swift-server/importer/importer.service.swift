@@ -1,30 +1,47 @@
 import Fluent
+import Queues
 import Vapor
 
-class FileImportService {
+class FileImportService: ServiceWithQueueAndDb {
 	private let cursorHandler = CursorHandler<FileImportReport, String>(["created", "id"])
-	private let uploadImportService = NewImportService(parsers: [
-		CommerzBankEnImporter(), CaixaEnginiersCreditImporter(),
-		CaixaEnginyersAccountImporter(), N26Importer(),
-	])
+	private let uploadImportService: NewImportService
 
 	func getParsers() -> [ParserFactory] {
 		return uploadImportService.getParsers()
 	}
 
+	override init(app: Application) {
+		uploadImportService = .init(
+			parsers: [
+				CommerzBankEnImporter(), CaixaEnginiersCreditImporter(),
+				CaixaEnginyersAccountImporter(), N26Importer(),
+			], withApp: app)
+		super.init(app: app)
+	}
+
 	func createFileImport(
-		on db: Database, groupOwnerId: UUID, key: String, fileName: String, filePath: String
+		groupOwnerId: UUID, key: String,
+		fileName: String, filePath: String
 	) async throws -> FileImportReport {
 		let importId = try await uploadImportService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: key, fileName: fileName,
+			on: db, withQueue: queue, groupOwnerId: groupOwnerId, key: key,
+			fileName: fileName,
 			filePath: filePath)
 		let importReport = try await FileImportReport.query(on: db).filter(
 			\.$id == importId
 		).with(\.$rows).first()
-		return importReport!
+		guard let importReport else {
+			throw Exception(
+				.E10017,
+				context: [
+					"importId": importId, "groupOwnerId": groupOwnerId,
+					"key": key, "fileName": fileName,
+				])
+		}
+		return importReport
 	}
 
-	func getAll(on db: Database, groupIds: [UUID], cursor: String? = nil, limit: Int = 100)
+	func getAll(groupIds: [UUID], cursor: String? = nil, limit: Int = 100)
 		async throws -> ListWithCursor<FileImportReport>
 	{
 		var query = FileImportReport.query(on: db)
@@ -64,7 +81,7 @@ class FileImportService {
 		)
 	}
 
-	func delete(on db: Database, groupIds: [UUID], importId: UUID) async throws {
+	func delete(groupIds: [UUID], importId: UUID) async throws {
 		let exists = try await FileImportReport.query(on: db).filter(\.$id == importId)
 			.filter(
 				\.$groupOwnerId ~~ groupIds

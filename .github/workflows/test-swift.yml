@@ -12,7 +12,7 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    container: swift:5.10
+    container: swift:6.0
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

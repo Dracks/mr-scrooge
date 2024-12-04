@@ -22,16 +22,17 @@ final class CaixaEnginyersImporterTests: BaseImporterTests {
 		// let filePath = getTestFile(file: "test_files/MovimientosCuenta.xls")
 
 		let _ = try await importerService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: "caixa-enginyers/account",
+			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
+			key: "caixa-enginyers/account",
 			fileName: "MovimientosCuenta.xls", filePath: filePath.path)
 
 		let reports = try await statusReportsService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
 		XCTAssertEqual(reports.list.first?.status, .ok)
 
 		let (transactions, _) = try await bankTransactionService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(transactions.list.count, 4)
 
 		// Check specific transactions
@@ -70,18 +71,19 @@ final class CaixaEnginyersImporterTests: BaseImporterTests {
 				forResource: "MovimientosTarjetaCredito", withExtension: "xls"))
 
 		let _ = try await importerService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: "caixa-enginyers/credit",
+			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
+			key: "caixa-enginyers/credit",
 			fileName: "MovimientosTarjetaCredito.xls", filePath: filePath.path)
 
 		let reports = try await statusReportsService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
 		XCTAssertEqual(reports.list.first?.status, .ok)
 		XCTAssertEqual(reports.list.first?.description, "")
 		XCTAssertNil(reports.list.first?.context)
 
 		let (transactions, _) = try await bankTransactionService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(transactions.list.count, 1)
 
 		// Test specific transaction details

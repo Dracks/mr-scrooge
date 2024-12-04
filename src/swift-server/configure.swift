@@ -3,6 +3,7 @@ import FluentPostgresDriver
 import FluentSQLiteDriver
 import Leaf
 import NIOSSL
+import QueuesFluentDriver
 import Vapor
 
 func configureDb(_ app: Application) async throws {
@@ -39,6 +40,7 @@ func configureDb(_ app: Application) async throws {
 
 public func registerMigrations(_ app: Application) async throws {
 	app.migrations.add(SessionRecord.migration)
+	app.migrations.add(JobModelMigration())
 	app.migrations.add(InitialMigration())
 }
 
@@ -58,12 +60,19 @@ public func configure(_ app: Application) async throws {
 
 		app.sessions.use(.fluent)
 		app.views.use(.leaf)
+		app.queues.use(.fluent())
 
 		app.asyncCommands.use(CreateUserCommand(), as: "demo_user")
 		app.asyncCommands.use(DemoDataCommand(), as: "demo_data")
 
 		// register routes
 		try routes(app)
+
+		// Todo add some configuration via env var
+		app.queues.add(NewTransactionJob())
+		app.queues.configuration.workerCount = 1
+		try app.queues.startInProcessJobs(on: .default)
+		//try app.queues.startScheduledJobs()
 	} catch {
 		print(error)
 		throw error

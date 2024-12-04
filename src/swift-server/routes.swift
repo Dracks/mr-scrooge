@@ -73,12 +73,6 @@ struct MrScroogeAPIImpl {
 	{
 		return .undocumented(statusCode: 501, UndocumentedPayload())
 	}
-
-	func ApiRule_list(_ input: Operations.ApiRule_list.Input) async throws
-		-> Operations.ApiRule_list.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
 }
 
 extension MrScroogeAPIImpl: APIProtocol {}
@@ -101,7 +95,7 @@ func routes(_ app: Application) throws {
 
 	// Call the generated function on your implementation to add its request
 	// handlers to the app.
-	try handler.registerHandlers(on: transport, serverURL: Servers.server1())
+	try handler.registerHandlers(on: transport, serverURL: Servers.Server1.url())
 
 	try app.register(collection: ImportUpload())
 

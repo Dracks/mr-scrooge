@@ -34,3 +34,8 @@ struct PageQuery {
 		return ListWithCursor(list: data, next: hasMore ? generateCursor(data.last!) : nil)
 	}
 }
+
+struct ListWithCursor<T> {
+	let list: [T]
+	let next: String?
+}

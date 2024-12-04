@@ -34,16 +34,15 @@ model FileImport {
   rows: FileImportTransaction[];
 }
 
-
 model FileImportTransaction {
   movementName: string;
   date: string;
-  dateValue?: string ;
-  details?: string ;
+  dateValue?: string;
+  details?: string;
   value: decimal;
-  description?: string ;
-  message?: string ;
-  transactionId?: UUID ;
+  description?: string;
+  message?: string;
+  transactionId?: UUID;
 }
 
 model FileParserType {
@@ -63,7 +62,11 @@ interface ApiImports {
   @route("parsers") @get parserTypes(): ListFileParsers;
   @delete delete(@path id: UUID): boolean;
   @doc("This will allow to delete a transaction using the file-import rowId")
-  @route("{id}/rollback/{rowId}") @delete rollbackImport(@path id: UUID, @path rowId: UUID): boolean;
+  @route("{id}/rollback/{rowId}")
+  @delete
+  rollbackImport(@path id: UUID, @path rowId: UUID): boolean;
   @doc("This will allow to create a transaction from the file-import rowId")
-  @route("{id}/apply/{rowId}") @post applyRow(@path id: UUID, @path rowId: UUID): boolean;
+  @route("{id}/apply/{rowId}")
+  @post
+  applyRow(@path id: UUID, @path rowId: UUID): boolean;
 }

@@ -1,5 +1,6 @@
 import Fluent
 import Foundation
+import Queues
 import Vapor
 
 protocol ParserFactory {
@@ -30,13 +31,14 @@ struct PartialBankTransaction {
 	}
 }
 
-class NewImportService {
+class NewImportService: ServiceWithQueueAndDb {
 	private var parsersMap: [String: ParserFactory]
 	private let bankTransactionService: BankTransactionService
 
-	init(parsers: [ParserFactory]) {
-		self.parsersMap = Dictionary(uniqueKeysWithValues: parsers.map { ($0.key, $0) })
-		self.bankTransactionService = BankTransactionService()
+	init(parsers: [ParserFactory], withApp app: Application) {
+		parsersMap = Dictionary(uniqueKeysWithValues: parsers.map { ($0.key, $0) })
+		bankTransactionService = app.bankTransactionService
+		super.init(app: app)
 	}
 
 	func getParsers() -> [ParserFactory] {
@@ -60,7 +62,8 @@ class NewImportService {
 	}
 
 	func importFromFile(
-		on db: Database, groupOwnerId: UUID, key: String, fileName: String, filePath: String
+		on db: Database, withQueue queue: Queue, groupOwnerId: UUID, key: String,
+		fileName: String, filePath: String
 	) async throws -> UUID {
 		let status = FileImportReport(
 			description: "",
@@ -88,7 +91,7 @@ class NewImportService {
 					status: status, transaction: partialTransaction)
 
 				if try await bankTransactionService.existsSimilar(
-					on: db, transaction: transaction)
+					transaction: transaction)
 				{
 					if discarting {
 						let msg = "Repeated row, not inserted"
@@ -113,7 +116,6 @@ class NewImportService {
 						let record =
 							try await bankTransactionService
 							.addTransaction(
-								on: db,
 								transaction: previousValidated)
 						previousStateValidated.message =
 							"Repeated row, but inserted"
@@ -126,7 +128,7 @@ class NewImportService {
 					discarting = false
 					let record =
 						try await bankTransactionService.addTransaction(
-							on: db, transaction: transaction
+							transaction: transaction
 
 						)
 					statusTransaction.transactionId = record.id

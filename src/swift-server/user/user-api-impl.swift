@@ -3,8 +3,6 @@ import OpenAPIRuntime
 import OpenAPIVapor
 import Vapor
 
-let userService = UserService()
-let userGroupService = UserGroupService()
 extension MrScroogeAPIImpl {
 	func ApiUser_create(_ input: Operations.ApiUser_create.Input) async throws
 		-> Operations.ApiUser_create.Output
@@ -17,7 +15,6 @@ extension MrScroogeAPIImpl {
 	{
 		let user = try await getUser(fromRequest: request)
 		guard user.isAdmin else {
-			//return .unauthorized(.init())
 			return .unauthorized(
 				.init(
 					body: .json(
@@ -27,8 +24,7 @@ extension MrScroogeAPIImpl {
 							code: ApiError.API10013.rawValue))))
 		}
 
-		let data = try await userService.getUsersPage(
-			on: request.db,
+		let data = try await request.application.userService.getUsersPage(
 			pageQuery: .init(
 				limit: input.query.limit ?? 100, cursor: input.query.cursor))
 
@@ -69,9 +65,10 @@ extension MrScroogeAPIImpl {
 		}
 
 		guard
-			let newDefaultGroupId = try await userGroupService.validateGroupId(
-				on: request.db, groupId: updateUser.defaultGroupId,
-				forUserId: userId)
+			let newDefaultGroupId = try await request.application.userGroupService
+				.validateGroupId(
+					groupId: updateUser.defaultGroupId,
+					forUserId: userId)
 		else {
 			return .badRequest(
 				.init(
@@ -91,8 +88,9 @@ extension MrScroogeAPIImpl {
 			defaultGroupId: newDefaultGroupId
 		)
 
-		let response = try await userService.updateUser(
-			on: request.db, userId: userId, userData: userData, andPassword: updateUser.password)
+		let response = try await request.application.userService.updateUser(
+			userId: userId, userData: userData,
+			andPassword: updateUser.password)
 		switch response {
 		case .notFound:
 			return .notFound(

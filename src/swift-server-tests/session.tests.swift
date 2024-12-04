@@ -100,7 +100,7 @@ final class SessionTests: AbstractBaseTestsClass {
 		XCTAssertFalse(userFromDb!.verifyPassword(pwd: "test-password"))
 	}
 
-	func testUpdateMeInvalidGroupId() async throws {
+	func testUpdateMeInvalidUUID() async throws {
 		let app = try getApp()
 
 		let headers = try await app.getHeaders(

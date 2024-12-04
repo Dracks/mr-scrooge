@@ -10,10 +10,14 @@ using TypeSpec.Rest;
 
 namespace MrScrooge;
 
-model CreateLabel {
+model UpdateLabel {
   name: string;
-  groupOwnerId: UUID;
   // color: string;
+}
+
+model CreateLabel {
+  ...UpdateLabel;
+  groupOwnerId: UUID;
 }
 
 model Label {
@@ -30,5 +34,12 @@ model NotFoundLabel {
 @tag("labels")
 interface ApiLabels {
   @get list(@query cursor?: string, @query limit?: uint16): PageList<Label>;
-  @post create(...CreateLabel): Label | InvalidGroupOwnerId;
+  @post create(...CreateLabel): Label | InvalidGroupOwnerId | InvalidUUID;
+  @put @route("{labelId}") update(
+    @path labelId: UUID,
+    ...UpdateLabel,
+  ): Label | NotFound | InvalidUUID;
+  @delete @route("{labelId}") delete(
+    @path labelId: UUID,
+  ): Label | NotFound | InvalidUUID;
 }

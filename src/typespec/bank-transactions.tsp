@@ -29,18 +29,13 @@ model NotFoundBankTransaction {
   bankTransactionSuplied: UUID;
 }
 
-model LabelGroupIdMismatch {
-  @statusCode _: 409;
-  ...Error;
-}
-
 @route("/bank-transactions")
 @tag("bank-transactions")
 interface ApiBankTransactions {
   @get list(
     @query groupIds?: UUID[],
     @query cursor?: string,
-    @query limit?: uint16=100,
+    @query limit?: uint16 = 100,
   ): PageList<BankTransaction>;
   @doc("Link a label to a transaction")
   @route("{transactionId}/label/{labelId}")
@@ -60,5 +55,8 @@ interface ApiBankTransactions {
   @doc("Set a comment into the transaction")
   @route("{transactionId}")
   @patch
-  comment(@path transactionId: UUID, comment?: string): BankTransaction | NotFoundBankTransaction
+  comment(
+    @path transactionId: UUID,
+    comment?: string,
+  ): BankTransaction | NotFoundBankTransaction;
 }

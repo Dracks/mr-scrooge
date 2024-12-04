@@ -49,8 +49,31 @@ struct DemoDataCommand: AsyncCommand {
 		try await generateGraphs(
 			app: app, groupOwnerId: groupOwnerId, labelIdMap: labelIdMap)
 
+		try await addRulesAndLabels(app: app, groupOwnerId: groupOwnerId)
+
 		// When not executed, the group attach seems to not work
 		let _ = try await Graph.query(on: app.db).first()
+	}
+
+	private func addRulesAndLabels(app: Application, groupOwnerId: UUID) async throws {
+		let income = Label(groupOwnerId: groupOwnerId, name: "income")
+		try await income.save(on: app.db)
+
+		let expenses = Label(groupOwnerId: groupOwnerId, name: "expenses")
+		try await expenses.save(on: app.db)
+
+		let aral = Label(groupOwnerId: groupOwnerId, name: "aral")
+		try await aral.save(on: app.db)
+
+		let _ = try await Rule.createRule(
+			on: app.db, for: groupOwnerId, with: .init(.less, valueDouble: 0),
+			toApply: expenses)
+		let _ = try await Rule.createRule(
+			on: app.db, for: groupOwnerId, with: .init(.greater, valueDouble: 0),
+			toApply: income)
+		let _ = try await Rule.createRule(
+			on: app.db, for: groupOwnerId, with: .init(.contains, valueStr: "aral"),
+			toApply: aral)
 	}
 
 	private func generateLabelsAndTransactions(

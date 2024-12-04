@@ -62,9 +62,10 @@ extension MrScroogeAPIImpl {
 		}
 
 		guard
-			let newDefaultGroupId = try await userGroupService.validateGroupId(
-				on: request.db, groupId: updateUser.defaultGroupId,
-				forUserId: user.requireID())
+			let newDefaultGroupId = try await request.application.userGroupService
+				.validateGroupId(
+					groupId: updateUser.defaultGroupId,
+					forUserId: user.requireID())
 		else {
 			return .badRequest(
 				.init(

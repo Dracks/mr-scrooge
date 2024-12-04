@@ -28,18 +28,19 @@ final class CommerzBankEnImporterTests: BaseImporterTests {
 			Bundle.module.url(forResource: "commerz_bank", withExtension: "CSV"))
 
 		let _ = try await importerService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: "commerz-bank-2024/en",
+			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
+			key: "commerz-bank-2024/en",
 			fileName: "CommerzBank", filePath: filePath.path)
 
 		let reports = try await statusReportsService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
 		XCTAssertEqual(reports.list.first?.status, .ok)
 		XCTAssertEqual(reports.list.first?.description, "")
 		XCTAssertNil(reports.list.first?.context)
 
 		let (transactions, _) = try await bankTransactionService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(transactions.list.count, 12)
 
 		checkMovement(

@@ -1,9 +1,9 @@
 import Fluent
 import Vapor
 
-struct LabelService {
+class LabelService: ServiceWithDb {
 	private let cursorHandler = CursorHandler<Label, String>(["id"])
-	func createLabel(on db: Database, label: Label) async throws -> Label {
+	func createLabel(label: Label) async throws -> Label {
 		try await label.save(on: db)
 		try await label.$groupOwner.load(on: db)
 		return label
@@ -16,7 +16,7 @@ struct LabelService {
 		return labelTransaction
 	}
 */
-	func getAll(on db: Database, pageQuery: PageQuery = .init(), groupIds: [UUID]) async throws
+	func getAll(pageQuery: PageQuery = .init(), groupIds: [UUID]) async throws
 		-> ListWithCursor<Label>
 	{
 		var query = Label.query(on: db)

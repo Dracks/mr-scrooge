@@ -3,6 +3,7 @@ import FluentSQL
 
 struct InitialMigration: AsyncMigration {
 	func prepare(on database: Database) async throws {
+		let sqlDb = database as? SQLDatabase
 		try await database.schema("users")
 			.id()
 			.field("username", .string, .required)
@@ -33,6 +34,7 @@ struct InitialMigration: AsyncMigration {
 			.id()
 			.field("user_id", .uuid, .required, .references("users", "id"))
 			.field("group_id", .uuid, .required, .references("user_groups", "id"))
+			.unique(on: "user_id", "group_id")
 			.create()
 
 		try await database.schema("core_bank_transaction")
@@ -46,18 +48,81 @@ struct InitialMigration: AsyncMigration {
 			.field("kind", .string, .required)
 			.field("description", .string)
 			.create()
+		try await sqlDb?.create(index: "group_owner_idx")
+			.on("core_bank_transaction")
+			.column("group_owner_id")
+			.run()
 
-		try await database.schema("core_condition")
+		try await database.schema("core_label")
 			.id()
+			.field("group_owner_id", .uuid, .required, .references("user_groups", "id"))
 			.field("name", .string, .required)
 			.create()
+
+		#warning("Add enum for the link_reason")
+		try await database.schema("core_label_transaction")
+			.id()
+			.field("label_id", .uuid, .required, .references("core_label", "id"))
+			.field(
+				"transaction_id", .uuid, .required,
+				.references("core_bank_transaction", "id")
+			)
+			// todo: look to use enums
+			.field("link_reason", .string, .required)
+			.unique(on: "label_id", "transaction_id")
+			.create()
+		try await sqlDb?.create(index: "label_transaction_transaction_idx")
+			.on("core_label_transaction")
+			.column("transaction_id")
+			.run()
 
 		try await database.schema("core_rule")
 			.id()
 			.field("group_owner_id", .uuid, .required, .references("user_groups", "id"))
 			.field("name", .string, .required)
 			.field("conditions_relation", .string, .required)
-			.field("parent", .uuid, .references("core_rule", "id"))
+			.field("parent_id", .uuid, .references("core_rule", "id"))
+			.create()
+		try await sqlDb?.create(index: "core_rule_group_owner_idx")
+			.on("core_rule")
+			.column("group_owner_id")
+			.run()
+
+		try await database.schema("core_condition")
+			.id()
+			.field("rule_id", .uuid, .required, .references("core_rule", "id"))
+			.field("operation", .string, .required)
+			.field("value_str", .string)
+			.field("value_double", .double)
+			.create()
+		try await sqlDb?.create(index: "core_condition_rule_idx")
+			.on("core_condition")
+			.column("rule_id")
+			.run()
+
+		try await database.schema("core_rule_label_action")
+			.id()
+			.field("rule_id", .uuid, .required, .references("core_rule", "id"))
+			.field("label_id", .uuid, .required, .references("core_label", "id"))
+			.unique(on: "rule_id", "label_id")
+			.create()
+
+		try await sqlDb?.create(index: "core_rule_label_action_label_idx")
+			.on("core_rule_label_action")
+			.column("label_id")
+			.run()
+
+		try await database.schema("core_rule_label_pivot")
+			.id()
+			.field(
+				"rule_label_id", .uuid, .required,
+				.references("core_rule_label_action", "id")
+			)
+			.field(
+				"label_transaction_id", .uuid, .required,
+				.references("core_label_transaction", "id")
+			)
+			.unique(on: "rule_label_id", "label_transaction_id")
 			.create()
 
 		try await database.schema("graph_graph")
@@ -68,6 +133,10 @@ struct InitialMigration: AsyncMigration {
 			.field("label_filter", .uuid, .references("core_label", "id"))
 			.field("date_range", .string, .required)
 			.create()
+		try await sqlDb?.create(index: "graph_graph_group_owner_idx")
+			.on("graph_graph")
+			.column("group_owner_id")
+			.run()
 
 		try await database.schema("graph_group")
 			.field(
@@ -87,7 +156,6 @@ struct InitialMigration: AsyncMigration {
 			.field("group", .string, .required)
 			.field("hide_others", .bool)
 			.field("accumulate", .bool, .required)
-
 			.create()
 
 		try await database.schema("graph_group_labels")
@@ -109,23 +177,6 @@ struct InitialMigration: AsyncMigration {
 			.unique(on: "graph_id", "label_id")
 			.create()
 
-		try await database.schema("core_label")
-			.id()
-			.field("group_owner_id", .uuid, .required, .references("user_groups", "id"))
-			.field("name", .string, .required)
-			.create()
-
-		try await database.schema("core_label_transaction")
-			.id()
-			.field("label_id", .uuid, .required, .references("core_label", "id"))
-			.field(
-				"transaction_id", .uuid, .required,
-				.references("core_bank_transaction", "id")
-			)
-			// todo: look to use enums
-			.field("link_reason", .string, .required)
-			.create()
-
 		try await database.schema("import_fileimport")
 			.id()
 			.field("description", .string, .required)
@@ -139,6 +190,10 @@ struct InitialMigration: AsyncMigration {
 			.field("stack", .string)
 			.field("context", .string)
 			.create()
+		try await sqlDb?.create(index: "import_fileimport_group_owner_idx")
+			.on("import_fileimport")
+			.column("group_owner_id")
+			.run()
 
 		try await database.schema("import_fileimport_row")
 			.id()
@@ -155,20 +210,28 @@ struct InitialMigration: AsyncMigration {
 			.field("message", .string)
 			.field("transaction_id", .uuid)
 			.create()
+
+		try await sqlDb?.create(index: "import_fileimport_row_report_idx")
+			.on("import_fileimport_row")
+			.column("report_id")
+			.run()
+
 	}
 
 	func revert(on database: Database) async throws {
 		try await database.schema("import_fileimport_row").delete()
 		try await database.schema("import_fileimport").delete()
-		try await database.schema("core_label_transaction").delete()
-		try await database.schema("core_label").delete()
 		try await database.schema("graph_horizontal_group_labels").delete()
 		try await database.schema("graph_group_labels").delete()
 		try await database.schema("graph_horizontal_group").delete()
 		try await database.schema("graph_group").delete()
 		try await database.schema("graph_graph").delete()
-		try await database.schema("core_rule").delete()
+		try await database.schema("core_rule_label_pivot").delete()
+		try await database.schema("core_rule_label_action").delete()
 		try await database.schema("core_condition").delete()
+		try await database.schema("core_rule").delete()
+		try await database.schema("core_label_transaction").delete()
+		try await database.schema("core_label").delete()
 		try await database.schema("core_bank_transaction").delete()
 		try await database.schema("user_group_pivot").delete()
 		try await database.schema("user_groups").delete()

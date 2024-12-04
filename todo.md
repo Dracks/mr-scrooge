@@ -37,7 +37,7 @@
   * [x] Import commerzbank
   * [ ] Import qif
   * [x] Crud api
-  * [ ] Call to apply rules
+  * [x] Call to apply rules
 * [ ] Bank transactions
   * [x] get bank transactions data
   * [ ] add/remove label
@@ -46,7 +46,9 @@
   * [x] create label
   * [ ] modify label
 * [ ] rules engine
-  * [ ] new transactions are applied with the rules engine
+  * [x] new transactions are applied with the rules engine
+  * [x] CRUD
+  * [ ] Apply Rule
 * [ ] import django data
 * [ ] users
   * [x] login/logout
@@ -58,3 +60,4 @@
   * [x] edit my profile
   * [ ] Command to change the password
   * [ ] Reset my password
+* [x] Move services to dependency injection (in the app or in the context)

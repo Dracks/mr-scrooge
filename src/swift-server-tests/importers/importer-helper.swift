@@ -1,4 +1,5 @@
 import Fluent
+import Queues
 import XCTVapor
 import XCTest
 
@@ -106,9 +107,9 @@ class BaseImporterTests: XCTestCase {
 		try await self.group.save(on: app.db)
 
 		let testParsers: [ParserFactory] = try getParsers()
-		importerService = NewImportService(parsers: testParsers)
-		bankTransactionService = BankTransactionService()
-		statusReportsService = FileImportService()
+		importerService = NewImportService(parsers: testParsers, withApp: app)
+		bankTransactionService = app.bankTransactionService
+		statusReportsService = app.fileImportService
 	}
 
 	override func tearDown() async throws {
@@ -121,6 +122,13 @@ class BaseImporterTests: XCTestCase {
 			throw TestError()
 		}
 		return app.db
+	}
+
+	func getQueue() throws -> Queue {
+		guard let app = app else {
+			throw TestError()
+		}
+		return app.queues.queue
 	}
 
 }

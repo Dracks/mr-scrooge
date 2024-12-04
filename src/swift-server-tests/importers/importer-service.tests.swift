@@ -17,18 +17,19 @@ final class ImporterServiceTests: BaseImporterTests {
 		let groupOwnerId = try self.group.requireID()
 		let db = try getDb()
 		let _ = try await importerService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: "test-account",
+			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
+			key: "test-account",
 			fileName: "test-file.csv", filePath: "whatever")
 
 		let reports = try await statusReportsService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
 		XCTAssertEqual(reports.list.first?.status, .ok)
 		XCTAssertEqual(reports.list.first?.description, "")
 		XCTAssertEqual(reports.list.first?.context, nil)
 
 		let (transactions, _) = try await bankTransactionService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(transactions.list.count, 4)
 	}
 
@@ -37,11 +38,12 @@ final class ImporterServiceTests: BaseImporterTests {
 		let db = try getDb()
 
 		let _ = try await importerService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: "invalid-key",
+			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
+			key: "invalid-key",
 			fileName: "some-file", filePath: "someother")
 
 		let reports = try await statusReportsService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		print(reports)
 		XCTAssertEqual(reports.list.count, 1)
 		let importReport = reports.list.first
@@ -59,22 +61,23 @@ final class ImporterServiceTests: BaseImporterTests {
 		let repeatedTransaction = try TestBasicImporter().transformHelper.map(repeatedInfo)
 			.toBankTransaction(kind: "test-account", groupOwnerId: groupOwnerId)
 		let _ = try await bankTransactionService.addTransaction(
-			on: db, transaction: repeatedTransaction)
+			transaction: repeatedTransaction)
 
 		// Import the file
 		let _ = try await importerService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: "test-account",
+			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
+			key: "test-account",
 			fileName: "something", filePath: "some-more")
 
 		// Check import status
 		let reports = try await statusReportsService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
 		XCTAssertEqual(reports.list.first?.status, .ok)
 
 		// Check transactions
 		let (transactions, _) = try await bankTransactionService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(transactions.list.count, 5)
 
 		// Check status report rows
@@ -100,24 +103,25 @@ final class ImporterServiceTests: BaseImporterTests {
 			SAMPLE_DATA[2]
 		).toBankTransaction(kind: "test-account", groupOwnerId: groupOwnerId)
 		let _ = try await bankTransactionService.addTransaction(
-			on: db, transaction: repeatedTransaction)
+			transaction: repeatedTransaction)
 		let _ = try await bankTransactionService.addTransaction(
-			on: db, transaction: repeatedTransaction2)
+			transaction: repeatedTransaction2)
 
 		// Import the file
 		let _ = try await importerService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: "test-account",
+			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
+			key: "test-account",
 			fileName: "something", filePath: "some-more")
 
 		// Check import status
 		let reports = try await statusReportsService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
 		XCTAssertEqual(reports.list.first?.status, .warn)
 
 		// Check transactions
 		let (transactions, _) = try await bankTransactionService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(transactions.list.count, 4)
 
 		// Check status report rows
@@ -136,16 +140,18 @@ final class ImporterServiceTests: BaseImporterTests {
 
 		// Import the file twice
 		let _ = try await importerService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: "test-account",
+			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
+			key: "test-account",
 			fileName: "some-file", filePath: "someother")
 
 		let _ = try await importerService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: "test-account",
+			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
+			key: "test-account",
 			fileName: "some-file", filePath: "someother")
 
 		// Check import status
 		let reports = try await statusReportsService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 2)
 		XCTAssertEqual(reports.list[1].status, .ok)
 		XCTAssertEqual(reports.list[1].description, "")
@@ -154,7 +160,7 @@ final class ImporterServiceTests: BaseImporterTests {
 
 		// Check transactions
 		let (transactions, _) = try await bankTransactionService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(transactions.list.count, 4)
 
 		// Check status report rows
@@ -168,12 +174,13 @@ final class ImporterServiceTests: BaseImporterTests {
 
 		// Attempt to import invalid data
 		let _ = try await importerService.importFromFile(
-			on: db, groupOwnerId: groupOwnerId, key: "test-invalid-data",
+			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
+			key: "test-invalid-data",
 			fileName: "invalid-file.csv", filePath: "invalid-data")
 
 		// Check import status
 		let reports = try await statusReportsService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
 
 		let report = reports.list.first
@@ -187,7 +194,7 @@ final class ImporterServiceTests: BaseImporterTests {
 
 		// Check that no transactions were imported
 		let (transactions, _) = try await bankTransactionService.getAll(
-			on: db, groupIds: [groupOwnerId])
+			groupIds: [groupOwnerId])
 		XCTAssertEqual(transactions.list.count, 0)
 
 		// Check status report rows

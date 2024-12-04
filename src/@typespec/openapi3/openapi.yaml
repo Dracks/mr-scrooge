@@ -169,8 +169,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Graph'
-        '401':
-          description: Unauthorized, usually when using a group that the user doesn't have access to
+        '403':
+          description: Forbidden, usually when using a group that the user doesn't have access to
           content:
             application/json:
               schema:
@@ -248,8 +248,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Graph'
-        '401':
-          description: Unauthorized, usually when using a group that the user doesn't have access to
+        '403':
+          description: Forbidden, usually when using a group that the user doesn't have access to
           content:
             application/json:
               schema:
@@ -528,8 +528,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Label'
-        '401':
-          description: Unauthorized, usually when using a group that the user doesn't have access to
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden, usually when using a group that the user doesn't have access to
           content:
             application/json:
               schema:
@@ -542,19 +548,457 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateLabel'
-  /rules:
-    get:
-      operationId: ApiRule_list
-      parameters: []
+  /labels/{labelId}:
+    put:
+      operationId: ApiLabels_update
+      parameters:
+        - name: labelId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
       responses:
         '200':
           description: The request has succeeded.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Rule'
+                $ref: '#/components/schemas/Label'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - labels
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateLabel'
+    delete:
+      operationId: ApiLabels_delete
+      parameters:
+        - name: labelId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Label'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - labels
+  /rules:
+    get:
+      operationId: ApiRule_list
+      parameters:
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int16
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Rule'
+                  next:
+                    type: string
+      tags:
+        - rule
+    post:
+      operationId: ApiRule_create
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden, usually when using a group that the user doesn't have access to
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidGroupOwnerId'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - rule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleParam'
+  /rules/{ruleId}:
+    put:
+      operationId: ApiRule_update
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden, usually when using a group that the user doesn't have access to
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidGroupOwnerId'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Unprocessable entity, assigning as parent a direct or indirect child
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - rule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleParam'
+    delete:
+      operationId: ApiRule_delete
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HasChildren'
+      tags:
+        - rule
+  /rules/{ruleId}/apply:
+    post:
+      operationId: ApiRule_apply
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Date'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden, usually when using a group that the user doesn't have access to
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidGroupOwnerId'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/Error'
+                  - $ref: '#/components/schemas/Error'
+      tags:
+        - rule
+  /rules/{ruleId}/condition:
+    post:
+      operationId: ApiRule_addCondition
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - rule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                condition:
+                  $ref: '#/components/schemas/ConditionParams'
+              required:
+                - condition
+  /rules/{ruleId}/condition/{condId}:
+    put:
+      operationId: ApiRule_updateCondition
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+        - name: condId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - rule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                condition:
+                  $ref: '#/components/schemas/ConditionParams'
+              required:
+                - condition
+    delete:
+      operationId: ApiRule_removeCondition
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+        - name: condId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - rule
+  /rules/{ruleId}/label/{labelId}:
+    put:
+      operationId: ApiRule_addLabel
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+        - name: labelId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - rule
+    delete:
+      operationId: ApiRule_removeLabel
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+        - name: labelId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
       tags:
         - rule
   /session:
@@ -627,7 +1071,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserProfile'
         '400':
-          description: Unauthorized, usually when using a group that the user doesn't have access to
+          description: Bad request, usually when providing an invalid string as UUID
           content:
             application/json:
               schema:
@@ -743,7 +1187,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserProfile'
         '400':
-          description: Unauthorized, usually when using a group that the user doesn't have access to
+          description: Bad request, usually when providing an invalid string as UUID
           content:
             application/json:
               schema:
@@ -908,6 +1352,10 @@ components:
           identified: '#/components/schemas/GetMyProfile'
           anonymous: '#/components/schemas/NotIdentified'
     Condition:
+      oneOf:
+        - $ref: '#/components/schemas/ConditionDouble'
+        - $ref: '#/components/schemas/ConditionString'
+    ConditionDouble:
       type: object
       required:
         - id
@@ -917,14 +1365,53 @@ components:
         id:
           $ref: '#/components/schemas/UUID'
         operation:
-          $ref: '#/components/schemas/Operation'
+          $ref: '#/components/schemas/OperationDouble'
+        value:
+          type: number
+          format: double
+    ConditionParamDouble:
+      type: object
+      required:
+        - operation
+        - value
+      properties:
+        operation:
+          $ref: '#/components/schemas/OperationDouble'
+        value:
+          type: number
+          format: double
+    ConditionParamString:
+      type: object
+      required:
+        - operation
+        - value
+      properties:
+        operation:
+          $ref: '#/components/schemas/OperationString'
+        value:
+          type: string
+    ConditionParams:
+      oneOf:
+        - $ref: '#/components/schemas/ConditionParamDouble'
+        - $ref: '#/components/schemas/ConditionParamString'
+    ConditionString:
+      type: object
+      required:
+        - id
+        - operation
+        - value
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        operation:
+          $ref: '#/components/schemas/OperationString'
         value:
           type: string
     ConditionalRelation:
       type: string
       enum:
-        - and
-        - notOr
+        - or
+        - notAnd
     CreateLabel:
       type: object
       required:
@@ -1139,6 +1626,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UUID'
+    HasChildren:
+      type: object
+      required:
+        - message
+        - code
+        - childrenIds
+      properties:
+        message:
+          type: string
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        childrenIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
     HorizontalGroup:
       type: object
       required:
@@ -1182,7 +1684,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UUID'
-      description: Unauthorized, usually when using a group that the user doesn't have access to
+      description: Forbidden, usually when using a group that the user doesn't have access to
     Label:
       type: object
       required:
@@ -1260,17 +1762,20 @@ components:
           type: string
           enum:
             - anonymous
-    Operation:
+    OperationDouble:
       type: string
       enum:
         - greater
         - greaterEqual
-        - lower
-        - lowerEqual
+        - less
+        - lessEqual
+    OperationString:
+      type: string
+      enum:
+        - suffix
         - contains
         - prefix
         - regularExpression
-        - suffix
     Rule:
       type: object
       required:
@@ -1279,10 +1784,11 @@ components:
         - name
         - relations
         - conditions
+        - labelIds
       properties:
         id:
           $ref: '#/components/schemas/UUID'
-        parentRule:
+        parentRuleId:
           $ref: '#/components/schemas/UUID'
         groupOwnerId:
           $ref: '#/components/schemas/UUID'
@@ -1294,6 +1800,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Condition'
+        labelIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
+    RuleParam:
+      type: object
+      required:
+        - groupOwnerId
+        - name
+        - relations
+      properties:
+        parentRuleId:
+          $ref: '#/components/schemas/UUID'
+        groupOwnerId:
+          $ref: '#/components/schemas/UUID'
+        name:
+          type: string
+        relations:
+          $ref: '#/components/schemas/ConditionalRelation'
     SetLabelAction:
       type: object
       required:
@@ -1304,6 +1829,13 @@ components:
     UUID:
       type: string
       format: uuid
+    UpdateLabel:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
     UpdateMyProfile:
       type: object
       required:
