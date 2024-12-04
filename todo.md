@@ -47,7 +47,7 @@
   * [ ] modify label
 * [ ] rules engine
   * [x] new transactions are applied with the rules engine
-  * [ ] CRUD
+  * [x] CRUD
   * [ ] Apply Rule
 * [ ] import django data
 * [ ] users
