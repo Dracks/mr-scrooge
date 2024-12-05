@@ -60,7 +60,7 @@ export const MyTheme: ThemeType = {
             'status-disabled': '#CCCCCC',
             'graph-0': 'brand',
             'graph-1': 'status-warning',
-            focus: '#00cc66',
+            focus: '#0077cc',
             'nav-background': {
                 dark: '#0033aa',
                 light: '#6688FF',

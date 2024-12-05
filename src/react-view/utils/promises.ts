@@ -1,4 +1,3 @@
-
 import { Logger } from "./logger/logger.class";
 
 export const catchAndLog = (p: Promise<unknown>, msg: string,  logger: Logger) => {

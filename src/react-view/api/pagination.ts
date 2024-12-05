@@ -46,7 +46,17 @@ export const usePagination = <T>(cb :(next?: string)=>Promise<RequestedPage<T>> 
                 return [...oldData, ...data]
             }
         })
-
+    }
+    
+    const deleteElement = (data: T) => {
+        const hashFn = options.hash
+        if (!hashFn){
+            throw new Error("Cannot call delete on usePagination without a hashFn")
+        }
+        const dataId = hashFn(data)
+        setLoaded(oldData =>{
+            return oldData.filter(test => hashFn(test)!==dataId)
+        })
     }
 
     const execute = (next?: string) => {
@@ -98,6 +108,7 @@ export const usePagination = <T>(cb :(next?: string)=>Promise<RequestedPage<T>> 
             setError(undefined)
             request.reset()
         },
+        deleteElement,
         loadedData,
         process,
         error,

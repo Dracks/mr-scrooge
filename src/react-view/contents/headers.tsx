@@ -37,6 +37,7 @@ const Headers: React.FC = () => {
                 <AnchorLink href="/import" label="Imports" color="light-1" />
                 <AnchorLink href="/movement" label="Movements" color="light-1" />
                 <AnchorLink href="/label" label="Labels" color="light-1" />
+                <AnchorLink href="/rule" label="Rules" color="light-1" />
             </Nav>
             <Box flex />
             {adminSection}

@@ -7,11 +7,11 @@ import { GraphDateRange, GraphKind, GraphParam, GroupType, Label } from '../../.
 import { useLogger } from '../../../utils/logger/logger.context';
 import { ConfirmationButton } from '../../../utils/ui/confirmation-button';
 import { EnumSelectOption } from '../../../utils/ui/enum-option';
-import { InputTag } from '../../../utils/ui/tag/input-tag';
 import { useLabelsContext } from '../../common/label.context';
 import { enrichGraph } from '../graph-with-rechart/enrich-graph';
 import { GraphViewer } from '../graph-with-rechart/view';
 import { graphToUi, GraphUiRepresentation, uiToGraph } from './graph.transformer';
+import { LabelInput } from '../../../utils/ui/label-selector';
 
 interface GraphFormProps<T extends GraphParam> {
     graphData: Partial<T>;
@@ -132,7 +132,7 @@ export const GraphForm: <T extends GraphParam>(p: GraphFormProps<T>) => React.Re
                         {graphUi.groupType === "labels" && (
                             <React.Fragment>
                                 <FormField label="Tags to group" htmlFor="select-group-tags">
-                                    <InputTag
+                                    <LabelInput
                                         value={
                                             graphUi.groupLabels?.map(labelId => labelsMap.get(labelId) as Label) ??
                                             []
@@ -176,7 +176,7 @@ export const GraphForm: <T extends GraphParam>(p: GraphFormProps<T>) => React.Re
                             {graphUi.horizontalGroupType === "labels" && (
                                 <React.Fragment>
                                     <FormField label="Tags to group" htmlFor="select-x-group-tags">
-                                        <InputTag
+                                        <LabelInput
                                             value={
                                                 graphUi.horizontalGroupLabels?.map(
                                                     labelId => labelsMap.get(labelId) as Label,
