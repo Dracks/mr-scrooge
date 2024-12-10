@@ -14,5 +14,4 @@ export const UserSwitcher : React.FC<UserSwitcherParams> = ({users})=>{
     const userDetails = users.find(user => user.id === id)
     console.log(id, users)
     return userDetails ? <EditUser user={userDetails} /> : <NotFound />
-    
 }

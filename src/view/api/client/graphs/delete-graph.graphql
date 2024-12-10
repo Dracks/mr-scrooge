@@ -1,5 +1,0 @@
-mutation deleteGraph($graphId: UUID!) {
-    deleteGraph(graphId: $graphId){
-        __typename,
-    }
-}

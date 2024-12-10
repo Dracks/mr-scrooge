@@ -1,1 +1,0 @@
-export { ImportDetails } from './details';

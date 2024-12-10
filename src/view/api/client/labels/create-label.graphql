@@ -1,9 +1,0 @@
-mutation CreateLabel($name: String!, $groupOwnerId: UUID) {
-  createLabel(name: $name, groupOwnerId: $groupOwnerId) {
-    ... on Label {
-        id
-        name
-        groupOwnerId
-    }
-  }
-}
