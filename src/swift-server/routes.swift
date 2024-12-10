@@ -24,7 +24,7 @@ struct ErrorHandlerMiddleware: AsyncMiddleware {
 					throw abort
 				}
 				if let _ = error.underlyingError as? NotIdentifiedError {
-				    throw Abort(.unauthorized, reason: "Not identified")
+					throw Abort(.unauthorized, reason: "Not identified")
 				}
 				print("Server Error")
 				print(error.underlyingError)

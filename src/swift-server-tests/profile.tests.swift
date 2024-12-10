@@ -30,7 +30,7 @@ final class ProfileTests: AbstractBaseTestsClass {
 
 		let response = try await app.sendRequest(.GET, "/api/users", headers: headers)
 
-        XCTAssertEqual(response.status, .unauthorized)
+		XCTAssertEqual(response.status, .unauthorized)
 
 		let data = try response.content.decode(Components.Schemas._Error.self)
 
@@ -113,9 +113,61 @@ final class ProfileTests: AbstractBaseTestsClass {
 
 	func testUpdateWithInvalidDefaultGroupId() async throws {}
 
-	func testCreateUser() async throws {}
+	func testCreateUserAsUser() async throws {
+		let app = try getApp()
 
-	func testCreateUserAsAdmin() async throws {}
+		let headers = try await app.getHeaders(
+			forUser: .init(username: testUser.username, password: "test-password"))
+
+		let newUser = Components.Schemas.CreateUserParams(
+			username: "Some new user",
+			email: "test@test-change.com",
+			firstName: "First naming",
+			lastName: "Last naming",
+			isActive: true,
+			isAdmin: true,
+			password: "Some stupid password"
+		)
+
+		let response = try await app.sendRequest(
+			.POST, "/api/users/", body: newUser,
+			headers: headers)
+
+		XCTAssertEqual(response.status, .unauthorized)
+	}
+
+	func testCreateUserAsAdmin() async throws {
+	   let app = try getApp()
+				
+				let headers = try await app.getHeaders(
+					forUser: .init(
+						username: testAdmin.username, password: "test-admin-password"))
+
+		let newUser = Components.Schemas.CreateUserParams(
+			username: "Some new user",
+			email: "test@test-change.com",
+			firstName: "First naming",
+			lastName: "Last naming",
+			isActive: true,
+			isAdmin: false,
+			password: "Some stupid password"
+		)
+
+		let response = try await app.sendRequest(
+			.POST, "/api/users/", body: newUser,
+			headers: headers)
+
+		XCTAssertEqual(response.status, .created)
+		let user = try response.content.decode(Components.Schemas.UserProfile.self)
+		XCTAssertEqual(user.username, "Same new user")
+		XCTAssertEqual(user.email, "test@test-change.com")
+		XCTAssertEqual(user.firstName, "First naming")
+		XCTAssertEqual(user.lastName, "Last naming")
+		XCTAssertEqual(user.isActive, true)
+		XCTAssertEqual(user.isAdmin, false)
+
+
+	}
 
 	func testDeleteUser() async throws {}
 

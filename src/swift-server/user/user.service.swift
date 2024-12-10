@@ -3,7 +3,9 @@ import Vapor
 
 class UserService: ServiceWithDb {
 	private let cursorHandler = CursorHandler<User, String>(["id"])
-
+	func createUser() async throws {
+	   
+	}
 	func getUsersPage(pageQuery: PageQuery) async throws -> ListWithCursor<
 		User
 	> {

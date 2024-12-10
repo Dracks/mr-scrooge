@@ -2,11 +2,19 @@ import Foundation
 import OpenAPIRuntime
 import OpenAPIVapor
 import Vapor
+import swift_macros
 
 extension MrScroogeAPIImpl {
 	func ApiUser_create(_ input: Operations.ApiUser_create.Input) async throws
 		-> Operations.ApiUser_create.Output
 	{
+		let user = try await getUser(fromRequest: request)
+		guard user.isAdmin else {
+			return #GenericErrorReturn(
+				response: "unauthorized",
+				msg: "Only admin users can create new users",
+				code: ApiError.API10051)
+		}
 		return .undocumented(statusCode: 501, UndocumentedPayload())
 	}
 
@@ -15,13 +23,9 @@ extension MrScroogeAPIImpl {
 	{
 		let user = try await getUser(fromRequest: request)
 		guard user.isAdmin else {
-			return .unauthorized(
-				.init(
-					body: .json(
-						.init(
-							message:
-								"Only admin users can list the users",
-							code: ApiError.API10013.rawValue))))
+			return #GenericErrorReturn(
+				response: "unauthorized",
+				msg: "Only admin users can list the users", code: ApiError.API10013)
 		}
 
 		let data = try await request.application.userService.getUsersPage(
@@ -41,13 +45,10 @@ extension MrScroogeAPIImpl {
 		-> Operations.ApiUser_update.Output
 	{
 		guard try await getUser(fromRequest: request).isAdmin else {
-			return .unauthorized(
-				.init(
-					body: .json(
-						.init(
-							message:
-								"Only admin users can modify other users",
-							code: ApiError.API10014.rawValue))))
+			return #GenericErrorReturn(
+				response: "unauthorized",
+				msg: "Only admin users can modify other users",
+				code: ApiError.API10014)
 		}
 		let updateUser: Components.Schemas.UpdateUserData
 		switch input.body {

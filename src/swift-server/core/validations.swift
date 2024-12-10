@@ -84,11 +84,11 @@ extension TransformerAndValidator {
 		var parentRule: Rule = realParent
 		var visitedRuleIds = Set<UUID>()
 		while true {
-		  let parentRuleId = try parentRule.requireID()
-				if visitedRuleIds.contains(parentRuleId){
-				    return .itsOwnParent
-				}
-				visitedRuleIds.insert(parentRuleId)
+			let parentRuleId = try parentRule.requireID()
+			if visitedRuleIds.contains(parentRuleId) {
+				return .itsOwnParent
+			}
+			visitedRuleIds.insert(parentRuleId)
 			if parentRuleId == ruleId {
 				return .itsOwnParent
 			}
