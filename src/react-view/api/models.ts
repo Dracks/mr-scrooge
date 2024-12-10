@@ -17,12 +17,4 @@ export type UserGroup = components['schemas']['UserGroup'];
 export type UserProfile = components['schemas']['UserProfile'];
 export type UpdateMyProfile = components["schemas"]["UpdateMyProfile"]
 export type SessionInfo = components['schemas']['CheckMyProfile'];
-export type CreateUserParams = {
-    username: string;
-    email: string;
-    firstName?: string;
-    lastName?: string;
-    isActive: boolean;
-    isAdmin: boolean;
-    password: string;
-}
+export type CreateUserParams = components['schemas']['CreateUserParams']

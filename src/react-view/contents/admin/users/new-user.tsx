@@ -44,7 +44,7 @@ export const NewUser : React.FC = ()=>{
                 primary
                 label="Save"
                 type="submit"
-                disabled={!userData.username || !userData.password} />
+                disabled={!userData.username || !userData.password || createUser.loading} />
                     
         </Form>
     </Box>

@@ -11,7 +11,7 @@ import { UserSwitcher } from "./user-switcher";
 import { UsersList } from './users-list';
 
 export const AdminUsers: React.FC = ()=> {
-    const [searchText, setSearchText] = React.useState<string>()
+    const [searchText, setSearchText] = React.useState<string>("")
     const logger = useLogger("AdminUsers")
     const client = useApi()
     const paginationUsers = usePagination(async next => {
@@ -39,7 +39,7 @@ export const AdminUsers: React.FC = ()=> {
                 <Box pad="small">
                     <AnchorLink to="">New</AnchorLink>
                 </Box>
-                <UsersList users={users} />
+                <UsersList users={searchText.length >3 ? users.filter(user => user.email.includes(searchText) || user.username.includes(searchText)) : users} />
             </Nav>
         </Sidebar>
         <Box fill>

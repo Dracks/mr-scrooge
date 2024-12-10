@@ -18,15 +18,19 @@ model BaseUserData {
   firstName?: string;
   lastName?: string;
 }
+model BaseModifyUserData {
+    ...BaseUserData;
+    isActive: boolean;
+    isAdmin: boolean;
+}
 
-model CreateUserData {
-  ...BaseUserData;
-  isActive: boolean;
-  isAdmin: boolean;
+model CreateUserParams {
+  ...BaseModifyUserData;
+  password: string;
 }
 
 model UpdateUserData {
-  ...CreateUserData;
+  ...BaseModifyUserData;
   password?: string;
   defaultGroupId: UUID;
 }
@@ -43,7 +47,7 @@ model UserProfile {
 @route("/users")
 @tag("user")
 interface ApiUser {
-  @post create(...CreateUserData, password: string): UserProfile | Unauthorized;
+  @post create(...CreateUserParams): UserProfile | Unauthorized;
   @get list(
     @query cursor?: string,
     @query limit?: int16,

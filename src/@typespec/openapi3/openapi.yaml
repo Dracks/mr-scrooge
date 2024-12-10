@@ -1108,28 +1108,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                email:
-                  type: string
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                isActive:
-                  type: boolean
-                isAdmin:
-                  type: boolean
-                password:
-                  type: string
-              required:
-                - username
-                - email
-                - isActive
-                - isAdmin
-                - password
+              $ref: '#/components/schemas/CreateUserParams'
     get:
       operationId: ApiUser_list
       parameters:
@@ -1328,6 +1307,26 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UUID'
+    BaseModifyUserData:
+      type: object
+      required:
+        - username
+        - email
+        - isActive
+        - isAdmin
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        isActive:
+          type: boolean
+        isAdmin:
+          type: boolean
     BaseUserData:
       type: object
       required:
@@ -1422,13 +1421,14 @@ components:
           type: string
         groupOwnerId:
           $ref: '#/components/schemas/UUID'
-    CreateUserData:
+    CreateUserParams:
       type: object
       required:
         - username
         - email
         - isActive
         - isAdmin
+        - password
       properties:
         username:
           type: string
@@ -1442,6 +1442,8 @@ components:
           type: boolean
         isAdmin:
           type: boolean
+        password:
+          type: string
     Date:
       type: string
       format: date-time

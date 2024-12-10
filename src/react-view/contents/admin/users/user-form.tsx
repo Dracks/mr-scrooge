@@ -5,12 +5,14 @@ export const UserForm: React.FC = ()=>{
     const size = React.useContext(ResponsiveContext);
     return <Box direction={size === 'small' ? 'column' : 'row'}>
         <Box>
-        <FormField name="username" label="User name" component={TextInput} />
+        <FormField name="username" label="User name" component={TextInput} minLength={5} required/>
         <FormField label="Password" htmlFor='password-field'>
             <TextInput
                 type='password'
+                required
                 id='password-field'
-                name='password' />
+                name='password'
+               minLength={8} />
         </FormField>
         <FormField name="isActive">
           <CheckBox name="isActive" label="Is active?" />

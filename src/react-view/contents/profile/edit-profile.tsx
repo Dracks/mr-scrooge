@@ -86,7 +86,7 @@ export const EditProfile = () => {
                     <Heading level="3">Groups</Heading>
                     <FormField label="Default group" htmlFor='select-default-group'>
                         <Select 
-                        id="select-default-grtoup" 
+                        id="select-default-group" 
                         options={profile.groups} 
                         name="defaultGroupId"
                         labelKey="name" 

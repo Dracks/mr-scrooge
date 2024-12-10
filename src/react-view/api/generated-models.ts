@@ -234,6 +234,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/labels/{labelId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["ApiLabels_update"];
+        post?: never;
+        delete: operations["ApiLabels_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/rules": {
         parameters: {
             query?: never;
@@ -243,8 +259,88 @@ export interface paths {
         };
         get: operations["ApiRule_list"];
         put?: never;
-        post?: never;
+        post: operations["ApiRule_create"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/rules/{ruleId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["ApiRule_update"];
+        post?: never;
+        delete: operations["ApiRule_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/rules/{ruleId}/apply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ApiRule_apply"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/rules/{ruleId}/condition": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ApiRule_addCondition"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/rules/{ruleId}/condition/{condId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["ApiRule_updateCondition"];
+        post?: never;
+        delete: operations["ApiRule_removeCondition"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/rules/{ruleId}/label/{labelId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["ApiRule_addLabel"];
+        post?: never;
+        delete: operations["ApiRule_removeLabel"];
         options?: never;
         head?: never;
         patch?: never;
@@ -350,6 +446,14 @@ export interface components {
             description?: string;
             labelIds: components["schemas"]["UUID"][];
         };
+        BaseModifyUserData: {
+            username: string;
+            email: string;
+            firstName?: string;
+            lastName?: string;
+            isActive: boolean;
+            isAdmin: boolean;
+        };
         BaseUserData: {
             username: string;
             email: string;
@@ -357,24 +461,42 @@ export interface components {
             lastName?: string;
         };
         CheckMyProfile: components["schemas"]["GetMyProfile"] | components["schemas"]["NotIdentified"];
-        Condition: {
+        Condition: components["schemas"]["ConditionDouble"] | components["schemas"]["ConditionString"];
+        ConditionDouble: {
             id: components["schemas"]["UUID"];
-            operation: components["schemas"]["Operation"];
+            operation: components["schemas"]["OperationDouble"];
+            /** Format: double */
+            value: number;
+        };
+        ConditionParamDouble: {
+            operation: components["schemas"]["OperationDouble"];
+            /** Format: double */
+            value: number;
+        };
+        ConditionParamString: {
+            operation: components["schemas"]["OperationString"];
+            value: string;
+        };
+        ConditionParams: components["schemas"]["ConditionParamDouble"] | components["schemas"]["ConditionParamString"];
+        ConditionString: {
+            id: components["schemas"]["UUID"];
+            operation: components["schemas"]["OperationString"];
             value: string;
         };
         /** @enum {string} */
-        ConditionalRelation: "and" | "notOr";
+        ConditionalRelation: "or" | "notAnd";
         CreateLabel: {
             name: string;
             groupOwnerId: components["schemas"]["UUID"];
         };
-        CreateUserData: {
+        CreateUserParams: {
             username: string;
             email: string;
             firstName?: string;
             lastName?: string;
             isActive: boolean;
             isAdmin: boolean;
+            password: string;
         };
         /** Format: date-time */
         Date: string;
@@ -450,6 +572,11 @@ export interface components {
             hideOthers?: boolean;
             labels?: components["schemas"]["UUID"][];
         };
+        HasChildren: {
+            message: string;
+            code: components["schemas"]["ErrorCode"];
+            childrenIds: components["schemas"]["UUID"][];
+        };
         HorizontalGroup: {
             group: components["schemas"]["GraphGroupType"];
             hideOthers?: boolean;
@@ -461,7 +588,7 @@ export interface components {
         InvalidCredentials: {
             details: string;
         };
-        /** @description Unauthorized, usually when using a group that the user doesn't have access to */
+        /** @description Forbidden, usually when using a group that the user doesn't have access to */
         InvalidGroupOwnerId: {
             message: string;
             code: components["schemas"]["ErrorCode"];
@@ -499,20 +626,32 @@ export interface components {
             user: "anonymous";
         };
         /** @enum {string} */
-        Operation: "greater" | "greaterEqual" | "lower" | "lowerEqual" | "contains" | "prefix" | "regularExpression" | "suffix";
+        OperationDouble: "greater" | "greaterEqual" | "less" | "lessEqual";
+        /** @enum {string} */
+        OperationString: "suffix" | "contains" | "prefix" | "regularExpression";
         Rule: {
             id: components["schemas"]["UUID"];
-            parentRule?: components["schemas"]["UUID"];
+            parentRuleId?: components["schemas"]["UUID"];
             groupOwnerId: components["schemas"]["UUID"];
             name: string;
             relations: components["schemas"]["ConditionalRelation"];
             conditions: components["schemas"]["Condition"][];
+            labelIds: components["schemas"]["UUID"][];
+        };
+        RuleParam: {
+            parentRuleId?: components["schemas"]["UUID"];
+            groupOwnerId: components["schemas"]["UUID"];
+            name: string;
+            relations: components["schemas"]["ConditionalRelation"];
         };
         SetLabelAction: {
             label: components["schemas"]["UUID"];
         };
         /** Format: uuid */
         UUID: string;
+        UpdateLabel: {
+            name: string;
+        };
         UpdateMyProfile: {
             username: string;
             email: string;
@@ -751,8 +890,8 @@ export interface operations {
                     "application/json": components["schemas"]["Graph"];
                 };
             };
-            /** @description Unauthorized, usually when using a group that the user doesn't have access to */
-            401: {
+            /** @description Forbidden, usually when using a group that the user doesn't have access to */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -795,8 +934,8 @@ export interface operations {
                     "application/json": components["schemas"]["Graph"];
                 };
             };
-            /** @description Unauthorized, usually when using a group that the user doesn't have access to */
-            401: {
+            /** @description Forbidden, usually when using a group that the user doesn't have access to */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1095,8 +1234,17 @@ export interface operations {
                     "application/json": components["schemas"]["Label"];
                 };
             };
-            /** @description Unauthorized, usually when using a group that the user doesn't have access to */
-            401: {
+            /** @description Bad request, usually when providing an invalid string as UUID */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden, usually when using a group that the user doesn't have access to */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1106,9 +1254,96 @@ export interface operations {
             };
         };
     };
-    ApiRule_list: {
+    ApiLabels_update: {
         parameters: {
             query?: never;
+            header?: never;
+            path: {
+                labelId: components["schemas"]["UUID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateLabel"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Label"];
+                };
+            };
+            /** @description Bad request, usually when providing an invalid string as UUID */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    ApiLabels_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                labelId: components["schemas"]["UUID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Label"];
+                };
+            };
+            /** @description Bad request, usually when providing an invalid string as UUID */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    ApiRule_list: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -1121,7 +1356,446 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Rule"][];
+                    "application/json": {
+                        results: components["schemas"]["Rule"][];
+                        next?: string;
+                    };
+                };
+            };
+        };
+    };
+    ApiRule_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RuleParam"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded and a new resource has been created as a result. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Rule"];
+                };
+            };
+            /** @description Bad request, usually when providing an invalid string as UUID */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden, usually when using a group that the user doesn't have access to */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvalidGroupOwnerId"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    ApiRule_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ruleId: components["schemas"]["UUID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RuleParam"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Rule"];
+                };
+            };
+            /** @description Bad request, usually when providing an invalid string as UUID */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden, usually when using a group that the user doesn't have access to */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvalidGroupOwnerId"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unprocessable entity, assigning as parent a direct or indirect child */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    ApiRule_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ruleId: components["schemas"]["UUID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": boolean;
+                };
+            };
+            /** @description Bad request, usually when providing an invalid string as UUID */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Client error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HasChildren"];
+                };
+            };
+        };
+    };
+    ApiRule_apply: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ruleId: components["schemas"]["UUID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Date"];
+                };
+            };
+            /** @description Bad request, usually when providing an invalid string as UUID */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden, usually when using a group that the user doesn't have access to */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvalidGroupOwnerId"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"] | components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    ApiRule_addCondition: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ruleId: components["schemas"]["UUID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    condition: components["schemas"]["ConditionParams"];
+                };
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Rule"];
+                };
+            };
+            /** @description Bad request, usually when providing an invalid string as UUID */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    ApiRule_updateCondition: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ruleId: components["schemas"]["UUID"];
+                condId: components["schemas"]["UUID"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    condition: components["schemas"]["ConditionParams"];
+                };
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Rule"];
+                };
+            };
+            /** @description Bad request, usually when providing an invalid string as UUID */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    ApiRule_removeCondition: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ruleId: components["schemas"]["UUID"];
+                condId: components["schemas"]["UUID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Rule"];
+                };
+            };
+            /** @description Bad request, usually when providing an invalid string as UUID */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    ApiRule_addLabel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ruleId: components["schemas"]["UUID"];
+                labelId: components["schemas"]["UUID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Rule"];
+                };
+            };
+            /** @description Bad request, usually when providing an invalid string as UUID */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The request conflicts with the current state of the server. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    ApiRule_removeLabel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ruleId: components["schemas"]["UUID"];
+                labelId: components["schemas"]["UUID"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Rule"];
+                };
+            };
+            /** @description Bad request, usually when providing an invalid string as UUID */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
                 };
             };
         };
@@ -1230,7 +1904,7 @@ export interface operations {
                     "application/json": components["schemas"]["UserProfile"];
                 };
             };
-            /** @description Unauthorized, usually when using a group that the user doesn't have access to */
+            /** @description Bad request, usually when providing an invalid string as UUID */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -1285,15 +1959,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    username: string;
-                    email: string;
-                    firstName?: string;
-                    lastName?: string;
-                    isActive: boolean;
-                    isAdmin: boolean;
-                    password: string;
-                };
+                "application/json": components["schemas"]["CreateUserParams"];
             };
         };
         responses: {
@@ -1341,7 +2007,7 @@ export interface operations {
                     "application/json": components["schemas"]["UserProfile"];
                 };
             };
-            /** @description Unauthorized, usually when using a group that the user doesn't have access to */
+            /** @description Bad request, usually when providing an invalid string as UUID */
             400: {
                 headers: {
                     [name: string]: unknown;
