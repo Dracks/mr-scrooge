@@ -12,10 +12,11 @@ export const Login: React.FC = () => {
     const client = useApi();
     const loginRequest = useAsyncCallback(async (body: LoginCredentials) => {
         const response = await client.POST('/session', { body });
-        session.refresh();
+        if (response.response.status === 200) {
+            session.refresh();
+        }
         return response;
     });
-    logger.info('loginData', { loginRequest });
     if (loginRequest.status == 'error') {
         logger.error('Login request throw an error', loginRequest.error);
     }
@@ -27,8 +28,16 @@ export const Login: React.FC = () => {
         <LoginView
             isLoading={loginRequest.loading}
             invalidCredentials={invalidCredentials}
+            error={loginRequest.error instanceof Error ? {message: loginRequest.error.message} : undefined}
             login={credentials => {
-                loginRequest.execute(credentials);
+                
+                loginRequest.execute(credentials).catch((error: unknown) => { 
+                    if (error instanceof Error) {
+                        logger.error("Login request responded an error", {error})
+                    } else {
+                        logger.error("Login Request unknown error", { error })
+                    }
+                });
             }}
         />
     );

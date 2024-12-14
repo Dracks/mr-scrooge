@@ -2,12 +2,37 @@ import Foundation
 import OpenAPIRuntime
 import OpenAPIVapor
 import Vapor
+import swift_macros
 
 extension MrScroogeAPIImpl {
 	func ApiUser_create(_ input: Operations.ApiUser_create.Input) async throws
 		-> Operations.ApiUser_create.Output
 	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
+		let user = try await getUser(fromRequest: request)
+		guard user.isAdmin else {
+			return #GenericErrorReturn(
+				response: "unauthorized",
+				msg: "Only admin users can create new users",
+				code: ApiError.API10051)
+		}
+
+		let newUserInput: Components.Schemas.CreateUserParams
+		switch input.body {
+		case .json(let _newUser):
+			newUserInput = _newUser
+		}
+
+		let (newUser, _) = try await request.application.userService.create(
+			user: .init(
+				username: newUserInput.username,
+				password: newUserInput.password,
+				email: newUserInput.email,
+				firstName: newUserInput.firstName,
+				lastName: newUserInput.lastName,
+				isActive: newUserInput.isActive,
+				isAdmin: newUserInput.isAdmin
+			), groupName: "default group for \(newUserInput.username)")
+		return .created(.init(body: .json(.init(user: newUser))))
 	}
 
 	func ApiUser_list(_ input: Operations.ApiUser_list.Input) async throws
@@ -15,13 +40,9 @@ extension MrScroogeAPIImpl {
 	{
 		let user = try await getUser(fromRequest: request)
 		guard user.isAdmin else {
-			return .unauthorized(
-				.init(
-					body: .json(
-						.init(
-							message:
-								"Only admin users can list the users",
-							code: ApiError.API10013.rawValue))))
+			return #GenericErrorReturn(
+				response: "unauthorized",
+				msg: "Only admin users can list the users", code: ApiError.API10013)
 		}
 
 		let data = try await request.application.userService.getUsersPage(
@@ -41,13 +62,10 @@ extension MrScroogeAPIImpl {
 		-> Operations.ApiUser_update.Output
 	{
 		guard try await getUser(fromRequest: request).isAdmin else {
-			return .unauthorized(
-				.init(
-					body: .json(
-						.init(
-							message:
-								"Only admin users can modify other users",
-							code: ApiError.API10014.rawValue))))
+			return #GenericErrorReturn(
+				response: "unauthorized",
+				msg: "Only admin users can modify other users",
+				code: ApiError.API10014)
 		}
 		let updateUser: Components.Schemas.UpdateUserData
 		switch input.body {

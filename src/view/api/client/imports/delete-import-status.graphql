@@ -1,7 +1,0 @@
-mutation deleteImportStatus($importId: UUID!) {
-    deleteImport(id: $importId) {
-        ... on DeleteImport {
-            ok
-        }
-    }
-}

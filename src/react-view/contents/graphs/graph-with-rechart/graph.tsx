@@ -1,15 +1,15 @@
 import { Box, Button, Heading } from 'grommet';
 import { Edit, Trash } from 'grommet-icons';
 import React from 'react';
+import { useAsyncCallback } from 'react-async-hook';
 import { useNavigate } from 'react-router';
 
+import { useApi } from '../../../api/client';
 import { ApiUUID, Graph } from '../../../api/models';
+import { useLogger } from '../../../utils/logger/logger.context';
 import { ConfirmationButton } from '../../../utils/ui/confirmation-button';
 import { EnrichedGraph } from '../types';
 import { GraphViewer } from './view';
-import { useApi } from '../../../api/client';
-import { useAsyncCallback } from 'react-async-hook';
-import { useLogger } from '../../../utils/logger/logger.context';
 
 interface GraphWrapperArgs {
     graph: EnrichedGraph<Graph>;

@@ -38,7 +38,7 @@ export const ProvideUploadQueue: React.FC<PropsWithChildren> = ({ children }) =>
         setFiles(oldFiles => {
             const pos = oldFiles.findIndex(({ id }) => fileId === id);
             if (pos >= 0) {
-                oldFiles[pos] = { ...oldFiles[pos], ...changeFile };
+                oldFiles[pos] = { ...oldFiles[pos], ...changeFile } as IFileData;
             }
             return [...oldFiles];
         });
@@ -46,7 +46,7 @@ export const ProvideUploadQueue: React.FC<PropsWithChildren> = ({ children }) =>
 
     const submit = async () => {
         setUploading(true);
-        for await (const fileData of files) {
+        for (const fileData of files) {
             change(fileData.id, { status: FileStatus.uploading });
             const response = await sendFile.execute(fileData.kind, fileData.file);
 

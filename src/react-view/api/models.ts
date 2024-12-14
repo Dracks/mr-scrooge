@@ -15,4 +15,7 @@ export type Label = components['schemas']['Label'];
 export type MyProfile = components['schemas']['GetMyProfile'];
 export type UserGroup = components['schemas']['UserGroup'];
 export type UserProfile = components['schemas']['UserProfile'];
+export type UpdateMyProfile = components["schemas"]["UpdateMyProfile"]
 export type SessionInfo = components['schemas']['CheckMyProfile'];
+export type CreateUserParams = components['schemas']['CreateUserParams']
+export type UpdateUserParams = components['schemas']['UpdateUserData']

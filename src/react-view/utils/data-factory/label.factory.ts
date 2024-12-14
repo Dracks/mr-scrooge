@@ -1,6 +1,5 @@
 import * as Factory from 'factory.ts';
 
-import { components } from '../../api/generated-models';
 import { ApiUUID, Label } from '../../api/models';
 import { range } from '../range';
 import { mainGroupOwnerId } from './user-group.factory';

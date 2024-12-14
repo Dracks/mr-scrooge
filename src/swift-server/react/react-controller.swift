@@ -29,6 +29,7 @@ struct ReactController: RouteCollection {
 		routes.get(use: getReact)
 		routes.get("*", use: getReact)
 		routes.grouped("*").get("*", use: getReact)
+		routes.grouped("*").grouped("*").get("*", use: getReact)
 
 	}
 

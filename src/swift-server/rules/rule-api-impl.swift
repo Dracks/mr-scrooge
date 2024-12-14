@@ -346,11 +346,11 @@ extension MrScroogeAPIImpl {
 			labelId: labelId, toRule: ruleId, for: validGroupsIds)
 		{
 		case .ok(let rule):
-		  return .ok(.init(body: .json(try .init(rule: rule))))
+			return .ok(.init(body: .json(try .init(rule: rule))))
 		case .notFound:
-		return #BasicNotFound(
-			msg: "Condition or label not found", code: ApiError.API10048)
-			
+			return #BasicNotFound(
+				msg: "Condition or label not found", code: ApiError.API10048)
+
 		case .invalidOwnerId:
 			return .conflict(
 				.init(
@@ -376,13 +376,14 @@ extension MrScroogeAPIImpl {
 			return #BasicBadRequest(
 				msg: "Label ID should be an UUID", code: ApiError.API10047)
 		}
-		let removeState = try await request.application.ruleService.removeLabel(labelId: labelId, fromRule: ruleId, for: validGroupsIds)
+		let removeState = try await request.application.ruleService.removeLabel(
+			labelId: labelId, fromRule: ruleId, for: validGroupsIds)
 		switch removeState {
 		case .ok(let rule):
 			return .ok(.init(body: .json(try .init(rule: rule))))
 		case .notFound:
-		return #BasicNotFound(
-			msg: "Rule not found", code: ApiError.API10050)
+			return #BasicNotFound(
+				msg: "Rule not found", code: ApiError.API10050)
 		}
 	}
 }

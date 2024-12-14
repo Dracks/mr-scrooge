@@ -5,7 +5,6 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-
 public struct ServiceDependencyMacro: AccessorMacro {
 
 	public static func expansion(
@@ -23,7 +22,8 @@ public struct ServiceDependencyMacro: AccessorMacro {
 
 		guard let nodeType = varDecl.bindings.first?.typeAnnotation?.type else {
 			let missingAnnotationErr = Diagnostic(
-				node: node.root, message: MacroExpansionErrorMessage("Missing anotation"))
+				node: node.root,
+				message: MacroExpansionErrorMessage("Missing anotation"))
 			context.diagnose(missingAnnotationErr)
 			return []
 		}

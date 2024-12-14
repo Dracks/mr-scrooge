@@ -1,5 +1,5 @@
 import { Box, Header, Menu, Nav } from 'grommet';
-import { Home, Logout } from 'grommet-icons';
+import { Edit, Group, Home, Logout, User, UserAdmin } from 'grommet-icons';
 import React from 'react';
 import { useNavigate } from 'react-router';
 
@@ -13,6 +13,22 @@ const Headers: React.FC = () => {
     }
     const userInfo = session.profile;
     const navigate = useNavigate();
+    
+    const adminSection = userInfo.isAdmin ? <Menu
+        label={<Box><UserAdmin /> Admin</Box>}
+        items={[
+            {
+                label: <Box>Users</Box>,
+                onClick: ()=>{ navigate("/admin/users")},
+                icon: <User />
+            },
+            {
+                label: <Box>Groups</Box>,
+                onClick: ()=>{ navigate("/admin/groups")},
+                icon: <Group />
+            }
+        ]}
+        />: undefined
 
     return (
         <Header background={{ color: 'nav-background', dark: true }} pad="small">
@@ -23,6 +39,7 @@ const Headers: React.FC = () => {
                 <AnchorLink href="/label" label="Labels" color="light-1" />
             </Nav>
             <Box flex />
+            {adminSection}
             <Menu
                 label={userInfo.username}
                 items={[
@@ -31,6 +48,7 @@ const Headers: React.FC = () => {
                         onClick: () => {
                             navigate('/profile');
                         },
+                        icon: <Edit />
                     },
                     {
                         label: 'logout',

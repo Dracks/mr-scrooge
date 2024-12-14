@@ -10,9 +10,10 @@ class TypedEventEmitter {
     private readonly eventEmitter = new EventEmitter();
 
     subscribe(event: EventTypes, callback: () => Promise<void> | void): () => void {
-        this.eventEmitter.addListener(event, callback);
+        const _callback = ()=>{callback()?.catch(console.error)}
+        this.eventEmitter.addListener(event, _callback);
         return () => {
-            this.eventEmitter.removeListener(event, callback);
+            this.eventEmitter.removeListener(event, _callback);
         };
     }
 

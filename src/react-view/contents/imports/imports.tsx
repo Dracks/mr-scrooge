@@ -6,7 +6,6 @@ import { Route, Routes, useParams } from 'react-router';
 import { useApi } from '../../api/client';
 import { FileImport } from '../../api/models';
 import { usePagination } from '../../api/pagination';
-import { useLogger } from '../../utils/logger/logger.context';
 import { EventTypes, useEventEmitter } from '../../utils/providers/event-emitter.provider';
 import { AnchorLink } from '../../utils/ui/anchor-link';
 import Loading from '../../utils/ui/loading';

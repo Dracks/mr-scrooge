@@ -1,7 +1,0 @@
-fragment MyProfileFragment on MyProfile{
-    email,
-    firstName,
-    lastName,
-    username,
-    defaultGroupId
-}

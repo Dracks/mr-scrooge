@@ -1,3 +1,0 @@
-fragment InvalidLabelFragment on InvalidLabels {
-    invalidLabels
-}

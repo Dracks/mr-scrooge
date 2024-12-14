@@ -1,6 +1,0 @@
-query getImportKinds{
-    importKinds {
-        name
-        regex
-    }
-}

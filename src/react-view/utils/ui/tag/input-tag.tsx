@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/** eslint-disable @typescript-eslint/no-unsafe-assignment */
+/** eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { Box, TextInput } from 'grommet';
 import React, { ChangeEventHandler, LegacyRef } from 'react';
 

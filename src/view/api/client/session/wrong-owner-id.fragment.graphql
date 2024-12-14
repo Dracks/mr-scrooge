@@ -1,3 +1,0 @@
-fragment WrongOwnerIdFragment on WrongOwnerId {
-    validOwners,
-}

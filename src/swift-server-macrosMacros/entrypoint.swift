@@ -11,5 +11,6 @@ struct swift_macrosPlugin: CompilerPlugin {
 		ServiceDependencyMacro.self,
 		BasicBadRequest.self,
 		BasicNotFound.self,
+		GenericErrorReturn.self,
 	]
 }
