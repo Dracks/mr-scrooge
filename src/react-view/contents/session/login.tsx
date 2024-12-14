@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 
 import { useApi } from '../../api/client';

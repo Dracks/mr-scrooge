@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import { useAsync } from 'react-async-hook';
 
 import { useApi } from '../../api/client';
+import { ApiUUID } from '../../api/models';
 import { useLabelsListContext } from '../common/label.context';
 import { BankTransactionEnriched, useTransactionsData } from '../common/transaction.context';
 import { TransactionRow } from './transaction-row';
-import { ApiUUID } from '../../api/models';
 
 interface TransactionListFilters {
     kind?: string;

@@ -159,14 +159,12 @@ final class ProfileTests: AbstractBaseTestsClass {
 
 		XCTAssertEqual(response.status, .created)
 		let user = try response.content.decode(Components.Schemas.UserProfile.self)
-		XCTAssertEqual(user.username, "Same new user")
+		XCTAssertEqual(user.username, "Some new user")
 		XCTAssertEqual(user.email, "test@test-change.com")
 		XCTAssertEqual(user.firstName, "First naming")
 		XCTAssertEqual(user.lastName, "Last naming")
 		XCTAssertEqual(user.isActive, true)
 		XCTAssertEqual(user.isAdmin, false)
-
-
 	}
 
 	func testDeleteUser() async throws {}

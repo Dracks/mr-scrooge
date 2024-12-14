@@ -15,7 +15,24 @@ extension MrScroogeAPIImpl {
 				msg: "Only admin users can create new users",
 				code: ApiError.API10051)
 		}
-		return .undocumented(statusCode: 501, UndocumentedPayload())
+
+		let newUserInput: Components.Schemas.CreateUserParams
+		switch input.body {
+		case .json(let _newUser):
+			newUserInput = _newUser
+		}
+
+		let (newUser, _) = try await request.application.userService.create(
+			user: .init(
+				username: newUserInput.username,
+				password: newUserInput.password,
+				email: newUserInput.email,
+				firstName: newUserInput.firstName,
+				lastName: newUserInput.lastName,
+				isActive: newUserInput.isActive,
+				isAdmin: newUserInput.isAdmin
+			), groupName: "default group for \(newUserInput.username)")
+		return .created(.init(body: .json(.init(user: newUser))))
 	}
 
 	func ApiUser_list(_ input: Operations.ApiUser_list.Input) async throws

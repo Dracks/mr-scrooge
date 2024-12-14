@@ -22,7 +22,7 @@ type JsConstants = z.infer<typeof JsConstants>;
 
 const constants = getDataFromScript('js-constants', JsConstants);
 
-export const DEBUG = constants.debug ?? false;
+export const DEBUG = constants.debug;
 export const GRAPHQL_URL = '/graphql/';
 export const ENVIRONMENT = constants.environment;
 export const VERSION = constants.version;

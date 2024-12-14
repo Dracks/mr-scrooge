@@ -1,6 +1,14 @@
 import { Box, CheckBox, FormField, ResponsiveContext, TextInput } from "grommet";
 import React from "react";
 
+import { WarningNotice } from "../../../utils/ui/warning-notice";
+
+export const UserWarning: React.FC<{newFlag:boolean, oldFlag: boolean, newActive: string, newDisabled: string}> = ({newFlag, oldFlag, newActive, newDisabled}) => {
+    if (newFlag === oldFlag)
+        return undefined
+    return <WarningNotice>{newFlag ? newActive : newDisabled}</WarningNotice>
+}
+
 export const UserForm: React.FC = ()=>{
     const size = React.useContext(ResponsiveContext);
     return <Box direction={size === 'small' ? 'column' : 'row'}>

@@ -18,3 +18,4 @@ export type UserProfile = components['schemas']['UserProfile'];
 export type UpdateMyProfile = components["schemas"]["UpdateMyProfile"]
 export type SessionInfo = components['schemas']['CheckMyProfile'];
 export type CreateUserParams = components['schemas']['CreateUserParams']
+export type UpdateUserParams = components['schemas']['UpdateUserData']

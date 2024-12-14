@@ -1,5 +1,4 @@
 import { EventEmitter } from 'events';
-import { eventNames } from 'process';
 
 import { ILogger, LogEvent, LogFn, LogLevel } from './logger.types';
 

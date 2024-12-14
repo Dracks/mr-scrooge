@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import React, { ComponentType, PropsWithChildren } from 'react';
+import React, { PropsWithChildren } from 'react';
 
 import { Logger } from './logger.class';
 import { ILogger } from './logger.types';

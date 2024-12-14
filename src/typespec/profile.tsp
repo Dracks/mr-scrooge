@@ -47,7 +47,7 @@ model UserProfile {
 @route("/users")
 @tag("user")
 interface ApiUser {
-  @post create(...CreateUserParams): UserProfile | Unauthorized;
+  @post create(...CreateUserParams): { @statusCode _ : 201, ...UserProfile} | Unauthorized;
   @get list(
     @query cursor?: string,
     @query limit?: int16,

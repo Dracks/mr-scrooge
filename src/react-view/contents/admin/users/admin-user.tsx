@@ -22,7 +22,7 @@ export const AdminUsers: React.FC = ()=> {
             logger.error("Request didn't get data")
             throw Error("Get users didn't had any data")
         }
-    })
+    }, {autostart: true, hash: (user)=> user.id})
     const users = paginationUsers.loadedData
     return <Box direction="row">
         <Sidebar background="neutral-2">
@@ -45,7 +45,7 @@ export const AdminUsers: React.FC = ()=> {
         <Box fill>
             <Routes>
                 <Route path=":id" element={<UserSwitcher users={users} />} />
-                <Route path="" element={<NewUser />} />
+                <Route path="" element={<NewUser reload={()=>{paginationUsers.reset()} } />} />
             </Routes>
         </Box>
     </Box>

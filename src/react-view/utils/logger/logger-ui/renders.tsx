@@ -18,7 +18,7 @@ const RenderObject: React.FC<{ data: object }> = ({ data }) => {
             {show
                 ? Object.entries(data).map(([key, elem]) => (
                       <li key={key}>
-                          "{key}" : <RenderUnknown data={elem} />
+                          "{key}" : <RenderUnknown data={elem as unknown} />
                       </li>
                   ))
                 : undefined}

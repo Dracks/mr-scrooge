@@ -32,6 +32,7 @@ describe("usePagination", ()=>{
         cb.mockResolvedValueOnce({results: [5,6]})
         await act(async () => {
             render(<DemoPagination cb={cb} />)
+            await Promise.resolve({})
         })
         expect(screen.getByTestId("status").textContent).toBe("completed")
 
@@ -39,6 +40,7 @@ describe("usePagination", ()=>{
 
         await act(async ()=> {
             fireEvent.click(screen.getByTestId("reset-button"))
+            await Promise.resolve({})
         })
 
         expect(screen.getByTestId("data").children.length).toBe(2)
@@ -52,6 +54,7 @@ describe("usePagination", ()=>{
         cb.mockResolvedValueOnce({results: [3]})
         await act(async () => {
             render(<DemoPagination cb={cb} />)
+            await Promise.resolve({})
         })
         expect(screen.getByTestId("status").textContent).toBe("completed")
         expect(screen.getByTestId("data").children.length).toBe(3)
@@ -66,6 +69,7 @@ describe("usePagination", ()=>{
         cb.mockResolvedValueOnce({results: [3]})
         await act(async () => {
             render(<DemoPagination cb={cb} options={{autostart: true, hash: (elem)=>String(elem % 2)}} />)
+            await Promise.resolve({})
         })
         expect(screen.getByTestId("status").textContent).toBe("completed")
         expect(screen.getByTestId("data").children.length).toBe(2)

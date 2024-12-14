@@ -3,9 +3,32 @@ import Vapor
 
 class UserService: ServiceWithDb {
 	private let cursorHandler = CursorHandler<User, String>(["id"])
-	func createUser() async throws {
-	   
+	struct NewUser {
+		var username: String
+		var password: String
+		var email: String
+		var firstName: String?
+		var lastName: String?
+		var isActive: Bool
+		var isAdmin: Bool
 	}
+	func create(user userData: NewUser, groupName: String) async throws -> (User, UserGroup) {
+		let group = UserGroup(name: groupName)
+
+		try await group.save(on: db)
+
+		// Todo: validate that e-mail or username are not in the DB, and return an error
+		let user = try User(
+			username: userData.username, email: userData.email, firstName: userData.firstName,
+			lastName: userData.lastName, isActive: userData.isActive,
+			isAdmin: userData.isAdmin, defaultGroupId: group.requireID())
+		try user.setPassword(pwd: userData.password)
+		try await user.save(on: db)
+		try await user.$groups.attach(group, on: db)
+		try await user.$groups.load(on: db)
+		return (user, group)
+	}
+
 	func getUsersPage(pageQuery: PageQuery) async throws -> ListWithCursor<
 		User
 	> {
