@@ -1,0 +1,17 @@
+{
+    "version": 1,
+    "target": "amd64-unknown-linux-gnu",
+    "toolchain-bin-dir": "/home/ubuntu/usr/bin",
+    "sdk": "/usr/amd64-linux-gnu",
+    "extra-cc-flags": [
+        "-fPIC"
+    ],
+    "extra-cpp-flags": [
+        "-lstdc++",
+        "-I", "/usr/amd64-linux-gnu/include/c++/12",
+        "-I", "/usr/amd64-linux-gnu/include/c++/12/amd64-linux-gnu/"
+    ],
+    "extra-swiftc-flags": [
+        "-resource-dir", "/home/swift-cross-compile/amd64/usr/lib/swift"
+    ]
+}
