@@ -1,6 +1,6 @@
 import Foundation
 
-struct FieldsMap<T: Hashable> {
+struct FieldsMap<T: Hashable & Sendable>: Sendable {
 	var movementName: T
 	var date: T
 	var dateValue: T?
@@ -22,7 +22,7 @@ func parseToDouble(_ value: Any?) -> Double? {
 	return nil
 }
 
-class TransformHelper<D: IndexedCollection> {
+final class TransformHelper<D: IndexedCollection>: Sendable {
 
 	let mapping: FieldsMap<D.IndexType>
 	let dateFormatter: DateFormatter

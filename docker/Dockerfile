@@ -1,30 +1,40 @@
-FROM --platform=$BUILDPLATFORM node:20-slim as client-build
+FROM --platform=$BUILDPLATFORM node:22-slim AS client-build
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
-COPY . /home/app
+COPY src /home/app/src
+COPY package.yaml /home/app
+COPY config /home/app/config
+COPY pnpm-lock.yaml /home/app
+COPY tsconfig.json /home/app
 WORKDIR /home/app
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-RUN pnpm run -r build
+RUN npx pnpm run build:view
+RUN ls Resources
+RUN ls Resources/Views
 
-FROM --platform=$BUILDPLATFORM swift:6.0.3-noble as server-build
+
+FROM --platform=$BUILDPLATFORM swift:6.0.3-noble AS server-build
+
 # Cross compilation based on https://swiftinit.org/articles/cross-compiling-x86_64-linux-to-aarch64-linux
-RUN apt update && apt -y install gcc-aarch64-linux-gnu g++-multilib
+RUN apt update && apt -y install gcc-aarch64-linux-gnu wget2 && apt -y install g++-multilib
 RUN mkdir /home/swift-cross-compile /home/vapor
 WORKDIR /home/swift-cross-compile
 COPY docker/swift-cross-platform/* /home/swift-cross-compile/
 
-RUN ./download.sh $TARGETPLATFORM && mkdir $TARGETPLATFORM && tar -xzvf swift-$TARGETPLATFORM.tar.gz -C $TARGETPLATFORM
+ARG TARGETARCH
+RUN ./download.sh "$TARGETARCH" && mkdir "$TARGETARCH" && tar -xzvf swift-$TARGETARCH.tar.gz -C $TARGETARCH
 
 WORKDIR /home/vapor
 
 COPY src /home/vapor/src
 COPY Package.swift Package.resolved /home/vapor/
-COPY Resources /home/app/Resources
-COPY --from=client-build Resources/Views/react.leaf /home/app/Resources/Views/react.leaf
+COPY Resources /home/vapor/Resources
+RUN mkdir -p /home/vapor/Resources/Views
+COPY --from=client-build /home/app/Resources/Views/react.leaf /home/vapor/Resources/Views/react.leaf
 
-RUN swift build --destination /home/swift-cross-compile/$TARGETPLATFORM.json -c release --static-swift-stdlib 
+RUN swift build --destination /home/swift-cross-compile/$TARGETARCH.json -c release --static-swift-stdlib 
 
 FROM ubuntu:noble
 RUN mkdir /home/app
@@ -35,5 +45,5 @@ COPY Public /home/app/Public
 COPY --from=client-build /home/app/Public/react /home/app/Public/react
 
 EXPOSE 8080
-ENTRYPOINT [ "./MrScroogeServer" ]
+ENTRYPOINT [ "./server" ]
 CMD ["serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "8080"]

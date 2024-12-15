@@ -1,15 +1,15 @@
 {
     "version": 1,
     "target": "amd64-unknown-linux-gnu",
-    "toolchain-bin-dir": "/home/ubuntu/usr/bin",
-    "sdk": "/usr/amd64-linux-gnu",
+    "toolchain-bin-dir": "/usr/bin",
+    "sdk": "/usr/lib/gcc/x86_64-linux-gn",
     "extra-cc-flags": [
         "-fPIC"
     ],
     "extra-cpp-flags": [
         "-lstdc++",
-        "-I", "/usr/amd64-linux-gnu/include/c++/12",
-        "-I", "/usr/amd64-linux-gnu/include/c++/12/amd64-linux-gnu/"
+        "-I", "/usr/lib/gcc/x86_64-linux-gnu/13/include",
+        "-I", "/usr/local/include"
     ],
     "extra-swiftc-flags": [
         "-resource-dir", "/home/swift-cross-compile/amd64/usr/lib/swift"

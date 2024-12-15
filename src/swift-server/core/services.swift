@@ -18,7 +18,7 @@ class ServiceWithQueueAndDb: ServiceWithDb {
 		super.init(app: app)
 	}
 }
-
+/*
 extension UserService: StorageKey {
 	typealias Value = UserService
 }
@@ -45,7 +45,7 @@ extension FileImportService: StorageKey {
 
 extension GraphService: StorageKey {
 	typealias Value = GraphService
-}
+}*/
 
 extension Application {
 	@ServiceDependency()

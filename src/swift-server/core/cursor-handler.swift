@@ -1,6 +1,6 @@
 import Vapor
 
-class CursorHandler<T, R: Hashable> {
+final class CursorHandler<T, R: Hashable & Sendable>: Sendable {
 	let fields: [R]
 
 	init(_ fields: [R]) {

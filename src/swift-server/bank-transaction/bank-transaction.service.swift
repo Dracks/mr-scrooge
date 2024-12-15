@@ -90,8 +90,9 @@ class BankTransactionService: ServiceWithQueueAndDb {
 	}
 
 	func insertBatch(movements: [BankTransaction]) -> EventLoopFuture<Void> {
+	   let logger = self.logger
 		return movements.create(on: db).map { _ in
-			self.logger.info("Insert batch", metadata: ["sql": "Bulk insert"])
+			logger.info("Insert batch", metadata: ["sql": "Bulk insert"])
 		}
 	}
 

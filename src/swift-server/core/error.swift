@@ -19,7 +19,7 @@ enum ApiError: String, StringEnumType {
 	case API10050, API10051
 }
 
-class ErrorInfo {
+final class ErrorInfo: Sendable {
 	let message: String
 	let additionalInfo: String?
 

@@ -28,6 +28,13 @@ public struct ServiceDependencyMacro: AccessorMacro {
 			return []
 		}
 		return [
+		  """
+			 get {
+			 .init(app: self)	
+			}
+			"""
+		]
+		/*return [
 			"""
 			            get {
 			                guard let service = self.storage[\(nodeType).self] else {
@@ -43,7 +50,7 @@ public struct ServiceDependencyMacro: AccessorMacro {
 			                self.storage[\(nodeType).self] = newValue
 			            }
 			""",
-		]
+		]*/
 	}
 
 }

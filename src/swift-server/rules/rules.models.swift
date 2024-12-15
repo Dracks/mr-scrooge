@@ -61,7 +61,7 @@ final class Condition: Model, Content, @unchecked Sendable {
 	func getStr() throws -> String {
 		guard let valueStr = self.valueStr else {
 			throw Exception(
-				.E10013, context: ["condition": id as Any, "parent": $rule.id])
+				.E10013, context: ["condition": id, "parent": $rule.id])
 		}
 		return valueStr
 	}
@@ -69,7 +69,7 @@ final class Condition: Model, Content, @unchecked Sendable {
 	func getDouble() throws -> Double {
 		guard let valueDouble = self.valueDouble else {
 			throw Exception(
-				.E10014, context: ["condition": id as Any, "parent": $rule.id])
+				.E10014, context: ["condition": id, "parent": $rule.id])
 		}
 		return valueDouble
 	}

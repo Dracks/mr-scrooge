@@ -2,7 +2,7 @@ import CSV
 import Foundation
 import Vapor
 
-class CommerzBankEnImporter: ParserFactory {
+final class CommerzBankEnImporter: ParserFactory, Sendable {
 	let DATE_REGEX = try! NSRegularExpression(
 		pattern: "(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})T\\d{2}:\\d{2}:\\d{2}",
 		options: [])

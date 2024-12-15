@@ -6,7 +6,7 @@ struct HTMLRowData {
 	var data: [Int: String]
 }
 
-class CaixaEnginyersAbstractImporter: ParserFactory {
+class CaixaEnginyersAbstractImporter: ParserFactory, @unchecked Sendable {
 
 	let transformHelper: TransformHelper<[Int: String]>
 	let key: String
@@ -128,7 +128,7 @@ class CaixaEnginyersAccountImporter: CaixaEnginyersAbstractImporter {
 	}
 }
 
-class CaixaEnginiersCreditImporter: CaixaEnginyersAbstractImporter {
+class CaixaEnginiersCreditImporter: CaixaEnginyersAbstractImporter, @unchecked Sendable {
 	init() {
 		let fieldsMap = FieldsMap<Int>(
 			movementName: 3,
