@@ -2,7 +2,7 @@ import Fluent
 import Foundation
 import Vapor
 
-class RuleService: ServiceWithDb {
+final class RuleService: ServiceWithDb, @unchecked Sendable {
 	struct RuleParam {
 		let groupOwnerId: UUID
 		let name: String

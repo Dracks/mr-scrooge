@@ -1,7 +1,7 @@
 import Fluent
 import Vapor
 
-class BankTransactionService: ServiceWithQueueAndDb {
+final class BankTransactionService: ServiceWithQueueAndDb, @unchecked Sendable {
 	private let logger = Logger(label: "BankTransactionService")
 	private let cursorHandler = CursorHandler<BankTransaction, String>(["date", "id"])
 

@@ -6,7 +6,7 @@ import XCTest
 
 @testable import MrScroogeServer
 
-class TestError: Error {
+final class TestError: Error {
 	let message: String?
 	let context: [String: String]?
 	init(message: String? = nil, context: [String: String]? = nil) {
@@ -162,7 +162,7 @@ extension Application {
 		_ path: String,
 		body: any Codable,
 		headers immutableHeaders: HTTPHeaders = [:],
-		file: StaticString = #file,
+		file: StaticString = #filePath,
 		line: UInt = #line,
 		beforeRequest: (inout XCTHTTPRequest) async throws -> Void = { _ in }
 	) async throws -> XCTHTTPResponse {

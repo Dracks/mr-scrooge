@@ -23,15 +23,21 @@ RUN mkdir /home/swift-cross-compile /home/vapor
 WORKDIR /home/swift-cross-compile
 COPY docker/swift-cross-platform/* /home/swift-cross-compile/
 
+RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
+    && apt-get -q update \
+    && apt-get -q dist-upgrade -y \
+    && apt-get install -y libjemalloc-dev
+
 ARG TARGETARCH
 RUN ./download.sh "$TARGETARCH" && mkdir "$TARGETARCH" && tar -xzvf swift-$TARGETARCH.tar.gz -C $TARGETARCH
 
-WORKDIR /home/vapor
+WORKDIR /build
 
-COPY src /home/vapor/src
-COPY Package.swift Package.resolved /home/vapor/
-COPY Resources /home/vapor/Resources
-RUN mkdir -p /home/vapor/Resources/Views
+COPY Package.* ./
+RUN swift package resolve \
+        $([ -f ./Package.resolved ] && echo "--force-resolved-versions" || true)
+
+COPY src src
 COPY --from=client-build /home/app/Resources/Views/react.leaf /home/vapor/Resources/Views/react.leaf
 
 RUN swift build --destination /home/swift-cross-compile/$TARGETARCH.json -c release --static-swift-stdlib 
@@ -40,7 +46,7 @@ FROM ubuntu:noble
 RUN mkdir /home/app
 WORKDIR /home/app
 
-COPY --from=server-build /home/vapor/.build/release/MrScroogeServer /home/app/server
+COPY --from=server-build /build/.build/release/MrScroogeServer /home/app/server
 COPY Public /home/app/Public
 COPY --from=client-build /home/app/Public/react /home/app/Public/react
 

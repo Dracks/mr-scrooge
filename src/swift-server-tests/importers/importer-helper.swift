@@ -5,7 +5,7 @@ import XCTest
 
 @testable import MrScroogeServer
 
-let SAMPLE_DATA: [[String: Any]] = [
+let SAMPLE_DATA: [[String: any Sendable]] = [
 	["movementName": "first", "date": "1990-03-01", "value": -20.0],
 	["movementName": "second", "date": "1990-03-02", "value": -10.0],
 	["movementName": "ingress", "date": "1990-03-03", "value": 100.0],

@@ -72,7 +72,7 @@ class CaixaEnginyersAbstractImporter: ParserFactory, @unchecked Sendable {
 	}
 }
 
-class CaixaEnginyersAccountImporter: CaixaEnginyersAbstractImporter {
+class CaixaEnginyersAccountImporter: CaixaEnginyersAbstractImporter, @unchecked Sendable {
 	init() {
 		let fieldsMap = FieldsMap<Int>(
 			movementName: 2,
