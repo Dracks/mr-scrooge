@@ -69,7 +69,7 @@ COPY --chown=vapor:vapor Public /home/app/Public
 COPY --chown=vapor:vapor --from=client-build /home/app/Public/react /home/app/Public/react
 COPY --chown=vapor:vapor Resources /home/app/Resources
 RUN mkdir -p /home/app/Resource/Views/
-COPY --chown=vapor:vapor --from=client-build /home/app/Resources/Views/react.leaf /home/app/Resource/Views/
+COPY --chown=vapor:vapor --from=client-build /home/app/Resources/Views/react.leaf /home/app/Resources/Views/
 
 # Provide configuration needed by the built-in crash reporter and some sensible default behaviors.
 ENV SWIFT_BACKTRACE=enable=yes,sanitize=yes,threads=all,images=all,interactive=no,swift-backtrace=./swift-backtrace-static
