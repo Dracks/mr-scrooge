@@ -29,8 +29,10 @@ RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q dist-upgrade -y \
     && apt-get install -y libjemalloc-dev
 
-# ARG TARGETARCH
-# RUN ./download.sh "$TARGETARCH" && mkdir "$TARGETARCH" && tar -xzvf swift-$TARGETARCH.tar.gz -C $TARGETARCH
+ARG TARGETARCH
+RUN swift sdk install https://download.swift.org/swift-6.0.3-release/static-sdk/swift-6.0.3-RELEASE/swift-6.0.3-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz \
+    --checksum 67f765e0030e661a7450f7e4877cfe008db4f57f177d5a08a6e26fd661cdd0bd
+    # RUN ./download.sh "$TARGETARCH" && mkdir "$TARGETARCH" && tar -xzvf swift-$TARGETARCH.tar.gz -C $TARGETARCH
 
 WORKDIR /build
 
@@ -42,7 +44,9 @@ COPY src src
 COPY --from=client-build /home/app/Resources/Views/react.leaf /home/vapor/Resources/Views/react.leaf
 
 # RUN swift build --destination /home/swift-cross-compile/$TARGETARCH.json -c release --static-swift-stdlib 
-RUN swift build -c release --static-swift-stdlib 
+# RUN swift build -c release --static-swift-stdlib 
+RUN swift sdk list
+RUN swift build --swift-sdk x86_64-swift-linux-musl -c release
 
 FROM ubuntu:noble
 
