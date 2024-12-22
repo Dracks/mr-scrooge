@@ -34,7 +34,11 @@ class Exception: Error, CustomStringConvertible {
 	}
 
 	var localizedDescription: String {
-		return "\(errorCode.rawValue): \(errorCode.message) at \(file):\(line)"
+		let yamlContext = allContext.reduce(into: "") { result, pair in
+			result += "\n  \(pair.key): \(pair.value)"
+		}
+		return
+			"\(errorCode.rawValue): \(errorCode.message) at \(file):\(line)\nContext:\(yamlContext)"
 	}
 
 	func toJSON() -> [String: Any] {

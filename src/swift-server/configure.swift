@@ -6,11 +6,9 @@ import NIOSSL
 import QueuesFluentDriver
 import Vapor
 
-func configureDb(_ app: Application) async throws {
-	var dbUrl = Environment.get("DB_URL") ?? "sqlite://db.sqlite3"
+func getDbConfig(url dbUrl: String) throws -> (DatabaseConfigurationFactory, DatabaseID) {
 	if !dbUrl.starts(with: "sqlite://") && !dbUrl.starts(with: "postgres://") {
-		print("Warning: Invalid DB_URL format. Using default.")
-		dbUrl = "sqlite://db.sqlite3"
+		throw Exception(.E10019, context: ["dbUrl": dbUrl])
 	}
 
 	let components = dbUrl.split(separator: ":", maxSplits: 1)
@@ -22,20 +20,28 @@ func configureDb(_ app: Application) async throws {
 
 	switch dbType {
 	case "postgres":
-		app.databases.use(try DatabaseConfigurationFactory.postgres(url: dbUrl), as: .psql)
+		return (try DatabaseConfigurationFactory.postgres(url: dbUrl), .psql)
 	case "sqlite":
 		if filePath == "memory" {
-			app.databases.use(
+			return (
 				DatabaseConfigurationFactory.sqlite(
-					.memory, sqlLogLevel: sqlLogLevel), as: .sqlite)
+					.memory, sqlLogLevel: sqlLogLevel), .sqlite
+			)
 		} else {
-			app.databases.use(
+			return (
 				DatabaseConfigurationFactory.sqlite(
-					.file(filePath), sqlLogLevel: sqlLogLevel), as: .sqlite)
+					.file(filePath), sqlLogLevel: sqlLogLevel), .sqlite
+			)
 		}
 	default:
 		throw Exception(.E10003, context: ["db_url": dbUrl])
 	}
+}
+
+func configureDb(_ app: Application) async throws {
+	let dbUrl = Environment.get("DB_URL") ?? "sqlite://db.sqlite3"
+	let (dbFactory, dbId) = try getDbConfig(url: dbUrl)
+	app.databases.use(dbFactory, as: dbId)
 }
 
 public func registerMigrations(_ app: Application) async throws {
@@ -64,6 +70,7 @@ public func configure(_ app: Application) async throws {
 
 		app.asyncCommands.use(CreateUserCommand(), as: "demo_user")
 		app.asyncCommands.use(DemoDataCommand(), as: "demo_data")
+		app.asyncCommands.use(V2MigrateCommand(), as: "v2_migrate")
 
 		// register routes
 		try routes(app)

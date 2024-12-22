@@ -72,6 +72,11 @@ protocol AbstractGroup: Model, Content {
 	var hideOthers: Bool? { get set }
 }
 
+protocol AbstractGroupLabels: Content {
+
+	init(graphId: Graph.IDValue, labelId: Label.IDValue, order: Int)
+}
+
 final class GraphGroup: Model, Content, AbstractGroup, @unchecked Sendable {
 
 	static let schema = "graph_group"
@@ -128,7 +133,7 @@ final class GraphHorizontalGroup: Model, Content, AbstractGroup, @unchecked Send
 		self.accumulate = accumulate
 	}
 }
-final class GraphGroupLabels: Model, Content, @unchecked Sendable {
+final class GraphGroupLabels: Model, Content, @unchecked Sendable, AbstractGroupLabels {
 	static let schema = "graph_group_labels"
 
 	@ID(custom: "graph_id")
@@ -152,7 +157,7 @@ final class GraphGroupLabels: Model, Content, @unchecked Sendable {
 	}
 }
 
-final class GraphHorizontalGroupLabels: Model, Content, @unchecked Sendable {
+final class GraphHorizontalGroupLabels: Model, Content, @unchecked Sendable, AbstractGroupLabels {
 	static let schema = "graph_horizontal_group_labels"
 
 	@ID(custom: "graph_id")

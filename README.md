@@ -6,32 +6,25 @@ This is the base repository, to clone and start it using docker.
 ## File formats suported
 Currently this application supports the following bank file formats:
 
-- Caixabanc Account and card Excel
 - Caixa Enginyers Account and Credit Card
 - Commerce bank
 - N26 CSV file
-- MultiBank QIF File (Thanks to [Albert Sola](https://github.com/albertsola/))
-
-(*) To create a new one, can you take a look at the changes from @AlbertSola to add the qif format [commit](https://github.com/Dracks/mr-scrooge-server/commit/630d6bafe99ba6cbbe29a92959a6954726cdcb88)
-
+- MultiBank QIF File (TBD)
 
 ## Demo
-You can run the docker image generated for the release inside her:
-https://hub.docker.com/r/dracks/mrscrooge/
 
-To run, execute the following command:
+## How to Migrate from Mr Scrooge V2
+The migration from Django to Vapor brought significant database improvements, including group data ownership capabilities that enable multiple users to operate on a single instance. This upgrade requires a complete data migration from the previous database version.
+
+1. Set up a new database for the upgraded version
+2. Update your environment or .env file with the new database connection details  
+3. Generate a new user via the "demo_user" command
+4. Execute the data migration using v2_migrate along with the group ID for the user you wish, the command demo_user automatically provides you a group Id:
 ```
-docker run --rm -p 3333:80 -e DEMODATA="true" dracks/mrscrooge:latest
+./server v2_migrate sqlite://db.sqlite 1234-1234-1234-1234
 ```
 
-It will open your port 3333 with user demo/demo
-
-You can set the following environment variables:
-- DEMODATA: Default false. this will create a random data with tags and graphs
-- DEMOUSER: default "demo". The username to create on the application
-- DEMOPWD: default "demo". The password for the user
-- ALLOWED_HOSTS: default "localhost". You can put a list of hosts separed with a comma character
-- DECIMAL_COUNT: default 2, the number of digits to show in the graphs
+** IMPORTANT **: The web-client must have been launched and logged into at least once in V2 before graphs can be imported
 
 ## Screenshots MVP
 ### Home
@@ -49,22 +42,9 @@ You can set the following environment variables:
 3. Run it
 
 ### Run the server
-1. Make sure you have python3 available in your machine
-2. Install dependencies (Recomendable use of virtual env [tutorial sample](https://www.pythonforbeginners.com/basics/how-to-use-python-virtualenv)) with:
-```pip install -r requirements.txt```
-3. Run the tests
-```./manage.py test```
-4. Run the server
-```./manage.py runserver```
+
 
 ### Run the view
-1. Make sure you have node 8.0 or superior
-2. Install dependencies:
-```yarn```
-or
-```npm install ```
-3. Run the tests ```yarn test``` or ```npm test``` (It will run with a watcher, this means that don't stop after run the tests waiting for changes)
-4. Run the project ```yarn start``` or ```npm start```
 
 ## Thanks
 The current application icon is from VisualPharm
