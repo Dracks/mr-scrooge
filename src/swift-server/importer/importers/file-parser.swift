@@ -21,7 +21,10 @@ func parserHtml(filePath: String, encoding: String.Encoding) -> AsyncThrowingStr
 				}
 				guard let fileString
 				else {
-					throw Exception(.E10007, context: ["fileName": filePath])
+					throw Exception(.E10007, context: [
+						"fileName": filePath, 
+						"encoding": String(describing: encoding)
+					])
 				}
 
 				let doc: Document = try SwiftSoup.parse(fileString)

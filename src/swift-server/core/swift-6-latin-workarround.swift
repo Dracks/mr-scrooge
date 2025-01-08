@@ -1,6 +1,11 @@
-// Workarround to be able to decode windowsCP1252 files
-// thanks to @TimBudarick
-// To be remove when the following issue is fixed: https://github.com/swiftlang/swift/issues/78382
+// Temporary workaround for Windows CP-1252 encoding support in Swift
+// This implementation provides a manual decoder for Windows CP-1252 encoded files
+// as Swift's built-in support is currently incomplete.
+//
+// Credits: @TimBudarick
+// 
+// TODO: Remove this workaround when Swift adds proper Windows CP-1252 support
+// Tracking issue: https://github.com/swiftlang/swift/issues/78382
 
 import Foundation
 
@@ -277,7 +282,8 @@ extension String {
 		#if os(macOS)
 			return String(data: data, encoding: .windowsCP1252)
 		#else
-			var decodedString = ""
+			var decodedString = String()
+			decodedString.reserveCapacity(data.count)
 
 			for byte in data {
 				if let character = String.Encoding.windowsCP1252Map[byte] {
