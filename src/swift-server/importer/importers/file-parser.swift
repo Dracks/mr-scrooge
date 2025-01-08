@@ -12,7 +12,14 @@ func parserHtml(filePath: String, encoding: String.Encoding) -> AsyncThrowingStr
 				else {
 					throw Exception(.E10006, context: ["fileName": filePath])
 				}
-				guard let fileString = String(data: fileData, encoding: encoding)
+				let fileString: String?
+				switch encoding {
+				case .windowsCP1252:
+					fileString = String.fromWindowsCP1252(fileData)
+				default:
+					fileString = String(data: fileData, encoding: encoding)
+				}
+				guard let fileString
 				else {
 					throw Exception(.E10007, context: ["fileName": filePath])
 				}
