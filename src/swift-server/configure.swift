@@ -68,7 +68,7 @@ public func configure(_ app: Application) async throws {
 		app.views.use(.leaf)
 		app.queues.use(.fluent())
 
-		app.asyncCommands.use(CreateUserCommand(), as: "demo_user")
+		app.asyncCommands.use(CreateUserCommand(), as: "create_user")
 		app.asyncCommands.use(DemoDataCommand(), as: "demo_data")
 		app.asyncCommands.use(V2MigrateCommand(), as: "v2_migrate")
 

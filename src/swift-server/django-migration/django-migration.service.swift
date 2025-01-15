@@ -22,11 +22,11 @@ class DjangoMigrationService {
 
 	var tagIdToLabelId: [Int64: UUID] = [:]
 	var tagIdToLabel: [Int64: Label] = [:]
-	init(owner groupOwnerId: UUID, app: Application, oldDb: SQLDatabase) {
+	init(owner groupOwnerId: UUID, app: Application, oldDb: Database, oldSqlDb: SQLDatabase) {
 		self.groupOwnerId = groupOwnerId
 		self.app = app
-		self.oldDb = oldDb as! Database
-		self.oldSqlDb = oldDb
+		self.oldDb = oldDb
+		self.oldSqlDb = oldSqlDb
 	}
 }
 
@@ -172,7 +172,6 @@ extension DjangoMigrationService {
 	}
 
 	func migrateTagsToRules() async throws {
-		// TODO missing transforming the parent-child relation
 		var tagsList = try await OldDb.TagModel.query(on: oldDb).filter(
 			\.$parent.$id == nil
 		).all()

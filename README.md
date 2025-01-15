@@ -42,9 +42,36 @@ The migration from Django to Vapor brought significant database improvements, in
 3. Run it
 
 ### Run the server
+1. Run the server, with swift:
+```
+swift run
+```
+2. Migrate the data:
+```
+# ServerDebug is a softlink, to reuse the build from the swift run
+./serverDebug migrate
+```
+3. Create an admin user (by default will be demo:demo):
+```
+./serverDebug create_user --admin
+```
 
-
+### Run the server tests
+Simply run the tests using swift:
+```
+swift test
+```
 ### Run the view
+1. Install dependencies
+```
+pnpm install
+```
+
+2. Build in watch mode
+```
+pnpm run start:dev
+```
+
 
 ## Thanks
 The current application icon is from VisualPharm
