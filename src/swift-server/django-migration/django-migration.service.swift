@@ -62,7 +62,11 @@ extension DjangoMigrationService.OldDb {
 		var conditional: String
 
 		func getCondDouble() throws -> Double {
-			if let d = Double(conditional) {
+			let formatter = NumberFormatter()
+			formatter.locale = Locale(identifier: "en_US_POSIX")
+			if let d = formatter.number(from: conditional)?
+				.doubleValue
+			{
 				return d
 			}
 			throw Exception(.E10023, context: ["filterId": id as Any, "tagId": tagId])
@@ -499,8 +503,8 @@ extension DjangoMigrationService {
 
 		let oldGroupTags = try await OldDb.GraphGroupTag.query(
 			table: .graphGroupTag, for: oldGroup.id, on: oldSqlDb)
-		let groupLabels: [GraphGroupLabels] = try oldGroupTags.map {
-			.init(graphId: graphId, labelId: try getLabelId($0.tagId), order: $1)
+		let groupLabels: [GraphGroupLabels] = try oldGroupTags.enumerated().map {
+			.init(graphId: graphId, labelId: try getLabelId($1.tagId), order: $0)
 		}
 		for groupLabel in groupLabels {
 			try await groupLabel.save(on: app.db)
@@ -518,10 +522,10 @@ extension DjangoMigrationService {
 			let oldHorizontalGroupTags = try await OldDb.GraphGroupTag.query(
 				table: .graphHorizontalGroupTag, for: oldGroup.id, on: oldSqlDb)
 			let horizontalGroupLabels: [GraphHorizontalGroupLabels] =
-				try oldHorizontalGroupTags.map {
+				try oldHorizontalGroupTags.enumerated().map {
 					.init(
-						graphId: graphId, labelId: try getLabelId($0.tagId),
-						order: $1)
+						graphId: graphId, labelId: try getLabelId($1.tagId),
+						order: $0)
 				}
 			for groupLabel in horizontalGroupLabels {
 				try await groupLabel.save(on: app.db)
@@ -533,23 +537,5 @@ extension DjangoMigrationService {
 		for graph in graphs {
 			try await migrateGraph(graph: graph)
 		}
-	}
-}
-
-public struct Counter {
-	var count: Int = 0
-	public init() {}
-	@usableFromInline mutating func next() -> Int {
-		count = count + 1
-		return count
-	}
-}
-
-extension Array {
-	@inlinable public func map<T>(_ transform: (Element, Int) throws -> T)
-		throws -> [T]
-	{
-		var counter = Counter()
-		return try map { try transform($0, counter.next()) }
 	}
 }
