@@ -27,6 +27,7 @@
 
 
 # Server tasks (swift)
+* [ ] Create enums in DB, and use the enums
 * [ ] graphs
   * [x] Modify graph
   * [x] Create graph

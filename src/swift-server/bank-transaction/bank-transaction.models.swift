@@ -43,6 +43,7 @@ final class BankTransaction: Model, Content, @unchecked Sendable {
 	@Siblings(through: LabelTransaction.self, from: \.$transaction, to: \.$label)
 	var labels: [Label]
 
+	// TODO: change the name to comment
 	@OptionalField(key: "description")
 	var description: String?
 
