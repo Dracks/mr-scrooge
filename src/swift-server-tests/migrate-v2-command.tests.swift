@@ -75,7 +75,6 @@ final class MigrateV2Test: AbstractBaseTestsClass {
 		XCTAssertEqual(transactionsCount, 296)
 
 		let november9Transaction = try await BankTransaction.query(on: app.db)
-			// .filter(\.$groupOwner.$id == groupId)
 			.filter(\.$_date == "2019-11-09")
 			.with(\.$labels)
 			.first()
@@ -164,5 +163,44 @@ final class MigrateV2Test: AbstractBaseTestsClass {
 					)
 				), "Test pie graph correctly transformed")
 		}
+	}
+
+	func testInvalidUrl() async throws {
+		let app = try getApp()
+
+		let dbPath = try XCTUnwrap(
+			Bundle.module.url(forResource: "old", withExtension: "sqlite3"))
+
+		let migrateTestGroup = UserGroup(name: "Migration")
+		try await migrateTestGroup.save(on: app.db)
+		let groupId = try migrateTestGroup.requireID()
+
+		let command = V2MigrateCommand()
+		let arguments = [
+			"v2_migrate", "sqlte://\(dbPath)", groupId.uuidString,
+		]
+
+		let console = TestConsole()
+		let input = CommandInput(arguments: arguments)
+		var context = CommandContext(
+			console: console,
+			input: input
+		)
+
+		context.application = app
+
+		try await console.run(command, with: context)
+
+		// XCTAssertNil(console.testOutputQueue)
+
+		let output = console
+			.testOutputQueue
+			.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+
+		XCTAssertTrue(output.count > 0)
+		XCTAssertContains(
+			output.first,
+			"Invalid database URL format. Must start with \'sqlite://\' or \'postgres://\'"
+		)
 	}
 }

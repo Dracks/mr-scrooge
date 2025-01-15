@@ -126,7 +126,7 @@ final class MrScroogeServerTest: AbstractBaseTestsClass {
 		let app = try getApp()
 
 		let command = CreateUserCommand()
-		let arguments = ["demo_user"]
+		let arguments = ["create_user"]
 
 		let console = TestConsole()
 		let input = CommandInput(arguments: arguments)
