@@ -57,19 +57,24 @@ struct V2MigrateCommand: AsyncCommand {
 					argument: "groupId",
 					reason: "Group Owner Id not found in the DB")
 			}
-			let migrator = DjangoMigrationService(
-				owner: try groupOwner.requireID(), app: application, oldDb: oldDb,
-				oldSqlDb: sql)
 
-			context.console.print("Starting migration...")
-			context.console.print("Migrating tags to labels...")
-			try await migrator.migrateTagsToLabels()
-			context.console.print("Migrating tags to rules...")
-			try await migrator.migrateTagsToRules()
-			context.console.print("Migrating transactions...")
-			try await migrator.migrateTransactions()
-			context.console.print("Migrating graphs...")
-			try await migrator.migrateGraphs()
+			try await application.db.transaction { transaction in
+				let migrator = DjangoMigrationService(
+					owner: try groupOwner.requireID(), app: application,
+					newDb: transaction,
+					oldDb: oldDb,
+					oldSqlDb: sql)
+
+				context.console.print("Starting migration...")
+				context.console.print("Migrating tags to labels...")
+				try await migrator.migrateTagsToLabels()
+				context.console.print("Migrating tags to rules...")
+				try await migrator.migrateTagsToRules()
+				context.console.print("Migrating transactions...")
+				try await migrator.migrateTransactions()
+				context.console.print("Migrating graphs...")
+				try await migrator.migrateGraphs()
+			}
 
 			context.console.print("Migration complete!")
 		} catch let error as Exception {

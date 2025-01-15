@@ -17,14 +17,19 @@ class DjangoMigrationService {
 
 	let groupOwnerId: UUID
 	let app: Application
+	let newDb: Database
 	let oldDb: Database
 	let oldSqlDb: SQLDatabase
 
 	var tagIdToLabelId: [Int64: UUID] = [:]
 	var tagIdToLabel: [Int64: Label] = [:]
-	init(owner groupOwnerId: UUID, app: Application, oldDb: Database, oldSqlDb: SQLDatabase) {
+	init(
+		owner groupOwnerId: UUID, app: Application, newDb: Database, oldDb: Database,
+		oldSqlDb: SQLDatabase
+	) {
 		self.groupOwnerId = groupOwnerId
 		self.app = app
+		self.newDb = newDb
 		self.oldDb = oldDb
 		self.oldSqlDb = oldSqlDb
 	}
@@ -130,7 +135,7 @@ extension DjangoMigrationService {
 		}
 
 		for label in newLabels {
-			try await label.save(on: app.db)
+			try await label.save(on: newDb)
 		}
 
 		for (key, label) in tagIdToLabel {
@@ -144,7 +149,7 @@ extension DjangoMigrationService {
 		let ruleId = try rule.requireID()
 		for filter in filters {
 			try await rule.$conditions.create(
-				.init(filter.toBaseCondition(), for: ruleId), on: app.db)
+				.init(filter.toBaseCondition(), for: ruleId), on: newDb)
 		}
 	}
 
@@ -166,11 +171,11 @@ extension DjangoMigrationService {
 				}
 				rule.$parent.id = parentRuleId
 			}
-			try await rule.save(on: app.db)
+			try await rule.save(on: newDb)
 			tagToRuleDictId[tagId] = try rule.requireID()
 			try await migrateConditions(tagId: tagId, rule: rule)
 			let label = try getLabel(tagId)
-			try await rule.$labels.attach(label, on: app.db)
+			try await rule.$labels.attach(label, on: newDb)
 		}
 		return newIds
 	}
@@ -284,7 +289,7 @@ extension DjangoMigrationService {
 
 	private func migrateTransaction(rds: OldDb.RawDataSource) async throws {
 		let transaction = rds.toBankTransaction(groupOwnerId: groupOwnerId)
-		try await transaction.save(on: app.db)
+		try await transaction.save(on: newDb)
 		let tags = try await rds.getRelations(on: oldSqlDb)
 		for oldTag in tags {
 			let labelId = try getLabelId(oldTag.tagId)
@@ -300,7 +305,7 @@ extension DjangoMigrationService {
 			let newRelation = LabelTransaction(
 				labelId: labelId, transactionId: try transaction.requireID(),
 				linkReason: linkReason)
-			try await newRelation.save(on: app.db)
+			try await newRelation.save(on: newDb)
 		}
 	}
 
@@ -488,7 +493,7 @@ extension DjangoMigrationService {
 			labelFilterId: labelFilterId,
 			dateRange: oldGraph.getDateRangeEnum())
 
-		try await graph.save(on: app.db)
+		try await graph.save(on: newDb)
 		let graphId = try graph.requireID()
 
 		let oldGroup = try await OldDb.GraphGroup.query(
@@ -499,7 +504,7 @@ extension DjangoMigrationService {
 		let group = try GraphGroup(
 			graphId: graphId, group: oldGroup.getGroupType(),
 			hideOthers: oldGroup.hideOthers)
-		try await group.save(on: app.db)
+		try await group.save(on: newDb)
 
 		let oldGroupTags = try await OldDb.GraphGroupTag.query(
 			table: .graphGroupTag, for: oldGroup.id, on: oldSqlDb)
@@ -507,7 +512,7 @@ extension DjangoMigrationService {
 			.init(graphId: graphId, labelId: try getLabelId($1.tagId), order: $0)
 		}
 		for groupLabel in groupLabels {
-			try await groupLabel.save(on: app.db)
+			try await groupLabel.save(on: newDb)
 		}
 
 		let oldHorizontalGroup = try await OldDb.GraphGroup.query(
@@ -517,7 +522,7 @@ extension DjangoMigrationService {
 				graphId: graphId, group: try oldHorizontalGroup.getGroupType(),
 				hideOthers: oldHorizontalGroup.hideOthers,
 				accumulate: oldHorizontalGroup.accumulate ?? false)
-			try await horizontalGroup.save(on: app.db)
+			try await horizontalGroup.save(on: newDb)
 
 			let oldHorizontalGroupTags = try await OldDb.GraphGroupTag.query(
 				table: .graphHorizontalGroupTag, for: oldGroup.id, on: oldSqlDb)
@@ -528,7 +533,7 @@ extension DjangoMigrationService {
 						order: $0)
 				}
 			for groupLabel in horizontalGroupLabels {
-				try await groupLabel.save(on: app.db)
+				try await groupLabel.save(on: newDb)
 			}
 		}
 	}
