@@ -1,11 +1,10 @@
-import { Box, Tag, TextInput } from "grommet";
-import React, { ChangeEventHandler, MutableRefObject } from "react";
+import { Box, Tag, TextInput } from 'grommet';
+import React, { ChangeEventHandler, MutableRefObject } from 'react';
 
 export interface ILabelModel {
     id: string;
     name: string;
 }
-
 
 interface LabelInputProps<T extends ILabelModel> {
     onAdd: (a: T) => void;
@@ -15,71 +14,78 @@ interface LabelInputProps<T extends ILabelModel> {
     value: T[];
 }
 
+export const LabelInput = <T extends ILabelModel>({
+    value = [],
+    onAdd,
+    onChange,
+    onRemove,
+    suggestions,
+    ...rest
+}: LabelInputProps<T>): React.ReactElement => {
+    const [currentTag, setCurrentTag] = React.useState('');
+    const boxRef = React.useRef<HTMLDivElement>();
 
-export const LabelInput = <T extends ILabelModel>({ value = [], onAdd, onChange, onRemove, suggestions, ...rest }: LabelInputProps<T>): React.ReactElement => {
-  const [currentTag, setCurrentTag] = React.useState('');
-  const boxRef = React.useRef<HTMLDivElement>();
+    const updateCurrentLabel: ChangeEventHandler<HTMLInputElement> = event => {
+        setCurrentTag(event.target.value);
+        if (onChange) {
+            onChange(event);
+        }
+    };
 
-  const updateCurrentLabel:  ChangeEventHandler<HTMLInputElement> = (
-      event,
-  ) => {
-    setCurrentTag(event.target.value);
-    if (onChange) {
-      onChange(event);
-    }
-  };
+    const onAddTag = (label: T) => {
+        onAdd(label);
+    };
 
-  const onAddTag = (label: T) => {
-      onAdd(label);
-    
-  };
+    const renderValue = () =>
+        value.map(v => (
+            <Tag
+                size="small"
+                key={v.id}
+                value={v.name}
+                onRemove={() => {
+                    onRemove(v);
+                }}
+            />
+        ));
 
-  const renderValue = () =>
-    value.map((v) => (
-      <Tag
-        size="small"
-        key={v.id}
-        value={v.name}
-            onRemove={() => { onRemove(v) }}
-        />
-    ));
-
-  return (
-      <Box
-        direction="row"
-        align="center"
-        pad={{ horizontal: 'xsmall' }}
-        border="all"
-        ref={boxRef as MutableRefObject<HTMLDivElement>}
-        wrap
-      >
-        {value.length > 0 && renderValue()}
-        <Box flex style={{ minWidth: '120px' }}>
-          <TextInput
-            type="search"
-            plain
-            dropTarget={boxRef.current}
-            {...rest}
-            suggestions={
-                suggestions
-                    ?.filter(tag => tag.name.toLowerCase().includes(currentTag.toLowerCase()))
-                    .map(tag => ({
-                        label: tag.name,
-                        value: tag.id,
-                    })) ?? []
-            }
-                      onChange={(event) => { updateCurrentLabel(event) }}
-            value={currentTag}
-            onSuggestionSelect={event => {
-                const { value: suggestionId } = event.suggestion as {value: string};
-                const suggestion = suggestions?.find(test => test.id === suggestionId)
-                if (suggestion) {
-                    onAddTag(suggestion);
-                }
-                setCurrentTag('');
-            }}
-          />
+    return (
+        <Box
+            direction="row"
+            align="center"
+            pad={{ horizontal: 'xsmall' }}
+            border="all"
+            ref={boxRef as MutableRefObject<HTMLDivElement>}
+            wrap
+        >
+            {value.length > 0 && renderValue()}
+            <Box flex style={{ minWidth: '120px' }}>
+                <TextInput
+                    type="search"
+                    plain
+                    dropTarget={boxRef.current}
+                    {...rest}
+                    suggestions={
+                        suggestions
+                            ?.filter(tag => tag.name.toLowerCase().includes(currentTag.toLowerCase()))
+                            .map(tag => ({
+                                label: tag.name,
+                                value: tag.id,
+                            })) ?? []
+                    }
+                    onChange={event => {
+                        updateCurrentLabel(event);
+                    }}
+                    value={currentTag}
+                    onSuggestionSelect={event => {
+                        const { value: suggestionId } = event.suggestion as { value: string };
+                        const suggestion = suggestions?.find(test => test.id === suggestionId);
+                        if (suggestion) {
+                            onAddTag(suggestion);
+                        }
+                        setCurrentTag('');
+                    }}
+                />
+            </Box>
         </Box>
-      </Box>
-  );
+    );
 };

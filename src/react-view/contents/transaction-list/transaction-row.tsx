@@ -17,29 +17,38 @@ interface TransactionRowProps {
 }
 
 export const TransactionRow: React.FC<TransactionRowProps> = ({ transaction, labels, onChange }) => {
-    const logger = useLogger("Transaction row")
-    const client = useApi()
-    const linkLabel = useAsyncCallback((transactionId: ApiUUID, labelId: ApiUUID)=>client.POST("/bank-transactions/{transactionId}/label/{labelId}", {params: {path: {transactionId, labelId}}}))
-    const unlinkLabel = useAsyncCallback((transactionId: ApiUUID, labelId: ApiUUID)=>client.DELETE("/bank-transactions/{transactionId}/label/{labelId}", {params: {path: {transactionId, labelId}}}))
+    const logger = useLogger('Transaction row');
+    const client = useApi();
+    const linkLabel = useAsyncCallback((transactionId: ApiUUID, labelId: ApiUUID) =>
+        client.POST('/bank-transactions/{transactionId}/label/{labelId}', {
+            params: { path: { transactionId, labelId } },
+        }),
+    );
+    const unlinkLabel = useAsyncCallback((transactionId: ApiUUID, labelId: ApiUUID) =>
+        client.DELETE('/bank-transactions/{transactionId}/label/{labelId}', {
+            params: { path: { transactionId, labelId } },
+        }),
+    );
 
-    const setComment = useAsyncCallback((transactionId: ApiUUID, comment?: string) => client.PATCH("/bank-transactions/{transactionId}", {body: {comment}, params: {path: {transactionId}}}))
+    const setComment = useAsyncCallback((transactionId: ApiUUID, comment?: string) =>
+        client.PATCH('/bank-transactions/{transactionId}', { body: { comment }, params: { path: { transactionId } } }),
+    );
 
     const { labelIds } = transaction;
-    const updateTransactionLabel = (action: "link" | "unlink", labelId: ApiUUID) => {
+    const updateTransactionLabel = (action: 'link' | 'unlink', labelId: ApiUUID) => {
         onChange({
             ...transaction,
             date: transaction.date.toISOString(),
-            labelIds:
-                action === "unlink" ? labelIds.filter(id => id !== labelId) : [...labelIds, labelId],
+            labelIds: action === 'unlink' ? labelIds.filter(id => id !== labelId) : [...labelIds, labelId],
         });
-        
-        const updatePromise = (action === "unlink" ? unlinkLabel : linkLabel).execute(transaction.id, labelId);
-        catchAndLog(updatePromise, `Problem ${action} a label from a transaction`, logger)
+
+        const updatePromise = (action === 'unlink' ? unlinkLabel : linkLabel).execute(transaction.id, labelId);
+        catchAndLog(updatePromise, `Problem ${action} a label from a transaction`, logger);
     };
 
     const updateDesc = async (desc: string) => {
-        const realComment = desc.length > 0 ? desc : undefined
-        const hasChanges = transaction.description !== realComment
+        const realComment = desc.length > 0 ? desc : undefined;
+        const hasChanges = transaction.description !== realComment;
         if (hasChanges) {
             onChange({
                 ...transaction,
@@ -57,8 +66,12 @@ export const TransactionRow: React.FC<TransactionRowProps> = ({ transaction, lab
             <TableCell>
                 <LabelInput
                     value={transaction.labelsComplete}
-                    onAdd={tag => {updateTransactionLabel("link", tag.id)}}
-                    onRemove={tag => { updateTransactionLabel("unlink", tag.id) }}
+                    onAdd={tag => {
+                        updateTransactionLabel('link', tag.id);
+                    }}
+                    onRemove={tag => {
+                        updateTransactionLabel('unlink', tag.id);
+                    }}
                     suggestions={labels.filter(tag => !transaction.labelsComplete.includes(tag))}
                 />
             </TableCell>
@@ -66,7 +79,12 @@ export const TransactionRow: React.FC<TransactionRowProps> = ({ transaction, lab
             <TableCell>{transaction.value}</TableCell>
             <TableCell>{format(transaction.date, 'yyyy-MM-dd')}</TableCell>
             <TableCell>
-                <TextArea defaultValue={transaction.description ?? ""} onBlur={event => { catchAndLog(updateDesc(event.target.value), "Updating comment on transaction", logger) }} />
+                <TextArea
+                    defaultValue={transaction.description ?? ''}
+                    onBlur={event => {
+                        catchAndLog(updateDesc(event.target.value), 'Updating comment on transaction', logger);
+                    }}
+                />
             </TableCell>
         </TableRow>
     );

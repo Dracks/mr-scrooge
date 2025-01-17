@@ -49,16 +49,19 @@ const ImportsList: React.FC<{ importsList: FileImport[] }> = ({ importsList }) =
 
 export const Imports: React.FC = () => {
     // const logger = useLogger("Imports");
-    const client = useApi()
-    const paginator = usePagination(async next => {
-        const response = await client.GET("/imports", {params: {query: {cursor: next}}})
-        if (response.data?.results){
-            return response.data
-        }
-        throw Error("Cannot get imports")
-    }, {autostart: true, hash: (fi: FileImport) => fi.id})
+    const client = useApi();
+    const paginator = usePagination(
+        async next => {
+            const response = await client.GET('/imports', { params: { query: { cursor: next } } });
+            if (response.data?.results) {
+                return response.data;
+            }
+            throw Error('Cannot get imports');
+        },
+        { autostart: true, hash: (fi: FileImport) => fi.id },
+    );
     const eventEmitter = useEventEmitter();
-    const importsList =  paginator.loadedData;
+    const importsList = paginator.loadedData;
 
     React.useEffect(() => {
         const unsubscribe = eventEmitter.subscribe(EventTypes.OnFileUploaded, () => {

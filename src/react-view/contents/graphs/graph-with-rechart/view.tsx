@@ -92,7 +92,7 @@ const BarGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
 };
 
 const LineGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
-    const logger = useLogger("LineGraphRender");
+    const logger = useLogger('LineGraphRender');
     const { keys, firstKey, data } = genericToRecharts<string, string>(graphData);
     const [hidenElements, touch] = useHideLogic();
 
@@ -103,7 +103,7 @@ const LineGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey={firstKey} />
                 <YAxis />
-                <Tooltip formatter={(value:number) => value.toFixed(DECIMAL_COUNT)} />
+                <Tooltip formatter={(value: number) => value.toFixed(DECIMAL_COUNT)} />
                 <Legend
                     onClick={({ dataKey }) => {
                         touch(dataKey as string);
@@ -141,7 +141,7 @@ const PieGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
                     nameKey="label"
                     cx="50%"
                     cy="50%"
-                    label={({ value }: {value: number}) => value.toFixed(DECIMAL_COUNT)}
+                    label={({ value }: { value: number }) => value.toFixed(DECIMAL_COUNT)}
                 >
                     {keys.map((_, index) => (
                         <Cell key={`cell-${String(index)}`} fill={schemeTableau10[index]} />
@@ -153,9 +153,9 @@ const PieGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
 };
 
 const ComponentHash: Record<GraphKind, React.FC<GraphRenderArgs>> = {
-    "line": LineGraphRender,
-    "bar": BarGraphRender,
-    "pie": PieGraphRender,
+    line: LineGraphRender,
+    bar: BarGraphRender,
+    pie: PieGraphRender,
 };
 
 export const GraphViewer: React.FC<GraphViewerArgs> = ({ graph }) => {

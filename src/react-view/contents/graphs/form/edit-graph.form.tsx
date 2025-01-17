@@ -12,33 +12,32 @@ interface EditGraphProps {
     id: ApiUUID;
 }
 export const EditGraph: React.FC<EditGraphProps> = ({ id }) => {
-    const logger = useLogger("EditGraph");
+    const logger = useLogger('EditGraph');
     const client = useApi();
-    const graphQuery = useAsync(()=>client.GET("/graphs", {params: {query: {graphIds: [id]}}}), [id, client]);
-    const updateGraph = useAsyncCallback((id: ApiUUID, graph: GraphParam)=>{
-        return client.PUT("/graphs/{id}", {
-            params: { path: { id }, },
-            body: graph
-        })
-    })
+    const graphQuery = useAsync(() => client.GET('/graphs', { params: { query: { graphIds: [id] } } }), [id, client]);
+    const updateGraph = useAsyncCallback((id: ApiUUID, graph: GraphParam) => {
+        return client.PUT('/graphs/{id}', {
+            params: { path: { id } },
+            body: graph,
+        });
+    });
 
-   const [graphData, setGraphData] = React.useState<Graph>();
+    const [graphData, setGraphData] = React.useState<Graph>();
 
     React.useEffect(() => {
-        if (graphQuery.status == "success" ) {
-            const { results: graphs } = graphQuery.result?.data ?? {results: []};
+        if (graphQuery.status == 'success') {
+            const { results: graphs } = graphQuery.result?.data ?? { results: [] };
             if (graphs.length === 1) {
                 setGraphData(graphs[0]);
             } else if (graphs.length > 1) {
                 logger.error('More than one graph found', { graphs });
             } else {
-                setGraphData(undefined)
+                setGraphData(undefined);
             }
         }
     }, [graphQuery.status, id]);
 
-
-    if (graphQuery.status === "loading") {
+    if (graphQuery.status === 'loading') {
         return <LoadingPage />;
     } else if (graphData) {
         return (
@@ -46,15 +45,16 @@ export const EditGraph: React.FC<EditGraphProps> = ({ id }) => {
                 graphData={graphData}
                 update={setGraphData}
                 save={() => {
-                    updateGraph.execute(id, graphData).catch((error: unknown) => { logger.error("Saving the graph", { error }) });
+                    updateGraph.execute(id, graphData).catch((error: unknown) => {
+                        logger.error('Saving the graph', { error });
+                    });
                 }}
             />
         );
-    } else if (graphQuery.status === "error") {
-        logger.error("Error getting the graph", graphQuery.result?.error)
-        return <div> Error getting the graph </div>
+    } else if (graphQuery.status === 'error') {
+        logger.error('Error getting the graph', graphQuery.result?.error);
+        return <div> Error getting the graph </div>;
     } else {
         return <NotFound />;
-
     }
 };

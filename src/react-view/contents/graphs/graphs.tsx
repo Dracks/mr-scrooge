@@ -11,26 +11,26 @@ import { enrichGraph } from './graph-with-rechart/enrich-graph';
 import { GraphWrapperWithRechart } from './graph-with-rechart/graph';
 
 export const Graphs: React.FC = () => {
-    const client = useApi()
-    const logger = useLogger("Graphs")
+    const client = useApi();
+    const logger = useLogger('Graphs');
     const graphs = usePagination(async next => {
-        const { data } = await client.GET("/graphs", {params: {query: {cursor: next}}})
-        if (data){
-            return data
+        const { data } = await client.GET('/graphs', { params: { query: { cursor: next } } });
+        if (data) {
+            return data;
         } else {
-            throw Error("Get graphs didn't had data")
+            throw Error("Get graphs didn't had data");
         }
     });
     const { labels } = useLabelsContext();
 
     const responseGraphList = graphs.loadedData;
 
-    if (graphs.status == "loading") {
+    if (graphs.status == 'loading') {
         return <LoadingPage />;
-    } else if (graphs.status === "error"){
-        logger.error("Error loading the graphs", graphs.error)
-        return <div>Error loading the graphs </div>
-    } else  {
+    } else if (graphs.status === 'error') {
+        logger.error('Error loading the graphs', graphs.error);
+        return <div>Error loading the graphs </div>;
+    } else {
         const enrichedGraphs = responseGraphList.map(graph => enrichGraph(graph, labels));
         return (
             <Grid columns={'450px'} gap="small">

@@ -13,9 +13,11 @@ const Fallback: React.FC<FallbackProps> = ({ error }) => {
             </div>
         );
     } else {
-        return <div role="alert">
-            <h1> An unknown alert was raised</h1>
-        </div>
+        return (
+            <div role="alert">
+                <h1> An unknown alert was raised</h1>
+            </div>
+        );
     }
 };
 

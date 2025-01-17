@@ -29,19 +29,18 @@ const useGenerateHash = (labels: Label[]): Map<ApiUUID, Label> => {
 };
 
 export const ProvideLabelsData: React.FC<PropsWithChildren> = ({ children }) => {
-    const client = useApi()
-    const paginator = usePagination(async (next) => {
-        const { data } = await client.GET("/labels", { params: { query: { cursor: next } } })
+    const client = useApi();
+    const paginator = usePagination(async next => {
+        const { data } = await client.GET('/labels', { params: { query: { cursor: next } } });
         if (data) {
-            return data
+            return data;
         } else {
-
             throw Error("Get labels didn't had data");
         }
-    })
+    });
     const labelsMap = useGenerateHash(paginator.loadedData);
 
-    if (paginator.status ==="completed") {
+    if (paginator.status === 'completed') {
         const context: ILabelContext = {
             labels: paginator.loadedData,
             labelsMap,
@@ -50,8 +49,8 @@ export const ProvideLabelsData: React.FC<PropsWithChildren> = ({ children }) => 
             },
         };
         return <LabelContext.Provider value={context}>{children}</LabelContext.Provider>;
-    } else if (paginator.status === "loading") {
+    } else if (paginator.status === 'loading') {
         <LoadingPage />;
-    } 
-    return <div>Error on loading the labels</div>
+    }
+    return <div>Error on loading the labels</div>;
 };

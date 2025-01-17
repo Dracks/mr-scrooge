@@ -7,11 +7,11 @@ import { GraphDateRange, GraphKind, GraphParam, GroupType, Label } from '../../.
 import { useLogger } from '../../../utils/logger/logger.context';
 import { ConfirmationButton } from '../../../utils/ui/confirmation-button';
 import { EnumSelectOption } from '../../../utils/ui/enum-option';
+import { LabelInput } from '../../../utils/ui/label-selector';
 import { useLabelsContext } from '../../common/label.context';
 import { enrichGraph } from '../graph-with-rechart/enrich-graph';
 import { GraphViewer } from '../graph-with-rechart/view';
 import { graphToUi, GraphUiRepresentation, uiToGraph } from './graph.transformer';
-import { LabelInput } from '../../../utils/ui/label-selector';
 
 interface GraphFormProps<T extends GraphParam> {
     graphData: Partial<T>;
@@ -30,26 +30,26 @@ const GraphPlaceholder: React.FC = () => {
 };
 
 const DateRangeOptions: EnumSelectOption<GraphDateRange>[] = [
-    { id: "oneMonth", label: 'One month' },
-    { id: "halfYear", label: 'Half year' },
-    { id: "oneYear", label: 'One year' },
-    { id: "twoYears", label: 'Two years' },
-    { id: "all", label: 'all' },
+    { id: 'oneMonth', label: 'One month' },
+    { id: 'halfYear', label: 'Half year' },
+    { id: 'oneYear', label: 'One year' },
+    { id: 'twoYears', label: 'Two years' },
+    { id: 'all', label: 'all' },
 ];
 
-const KindOptions:EnumSelectOption<GraphKind>[] = [
-    {id: "bar", label: 'Bar'},
-    {id: "line", label: 'Line'},
-    { id: "pie", label: "Pie"}
-]
+const KindOptions: EnumSelectOption<GraphKind>[] = [
+    { id: 'bar', label: 'Bar' },
+    { id: 'line', label: 'Line' },
+    { id: 'pie', label: 'Pie' },
+];
 
 const GroupOptions: EnumSelectOption<GroupType>[] = [
-    {id: "sign", label: "Sign (positive/negative)"},
-    {id: "day", label: 'Day'},
-    {id: "month", label: "Month"},
-    {id: "year", label: "Year"},
-    {id: "labels", label: 'Labels'},
-]
+    { id: 'sign', label: 'Sign (positive/negative)' },
+    { id: 'day', label: 'Day' },
+    { id: 'month', label: 'Month' },
+    { id: 'year', label: 'Year' },
+    { id: 'labels', label: 'Labels' },
+];
 
 export const GraphForm: <T extends GraphParam>(p: GraphFormProps<T>) => React.ReactElement<GraphFormProps<T>> = <
     T extends GraphParam,
@@ -64,7 +64,7 @@ export const GraphForm: <T extends GraphParam>(p: GraphFormProps<T>) => React.Re
     const navigate = useNavigate();
 
     const size = React.useContext(ResponsiveContext);
-    const hasHorizontal = graphData.kind === "bar" || graphData.kind === "line";
+    const hasHorizontal = graphData.kind === 'bar' || graphData.kind === 'line';
     const graphEnabled = graphData.kind && graphData.group && (!hasHorizontal || graphData.horizontalGroup);
     const graphUi = graphToUi(graphData);
     const updateGraph = (data: GraphUiRepresentation) => {
@@ -86,10 +86,7 @@ export const GraphForm: <T extends GraphParam>(p: GraphFormProps<T>) => React.Re
                 {graphEnabled ? <GraphViewer graph={enrichGraph(graphData as T, labels)} /> : <GraphPlaceholder />}
                 <Box>
                     <FormField name="name" label="Graph name" component={TextInput} />
-                    <FormField
-                        label="Graph kind"
-                        htmlFor="select-for-kind"
-                        >
+                    <FormField label="Graph kind" htmlFor="select-for-kind">
                         <Select
                             id="select-for-kind"
                             name="kind"
@@ -120,7 +117,7 @@ export const GraphForm: <T extends GraphParam>(p: GraphFormProps<T>) => React.Re
                     </FormField>
                     <Box>
                         <Heading level={5}>Group data</Heading>
-                        <FormField label="Group type" htmlFor='select-for-group-type'>
+                        <FormField label="Group type" htmlFor="select-for-group-type">
                             <Select
                                 id="select-for-group-type"
                                 name="groupType"
@@ -129,13 +126,12 @@ export const GraphForm: <T extends GraphParam>(p: GraphFormProps<T>) => React.Re
                                 valueKey={{ key: 'id', reduce: true }}
                             />
                         </FormField>
-                        {graphUi.groupType === "labels" && (
+                        {graphUi.groupType === 'labels' && (
                             <React.Fragment>
                                 <FormField label="Tags to group" htmlFor="select-group-tags">
                                     <LabelInput
                                         value={
-                                            graphUi.groupLabels?.map(labelId => labelsMap.get(labelId) as Label) ??
-                                            []
+                                            graphUi.groupLabels?.map(labelId => labelsMap.get(labelId) as Label) ?? []
                                         }
                                         onAdd={tag => {
                                             updateGraph({
@@ -161,19 +157,19 @@ export const GraphForm: <T extends GraphParam>(p: GraphFormProps<T>) => React.Re
                     {hasHorizontal && (
                         <Box>
                             <Heading level={5}>X axis</Heading>
-                            <FormField label="Group type" htmlFor='select-for-horizontal-group-type'>
-                            <Select
-                                id="select-for-horizontal-group-type"
-                                options={GroupOptions}
-                                name="horizontalGroupType"
-                                labelKey="label"
-                                valueKey={{ key: 'id', reduce: true }}
-                            />
+                            <FormField label="Group type" htmlFor="select-for-horizontal-group-type">
+                                <Select
+                                    id="select-for-horizontal-group-type"
+                                    options={GroupOptions}
+                                    name="horizontalGroupType"
+                                    labelKey="label"
+                                    valueKey={{ key: 'id', reduce: true }}
+                                />
                             </FormField>
-                            {graphUi.kind === "line" && (
+                            {graphUi.kind === 'line' && (
                                 <FormField label="Acumulate values" name="horizontalAccumulate" component={CheckBox} />
                             )}
-                            {graphUi.horizontalGroupType === "labels" && (
+                            {graphUi.horizontalGroupType === 'labels' && (
                                 <React.Fragment>
                                     <FormField label="Tags to group" htmlFor="select-x-group-tags">
                                         <LabelInput

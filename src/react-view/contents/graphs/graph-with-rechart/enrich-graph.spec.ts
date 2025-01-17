@@ -17,13 +17,13 @@ describe('enrichGraph', () => {
     it('A graph with group type tags and preserving the order', () => {
         const result = enrichGraph(
             {
-                dateRange: "all",
+                dateRange: 'all',
                 group: {
                     labels: [3, 1].map(idx => listLabelIds[idx] as ApiUUID),
-                    group: "labels",
+                    group: 'labels',
                 },
                 groupOwnerId: mainGroupOwnerId,
-                kind: "pie",
+                kind: 'pie',
                 name: 'some graph',
             },
             labelsList,

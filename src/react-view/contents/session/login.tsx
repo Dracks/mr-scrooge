@@ -28,14 +28,13 @@ export const Login: React.FC = () => {
         <LoginView
             isLoading={loginRequest.loading}
             invalidCredentials={invalidCredentials}
-            error={loginRequest.error instanceof Error ? {message: loginRequest.error.message} : undefined}
+            error={loginRequest.error instanceof Error ? { message: loginRequest.error.message } : undefined}
             login={credentials => {
-                
-                loginRequest.execute(credentials).catch((error: unknown) => { 
+                loginRequest.execute(credentials).catch((error: unknown) => {
                     if (error instanceof Error) {
-                        logger.error("Login request responded an error", {error})
+                        logger.error('Login request responded an error', { error });
                     } else {
-                        logger.error("Login Request unknown error", { error })
+                        logger.error('Login Request unknown error', { error });
                     }
                 });
             }}

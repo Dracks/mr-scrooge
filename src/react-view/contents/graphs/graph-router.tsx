@@ -9,10 +9,10 @@ export const GraphRouter: React.FC = () => {
     return (
         <Routes>
             <Route path="new-graph" element={<GraphNew />} />
-            <Route path=":id" element={<AddRouteParams
-                check={routeParamsIsParamId}
-                child={({ id }) => <EditGraph id={id} />} 
-            /> } />
+            <Route
+                path=":id"
+                element={<AddRouteParams check={routeParamsIsParamId} child={({ id }) => <EditGraph id={id} />} />}
+            />
         </Routes>
     );
 };

@@ -11,9 +11,9 @@ import { useUploadQueue } from '../../common/uploader-queue.context';
 import { ImportFileRow } from './import-file-row';
 
 const useKindWithRegex = () => {
-    const client = useApi()
-    const parserTypes = useAsync(()=>client.GET("/imports/parsers"), [client])
-    const parserList : FileParserType[] = parserTypes.result?.data?.parsers ?? [];
+    const client = useApi();
+    const parserTypes = useAsync(() => client.GET('/imports/parsers'), [client]);
+    const parserList: FileParserType[] = parserTypes.result?.data?.parsers ?? [];
     const regexCompiled = React.useMemo(
         () => parserList.map(k => ({ name: k.name, regex: new RegExp(k.fileNameRegex) })),
         [parserList],

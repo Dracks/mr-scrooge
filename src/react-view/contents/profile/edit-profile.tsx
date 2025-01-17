@@ -8,15 +8,15 @@ import { useLogger } from '../../utils/logger/logger.context';
 import { useSession, useUserProfileOrThrows } from '../../utils/session/session-context';
 
 export const EditProfile = () => {
-    const {
-        refresh,
-    } = useSession();
-    const {firstName, lastName, ...profile} = useUserProfileOrThrows()
+    const { refresh } = useSession();
+    const { firstName, lastName, ...profile } = useUserProfileOrThrows();
 
-    const client = useApi()
-    const updateProfile = useAsyncCallback((data: UpdateMyProfile)=>client.PUT("/session/me", {
-        body: data
-    }))
+    const client = useApi();
+    const updateProfile = useAsyncCallback((data: UpdateMyProfile) =>
+        client.PUT('/session/me', {
+            body: data,
+        }),
+    );
     const logger = useLogger();
     const [uiProfile, setUiProfile] = React.useState<UpdateMyProfile & { newPassword2?: string }>({
         password: '',
@@ -36,20 +36,20 @@ export const EditProfile = () => {
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     const { newPassword2, ...data } = uiProfile;
                     logger.info('New sent data', { data });
-                    updateProfile.execute(
-                        data,
-                    ).then(()=>{
-                        setUiProfile({
-                            ...uiProfile,
-                            password: '',
-                            newPassword: '',
-                            newPassword2: '',
+                    updateProfile
+                        .execute(data)
+                        .then(() => {
+                            setUiProfile({
+                                ...uiProfile,
+                                password: '',
+                                newPassword: '',
+                                newPassword2: '',
+                            });
+                            refresh();
+                        })
+                        .catch((error: unknown) => {
+                            logger.error('Error updating the user info', { error });
                         });
-                        refresh();
-                    }).catch((error:unknown)=> {
-                        logger.error("Error updating the user info", { error })
-                    })
-                    
                 }}
             >
                 <Box direction="row-responsive" justify="center" gap="medium">
@@ -60,12 +60,7 @@ export const EditProfile = () => {
                         <FormField label="Last name" name="lastName" component={TextInput} />
                     </Box>
                     <Box align="top" gap="small">
-                        <FormField
-                            label="Old password"
-                            name="password"
-                            component={TextInput}
-                            type="password"
-                        />
+                        <FormField label="Old password" name="password" component={TextInput} type="password" />
                         <FormField
                             label="New password"
                             name="newPassword"
@@ -82,15 +77,16 @@ export const EditProfile = () => {
                         />
                     </Box>
                 </Box>
-                <Box justify='center'>
+                <Box justify="center">
                     <Heading level="3">Groups</Heading>
-                    <FormField label="Default group" htmlFor='select-default-group'>
-                        <Select 
-                        id="select-default-group" 
-                        options={profile.groups} 
-                        name="defaultGroupId"
-                        labelKey="name" 
-                        valueKey={{key: 'id', reduce: true}} />
+                    <FormField label="Default group" htmlFor="select-default-group">
+                        <Select
+                            id="select-default-group"
+                            options={profile.groups}
+                            name="defaultGroupId"
+                            labelKey="name"
+                            valueKey={{ key: 'id', reduce: true }}
+                        />
                     </FormField>
                 </Box>
                 <Box justify="center" align="center" pad="small">
