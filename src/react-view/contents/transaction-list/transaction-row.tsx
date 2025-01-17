@@ -33,22 +33,22 @@ export const TransactionRow: React.FC<TransactionRowProps> = ({ transaction, lab
                 action === "unlink" ? labelIds.filter(id => id !== labelId) : [...labelIds, labelId],
         });
         
-        const updatePromise = (action === "unlink" ? unlinkLabel : linkLabel).execute(transaction.id, labelId).then(request => {
-            console.log(request)
-            //onChange(request.data);
-        });
+        const updatePromise = (action === "unlink" ? unlinkLabel : linkLabel).execute(transaction.id, labelId);
         catchAndLog(updatePromise, `Problem ${action} a label from a transaction`, logger)
     };
 
     const updateDesc = async (desc: string) => {
-        onChange({
-            ...transaction,
-            labelIds,
-            date: transaction.date.toISOString(),
-            description: desc,
-        });
-        const request = await setComment.execute(transaction.id, desc.length >0 ? desc : undefined);
-        console.log(request)
+        const realComment = desc.length > 0 ? desc : undefined
+        const hasChanges = transaction.description !== realComment
+        if (hasChanges) {
+            onChange({
+                ...transaction,
+                labelIds,
+                date: transaction.date.toISOString(),
+                description: desc,
+            });
+            await setComment.execute(transaction.id, realComment);
+        }
     };
     useLogger().info('raw data source', { rds: transaction });
     return (
