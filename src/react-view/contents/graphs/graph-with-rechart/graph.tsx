@@ -4,7 +4,7 @@ import React from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 import { useNavigate } from 'react-router';
 
-import { useApi } from '../../../api/client';
+import { useApiClient } from '../../../api/client';
 import { ApiUUID, Graph } from '../../../api/models';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { ConfirmationButton } from '../../../utils/ui/confirmation-button';
@@ -19,7 +19,7 @@ interface GraphWrapperArgs {
 export const GraphWrapperWithRechart: React.FC<GraphWrapperArgs> = ({ graph, reload }) => {
     const logger = useLogger();
     const navigate = useNavigate();
-    const client = useApi();
+    const client = useApiClient();
     const deleteCb = useAsyncCallback((id: ApiUUID) => {
         return client.DELETE('/graphs/{id}', { params: { path: { id } } });
     });

@@ -1,7 +1,7 @@
 import { Grid } from 'grommet';
 import React from 'react';
 
-import { useApi } from '../../api/client';
+import { useApiClient } from '../../api/client';
 import { usePagination } from '../../api/pagination';
 import { useLogger } from '../../utils/logger/logger.context';
 import { LoadingPage } from '../../utils/ui/loading';
@@ -11,7 +11,7 @@ import { enrichGraph } from './graph-with-rechart/enrich-graph';
 import { GraphWrapperWithRechart } from './graph-with-rechart/graph';
 
 export const Graphs: React.FC = () => {
-    const client = useApi();
+    const client = useApiClient();
     const logger = useLogger('Graphs');
     const graphs = usePagination(async next => {
         const { data } = await client.GET('/graphs', { params: { query: { cursor: next } } });

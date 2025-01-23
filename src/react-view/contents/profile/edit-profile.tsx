@@ -2,7 +2,7 @@ import { Box, Button, Form, FormField, Heading, Select, TextInput } from 'gromme
 import React from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 
-import { useApi } from '../../api/client';
+import { useApiClient } from '../../api/client';
 import { UpdateMyProfile } from '../../api/models';
 import { useLogger } from '../../utils/logger/logger.context';
 import { useSession, useUserProfileOrThrows } from '../../utils/session/session-context';
@@ -11,7 +11,7 @@ export const EditProfile = () => {
     const { refresh } = useSession();
     const { firstName, lastName, ...profile } = useUserProfileOrThrows();
 
-    const client = useApi();
+    const client = useApiClient();
     const updateProfile = useAsyncCallback((data: UpdateMyProfile) =>
         client.PUT('/session/me', {
             body: data,

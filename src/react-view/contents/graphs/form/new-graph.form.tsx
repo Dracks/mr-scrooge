@@ -2,7 +2,7 @@ import React from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 import { useNavigate } from 'react-router';
 
-import { useApi } from '../../../api/client';
+import { useApiClient } from '../../../api/client';
 import { GraphParam } from '../../../api/models';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { useUserProfileOrThrows } from '../../../utils/session/session-context';
@@ -10,7 +10,7 @@ import { GraphForm } from './graph.form';
 
 export const GraphNew = () => {
     const logger = useLogger('GraphNew');
-    const client = useApi();
+    const client = useApiClient();
     const newFormRequest = useAsyncCallback((graph: GraphParam) => {
         return client.POST('/graphs', { body: graph });
     });

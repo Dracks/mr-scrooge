@@ -17,4 +17,4 @@ export const ProvideApi: React.FC<PropsWithChildren> = ({ children }) => {
     return <ApiContext.Provider value={$api}>{children}</ApiContext.Provider>;
 };
 
-export const useApi = () => React.useContext(ApiContext);
+export const useApiClient = () => React.useContext(ApiContext);

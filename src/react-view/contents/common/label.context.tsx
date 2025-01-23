@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, useContext } from 'react';
 
-import { useApi } from '../../api/client';
+import { useApiClient } from '../../api/client';
 import { ApiUUID, Label } from '../../api/models';
 import { usePagination } from '../../api/pagination';
 import { LoadingPage } from '../../utils/ui/loading';
@@ -29,7 +29,7 @@ const useGenerateHash = (labels: Label[]): Map<ApiUUID, Label> => {
 };
 
 export const ProvideLabelsData: React.FC<PropsWithChildren> = ({ children }) => {
-    const client = useApi();
+    const client = useApiClient();
     const paginator = usePagination(async next => {
         const { data } = await client.GET('/labels', { params: { query: { cursor: next } } });
         if (data) {

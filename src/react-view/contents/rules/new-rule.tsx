@@ -3,7 +3,7 @@ import React from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 import { useNavigate } from 'react-router';
 
-import { useApi } from '../../api/client';
+import { useApiClient } from '../../api/client';
 import { RuleParam } from '../../api/models';
 import { useLogger } from '../../utils/logger/logger.context';
 import { catchAndLog } from '../../utils/promises';
@@ -14,7 +14,7 @@ import { useRuleCtx } from './rule-loaded';
 export const NewRuleForm: React.FC = () => {
     const logger = useLogger('RuleNew');
     const { list: allRules, refresh } = useRuleCtx();
-    const client = useApi();
+    const client = useApiClient();
     const profile = useUserProfileOrThrows();
     const navigate = useNavigate();
     const [formData, setFormData] = React.useState<RuleParam>({

@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import { useAsync, useAsyncCallback } from 'react-async-hook';
 
-import { useApi } from '../../api/client';
+import { useApiClient } from '../../api/client';
 import { ApiUUID, SessionInfo, UserGroup, UserProfile } from '../../api/models';
 import { useLogger } from '../logger/logger.context';
 import { catchAndLog } from '../promises';
@@ -25,7 +25,7 @@ const SessionContext = React.createContext<SessionContext>({
 
 export const SessionProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const [sessionInfo, setSessionInfo] = useState<SessionInfo>();
-    const client = useApi();
+    const client = useApiClient();
     const session = useAsync(() => client.GET('/session'), [client]);
     const logout = useAsyncCallback(async () => {
         setSessionInfo(undefined);

@@ -3,7 +3,7 @@ import React from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 import { useNavigate } from 'react-router';
 
-import { useApi } from '../../../api/client';
+import { useApiClient } from '../../../api/client';
 import { CreateUserParams } from '../../../api/models';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { catchAndLog } from '../../../utils/promises';
@@ -12,7 +12,7 @@ import { UserForm, UserWarning } from './user-form';
 export const NewUser: React.FC<{ reload: () => void }> = ({ reload }) => {
     const logger = useLogger('New User Form');
     const navigate = useNavigate();
-    const client = useApi();
+    const client = useApiClient();
     const createUser = useAsyncCallback((body: CreateUserParams) => {
         return client.POST('/users', { body });
     });

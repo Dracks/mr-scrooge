@@ -2,7 +2,7 @@ import { Box, Nav, Sidebar, TextInput } from 'grommet';
 import React from 'react';
 import { Route, Routes } from 'react-router';
 
-import { useApi } from '../../../api/client';
+import { useApiClient } from '../../../api/client';
 import { usePagination } from '../../../api/pagination';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { AnchorLink } from '../../../utils/ui/anchor-link';
@@ -13,7 +13,7 @@ import { UsersList } from './users-list';
 export const AdminUsers: React.FC = () => {
     const [searchText, setSearchText] = React.useState<string>('');
     const logger = useLogger('AdminUsers');
-    const client = useApi();
+    const client = useApiClient();
     const paginationUsers = usePagination(
         async next => {
             const { data } = await client.GET('/users', { params: { query: { cursor: next } } });

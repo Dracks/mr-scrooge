@@ -2,7 +2,7 @@ import { Box, Button, Form, Heading } from 'grommet';
 import React from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 
-import { useApi } from '../../../api/client';
+import { useApiClient } from '../../../api/client';
 import { ApiUUID, UpdateUserParams, UserProfile } from '../../../api/models';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { catchAndLog } from '../../../utils/promises';
@@ -25,7 +25,7 @@ const getUpdateFromUser = (user: UserProfile) => ({
 
 export const EditUser: React.FC<EditUserParams> = ({ user }) => {
     const logger = useLogger('EditUser');
-    const client = useApi();
+    const client = useApiClient();
     const saveUser = useAsyncCallback((id: ApiUUID, body: UpdateUserParams) => {
         return client.PUT('/users/{id}', { body, params: { path: { id } } });
     });

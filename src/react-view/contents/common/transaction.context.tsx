@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, useContext } from 'react';
 
-import { useApi } from '../../api/client';
+import { useApiClient } from '../../api/client';
 import { BankTransaction, Label } from '../../api/models';
 import { usePagination } from '../../api/pagination';
 import { EventTypes, useEventEmitter } from '../../utils/providers/event-emitter.provider';
@@ -26,7 +26,7 @@ const TransactionsContext = React.createContext<BankTransactionsContextType>({
 export const useTransactionsData = (): BankTransactionsContextType => useContext(TransactionsContext);
 
 export const ProvideTransactionsData: React.FC<PropsWithChildren> = ({ children }) => {
-    const client = useApi();
+    const client = useApiClient();
     const labels = useLabelsListContext();
 
     const enrichTransactions = (rds: BankTransaction) => ({
@@ -61,7 +61,7 @@ export const ProvideTransactionsData: React.FC<PropsWithChildren> = ({ children 
         data: paginator.loadedData,
         reset: paginator.reset,
         replace: data => {
-            paginator.process([enrichTransactions(data)]);
+            paginator.update([enrichTransactions(data)]);
         },
     };
     return <TransactionsContext.Provider value={context}>{children}</TransactionsContext.Provider>;

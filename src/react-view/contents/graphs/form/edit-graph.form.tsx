@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAsync, useAsyncCallback } from 'react-async-hook';
 
-import { useApi } from '../../../api/client';
+import { useApiClient } from '../../../api/client';
 import { ApiUUID, Graph, GraphParam } from '../../../api/models';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { LoadingPage } from '../../../utils/ui/loading';
@@ -13,7 +13,7 @@ interface EditGraphProps {
 }
 export const EditGraph: React.FC<EditGraphProps> = ({ id }) => {
     const logger = useLogger('EditGraph');
-    const client = useApi();
+    const client = useApiClient();
     const graphQuery = useAsync(() => client.GET('/graphs', { params: { query: { graphIds: [id] } } }), [id, client]);
     const updateGraph = useAsyncCallback((id: ApiUUID, graph: GraphParam) => {
         return client.PUT('/graphs/{id}', {

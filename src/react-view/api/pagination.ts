@@ -116,7 +116,7 @@ export const usePagination = <T>(
         },
         deleteElement,
         loadedData,
-        process,
+        update: process,
         error,
     };
 };

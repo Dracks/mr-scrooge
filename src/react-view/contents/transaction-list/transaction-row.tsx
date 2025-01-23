@@ -3,7 +3,7 @@ import { TableCell, TableRow, TextArea } from 'grommet';
 import React from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 
-import { useApi } from '../../api/client';
+import { useApiClient } from '../../api/client';
 import { ApiUUID, BankTransaction, Label } from '../../api/models';
 import { useLogger } from '../../utils/logger/logger.context';
 import { catchAndLog } from '../../utils/promises';
@@ -18,7 +18,7 @@ interface TransactionRowProps {
 
 export const TransactionRow: React.FC<TransactionRowProps> = ({ transaction, labels, onChange }) => {
     const logger = useLogger('Transaction row');
-    const client = useApi();
+    const client = useApiClient();
     const linkLabel = useAsyncCallback((transactionId: ApiUUID, labelId: ApiUUID) =>
         client.POST('/bank-transactions/{transactionId}/label/{labelId}', {
             params: { path: { transactionId, labelId } },

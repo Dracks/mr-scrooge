@@ -20,8 +20,9 @@ export const LabelInput = <T extends ILabelModel>({
     onChange,
     onRemove,
     suggestions,
+    "data-testid": dataTestId,
     ...rest
-}: LabelInputProps<T>): React.ReactElement => {
+}: LabelInputProps<T> &{"data-testid"?: unknown}): React.ReactElement => {
     const [currentTag, setCurrentTag] = React.useState('');
     const boxRef = React.useRef<HTMLDivElement>();
 
@@ -56,6 +57,7 @@ export const LabelInput = <T extends ILabelModel>({
             border="all"
             ref={boxRef as MutableRefObject<HTMLDivElement>}
             wrap
+            data-testid={dataTestId}
         >
             {value.length > 0 && renderValue()}
             <Box flex style={{ minWidth: '120px' }}>

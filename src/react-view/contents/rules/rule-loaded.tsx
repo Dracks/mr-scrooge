@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { useApi } from '../../api/client';
-import { ApiUUID } from '../../api/models';
+import { useApiClient } from '../../api/client';
+import { ApiUUID, Rule } from '../../api/models';
 import { usePagination } from '../../api/pagination';
 import { useLogger } from '../../utils/logger/logger.context';
 import { LoadingPage } from '../../utils/ui/loading';
@@ -9,18 +9,19 @@ import { useLabelsContext } from '../common/label.context';
 import { enrichRuleList, RuleEnriched, toApiRule } from './rule-enriched';
 import { RuleRouter } from './rule-router';
 
-interface RuleContext {
+export interface RuleContext {
     list: RuleEnriched[];
     map: Map<ApiUUID, RuleEnriched>;
     refresh: (toDelete?: RuleEnriched) => void;
+    updateRaw: (rule: Rule) => void;
 }
 
-export const RuleContext = React.createContext<RuleContext>({ list: [], map: new Map(), refresh: () => undefined });
-export const useRuleCtx = () => React.useContext(RuleContext);
+export const RulesDataContext = React.createContext<RuleContext>({ list: [], map: new Map(), refresh: () => undefined, updateRaw: ()=>undefined });
+export const useRuleCtx = () => React.useContext(RulesDataContext);
 
 export const RulesLoaded: React.FC = () => {
     const logger = useLogger('RulesLoaded');
-    const client = useApi();
+    const client = useApiClient();
     const [firstCompletion, setFirstCompletion] = React.useState<boolean>(false);
     const { labelsMap } = useLabelsContext();
     const paginatedRules = usePagination(
@@ -44,6 +45,7 @@ export const RulesLoaded: React.FC = () => {
         const ctx: RuleContext = {
             list: rulesEnriched.rules,
             map: rulesEnriched.rulesMap,
+            updateRaw: (rule: Rule)=>{paginatedRules.update([rule])},
             refresh: toDelete => {
                 if (toDelete) {
                     paginatedRules.deleteElement(toApiRule(toDelete));
@@ -52,9 +54,9 @@ export const RulesLoaded: React.FC = () => {
             },
         };
         return (
-            <RuleContext.Provider value={ctx}>
+            <RulesDataContext.Provider value={ctx}>
                 <RuleRouter />
-            </RuleContext.Provider>
+            </RulesDataContext.Provider>
         );
     }
     if (paginatedRules.status === 'loading') {
