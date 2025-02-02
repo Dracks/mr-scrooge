@@ -1,7 +1,7 @@
 FROM --platform=$BUILDPLATFORM node:22-slim AS client-build
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+RUN npm install -g corepack@latest && corepack enable
 
 COPY src /home/app/src
 COPY package.yaml /home/app
