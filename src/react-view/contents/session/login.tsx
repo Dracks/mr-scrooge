@@ -3,6 +3,7 @@ import { useAsyncCallback } from 'react-async-hook';
 
 import { useApiClient } from '../../api/client';
 import { useLogger } from '../../utils/logger/logger.context';
+import { catchAndLog } from '../../utils/promises';
 import { useSession } from '../../utils/session/session-context';
 import LoginView, { LoginCredentials } from './login-view';
 
@@ -30,13 +31,7 @@ export const Login: React.FC = () => {
             invalidCredentials={invalidCredentials}
             error={loginRequest.error instanceof Error ? { message: loginRequest.error.message } : undefined}
             login={credentials => {
-                loginRequest.execute(credentials).catch((error: unknown) => {
-                    if (error instanceof Error) {
-                        logger.error('Login request responded an error', { error });
-                    } else {
-                        logger.error('Login Request unknown error', { error });
-                    }
-                });
+                catchAndLog(loginRequest.execute(credentials), "Error login the user", logger)
             }}
         />
     );

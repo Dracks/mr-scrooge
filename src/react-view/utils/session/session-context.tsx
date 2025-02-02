@@ -75,7 +75,6 @@ export const SessionProvider: React.FC<PropsWithChildren> = ({ children }) => {
             </SessionContext.Provider>
         );
     }
-    logger.info('What the fuck!', session.result);
 
     if (session.loading || logout.status === 'loading') {
         return <LoadingPage />;
