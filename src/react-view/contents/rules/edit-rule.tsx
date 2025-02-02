@@ -1,4 +1,4 @@
-import { Box, Button,Form, Grid, Heading, ResponsiveContext } from 'grommet';
+import { Box, Button, Form, Grid, Heading, ResponsiveContext } from 'grommet';
 import React from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 
@@ -59,8 +59,8 @@ const EditRuleForm: React.FC<{ rule: RuleEnriched }> = ({ rule }) => {
 
     const updateRule = useAsyncCallback(async (ruleId: ApiUUID, updatedRule: RuleParam) => {
         const response = await client.PUT('/rules/{ruleId}', { body: updatedRule, params: { path: { ruleId } } });
-        if (response.data){
-            updateRaw(response.data)
+        if (response.data) {
+            updateRaw(response.data);
         }
     });
     React.useEffect(() => {
@@ -69,32 +69,30 @@ const EditRuleForm: React.FC<{ rule: RuleEnriched }> = ({ rule }) => {
     return (
         <Box pad="small">
             <ResponsiveContext.Consumer>
-                {(size) => (
-                    <Grid columns={size === "large" ? ["49%", "49%"] : "100%"} gap="medium">
+                {size => (
+                    <Grid columns={size === 'large' ? ['49%', '49%'] : '100%'} gap="medium">
                         <Box>
-                            <Heading data-testid="heading" level="2">Edit rule: {formData.name}</Heading>
+                            <Heading data-testid="heading" level="2">
+                                Edit rule: {formData.name}
+                            </Heading>
                             <Form<RuleParam>
                                 value={formData}
                                 onChange={newValue => {
                                     setFormData(newValue);
                                 }}
                                 onSubmit={() => {
-                                    catchAndLog(
-                                        updateRule.execute(rule.id, formData),
-                                        'Creating the new rule',
-                                        logger,
-                                    );
+                                    catchAndLog(updateRule.execute(rule.id, formData), 'Creating the new rule', logger);
                                 }}
                             >
                                 <RuleForm availableRules={validParents} />
-                                <Box justify='end' direction='row'>
+                                <Box justify="end" direction="row">
                                     <Button primary label="Save" type="submit" disabled={!formData.name} />
                                 </Box>
                             </Form>
                         </Box>
                         <Box>
-                            <RuleLabel rule={rule} updateRule={updateRaw}/>
-                            <ConditionsList rule={rule} updateRule={updateRaw}/>
+                            <RuleLabel rule={rule} updateRule={updateRaw} />
+                            <ConditionsList rule={rule} />
                         </Box>
                     </Grid>
                 )}

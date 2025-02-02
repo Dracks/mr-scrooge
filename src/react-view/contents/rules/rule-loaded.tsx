@@ -16,7 +16,12 @@ export interface RuleContext {
     updateRaw: (rule: Rule) => void;
 }
 
-export const RulesDataContext = React.createContext<RuleContext>({ list: [], map: new Map(), refresh: () => undefined, updateRaw: ()=>undefined });
+export const RulesDataContext = React.createContext<RuleContext>({
+    list: [],
+    map: new Map(),
+    refresh: () => undefined,
+    updateRaw: () => undefined,
+});
 export const useRuleCtx = () => React.useContext(RulesDataContext);
 
 export const RulesLoaded: React.FC = () => {
@@ -45,7 +50,9 @@ export const RulesLoaded: React.FC = () => {
         const ctx: RuleContext = {
             list: rulesEnriched.rules,
             map: rulesEnriched.rulesMap,
-            updateRaw: (rule: Rule)=>{paginatedRules.update([rule])},
+            updateRaw: (rule: Rule) => {
+                paginatedRules.update([rule]);
+            },
             refresh: toDelete => {
                 if (toDelete) {
                     paginatedRules.deleteElement(toApiRule(toDelete));

@@ -1,5 +1,5 @@
-import { createOpenApiHttp } from "openapi-msw";
+import { createOpenApiHttp } from 'openapi-msw';
 
-import { paths } from '../../api/generated-models'
+import { paths } from '../../api/generated-models';
 
-export const http = createOpenApiHttp<paths>();
+export const http = createOpenApiHttp<paths>({ baseUrl: '/api' });

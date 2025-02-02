@@ -11,7 +11,9 @@ class TypedEventEmitter {
 
     subscribe(event: EventTypes, callback: () => Promise<void> | void): () => void {
         const _callback = () => {
-            callback()?.catch((error: unknown) => { console.error(error) });
+            callback()?.catch((error: unknown) => {
+                console.error(error);
+            });
         };
         this.eventEmitter.addListener(event, _callback);
         return () => {

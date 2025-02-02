@@ -20,9 +20,9 @@ export const LabelInput = <T extends ILabelModel>({
     onChange,
     onRemove,
     suggestions,
-    "data-testid": dataTestId,
+    'data-testid': dataTestId,
     ...rest
-}: LabelInputProps<T> &{"data-testid"?: unknown}): React.ReactElement => {
+}: LabelInputProps<T> & { 'data-testid'?: unknown }): React.ReactElement => {
     const [currentTag, setCurrentTag] = React.useState('');
     const boxRef = React.useRef<HTMLDivElement>();
 

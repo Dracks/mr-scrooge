@@ -80,7 +80,6 @@ export const usePagination = <T>(
 
     React.useEffect(() => {
         if (options.autostart && request.status === 'not-requested') {
-            console.log('Use Effect: Start');
             start();
         }
     }, [options.autostart, request.status]);
