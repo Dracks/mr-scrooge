@@ -522,8 +522,8 @@ paths:
       operationId: ApiLabels_create
       parameters: []
       responses:
-        '200':
-          description: The request has succeeded.
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
           content:
             application/json:
               schema:
@@ -598,7 +598,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Label'
+                type: boolean
         '400':
           description: Bad request, usually when providing an invalid string as UUID
           content:

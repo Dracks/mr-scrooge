@@ -13,7 +13,7 @@ const JsConstants = z.object({
     environment: z.enum(envValues),
 
     version: z.string(),
-    
+
     commit: z.string(),
 
     debug: z.boolean(),

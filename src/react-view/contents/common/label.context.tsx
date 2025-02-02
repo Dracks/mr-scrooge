@@ -9,12 +9,16 @@ interface ILabelContext {
     labels: Label[];
     labelsMap: Map<string, Label>;
     refresh: () => void;
+    replace: (data: Label) => void;
+    delete: (data: Label) => void;
 }
 
 const LabelContext = React.createContext<ILabelContext>({
     labels: [],
     labelsMap: new Map<string, Label>(),
     refresh: () => undefined,
+    replace: () => undefined,
+    delete: () => undefined,
 });
 
 export const useLabelsListContext = (): Label[] => {
@@ -30,14 +34,17 @@ const useGenerateHash = (labels: Label[]): Map<ApiUUID, Label> => {
 
 export const ProvideLabelsData: React.FC<PropsWithChildren> = ({ children }) => {
     const client = useApiClient();
-    const paginator = usePagination(async next => {
-        const { data } = await client.GET('/labels', { params: { query: { cursor: next } } });
-        if (data) {
-            return data;
-        } else {
-            throw Error("Get labels didn't had data");
-        }
-    });
+    const paginator = usePagination(
+        async next => {
+            const { data } = await client.GET('/labels', { params: { query: { cursor: next } } });
+            if (data) {
+                return data;
+            } else {
+                throw Error("Get labels didn't had data");
+            }
+        },
+        { autostart: true, hash: (label: Label) => label.id },
+    );
     const labelsMap = useGenerateHash(paginator.loadedData);
 
     if (paginator.status === 'completed') {
@@ -45,6 +52,13 @@ export const ProvideLabelsData: React.FC<PropsWithChildren> = ({ children }) => 
             labels: paginator.loadedData,
             labelsMap,
             refresh: () => {
+                paginator.reset();
+            },
+            replace: data => {
+                paginator.update([data]);
+            },
+            delete: data => {
+                paginator.deleteElement(data);
                 paginator.reset();
             },
         };

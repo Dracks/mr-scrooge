@@ -8,14 +8,7 @@ final class LabelService: ServiceWithDb, @unchecked Sendable {
 		try await label.$groupOwner.load(on: db)
 		return label
 	}
-	/*
-	func addTransaction(req: Request, labelTransaction: LabelTransaction) async throws
-		-> LabelTransaction
-	{
-		try await labelTransaction.save(on: req.db)
-		return labelTransaction
-	}
-*/
+
 	func getAll(pageQuery: PageQuery = .init(), groupIds: [UUID]) async throws
 		-> ListWithCursor<Label>
 	{
@@ -40,13 +33,43 @@ final class LabelService: ServiceWithDb, @unchecked Sendable {
 			self.cursorHandler.stringify(["id": last.id!.uuidString])
 		}
 	}
-	/*
-	func getLabelsIdForTransaction(req: Request, transactionId: UUID) async throws -> [UUID] {
-		let labelTransactions = try await LabelTransaction.query(on: req.db)
-			.filter(\.$transaction.$id == transactionId)
-			.all()
 
-		return labelTransactions.map { $0.$label.id }
+	enum UpdateLabelReturn {
+		case ok(label: Label)
+		case notFound
 	}
- */
+
+	func updateLabel(
+		withId labelId: UUID, data: Components.Schemas.UpdateLabel, forUser user: User
+	) async throws -> UpdateLabelReturn {
+		let validGroupsIds = try user.groups.map { return try $0.requireID() }
+		let label = try await Label.query(on: db).filter(\.$id == labelId).filter(
+			\.$groupOwner.$id ~~ validGroupsIds
+		).first()
+		guard let label else {
+			return .notFound
+		}
+		label.name = data.name
+		try await label.save(on: db)
+		return .ok(label: label)
+	}
+
+	enum DeleteLabelReturn {
+		case ok
+		case notFound
+	}
+
+	func deleteLabel(withId labelId: UUID, forUser user: User) async throws -> DeleteLabelReturn
+	{
+		let validGroupsIds = try user.groups.map { return try $0.requireID() }
+		let label = try await Label.query(on: db).filter(\.$id == labelId).filter(
+			\.$groupOwner.$id ~~ validGroupsIds
+		).first()
+		guard let label else {
+			return .notFound
+		}
+		#warning("We should check and delete all references of this label")
+		try await label.delete(on: db)
+		return .ok
+	}
 }

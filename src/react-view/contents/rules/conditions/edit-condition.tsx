@@ -55,7 +55,7 @@ export const EditCondition: React.FC<{ condition: RuleCondition; ruleId: ApiUUID
                 <ConfirmationButton
                     key="delete"
                     color="accent-4"
-                    label="delete"
+                    label="Delete"
                     onConfirm={() => {
                         catchAndLog(deleteCondition.execute(), 'Deleting the condition', logger);
                     }}

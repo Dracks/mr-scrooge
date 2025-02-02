@@ -56,11 +56,57 @@ final class LabelResolverTests: AbstractBaseTestsClass {
 		)
 
 		// Assert the response
-		XCTAssertEqual(response.status, .ok)
+		XCTAssertEqual(response.status, .created)
 
 		let data = try response.content.decode(Components.Schemas.Label.self)
 
 		XCTAssertEqual(data.name, "Some Label Name")
+	}
+
+	func testUpdateLabel() async throws {
+
+		let app = try getApp()
+
+		// Get headers for authenticated request
+		let headers = try await app.getHeaders(
+			forUser: .init(
+				username: testUser.username, password: "test-password"))
+
+		let newLabel = Components.Schemas.UpdateLabel(
+			name: "Some New Name"
+		)
+
+		let response = try await app.sendRequest(
+			.PUT, "/api/labels/\(labels[3].requireID().uuidString)",
+			body: newLabel,
+			headers: headers
+		)
+
+		// Assert the response
+		XCTAssertEqual(response.status, .ok)
+
+		let data = try response.content.decode(Components.Schemas.Label.self)
+
+		XCTAssertEqual(data.name, "Some New Name")
+	}
+
+	func testDeleteLabel() async throws {
+		let app = try getApp()
+		// Get headers for authenticated request
+		let headers = try await app.getHeaders(
+			forUser: .init(
+				username: testUser.username, password: "test-password"))
+
+		let response = try await app.sendRequest(
+			.DELETE, "/api/labels/\(labels[3].requireID().uuidString)",
+			headers: headers
+		)
+
+		// Assert the response
+		XCTAssertEqual(response.status, .ok)
+
+		let labelsCount = try await Label.query(on: app.db).count()
+		XCTAssertEqual(labelsCount, 17)
 
 	}
 }

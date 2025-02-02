@@ -33,8 +33,8 @@ export const Graphs: React.FC = () => {
     } else {
         const enrichedGraphs = responseGraphList.map(graph => enrichGraph(graph, labels));
         enrichedGraphs.sort((a, b) => {
-           return a.order - b.order;
-        })
+            return a.order - b.order;
+        });
         return (
             <Grid columns={'450px'} gap="small">
                 {enrichedGraphs.map((graph, idx) => (

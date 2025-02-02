@@ -42,10 +42,11 @@
 * [ ] Bank transactions
   * [x] get bank transactions data
   * [x] add/remove label
-* [ ] labels
+* [x] labels
   * [x] get labels
   * [x] create label
-  * [ ] modify label
+  * [x] modify label
+  * [x] delete label
 * [ ] rules engine
   * [x] new transactions are applied with the rules engine
   * [x] CRUD

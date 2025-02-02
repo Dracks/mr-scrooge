@@ -34,12 +34,12 @@ model NotFoundLabel {
 @tag("labels")
 interface ApiLabels {
   @get list(@query cursor?: string, @query limit?: uint16): PageList<Label>;
-  @post create(...CreateLabel): Label | InvalidGroupOwnerId | InvalidUUID;
+  @post create(...CreateLabel): {@statusCode _: 201; ...Label} | InvalidGroupOwnerId | InvalidUUID;
   @put @route("{labelId}") update(
     @path labelId: UUID,
     ...UpdateLabel,
   ): Label | NotFound | InvalidUUID;
   @delete @route("{labelId}") delete(
     @path labelId: UUID,
-  ): Label | NotFound | InvalidUUID;
+  ): boolean | NotFound | InvalidUUID;
 }
