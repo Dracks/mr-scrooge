@@ -1,7 +1,7 @@
 FROM --platform=$BUILDPLATFORM node:22-slim AS client-build
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+RUN npm install -g corepack@latest && corepack enable
 
 COPY src /home/app/src
 COPY package.yaml /home/app
@@ -15,24 +15,13 @@ RUN ls Resources
 RUN ls Resources/Views
 
 
-# FROM --platform=$BUILDPLATFORM swift:6.0.3-noble AS server-build
 FROM swift:6.0.3-noble AS server-build
-
-# Cross compilation based on https://swiftinit.org/articles/cross-compiling-x86_64-linux-to-aarch64-linux
-# RUN apt update && apt -y install gcc-aarch64-linux-gnu wget2 && apt -y install g++-multilib
-# RUN mkdir /home/swift-cross-compile /home/vapor
-# WORKDIR /home/swift-cross-compile
-# COPY docker/swift-cross-platform/* /home/swift-cross-compile/
 
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update \
     && apt-get -q dist-upgrade -y \
     && apt-get install -y libjemalloc-dev
 
-ARG TARGETARCH
-RUN swift sdk install https://download.swift.org/swift-6.0.3-release/static-sdk/swift-6.0.3-RELEASE/swift-6.0.3-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz \
-    --checksum 67f765e0030e661a7450f7e4877cfe008db4f57f177d5a08a6e26fd661cdd0bd
-    # RUN ./download.sh "$TARGETARCH" && mkdir "$TARGETARCH" && tar -xzvf swift-$TARGETARCH.tar.gz -C $TARGETARCH
 
 WORKDIR /build
 
@@ -42,11 +31,9 @@ RUN swift package resolve \
 
 COPY src src
 COPY --from=client-build /home/app/Resources/Views/react.leaf /home/vapor/Resources/Views/react.leaf
-
-# RUN swift build --destination /home/swift-cross-compile/$TARGETARCH.json -c release --static-swift-stdlib 
-# RUN swift build -c release --static-swift-stdlib 
+ 
 RUN swift sdk list
-RUN swift build --swift-sdk x86_64-swift-linux-musl -c release
+RUN swift build -c release
 
 FROM ubuntu:noble
 
