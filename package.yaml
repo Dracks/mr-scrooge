@@ -34,7 +34,10 @@ devDependencies:
   html-webpack-plugin: ^5.6.0
   jest: ^29.7.0
   jest-environment-jsdom: ^29.7.0
+  jest-fixed-jsdom: ^0.0.9
+  msw: ^2.7.0
   node-polyfill-webpack-plugin: ^4.0.0
+  openapi-msw: ^1.0.0
   openapi-typescript: ^7.4.1
   sass: ^1.79.4
   sass-loader: ^16.0.2

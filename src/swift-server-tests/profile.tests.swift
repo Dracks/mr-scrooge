@@ -137,11 +137,11 @@ final class ProfileTests: AbstractBaseTestsClass {
 	}
 
 	func testCreateUserAsAdmin() async throws {
-	   let app = try getApp()
-				
-				let headers = try await app.getHeaders(
-					forUser: .init(
-						username: testAdmin.username, password: "test-admin-password"))
+		let app = try getApp()
+
+		let headers = try await app.getHeaders(
+			forUser: .init(
+				username: testAdmin.username, password: "test-admin-password"))
 
 		let newUser = Components.Schemas.CreateUserParams(
 			username: "Some new user",

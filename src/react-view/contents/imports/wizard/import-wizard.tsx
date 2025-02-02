@@ -3,7 +3,7 @@ import { DocumentUpload } from 'grommet-icons';
 import React from 'react';
 import { useAsync } from 'react-async-hook';
 
-import { useApi } from '../../../api/client';
+import { useApiClient } from '../../../api/client';
 import { FileParserType } from '../../../api/models';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { FileUploadQueue } from '../../../utils/ui/upload-queue';
@@ -11,9 +11,9 @@ import { useUploadQueue } from '../../common/uploader-queue.context';
 import { ImportFileRow } from './import-file-row';
 
 const useKindWithRegex = () => {
-    const client = useApi()
-    const parserTypes = useAsync(()=>client.GET("/imports/parsers"), [client])
-    const parserList : FileParserType[] = parserTypes.result?.data?.parsers ?? [];
+    const client = useApiClient();
+    const parserTypes = useAsync(() => client.GET('/imports/parsers'), [client]);
+    const parserList: FileParserType[] = parserTypes.result?.data?.parsers ?? [];
     const regexCompiled = React.useMemo(
         () => parserList.map(k => ({ name: k.name, regex: new RegExp(k.fileNameRegex) })),
         [parserList],

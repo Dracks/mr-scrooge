@@ -13,6 +13,7 @@ export const ConfirmationButton: React.FC<ConfirmationButtonArgs> = ({ onConfirm
         <DropButton
             {...props}
             open={showConfirmation}
+            data-testid="confirmation-button"
             onOpen={() => {
                 setShowConfirmation(true);
             }}
@@ -25,6 +26,7 @@ export const ConfirmationButton: React.FC<ConfirmationButtonArgs> = ({ onConfirm
                     <Button
                         label="yes"
                         primary
+                        data-testid="confirmation-button-yes"
                         color={props.color}
                         onClick={() => {
                             setShowConfirmation(false);
@@ -33,6 +35,7 @@ export const ConfirmationButton: React.FC<ConfirmationButtonArgs> = ({ onConfirm
                     />{' '}
                     <Button
                         label="no"
+                        data-testid="confirmation-button-no"
                         onClick={() => {
                             setShowConfirmation(false);
                         }}

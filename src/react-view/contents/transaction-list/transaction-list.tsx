@@ -2,7 +2,7 @@ import { InfiniteScroll, Select, Table, TableBody, TableCell, TableHeader, Table
 import React, { useState } from 'react';
 import { useAsync } from 'react-async-hook';
 
-import { useApi } from '../../api/client';
+import { useApiClient } from '../../api/client';
 import { ApiUUID } from '../../api/models';
 import { useLabelsListContext } from '../common/label.context';
 import { BankTransactionEnriched, useTransactionsData } from '../common/transaction.context';
@@ -16,8 +16,8 @@ interface TransactionListFilters {
 
 export const TransactionList: React.FC = () => {
     const { data: results, replace } = useTransactionsData();
-    const client = useApi()
-    const kindRequest = useAsync(()=>client.GET("/imports/parsers"), [client]);
+    const client = useApiClient();
+    const kindRequest = useAsync(() => client.GET('/imports/parsers'), [client]);
     const labels = useLabelsListContext();
     const [filters, setFilters] = useState<TransactionListFilters>({});
 
@@ -49,7 +49,12 @@ export const TransactionList: React.FC = () => {
                         {
                             <Select
                                 placeholder="Filter by importer"
-                                options={['', ...(kindRequest.result?.data?.parsers ?? []).map((kind: {name: string}) => kind.name)]}
+                                options={[
+                                    '',
+                                    ...(kindRequest.result?.data?.parsers ?? []).map(
+                                        (kind: { name: string }) => kind.name,
+                                    ),
+                                ]}
                                 value={filters.kind}
                                 onChange={({ option }) => {
                                     setFilters({ ...filters, kind: option as string });

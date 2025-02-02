@@ -8,8 +8,24 @@ func parserHtml(filePath: String, encoding: String.Encoding) -> AsyncThrowingStr
 	return AsyncThrowingStream { continuation in
 		Task {
 			do {
-				let fileString = try String(
-					contentsOfFile: filePath, encoding: encoding)
+				guard let fileData = FileManager.default.contents(atPath: filePath)
+				else {
+					throw Exception(.E10006, context: ["fileName": filePath])
+				}
+				let fileString: String?
+				switch encoding {
+				case .windowsCP1252:
+					fileString = String.fromWindowsCP1252(fileData)
+				default:
+					fileString = String(data: fileData, encoding: encoding)
+				}
+				guard let fileString
+				else {
+					throw Exception(.E10007, context: [
+						"fileName": filePath, 
+						"encoding": String(describing: encoding)
+					])
+				}
 
 				let doc: Document = try SwiftSoup.parse(fileString)
 				let rows: Elements = try doc.select("tr")

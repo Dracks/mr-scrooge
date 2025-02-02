@@ -19,7 +19,8 @@ final class UserService: ServiceWithDb, @unchecked Sendable {
 
 		// Todo: validate that e-mail or username are not in the DB, and return an error
 		let user = try User(
-			username: userData.username, email: userData.email, firstName: userData.firstName,
+			username: userData.username, email: userData.email,
+			firstName: userData.firstName,
 			lastName: userData.lastName, isActive: userData.isActive,
 			isAdmin: userData.isAdmin, defaultGroupId: group.requireID())
 		try user.setPassword(pwd: userData.password)

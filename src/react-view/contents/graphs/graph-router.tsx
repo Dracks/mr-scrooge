@@ -1,24 +1,18 @@
 import React from 'react';
-import { Route, Routes, useParams } from 'react-router';
+import { Route, Routes } from 'react-router';
 
-import NotFound from '../extra/not-found';
+import { AddRouteParams, routeParamsIsParamId } from '../../utils/add-router-params';
 import { EditGraph } from './form/edit-graph.form';
 import { GraphNew } from './form/new-graph.form';
-
-const EditGraphWithRoute = () => {
-    const { id } = useParams<{ id: string }>();
-
-    if (id) {
-        return <EditGraph id={id} />;
-    }
-    return <NotFound />;
-};
 
 export const GraphRouter: React.FC = () => {
     return (
         <Routes>
             <Route path="new-graph" element={<GraphNew />} />
-            <Route path=":id" element={<EditGraphWithRoute />} />
+            <Route
+                path=":id"
+                element={<AddRouteParams check={routeParamsIsParamId} child={({ id }) => <EditGraph id={id} />} />}
+            />
         </Routes>
     );
 };

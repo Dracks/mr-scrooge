@@ -98,6 +98,7 @@ let package = Package(
 				.process("test_files/MovimientosCuenta.xls"),
 				.process("test_files/MovimientosTarjetaCredito.xls"),
 				.process("test_files/n26_es.csv"),
+				.process("test_files/old.sqlite3"),
 			]
 		),
 

@@ -22,14 +22,14 @@ export const groupLambdas: Record<
     GroupKeys | 'identity',
     (labelsList?: Label[], others?: boolean) => DTGroupFn<string>
 > = {
-    "month": () => record => format(record.date, 'yyyy-MM'),
-    "day": () => record => String(record.date.getDate()),
-    "year": () => record => String(record.date.getFullYear()),
-    "sign":
+    month: () => record => format(record.date, 'yyyy-MM'),
+    day: () => record => String(record.date.getDate()),
+    year: () => record => String(record.date.getFullYear()),
+    sign:
         () =>
         (record): LabelSign =>
             record.value < 0 ? 'expenses' : 'income',
-    "labels": (labelsList = [], hideOthers = false) => {
+    labels: (labelsList = [], hideOthers = false) => {
         const othersKey = hideOthers ? false : 'Others';
         return record => {
             const tags = record.labelIds ?? [];
@@ -66,9 +66,9 @@ const customSort = (data: string[]) => {
 };
 
 export const sortLambdas: Record<GroupKeys, (p: string[]) => (a: string, b: string) => number> = {
-    "month": () => (a: string, b: string) => a.localeCompare(b),
-    "day": () => (a: string, b: string) => parseInt(a, 10) - parseInt(b, 10),
-    "year": () => (a: string, b: string) => a.localeCompare(b),
-    "sign": () => customSort(['expenses', 'income']),
-    "labels": customSort,
+    month: () => (a: string, b: string) => a.localeCompare(b),
+    day: () => (a: string, b: string) => parseInt(a, 10) - parseInt(b, 10),
+    year: () => (a: string, b: string) => a.localeCompare(b),
+    sign: () => customSort(['expenses', 'income']),
+    labels: customSort,
 };

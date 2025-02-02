@@ -3,7 +3,7 @@ import { Icon, StatusCritical, StatusGood, StatusWarning } from 'grommet-icons';
 import React from 'react';
 import { Route, Routes, useParams } from 'react-router';
 
-import { useApi } from '../../api/client';
+import { useApiClient } from '../../api/client';
 import { FileImport } from '../../api/models';
 import { usePagination } from '../../api/pagination';
 import { EventTypes, useEventEmitter } from '../../utils/providers/event-emitter.provider';
@@ -49,16 +49,19 @@ const ImportsList: React.FC<{ importsList: FileImport[] }> = ({ importsList }) =
 
 export const Imports: React.FC = () => {
     // const logger = useLogger("Imports");
-    const client = useApi()
-    const paginator = usePagination(async next => {
-        const response = await client.GET("/imports", {params: {query: {cursor: next}}})
-        if (response.data?.results){
-            return response.data
-        }
-        throw Error("Cannot get imports")
-    }, {autostart: true, hash: (fi: FileImport) => fi.id})
+    const client = useApiClient();
+    const paginator = usePagination(
+        async next => {
+            const response = await client.GET('/imports', { params: { query: { cursor: next } } });
+            if (response.data?.results) {
+                return response.data;
+            }
+            throw Error('Cannot get imports');
+        },
+        { autostart: true, hash: (fi: FileImport) => fi.id },
+    );
     const eventEmitter = useEventEmitter();
-    const importsList =  paginator.loadedData;
+    const importsList = paginator.loadedData;
 
     React.useEffect(() => {
         const unsubscribe = eventEmitter.subscribe(EventTypes.OnFileUploaded, () => {

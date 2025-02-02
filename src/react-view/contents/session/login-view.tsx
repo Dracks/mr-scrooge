@@ -9,7 +9,7 @@ export interface LoginCredentials {
 }
 
 interface LoginProps {
-    error?: {message: string} | null;
+    error?: { message: string } | null;
     invalidCredentials: boolean;
     isLoading: boolean;
     login: (credentials: LoginCredentials) => void;

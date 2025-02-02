@@ -14,5 +14,8 @@
     },
     "setupFilesAfterEnv": ["<rootDir>/config/setupTests.js"],
     "coverageDirectory": "/coverage/react-view",
-    "testEnvironment": "jsdom"
+    "testEnvironment": "jest-fixed-jsdom",
+    "testEnvironmentOptions": {
+        "customExportConditions": [""]
+    }
 }

@@ -31,8 +31,8 @@ export const ImportFileRow: React.FC<ImportFileRowArgs> = ({ fileData, kindsList
                 options={kindsList.map(kind => kind.name)}
                 value={fileData.kind}
                 onChange={event => {
-                    if (typeof event === "object" && "value" in event) {
-                        onKindSwitch((event as { value: string }) .value);
+                    if (typeof event === 'object' && 'value' in event) {
+                        onKindSwitch((event as { value: string }).value);
                     }
                 }}
             />

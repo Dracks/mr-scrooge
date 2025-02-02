@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 
-import { usePostUploadFile } from '../../api/upload-file'
+import { usePostUploadFile } from '../../api/upload-file';
 import { EventTypes, useEventEmitter } from '../../utils/providers/event-emitter.provider';
 import { FileStatus, IFileData } from '../imports/types';
 
@@ -59,7 +59,7 @@ export const ProvideUploadQueue: React.FC<PropsWithChildren> = ({ children }) =>
         }
         setUploading(false);
         eventEmitter.emit(EventTypes.OnQueueUploadFinish);
-    }
+    };
 
     const context: UploadQueueType = {
         files,
@@ -82,8 +82,8 @@ export const ProvideUploadQueue: React.FC<PropsWithChildren> = ({ children }) =>
         onRemove: fileId => {
             setFiles(oldFiles => [...oldFiles.filter(({ id }) => fileId !== id)]);
         },
-        submit: ()=>{
-            submit().catch(()=>undefined)
+        submit: () => {
+            submit().catch(() => undefined);
         },
         uploading,
     };

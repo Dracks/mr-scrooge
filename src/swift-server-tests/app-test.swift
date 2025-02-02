@@ -123,12 +123,10 @@ final class MrScroogeServerTest: AbstractBaseTestsClass {
 	}
 
 	func testCreateUserCommand() async throws {
-		guard let app = app else {
-			throw TestError()
-		}
+		let app = try getApp()
 
 		let command = CreateUserCommand()
-		let arguments = ["demo_user"]
+		let arguments = ["create_user"]
 
 		let console = TestConsole()
 		let input = CommandInput(arguments: arguments)

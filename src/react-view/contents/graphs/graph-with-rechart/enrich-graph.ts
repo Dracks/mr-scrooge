@@ -1,12 +1,11 @@
 import { ApiUUID, GraphParam, Group, Label } from '../../../api/models';
 import { EnrichedGraph, EnrichedGroup } from '../types';
 
-
 export const enrichGroup = <T extends Group>(
     { labels: labelIds, ...group }: T,
     labelsMap: Map<ApiUUID, Label>,
 ): EnrichedGroup<T> => {
-    const labels = (labelIds?.map(label => labelsMap.get(label)).filter(Boolean) as Label[]);
+    const labels = labelIds?.map(label => labelsMap.get(label)).filter(Boolean) as Label[];
 
     return {
         ...group,
