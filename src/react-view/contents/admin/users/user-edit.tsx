@@ -32,7 +32,7 @@ export const EditUser: React.FC<EditUserParams> = ({ user }) => {
     const [userData, setUserData] = React.useState<UpdateUserParams>(getUpdateFromUser(user));
 
     React.useEffect(() => {
-        setUserData(user);
+        setUserData(getUpdateFromUser(user));
     }, [user.id]);
     return (
         <Box>

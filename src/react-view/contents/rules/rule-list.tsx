@@ -1,14 +1,28 @@
 import { Box, Button, Heading, Tag } from 'grommet';
 import { Add } from 'grommet-icons';
 import React from 'react';
+import { useAsyncCallback } from 'react-async-hook';
 import { useNavigate } from 'react-router';
 
+import { useApiClient } from '../../api/client';
 import { useLogger } from '../../utils/logger/logger.context';
+import { catchAndLog } from '../../utils/promises';
+import { ConfirmationButton } from '../../utils/ui/confirmation-button';
 import { RuleEnriched } from './rule-enriched';
 import { useRuleCtx } from './rule-loaded';
 
 const RuleSummary: React.FC<{ rule: RuleEnriched }> = ({ rule }) => {
     const navigate = useNavigate();
+    const logger = useLogger('Rule Summary');
+    const client = useApiClient();
+    const { refresh } = useRuleCtx();
+
+    const deleteRule = useAsyncCallback(async () => {
+        const response = await client.DELETE('/rules/{ruleId}', { params: { path: { ruleId: rule.id } } });
+        if (response.response.status === 200) {
+            refresh(rule);
+        }
+    });
     return (
         <Box>
             <Box direction="row-responsive" gap="small">
@@ -28,7 +42,13 @@ const RuleSummary: React.FC<{ rule: RuleEnriched }> = ({ rule }) => {
                                 navigate(`/rule/${rule.id}`);
                             }}
                         />
-                        <Button primary label="Delete" />
+                        <ConfirmationButton
+                            primary
+                            label="Delete"
+                            onConfirm={() => {
+                                catchAndLog(deleteRule.execute(), 'Deleting a rule', logger);
+                            }}
+                        />
                     </Box>
                 </Box>
             </Box>
@@ -41,7 +61,7 @@ const RuleSubList: React.FC<{ rules: RuleEnriched[] }> = ({ rules }) => {
     return (
         <Box pad="small">
             {rules.map(rule => (
-                <RuleSummary rule={rule} />
+                <RuleSummary rule={rule} key={rule.id} />
             ))}
         </Box>
     );

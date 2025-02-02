@@ -50,7 +50,7 @@ export const ProvideLabelsData: React.FC<PropsWithChildren> = ({ children }) => 
         };
         return <LabelContext.Provider value={context}>{children}</LabelContext.Provider>;
     } else if (paginator.status === 'loading') {
-        <LoadingPage />;
+        return <LoadingPage />;
     }
     return <div>Error on loading the labels</div>;
 };
