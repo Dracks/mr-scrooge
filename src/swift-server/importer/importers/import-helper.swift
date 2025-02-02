@@ -92,7 +92,7 @@ class TransformHelper<D: IndexedCollection> {
 			dateValue: dateValue.map { DateOnly($0) },
 			details: details,
 			value: value!,
-			description: description
+			comment: description
 		)
 	}
 }

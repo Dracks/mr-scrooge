@@ -20,7 +20,7 @@ model BankTransaction {
   details?: string;
   value: decimal;
   kind: string;
-  description?: string;
+  comment?: string;
   labelIds: UUID[];
 }
 

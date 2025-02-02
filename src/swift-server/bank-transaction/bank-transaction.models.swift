@@ -43,16 +43,15 @@ final class BankTransaction: Model, Content, @unchecked Sendable {
 	@Siblings(through: LabelTransaction.self, from: \.$transaction, to: \.$label)
 	var labels: [Label]
 
-	// TODO: change the name to comment
-	@OptionalField(key: "description")
-	var description: String?
+	@OptionalField(key: "comment")
+	var comment: String?
 
 	init() {}
 
 	init(
 		id: UUID? = nil, groupOwnerId: UUID, movementName: String, date: DateOnly,
 		dateValue: DateOnly? = nil, details: String? = nil, value: Double, kind: String,
-		description: String? = nil
+		comment: String? = nil
 	) {
 		self.id = id
 		self.$groupOwner.id = groupOwnerId
@@ -63,6 +62,6 @@ final class BankTransaction: Model, Content, @unchecked Sendable {
 		self.details = details
 		self.value = value
 		self.kind = kind
-		self.description = description
+		self.comment = comment
 	}
 }

@@ -46,8 +46,9 @@ struct InitialMigration: AsyncMigration {
 			.field("details", .string)
 			.field("value", .double, .required)
 			.field("kind", .string, .required)
-			.field("description", .string)
+			.field("comment", .string)
 			.create()
+
 		try await sqlDb?.create(index: "group_owner_idx")
 			.on("core_bank_transaction")
 			.column("group_owner_id")

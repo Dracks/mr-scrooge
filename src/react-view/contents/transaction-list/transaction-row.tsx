@@ -46,15 +46,15 @@ export const TransactionRow: React.FC<TransactionRowProps> = ({ transaction, lab
         catchAndLog(updatePromise, `Problem ${action} a label from a transaction`, logger);
     };
 
-    const updateDesc = async (desc: string) => {
-        const realComment = desc.length > 0 ? desc : undefined;
-        const hasChanges = transaction.description !== realComment;
+    const updateDesc = async (comment: string) => {
+        const realComment = comment.length > 0 ? comment : undefined;
+        const hasChanges = transaction.comment !== realComment;
         if (hasChanges) {
             onChange({
                 ...transaction,
                 labelIds,
                 date: transaction.date.toISOString(),
-                description: desc,
+                comment: realComment,
             });
             await setComment.execute(transaction.id, realComment);
         }
@@ -80,7 +80,7 @@ export const TransactionRow: React.FC<TransactionRowProps> = ({ transaction, lab
             <TableCell>{format(transaction.date, 'yyyy-MM-dd')}</TableCell>
             <TableCell>
                 <TextArea
-                    defaultValue={transaction.description ?? ''}
+                    defaultValue={transaction.comment ?? ''}
                     onBlur={event => {
                         catchAndLog(updateDesc(event.target.value), 'Updating comment on transaction', logger);
                     }}
