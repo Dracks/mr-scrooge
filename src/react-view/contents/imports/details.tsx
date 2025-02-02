@@ -19,7 +19,7 @@ const DetailsMessage: React.FC<{ description: string; status: FileImport['status
 };
 
 export const ImportDetails: React.FC<ImportDetailsArgs> = ({ status }) => {
-    const {rows} = status
+    const { rows } = status;
     return (
         <Box fill pad="small">
             <Heading level="2">{status.fileName}</Heading>

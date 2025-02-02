@@ -1,49 +1,52 @@
-/** eslint-disable @typescript-eslint/no-unsafe-assignment */
-/** eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { Box, TextInput } from 'grommet';
-import React, { ChangeEventHandler, LegacyRef } from 'react';
+import { Box, Tag, TextInput } from 'grommet';
+import React, { ChangeEventHandler, MutableRefObject } from 'react';
 
-import { ITagModel, Tag } from './tag';
-
-interface TagInputProps {
-    onAdd: (a: ITagModel) => void;
-    onChange?: (e: unknown) => void;
-    onRemove: (a: ITagModel) => void;
-    suggestions?: ITagModel[];
-    value: ITagModel[];
+export interface ILabelModel {
+    id: string;
+    name: string;
 }
 
-export const InputTag: React.FC<TagInputProps> = ({ value = [], onAdd, onChange, onRemove, suggestions, ...rest }) => {
+interface LabelInputProps<T extends ILabelModel> {
+    onAdd: (a: T) => void;
+    onChange?: (e: unknown) => void;
+    onRemove: (a: T) => void;
+    suggestions?: T[];
+    value: T[];
+}
+
+export const LabelInput = <T extends ILabelModel>({
+    value = [],
+    onAdd,
+    onChange,
+    onRemove,
+    suggestions,
+    'data-testid': dataTestId,
+    ...rest
+}: LabelInputProps<T> & { 'data-testid'?: unknown }): React.ReactElement => {
     const [currentTag, setCurrentTag] = React.useState('');
     const boxRef = React.useRef<HTMLDivElement>();
 
-    const updateCurrentTag = (
-        event: ChangeEventHandler<HTMLInputElement> & {
-            target: { value: string };
-        },
-    ) => {
+    const updateCurrentLabel: ChangeEventHandler<HTMLInputElement> = event => {
         setCurrentTag(event.target.value);
         if (onChange) {
             onChange(event);
         }
     };
 
-    const onAddTag = (tag: ITagModel) => {
-        if (onAdd) {
-            onAdd(tag);
-        }
+    const onAddTag = (label: T) => {
+        onAdd(label);
     };
 
     const renderValue = () =>
-        value.map((v, index) => (
+        value.map(v => (
             <Tag
-                key={`${v}${index + 0}`}
+                size="small"
+                key={v.id}
+                value={v.name}
                 onRemove={() => {
                     onRemove(v);
                 }}
-            >
-                {v.name}
-            </Tag>
+            />
         ));
 
     return (
@@ -52,8 +55,9 @@ export const InputTag: React.FC<TagInputProps> = ({ value = [], onAdd, onChange,
             align="center"
             pad={{ horizontal: 'xsmall' }}
             border="all"
-            ref={boxRef as LegacyRef<HTMLDivElement>}
+            ref={boxRef as MutableRefObject<HTMLDivElement>}
             wrap
+            data-testid={dataTestId}
         >
             {value.length > 0 && renderValue()}
             <Box flex style={{ minWidth: '120px' }}>
@@ -70,11 +74,16 @@ export const InputTag: React.FC<TagInputProps> = ({ value = [], onAdd, onChange,
                                 value: tag.id,
                             })) ?? []
                     }
-                    onChange={updateCurrentTag as any}
+                    onChange={event => {
+                        updateCurrentLabel(event);
+                    }}
                     value={currentTag}
                     onSuggestionSelect={event => {
-                        const { value: suggestionId, label }: { label: string; value: string } = event.suggestion;
-                        onAddTag({ id: suggestionId, name: label });
+                        const { value: suggestionId } = event.suggestion as { value: string };
+                        const suggestion = suggestions?.find(test => test.id === suggestionId);
+                        if (suggestion) {
+                            onAddTag(suggestion);
+                        }
                         setCurrentTag('');
                     }}
                 />

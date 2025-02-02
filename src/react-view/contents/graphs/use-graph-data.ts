@@ -8,12 +8,12 @@ import { DSDoubleGroup } from './data-transform/types';
 import { EnrichedGraph } from './types';
 
 const hashDateRange: Record<GraphDateRange, number | undefined> = {
-    "oneMonth": 1,
-    "halfYear": 6,
-    "oneYear": 12,
-    "twoYears": 24,
-    "sixYears": 12 * 6,
-    "all": undefined,
+    oneMonth: 1,
+    halfYear: 6,
+    oneYear: 12,
+    twoYears: 24,
+    sixYears: 12 * 6,
+    all: undefined,
 };
 
 const normalizeSubGroups = (data: DSDoubleGroup<string, string>[]): DSDoubleGroup<string, string>[] => {
@@ -59,7 +59,7 @@ export const useGraphDataGenerator = <T extends GraphParam>({
     groupOwnerId,
 }: EnrichedGraph<T>) => {
     const { data } = useTransactionsData();
-    const monthRange : number | undefined = hashDateRange[dateRange];
+    const monthRange: number | undefined = hashDateRange[dateRange];
     let rdsList = labelFilterId ? data.filter(rds => rds.labelIds.indexOf(labelFilterId) >= 0) : data;
     rdsList = rdsList.filter(rds => rds.groupOwnerId === groupOwnerId);
     rdsList = monthRange ? rdsList.filter(getRangeFilter(monthRange, new Date())) : rdsList;

@@ -6,38 +6,38 @@ import { graphToUi, uiToGraph } from './graph.transformer';
 
 describe('[graph.transformer]', () => {
     const subjectDataMinimum: Graph = {
-        dateRange: "sixYears",
+        dateRange: 'sixYears',
         group: {
-            group: "month",
+            group: 'month',
         },
         groupOwnerId: mainGroupOwnerId,
         id: generateUUID(34, 'graph'),
-        kind: "pie",
+        kind: 'pie',
         name: 'minimum',
     };
 
     const subjectWithAllFields: Graph = {
-        dateRange: "oneYear",
+        dateRange: 'oneYear',
         group: {
-            group: "labels",
+            group: 'labels',
             hideOthers: false,
             labels: [1, 2].map(idx => listLabelIds[idx] as ApiUUID),
         },
         groupOwnerId: mainGroupOwnerId,
         horizontalGroup: {
-            group: "labels",
+            group: 'labels',
             hideOthers: true,
             labels: [3, 4].map(idx => listLabelIds[idx] as ApiUUID),
         },
         id: generateUUID(34, 'graph'),
-        kind: "line",
+        kind: 'line',
         name: 'max',
     };
 
     it('graphData with minimum transforms', () => {
         const graphUi = graphToUi(subjectDataMinimum);
 
-        expect(graphUi.groupType).toEqual("month");
+        expect(graphUi.groupType).toEqual('month');
 
         expect(uiToGraph(graphUi)).toEqual(subjectDataMinimum);
     });

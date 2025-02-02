@@ -13,22 +13,32 @@ const Headers: React.FC = () => {
     }
     const userInfo = session.profile;
     const navigate = useNavigate();
-    
-    const adminSection = userInfo.isAdmin ? <Menu
-        label={<Box><UserAdmin /> Admin</Box>}
-        items={[
-            {
-                label: <Box>Users</Box>,
-                onClick: ()=>{ navigate("/admin/users")},
-                icon: <User />
-            },
-            {
-                label: <Box>Groups</Box>,
-                onClick: ()=>{ navigate("/admin/groups")},
-                icon: <Group />
+
+    const adminSection = userInfo.isAdmin ? (
+        <Menu
+            label={
+                <Box>
+                    <UserAdmin /> Admin
+                </Box>
             }
-        ]}
-        />: undefined
+            items={[
+                {
+                    label: <Box>Users</Box>,
+                    onClick: () => {
+                        navigate('/admin/users');
+                    },
+                    icon: <User />,
+                },
+                {
+                    label: <Box>Groups</Box>,
+                    onClick: () => {
+                        navigate('/admin/groups');
+                    },
+                    icon: <Group />,
+                },
+            ]}
+        />
+    ) : undefined;
 
     return (
         <Header background={{ color: 'nav-background', dark: true }} pad="small">
@@ -37,6 +47,7 @@ const Headers: React.FC = () => {
                 <AnchorLink href="/import" label="Imports" color="light-1" />
                 <AnchorLink href="/movement" label="Movements" color="light-1" />
                 <AnchorLink href="/label" label="Labels" color="light-1" />
+                <AnchorLink href="/rule" label="Rules" color="light-1" />
             </Nav>
             <Box flex />
             {adminSection}
@@ -48,7 +59,7 @@ const Headers: React.FC = () => {
                         onClick: () => {
                             navigate('/profile');
                         },
-                        icon: <Edit />
+                        icon: <Edit />,
                     },
                     {
                         label: 'logout',

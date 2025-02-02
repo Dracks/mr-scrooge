@@ -93,7 +93,6 @@ final class ImportTests: AbstractBaseTestsClass {
 		let response = try await app.sendRequest(
 			.GET, "/api/imports", headers: headers)
 
-		print(String(buffer: response.body))
 		let data = try response.content.decode(
 			Operations.ApiImports_list.Output.Ok.Body.jsonPayload.self)
 
@@ -137,7 +136,6 @@ final class ImportTests: AbstractBaseTestsClass {
 
 		XCTAssertEqual(response.status, .ok)
 
-		print(String(buffer: response.body))
 		let data = try response.content.decode(Bool.self)
 
 		XCTAssertTrue(data)
