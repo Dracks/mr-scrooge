@@ -156,11 +156,11 @@ struct DemoDataCommand: AsyncCommand {
 			let gasolineId = labelIdMap["gasoline"]
 		{
 			let groceriesLabel = GraphGroupLabels(
-				graphId: compareLabelsGroup.id!, labelId: groceriesId, order: 0)
+                graphId: try compareLabelsGraph.requireID(), labelId: groceriesId, order: 0)
 			try await groceriesLabel.save(on: app.db)
 
 			let gasolineLabel = GraphGroupLabels(
-				graphId: compareLabelsGroup.id!, labelId: gasolineId, order: 1)
+                graphId: try compareLabelsGraph.requireID(), labelId: gasolineId, order: 1)
 			try await gasolineLabel.save(on: app.db)
 		}
 

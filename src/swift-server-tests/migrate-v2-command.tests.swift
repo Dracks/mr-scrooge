@@ -75,7 +75,7 @@ final class MigrateV2Test: AbstractBaseTestsClass {
 		XCTAssertEqual(transactionsCount, 296)
 
 		let november9Transaction = try await BankTransaction.query(on: app.db)
-			.filter(\.$_date == "2019-11-09")
+			.filter(\.$_date == DateOnly("2019-11-09")?.getDate() ?? Date())
 			.with(\.$labels)
 			.first()
 		XCTAssertNotNil(november9Transaction)
@@ -92,7 +92,7 @@ final class MigrateV2Test: AbstractBaseTestsClass {
 			november9Transaction?.labels.map { $0.name }, ["Expenses"])
 
 		let august4Transaction = try await BankTransaction.query(on: app.db)
-			.filter(\.$_date == "2019-08-04")
+			.filter(\.$_date == DateOnly("2019-08-04")?.getDate() ?? Date())
 			.with(\.$labels)
 			.first()
 		XCTAssertNotNil(august4Transaction)

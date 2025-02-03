@@ -509,7 +509,9 @@ extension DjangoMigrationService {
 		let oldGroupTags = try await OldDb.GraphGroupTag.query(
 			table: .graphGroupTag, for: oldGroup.id, on: oldSqlDb)
 		let groupLabels: [GraphGroupLabels] = try oldGroupTags.enumerated().map {
-			.init(graphId: graphId, labelId: try getLabelId($1.tagId), order: $0)
+			.init(
+				graphId: graphId,
+				labelId: try getLabelId($1.tagId), order: $0)
 		}
 		for groupLabel in groupLabels {
 			try await groupLabel.save(on: newDb)
@@ -529,7 +531,8 @@ extension DjangoMigrationService {
 			let horizontalGroupLabels: [GraphHorizontalGroupLabels] =
 				try oldHorizontalGroupTags.enumerated().map {
 					.init(
-						graphId: graphId, labelId: try getLabelId($1.tagId),
+						graphId: graphId,
+						labelId: try getLabelId($1.tagId),
 						order: $0)
 				}
 			for groupLabel in horizontalGroupLabels {

@@ -138,7 +138,7 @@ class GraphBuilder {
 	}
 
 	func setGroupLabels(_ groupLabels: [GraphGroupLabels]) {
-		_groupLabelIds = groupLabels.map { $0.$label.id }
+		_groupLabelIds = groupLabels.map { $0.$id.$label.id }
 	}
 
 	func setGroupLabels(_ groupLabels: [UUID]) {
@@ -150,7 +150,7 @@ class GraphBuilder {
 	}
 
 	func setHorizontalGroupLabels(_ horizontalGroupLabels: [GraphHorizontalGroupLabels]) {
-		_horizontalGroupLabelIds = horizontalGroupLabels.map { $0.$label.id }
+		_horizontalGroupLabelIds = horizontalGroupLabels.map { $0.$id.$label.id }
 	}
 
 	func setHorizontalGroupLabels(_ horizontalGroupLabels: [UUID]) {
@@ -258,20 +258,20 @@ class GraphService: ServiceWithDb {
 					var count = 0
 					var uuidLabels: [UUID] = []
 					for labelId in labels {
-						let graphGroupLabel = GraphGroupLabels(
-							graphId: group.id!,
+						let graphGroupLabel = try GraphGroupLabels(
+							graphId: graph.requireID(),
 							labelId: UUID(uuidString: labelId)!,
 							order: count)
 						count += 1
-						uuidLabels.append(graphGroupLabel.$label.id)
+						uuidLabels.append(graphGroupLabel.$id.$label.id)
 						try await graphGroupLabel.save(on: transaction)
 					}
 					graphBuilder.setGroupLabels(uuidLabels)
 				}
 
 				if let newHorizontalGroup = newGraph.horizontalGroup {
-					let horizontalGroup = GraphHorizontalGroup(
-						graphId: graph.id!,
+					let horizontalGroup = try GraphHorizontalGroup(
+						graphId: graph.requireID(),
 						group: newHorizontalGroup.group.toInternal(),
 						hideOthers: newHorizontalGroup.hideOthers,
 						accumulate: newHorizontalGroup.accumulate ?? false
@@ -285,13 +285,16 @@ class GraphService: ServiceWithDb {
 						var uuidLabels: [UUID] = []
 						for labelId in labels {
 							let graphGroupLabel =
-								GraphHorizontalGroupLabels(
-									graphId: group.id!,
+								try GraphHorizontalGroupLabels(
+									graphId:
+										graph
+										.requireID(),
 									labelId: UUID(
 										uuidString: labelId)!,
 									order: count)
 							count += 1
-							uuidLabels.append(graphGroupLabel.$label.id)
+							uuidLabels.append(
+								graphGroupLabel.$id.$label.id)
 							try await graphGroupLabel.save(
 								on: transaction)
 						}
@@ -342,12 +345,12 @@ class GraphService: ServiceWithDb {
 					let graphBuilder = GraphBuilder(
 						graph: graph, group: graphGroup)
 					let groupLabels = try await GraphGroupLabels.query(on: db)
-						.filter(\.$graph.$id == graphId)
+						.filter(\.$id.$graph.$id == graphId)
 						.sort(\.$order, .ascending)
 						.all()
 					if !groupLabels.isEmpty {
 						graphBuilder.setGroupLabels(
-							groupLabels.map { $0.$label.id })
+							groupLabels.map { $0.$id.$label.id })
 					}
 
 					if let horizontalGroup = graph.horizontalGroup {
@@ -356,14 +359,17 @@ class GraphService: ServiceWithDb {
 							try await GraphHorizontalGroupLabels.query(
 								on: db
 							)
-							.filter(\.$graph.$id == graphId)
+							.filter(
+								\.$id.$graph.$id
+									== graphId
+							)
 							.sort(\.$order, .ascending)
 							.all()
 
 						if !horizontalLabels.isEmpty {
 							graphBuilder.setHorizontalGroupLabels(
 								horizontalLabels.map {
-									$0.$label.id
+									$0.$id.$label.id
 								})
 						}
 					}
@@ -398,6 +404,8 @@ class GraphService: ServiceWithDb {
 				return .notFound(graphId: id)
 			}
 
+			let graphId = try graph.requireID()
+
 			if let invalid = try await self.validateLabels(
 				on: transaction,
 				groupOwnerId: UUID(uuidString: updatedGraph.groupOwnerId)!,
@@ -425,7 +433,7 @@ class GraphService: ServiceWithDb {
 				try await group.save(on: transaction)
 			} else {
 				let newGroup = GraphGroup(
-					graphId: try graph.requireID(),
+					graphId: graphId,
 					group: updatedGraph.group.group.toInternal(),
 					hideOthers: updatedGraph.group.hideOthers)
 				try await newGroup.save(on: transaction)
@@ -433,12 +441,12 @@ class GraphService: ServiceWithDb {
 
 			// Update graph group labels
 			try await GraphGroupLabels.query(on: transaction).filter(
-				\.$graph.$id == graph.id!
+				\.$id.$graph.$id == graph.requireID()
 			).delete()
 			if let groupLabels = updatedGraph.group.labels {
 				for (index, labelId) in groupLabels.enumerated() {
 					let groupLabel = GraphGroupLabels(
-						graphId: try graph.requireID(),
+						graphId: graphId,
 						labelId: UUID(uuidString: labelId)!,
 						order: index)
 					try await groupLabel.save(on: transaction)
@@ -459,7 +467,7 @@ class GraphService: ServiceWithDb {
 					try await existingHorizontalGroup.save(on: transaction)
 				} else {
 					let newHorizontalGroup = GraphHorizontalGroup(
-						graphId: try graph.requireID(),
+						graphId: graphId,
 						group: horizontalGroup.group.toInternal(),
 						hideOthers: horizontalGroup.hideOthers,
 						accumulate: horizontalGroup.accumulate ?? false
@@ -469,12 +477,12 @@ class GraphService: ServiceWithDb {
 
 				// Update horizontal group labels
 				try await GraphHorizontalGroupLabels.query(on: transaction).filter(
-					\.$graph.$id == graph.id!
+					\.$id.$graph.$id == graphId
 				).delete()
 				if let horizontalLabels = horizontalGroup.labels {
 					for (index, labelId) in horizontalLabels.enumerated() {
 						let horizontalLabel = GraphHorizontalGroupLabels(
-							graphId: try graph.requireID(),
+							graphId: graphId,
 							labelId: UUID(uuidString: labelId)!,
 							order: index)
 						try await horizontalLabel.save(on: transaction)
@@ -499,12 +507,12 @@ class GraphService: ServiceWithDb {
 				graph: updatedGraphData, group: updatedGraphData.group!)
 
 			let groupLabels = try await GraphGroupLabels.query(on: transaction)
-				.filter(\.$graph.$id == graph.id!)
+				.filter(\.$id.$graph.$id == graph.requireID())
 				.sort(\.$order, .ascending)
 				.all()
 
 			if !groupLabels.isEmpty {
-				graphBuilder.setGroupLabels(groupLabels.map { $0.$label.id })
+				graphBuilder.setGroupLabels(groupLabels.map { $0.$id.$label.id })
 			}
 
 			if let horizontalGroup = updatedGraphData.horizontalGroup {
@@ -512,13 +520,13 @@ class GraphService: ServiceWithDb {
 				let horizontalLabels = try await GraphHorizontalGroupLabels.query(
 					on: transaction
 				)
-				.filter(\.$graph.$id == graph.id!)
+				.filter(\.$id.$graph.$id == graph.requireID())
 				.sort(\.$order, .ascending)
 				.all()
 
 				if !horizontalLabels.isEmpty {
 					graphBuilder.setHorizontalGroupLabels(
-						horizontalLabels.map { $0.$label.id })
+						horizontalLabels.map { $0.$id.$label.id })
 				}
 			}
 
@@ -530,7 +538,7 @@ class GraphService: ServiceWithDb {
 	func deleteGraph(graphId: UUID, forUser user: User) async throws
 		-> DeleteGraphResponse
 	{
-		return try await db.transaction { transaction in
+		return try await db.transaction<DeleteGraphResponse> { transaction in
 			let validGroupsId = try user.groups.map { try $0.requireID() }
 			// Delete the graph
 			let graph = try await Graph.query(on: transaction)
@@ -545,22 +553,22 @@ class GraphService: ServiceWithDb {
 
 			// Delete horizontal group labels
 			try await GraphHorizontalGroupLabels.query(on: transaction)
-				.filter(\.$graph.$id == graphId)
+				.filter(\.$id.$graph.$id == graphId)
 				.delete()
 
 			// Delete horizontal group
 			try await GraphHorizontalGroup.query(on: transaction)
-				.filter(\.$graph.$id == graphId)
+				.filter(\.$id.$parent.$id == graphId)
 				.delete()
 
 			// Delete group labels
 			try await GraphGroupLabels.query(on: transaction)
-				.filter(\.$graph.$id == graphId)
+				.filter(\.$id.$graph.$id == graphId)
 				.delete()
 
 			// Delete associated group
 			try await GraphGroup.query(on: transaction)
-				.filter(\.$graph.$id == graphId)
+				.filter(\.$id.$parent.$id == graphId)
 				.delete()
 
 			try await graph.delete(on: transaction)

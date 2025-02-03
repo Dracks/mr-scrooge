@@ -21,24 +21,33 @@ class GraphTests: AbstractBaseTestsClass {
 			dateRange: .oneYear)
 		try await graph1.save(on: app.db)
 		try await graph2.save(on: app.db)
-		try await GraphGroup(graphId: graph1.id!, group: .day, hideOthers: false).save(
+		try await GraphGroup(
+			graphId: graph1.requireID(), group: .day, hideOthers: false
+		).save(
 			on: app.db)
 
-		let group = GraphGroup(graphId: graph2.id!, group: .labels, hideOthers: false)
+		let group = try GraphGroup(
+			graphId: graph2.requireID(), group: .labels,
+			hideOthers: false)
 		try await group.save(on: app.db)
-		try await GraphGroupLabels(graphId: graph2.id!, labelId: labels[1], order: 1).save(
+		try await GraphGroupLabels(
+			graphId: graph2.requireID(), labelId: labels[1],
+			order: 1
+		).save(
 			on: app.db)
-		try await GraphGroupLabels(graphId: graph2.id!, labelId: labels[2], order: 2).save(
+		try await GraphGroupLabels(
+			graphId: graph2.requireID(), labelId: labels[2], order: 2
+		).save(
 			on: app.db)
 
 		let horizontalGroup = GraphHorizontalGroup(
 			graphId: graph2.id!, group: .labels, hideOthers: true)
 		try await horizontalGroup.save(on: app.db)
 		try await GraphHorizontalGroupLabels(
-			graphId: graph2.id!, labelId: labels[3], order: 4
+			graphId: graph2.requireID(), labelId: labels[3], order: 4
 		).save(on: app.db)
 		try await GraphHorizontalGroupLabels(
-			graphId: graph2.id!, labelId: labels[4], order: 1
+			graphId: graph2.requireID(), labelId: labels[4], order: 1
 		).save(on: app.db)
 
 		// Other owner graph

@@ -27,7 +27,7 @@ struct ErrorHandlerMiddleware: AsyncMiddleware {
 					throw Abort(.unauthorized, reason: "Not identified")
 				}
 				print("Server Error")
-				print(error.underlyingError)
+				print(String(reflecting: error.underlyingError))
 				print(type(of: error.underlyingError))
 				throw error
 			default:
