@@ -1,8 +1,0 @@
-{
-    "extends": "../react/tsconfig.json",
-    "exclude": [
-        "node_modules",
-        "**/*.spec.ts",
-        "**/*.spec.tsx"
-    ]
-}

@@ -15,7 +15,7 @@ struct PartialBankTransaction {
 	var dateValue: DateOnly?
 	var details: String?
 	var value: Double
-	var description: String?
+	var comment: String?
 
 	func toBankTransaction(kind: String, groupOwnerId: UUID) -> BankTransaction {
 		return BankTransaction(
@@ -26,7 +26,7 @@ struct PartialBankTransaction {
 			details: details,
 			value: value,
 			kind: kind,
-			description: description
+			comment: comment
 		)
 	}
 }
@@ -57,7 +57,7 @@ class NewImportService: ServiceWithQueueAndDb {
 			dateValue: transaction.dateValue,
 			details: transaction.details,
 			value: transaction.value,
-			description: transaction.description
+			description: transaction.comment
 		)
 	}
 

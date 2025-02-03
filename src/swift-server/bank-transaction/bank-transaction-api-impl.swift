@@ -208,7 +208,7 @@ extension Components.Schemas.BankTransaction {
 		details = bankTransaction.details
 		value = bankTransaction.value
 		kind = bankTransaction.kind
-		description = bankTransaction.description
+		comment = bankTransaction.comment
 		self.labelIds = labelIds.map { $0.uuidString }
 	}
 }

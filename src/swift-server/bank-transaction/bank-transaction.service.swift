@@ -203,7 +203,7 @@ class BankTransactionService: ServiceWithQueueAndDb {
 			return .notFound
 		}
 
-		transaction.description = comment
+		transaction.comment = comment
 		try await transaction.save(on: db)
 		return .ok
 

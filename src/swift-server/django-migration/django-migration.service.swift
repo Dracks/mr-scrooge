@@ -262,7 +262,7 @@ extension DjangoMigrationService.OldDb {
 			return BankTransaction(
 				groupOwnerId: groupOwnerId, movementName: movementName,
 				date: DateOnly(date), dateValue: dateValue, details: details,
-				value: value, kind: kind, description: description
+				value: value, kind: kind, comment: description
 			)
 		}
 

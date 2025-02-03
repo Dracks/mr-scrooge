@@ -10,9 +10,15 @@ env:
   PNPM_VERSION: 9.12.0
 
 jobs:
-  test:
-    name: Test
+  checks:
+    name: ${{ matrix.action }}
     runs-on: ubuntu-latest
+    strategy:
+        matrix:
+            action:
+                - type-check
+                - lint
+                - test
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v4
@@ -28,23 +34,4 @@ jobs:
           cache: 'pnpm'
 
       - run: pnpm install
-      - run: pnpm run test
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    steps:
-        - uses: actions/checkout@v3
-        - uses: pnpm/action-setup@v4
-          name: Install pnpm
-          with:
-            run_install: false
-            version: ${{ env.PNPM_VERSION }}
-
-        - name: Install Node.js
-          uses: actions/setup-node@v4
-          with:
-            node-version: ${{ env.NODE_VERSION }}
-            cache: 'pnpm'
-
-        - run: pnpm install
-        - run: pnpm run lint
+      - run: pnpm run ${{ matrix.action }}
