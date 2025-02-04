@@ -59,7 +59,7 @@ COPY --chown=vapor:vapor --from=server-build /build/.build/release/MrScroogeServ
 COPY --chown=vapor:vapor Public /home/app/Public
 COPY --chown=vapor:vapor --from=client-build /home/app/Public/react /home/app/Public/react
 COPY --chown=vapor:vapor Resources /home/app/Resources
-RUN mkdir -p /home/app/Resource/Views/
+RUN mkdir -p /home/app/Resources/Views/
 COPY --chown=vapor:vapor --from=client-build /home/app/Resources/Views/react.leaf /home/app/Resources/Views/
 
 # Provide configuration needed by the built-in crash reporter and some sensible default behaviors.
