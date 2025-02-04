@@ -92,7 +92,7 @@ final class TransformHelper<D: IndexedCollection>: @unchecked Sendable {
 			dateValue: dateValue.map { DateOnly($0) },
 			details: details,
 			value: value!,
-			description: description
+			comment: description
 		)
 	}
 }

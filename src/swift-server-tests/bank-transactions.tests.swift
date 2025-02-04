@@ -281,8 +281,8 @@ final class BankTransactionTests: AbstractBaseTestsClass {
 		}.mapValues { $0.first! }
 
 		XCTAssertNotNil(resultsDic[transactionIds.first!])  //data.results.last?.id, transactionIds.first?.uuidString)
-		XCTAssertEqual(resultsDic[transactionIds.last!]?.description, nil)
-		XCTAssertEqual(resultsDic[transactionIds.first!]?.description, "EXTERMINATE!")
+		XCTAssertEqual(resultsDic[transactionIds.last!]?.comment, nil)
+		XCTAssertEqual(resultsDic[transactionIds.first!]?.comment, "EXTERMINATE!")
 	}
 
 	func testUnSetComment() async throws {
@@ -290,7 +290,7 @@ final class BankTransactionTests: AbstractBaseTestsClass {
 
 		let transactions = transactionFactory.createSequence(2) { transaction in
 			transaction.$groupOwner.id = self.testGroup.id!
-			transaction.description = "Daleks!"
+			transaction.comment = "Daleks!"
 			return transaction
 		}
 		for transaction in transactions {
@@ -327,8 +327,8 @@ final class BankTransactionTests: AbstractBaseTestsClass {
 		}.mapValues { $0.first! }
 
 		XCTAssertNotNil(resultsDic[transactionIds.first!])  //data.results.last?.id, transactionIds.first?.uuidString)
-		XCTAssertEqual(resultsDic[transactionIds.last!]?.description, "Daleks!")
-		XCTAssertEqual(resultsDic[transactionIds.first!]?.description, nil)
+		XCTAssertEqual(resultsDic[transactionIds.last!]?.comment, "Daleks!")
+		XCTAssertEqual(resultsDic[transactionIds.first!]?.comment, nil)
 	}
 
 }

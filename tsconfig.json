@@ -15,6 +15,7 @@
     "alwaysStrict": true,
     "esModuleInterop": true,
     "noUncheckedIndexedAccess": true,
-    "outDir": "build/"
+    "outDir": "build/",
+    "skipLibCheck": true
   }
 }

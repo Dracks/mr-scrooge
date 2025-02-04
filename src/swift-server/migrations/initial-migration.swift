@@ -4,6 +4,66 @@ import FluentSQL
 struct InitialMigration: AsyncMigration {
 	func prepare(on database: Database) async throws {
 		let sqlDb = database as? SQLDatabase
+		let labelTransactionLinkReasonEnum = try await database.enum(
+			"label_transaction_link_reason"
+		)
+		.case("manualEnabled")
+		.case("manualDisabled")
+		.case("automatic")
+		.create()
+
+		let conditionsRelationEnum = try await database.enum("conditions_relation")
+			.case("notAnd")
+			.case("or")
+			.create()
+
+		let operationEnum = try await database.enum("operation")
+			.case("prefix")
+			.case("regularExpression")
+			.case("suffix")
+			.case("contains")
+			.case("greater")
+			.case("greaterEqual")
+			.case("less")
+			.case("lessEqual")
+			.create()
+
+		let graphKindEnum = try await database.enum("graph_kind")
+			.case("bar")
+			.case("line")
+			.case("pie")
+			.create()
+
+		let dateRangeEnum = try await database.enum("date_range")
+			.case("all")
+			.case("six")
+			.case("month")
+			.case("year")
+			.case("twoYears")
+			.case("sixYears")
+			.create()
+
+		let groupEnum = try await database.enum("graph_group_type")
+			.case("day")
+			.case("labels")
+			.case("month")
+			.case("sign")
+			.case("year")
+			.create()
+
+		let importStatusEnum = try await database.enum("import_status")
+			.case("ok")
+			.case("warn")
+			.case("error")
+			.create()
+
+		try await database.schema("user_groups")
+			.id()
+			.field("name", .string, .required)
+			.field("created_at", .datetime)
+			.field("updated_at", .datetime)
+			.create()
+
 		try await database.schema("users")
 			.id()
 			.field("username", .string, .required)
@@ -23,13 +83,6 @@ struct InitialMigration: AsyncMigration {
 			.unique(on: "email")
 			.create()
 
-		try await database.schema("user_groups")
-			.id()
-			.field("name", .string, .required)
-			.field("created_at", .datetime)
-			.field("updated_at", .datetime)
-			.create()
-
 		try await database.schema("user_group_pivot")
 			.id()
 			.field("user_id", .uuid, .required, .references("users", "id"))
@@ -46,8 +99,9 @@ struct InitialMigration: AsyncMigration {
 			.field("details", .string)
 			.field("value", .double, .required)
 			.field("kind", .string, .required)
-			.field("description", .string)
+			.field("comment", .string)
 			.create()
+
 		try await sqlDb?.create(index: "group_owner_idx")
 			.on("core_bank_transaction")
 			.column("group_owner_id")
@@ -59,7 +113,6 @@ struct InitialMigration: AsyncMigration {
 			.field("name", .string, .required)
 			.create()
 
-		#warning("Add enum for the link_reason")
 		try await database.schema("core_label_transaction")
 			.id()
 			.field("label_id", .uuid, .required, .references("core_label", "id"))
@@ -67,8 +120,7 @@ struct InitialMigration: AsyncMigration {
 				"transaction_id", .uuid, .required,
 				.references("core_bank_transaction", "id")
 			)
-			// todo: look to use enums
-			.field("link_reason", .string, .required)
+			.field("link_reason", labelTransactionLinkReasonEnum, .required)
 			.unique(on: "label_id", "transaction_id")
 			.create()
 		try await sqlDb?.create(index: "label_transaction_transaction_idx")
@@ -80,7 +132,7 @@ struct InitialMigration: AsyncMigration {
 			.id()
 			.field("group_owner_id", .uuid, .required, .references("user_groups", "id"))
 			.field("name", .string, .required)
-			.field("conditions_relation", .string, .required)
+			.field("conditions_relation", conditionsRelationEnum, .required)
 			.field("parent_id", .uuid, .references("core_rule", "id"))
 			.create()
 		try await sqlDb?.create(index: "core_rule_group_owner_idx")
@@ -91,7 +143,7 @@ struct InitialMigration: AsyncMigration {
 		try await database.schema("core_condition")
 			.id()
 			.field("rule_id", .uuid, .required, .references("core_rule", "id"))
-			.field("operation", .string, .required)
+			.field("operation", operationEnum, .required)
 			.field("value_str", .string)
 			.field("value_double", .double)
 			.create()
@@ -129,10 +181,11 @@ struct InitialMigration: AsyncMigration {
 			.id()
 			.field("group_owner_id", .uuid, .required, .references("user_groups", "id"))
 			.field("name", .string, .required)
-			.field("kind", .string, .required)
+			.field("kind", graphKindEnum, .required)
 			.field("label_filter", .uuid, .references("core_label", "id"))
-			.field("date_range", .string, .required)
+			.field("date_range", dateRangeEnum, .required)
 			.create()
+
 		try await sqlDb?.create(index: "graph_graph_group_owner_idx")
 			.on("graph_graph")
 			.column("group_owner_id")
@@ -143,9 +196,8 @@ struct InitialMigration: AsyncMigration {
 				"graph_id", .uuid, .required, .references("graph_graph", "id"),
 				.identifier(auto: false)
 			)
-			.field("group", .string, .required)
+			.field("group", groupEnum, .required)
 			.field("hide_others", .bool)
-			.unique(on: "graph_id")
 			.create()
 
 		try await database.schema("graph_horizontal_group")
@@ -153,28 +205,29 @@ struct InitialMigration: AsyncMigration {
 				"graph_id", .uuid, .required, .references("graph_graph", "id"),
 				.identifier(auto: false)
 			)
-			.field("group", .string, .required)
+			.field("group", groupEnum, .required)
 			.field("hide_others", .bool)
 			.field("accumulate", .bool, .required)
 			.create()
 
 		try await database.schema("graph_group_labels")
-			.id()
-			.field("graph_id", .uuid, .required, .references("graph_group", "graph_id"))
+			.field(
+				"graph_id", .uuid, .required,
+				.references("graph_group", "graph_id")
+			)
 			.field("label_id", .uuid, .required, .references("core_label", "id"))
 			.field("order", .int64)
-			.unique(on: "graph_id", "label_id")
+			.compositeIdentifier(over: "graph_id", "label_id")
 			.create()
 
 		try await database.schema("graph_horizontal_group_labels")
-			.id()
 			.field(
 				"graph_id", .uuid, .required,
 				.references("graph_horizontal_group", "graph_id")
 			)
 			.field("label_id", .uuid, .required, .references("core_label", "id"))
 			.field("order", .int64)
-			.unique(on: "graph_id", "label_id")
+			.compositeIdentifier(over: "graph_id", "label_id")
 			.create()
 
 		try await database.schema("import_fileimport")
@@ -186,7 +239,7 @@ struct InitialMigration: AsyncMigration {
 			// https://discord.com/channels/431917998102675485/684159753189982218/1282405735455522950
 			.field("created_at", .datetime, .required)
 			.field("kind", .string, .required)
-			.field("status", .string, .required)
+			.field("status", importStatusEnum, .required)
 			.field("stack", .string)
 			.field("context", .string)
 			.create()
@@ -234,7 +287,15 @@ struct InitialMigration: AsyncMigration {
 		try await database.schema("core_label").delete()
 		try await database.schema("core_bank_transaction").delete()
 		try await database.schema("user_group_pivot").delete()
-		try await database.schema("user_groups").delete()
 		try await database.schema("users").delete()
+		try await database.schema("user_groups").delete()
+
+		try await database.enum("import_status").delete()
+		try await database.enum("graph_group_type").delete()
+		try await database.enum("date_range").delete()
+		try await database.enum("graph_kind").delete()
+		try await database.enum("operation").delete()
+		try await database.enum("conditions_relation").delete()
+		try await database.enum("label_transaction_link_reason").delete()
 	}
 }

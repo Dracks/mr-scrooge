@@ -1301,7 +1301,7 @@ components:
           format: decimal
         kind:
           type: string
-        description:
+        comment:
           type: string
         labelIds:
           type: array

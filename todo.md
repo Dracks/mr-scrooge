@@ -20,8 +20,8 @@
   * [x] Fix ui
 * [ ] labels
   * [ ] Fix ui
-* [ ] rules engine
-  * [ ] Fix ui
+* [x] rules engine
+  * [x] Fix ui
 * [ ] users
   * [ ] Fix ui
 
@@ -50,7 +50,7 @@
   * [x] new transactions are applied with the rules engine
   * [x] CRUD
   * [ ] Apply Rule
-* [ ] import django data
+* [x] import django data
 * [ ] users
   * [x] login/logout
   * [ ] admin users

@@ -112,7 +112,7 @@ struct ImportUpload: RouteCollection {
 extension Components.Schemas.FileImport: Content {
 	init(file: FileImportReport) {
 		id = file.id!.uuidString
-		createdAt = file.createdAt
+		createdAt = file.createdAt ?? Date()
 		description = file.description
 		fileName = file.fileName
 		groupOwnerId = file.groupOwnerId.uuidString

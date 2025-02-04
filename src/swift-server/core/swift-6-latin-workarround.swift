@@ -3,7 +3,7 @@
 // as Swift's built-in support is currently incomplete.
 //
 // Credits: @TimBudarick
-// 
+//
 // TODO: Remove this workaround when Swift adds proper Windows CP-1252 support
 // Tracking issue: https://github.com/swiftlang/swift/issues/78382
 

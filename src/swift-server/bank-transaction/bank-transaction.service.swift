@@ -39,10 +39,10 @@ final class BankTransactionService: ServiceWithQueueAndDb, @unchecked Sendable {
 			{
 				query = query.group(.or) { group in
 					group.group(.and) { subGroup in
-						subGroup.filter(\.$_date == date.toString())
+						subGroup.filter(\.$_date == date.getDate())
 							.filter(\.$id < id)
 					}
-					group.filter(\.$_date < date.toString())
+					group.filter(\.$_date < date.getDate())
 				}
 			}
 		}
@@ -80,7 +80,7 @@ final class BankTransactionService: ServiceWithQueueAndDb, @unchecked Sendable {
 	) async throws -> Bool {
 		let similarCount = try await BankTransaction.query(on: db)
 			.filter(\.$groupOwner.$id == transaction.$groupOwner.id)
-			.filter(\.$_date == transaction.date.toString())
+			.filter(\.$_date == transaction.date.getDate())
 			.filter(\.$details == transaction.details)
 			.filter(\.$kind == transaction.kind)
 			.filter(\.$movementName == transaction.movementName)
@@ -204,7 +204,7 @@ final class BankTransactionService: ServiceWithQueueAndDb, @unchecked Sendable {
 			return .notFound
 		}
 
-		transaction.description = comment
+		transaction.comment = comment
 		try await transaction.save(on: db)
 		return .ok
 

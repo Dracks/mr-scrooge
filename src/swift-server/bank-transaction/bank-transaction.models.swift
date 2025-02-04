@@ -7,8 +7,9 @@ final class BankTransaction: Model, Content, @unchecked Sendable {
 	@ID(key: .id)
 	var id: UUID?
 
-	@Field(key: "group_owner_id")
-	var groupOwnerId: UserGroup.IDValue
+	var groupOwnerId: UserGroup.IDValue {
+		$groupOwner.id
+	}
 
 	@Parent(key: "group_owner_id")
 	var groupOwner: UserGroup
@@ -17,19 +18,31 @@ final class BankTransaction: Model, Content, @unchecked Sendable {
 	var movementName: String
 
 	@Field(key: "date")
-	var _date: String
+	var _date: Date
 
 	var date: DateOnly {
 		get {
-			DateOnly(_date)!
+			DateOnly(_date)
 		}
 		set {
-			_date = newValue.toString()
+			_date = newValue.getDate()
 		}
 	}
 
 	@OptionalField(key: "date_value")
-	var dateValue: DateOnly?
+	var _dateValue: Date?
+
+	var dateValue: DateOnly? {
+		get {
+			guard let _dateValue else {
+				return nil
+			}
+			return DateOnly(_dateValue)
+		}
+		set {
+			_dateValue = newValue?.getDate()
+		}
+	}
 
 	@OptionalField(key: "details")
 	var details: String?
@@ -43,26 +56,24 @@ final class BankTransaction: Model, Content, @unchecked Sendable {
 	@Siblings(through: LabelTransaction.self, from: \.$transaction, to: \.$label)
 	var labels: [Label]
 
-	// TODO: change the name to comment
-	@OptionalField(key: "description")
-	var description: String?
+	@OptionalField(key: "comment")
+	var comment: String?
 
 	init() {}
 
 	init(
 		id: UUID? = nil, groupOwnerId: UUID, movementName: String, date: DateOnly,
 		dateValue: DateOnly? = nil, details: String? = nil, value: Double, kind: String,
-		description: String? = nil
+		comment: String? = nil
 	) {
 		self.id = id
 		self.$groupOwner.id = groupOwnerId
-		self.groupOwnerId = groupOwnerId
 		self.movementName = movementName
 		self.date = date
 		self.dateValue = dateValue
 		self.details = details
 		self.value = value
 		self.kind = kind
-		self.description = description
+		self.comment = comment
 	}
 }

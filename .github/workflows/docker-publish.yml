@@ -18,8 +18,7 @@ env:
   REGISTRY: docker.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: dracks/mrscrooge
-  PLATFORMS: linux/amd64,linux/arm64
-  # PLATFORMS: linux/amd64
+  PLATFORMS: linux/amd64
 
 
 jobs:

@@ -20,8 +20,8 @@ enum GraphDateRange: String, Codable, CaseIterable {
 	case halfYear = "six"
 	case oneMonth = "month"
 	case oneYear = "year"
-	case sixYears = "sixYears"
 	case twoYears = "twoYears"
+	case sixYears = "sixYears"
 }
 
 final class Graph: Model, Content, @unchecked Sendable {
@@ -45,10 +45,10 @@ final class Graph: Model, Content, @unchecked Sendable {
 	@Enum(key: "date_range")
 	var dateRange: GraphDateRange
 
-	@OptionalChild(for: \.$graph)
+	@OptionalChild(for: \.$id.$parent)
 	var group: GraphGroup?
 
-	@OptionalChild(for: \.$graph)
+	@OptionalChild(for: \.$id.$parent)
 	var horizontalGroup: GraphHorizontalGroup?
 
 	init() {}
@@ -65,7 +65,7 @@ final class Graph: Model, Content, @unchecked Sendable {
 		self.dateRange = dateRange
 	}
 }
-
+/*
 protocol AbstractGroup: Model, Content {
 	var graph: Graph { get set }
 	var group: GraphGroupType { get set }
@@ -76,16 +76,33 @@ protocol AbstractGroupLabels: Content {
 
 	init(graphId: Graph.IDValue, labelId: Label.IDValue, order: Int)
 }
+*/
 
-final class GraphGroup: Model, Content, AbstractGroup, @unchecked Sendable {
+final class GraphGroup: Model, Content, @unchecked Sendable {
 
 	static let schema = "graph_group"
 
-	@ID(custom: "graph_id")
-	var id: UUID?
+	final class IDValue: Fields, Hashable, @unchecked Sendable {
+		@Parent(key: "graph_id")
+		var parent: Graph
 
-	@Parent(key: "graph_id")
-	var graph: Graph
+		init() {}
+
+		init(parentId: Graph.IDValue) {
+			self.$parent.id = parentId
+		}
+
+		static func == (lhs: IDValue, rhs: IDValue) -> Bool {
+			lhs.$parent.id == rhs.$parent.id
+		}
+
+		func hash(into hasher: inout Hasher) {
+			hasher.combine(self.$parent.id)
+		}
+	}
+
+	@CompositeID
+	var id: IDValue?
 
 	@Enum(key: "group")
 	var group: GraphGroupType
@@ -96,21 +113,37 @@ final class GraphGroup: Model, Content, AbstractGroup, @unchecked Sendable {
 	init() {}
 
 	init(graphId: Graph.IDValue, group: GraphGroupType, hideOthers: Bool? = nil) {
-		self.$graph.id = graphId
+		self.id = .init(parentId: graphId)
 		self.group = group
 		self.hideOthers = hideOthers
 	}
 }
 
-final class GraphHorizontalGroup: Model, Content, AbstractGroup, @unchecked Sendable {
+final class GraphHorizontalGroup: Model, Content, @unchecked Sendable {
 
 	static let schema = "graph_horizontal_group"
 
-	@ID(custom: "graph_id")
-	var id: UUID?
+	final class IDValue: Fields, Hashable, @unchecked Sendable {
+		@Parent(key: "graph_id")
+		var parent: Graph
 
-	@Parent(key: "graph_id")
-	var graph: Graph
+		init() {}
+
+		init(parentId: Graph.IDValue) {
+			self.$parent.id = parentId
+		}
+
+		static func == (lhs: IDValue, rhs: IDValue) -> Bool {
+			lhs.$parent.id == rhs.$parent.id
+		}
+
+		func hash(into hasher: inout Hasher) {
+			hasher.combine(self.$parent.id)
+		}
+	}
+
+	@CompositeID
+	var id: IDValue?
 
 	@Enum(key: "group")
 	var group: GraphGroupType
@@ -127,56 +160,91 @@ final class GraphHorizontalGroup: Model, Content, AbstractGroup, @unchecked Send
 		graphId: Graph.IDValue, group: GraphGroupType, hideOthers: Bool? = nil,
 		accumulate: Bool = false
 	) {
-		self.$graph.id = graphId
+		self.id = .init(parentId: graphId)
 		self.group = group
 		self.hideOthers = hideOthers
 		self.accumulate = accumulate
 	}
 }
-final class GraphGroupLabels: Model, Content, @unchecked Sendable, AbstractGroupLabels {
+
+final class GraphGroupLabels: Model, Content, @unchecked Sendable {
 	static let schema = "graph_group_labels"
 
-	@ID(custom: "graph_id")
-	var id: UUID?
+	final class IDValue: Fields, Hashable, @unchecked Sendable {
+        @Parent(key: "graph_id")
+		var graph: Graph
 
-	@Parent(key: "graph_id")
-	var graph: GraphGroup
+		@Parent(key: "label_id")
+		var label: Label
 
-	@Parent(key: "label_id")
-	var label: Label
+		init() {}
+
+		init(graphId: Graph.IDValue, labelId: Label.IDValue) {
+			self.$graph.id = graphId
+			self.$label.id = labelId
+		}
+
+		static func == (lhs: IDValue, rhs: IDValue) -> Bool {
+			lhs.$graph.id == rhs.$graph.id && lhs.$label.id == rhs.$label.id
+		}
+
+		func hash(into hasher: inout Hasher) {
+			hasher.combine(self.$graph.id)
+			hasher.combine(self.$label.id)
+		}
+	}
+
+	@CompositeID
+	var id: IDValue?
 
 	@Field(key: "order")
 	var order: Int
 
 	init() {}
 
-	init(graphId: GraphGroup.IDValue, labelId: Label.IDValue, order: Int) {
-		self.$graph.id = graphId
-		self.$label.id = labelId
+	init(graphId: Graph.IDValue, labelId: Label.IDValue, order: Int) {
+		self.id = .init(graphId: graphId, labelId: labelId)
 		self.order = order
 	}
 }
 
-final class GraphHorizontalGroupLabels: Model, Content, @unchecked Sendable, AbstractGroupLabels {
+final class GraphHorizontalGroupLabels: Model, Content, @unchecked Sendable {
 	static let schema = "graph_horizontal_group_labels"
 
-	@ID(custom: "graph_id")
-	var id: UUID?
+	final class IDValue: Fields, Hashable, @unchecked Sendable {
+        @Parent(key:"graph_id")
+		var graph: Graph
 
-	@Parent(key: "graph_id")
-	var graph: GraphHorizontalGroup
+		@Parent(key: "label_id")
+		var label: Label
 
-	@Parent(key: "label_id")
-	var label: Label
+		init() {}
+
+		init(graphId: Graph.IDValue, labelId: Label.IDValue) {
+			self.$graph.id = graphId
+			self.$label.id = labelId
+		}
+
+		static func == (lhs: IDValue, rhs: IDValue) -> Bool {
+			lhs.$graph.id == rhs.$graph.id && lhs.$label.id == rhs.$label.id
+		}
+
+		func hash(into hasher: inout Hasher) {
+			hasher.combine(self.$graph.id)
+			hasher.combine(self.$label.id)
+		}
+	}
+
+	@CompositeID
+	var id: IDValue?
 
 	@Field(key: "order")
 	var order: Int
 
 	init() {}
 
-	init(graphId: GraphHorizontalGroup.IDValue, labelId: Label.IDValue, order: Int) {
-		self.$graph.id = graphId
-		self.$label.id = labelId
+	init(graphId: Graph.IDValue, labelId: Label.IDValue, order: Int) {
+		self.id = .init(graphId: graphId, labelId: labelId)
 		self.order = order
 	}
 }
