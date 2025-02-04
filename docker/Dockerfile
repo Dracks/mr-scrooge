@@ -11,8 +11,6 @@ COPY tsconfig.json /home/app
 WORKDIR /home/app
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN npx pnpm run build:view
-RUN ls Resources
-RUN ls Resources/Views
 
 
 FROM swift:6.0.3-noble AS server-build
