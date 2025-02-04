@@ -136,8 +136,8 @@ class NewImportService: ServiceWithQueueAndDb {
 				}
 			}
 		} catch {
-			// print(error)
-			status.description = String(describing: error)
+			print(error)
+			status.description = String(reflecting: error)
 			// status.stack = String(describing: error)
 			if let error = error as? Exception {
 				let jsonData = try JSONSerialization.data(

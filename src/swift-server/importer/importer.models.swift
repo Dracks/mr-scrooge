@@ -11,8 +11,8 @@ final class FileImportReport: Model, Content, @unchecked Sendable {
 	@ID(key: .id)
 	var id: UUID?
 
-	@Field(key: "created_at")
-	var createdAt: Date
+	@Timestamp(key: "created_at", on: .create)
+	var createdAt: Date?
 
 	@Field(key: "description")
 	var description: String
@@ -67,10 +67,31 @@ final class FileImportRow: Model, @unchecked Sendable {
 	var movementName: String
 
 	@Field(key: "date")
-	var date: DateOnly
+	var _date: Date
+
+	var date: DateOnly {
+		get {
+			DateOnly(_date)
+		}
+		set {
+			_date = newValue.getDate()
+		}
+	}
 
 	@OptionalField(key: "date_value")
-	var dateValue: DateOnly?
+	var _dateValue: Date?
+
+	var dateValue: DateOnly? {
+		get {
+			guard let _dateValue else {
+				return nil
+			}
+			return DateOnly(_dateValue)
+		}
+		set {
+			_dateValue = newValue?.getDate()
+		}
+	}
 
 	@OptionalField(key: "details")
 	var details: String?

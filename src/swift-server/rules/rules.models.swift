@@ -8,15 +8,15 @@ enum ConditionalRelationType: String, Codable {
 
 enum ConditionOperation: String, Codable {
 	// String operations
-	case prefix = "p"
-	case regularExpression = "r"
-	case suffix = "s"
-	case contains = "c"
+	case prefix
+	case regularExpression
+	case suffix
+	case contains
 	// Float operations
-	case greater = "g"
-	case greaterEqual = "G"
-	case less = "l"
-	case lessEqual = "L"
+	case greater
+	case greaterEqual
+	case less
+	case lessEqual
 
 }
 
@@ -29,7 +29,7 @@ final class Condition: Model, Content, @unchecked Sendable {
 	@Parent(key: "rule_id")
 	var rule: Rule
 
-	@Field(key: "operation")
+	@Enum(key: "operation")
 	var operation: ConditionOperation
 
 	@Field(key: "value_str")
