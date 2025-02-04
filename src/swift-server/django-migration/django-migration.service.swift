@@ -74,7 +74,8 @@ extension DjangoMigrationService.OldDb {
 			{
 				return d
 			}
-			throw Exception(.E10023, context: ["filterId": id as Any, "tagId": tagId])
+			throw Exception(
+				.E10023, context: ["filterId": id as Sendable, "tagId": tagId])
 		}
 		func toBaseCondition() throws -> Rule.BaseCondition {
 			switch typeConditional {
@@ -98,7 +99,7 @@ extension DjangoMigrationService.OldDb {
 				throw Exception(
 					.E10022,
 					context: [
-						"filterId": id as Any, "tagId": tagId,
+						"filterId": id as Sendable, "tagId": tagId,
 						"typeConditional": typeConditional,
 					])
 			}
@@ -331,7 +332,7 @@ extension DjangoMigrationService {
 
 extension DjangoMigrationService.OldDb {
 	final class Graph: Model, @unchecked Sendable {
-		static var schema = "graphs_graphv2"
+		static let schema = "graphs_graphv2"
 
 		@ID(custom: "id", generatedBy: .database)
 		var id: Int64?
@@ -358,7 +359,7 @@ extension DjangoMigrationService.OldDb {
 				return .line
 			default:
 				throw Exception(
-					.E10027, context: ["graphId": id as Any, "kind": kind])
+					.E10027, context: ["graphId": id as Sendable, "kind": kind])
 			}
 		}
 
@@ -379,7 +380,9 @@ extension DjangoMigrationService.OldDb {
 			default:
 				throw Exception(
 					.E10028,
-					context: ["graphId": id as Any, "dateRange": dateRange])
+					context: [
+						"graphId": id as Sendable, "dateRange": dateRange,
+					])
 			}
 		}
 	}

@@ -27,6 +27,13 @@ public struct ServiceDependencyMacro: AccessorMacro {
 			context.diagnose(missingAnnotationErr)
 			return []
 		}
+		/*return [
+		  """
+			 get {
+			 .init(app: self)	
+			}
+			"""
+		]*/
 		return [
 			"""
 			            get {

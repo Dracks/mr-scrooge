@@ -2,7 +2,7 @@ import Fluent
 import Queues
 import Vapor
 
-class FileImportService: ServiceWithQueueAndDb {
+final class FileImportService: ServiceWithQueueAndDb, @unchecked Sendable {
 	private let cursorHandler = CursorHandler<FileImportReport, String>(["created", "id"])
 	private let uploadImportService: NewImportService
 

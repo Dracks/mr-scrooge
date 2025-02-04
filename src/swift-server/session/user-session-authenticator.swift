@@ -12,7 +12,7 @@ struct UserSessionAuthenticator: AsyncSessionAuthenticator {
 
 }
 
-class NotIdentifiedError: Error {}
+final class NotIdentifiedError: Error {}
 
 func getUser(fromRequest req: Request) async throws -> User {
 	guard let user = req.auth.get(User.self) else {

@@ -2,7 +2,7 @@ import swift_macros
 
 enum ErrorCode: String, CaseIterable {
 	case E10000, E10001, E10002, E10003, E10004, E10005, E10006, E10007, E10008, E10009
-	case E10010, E10011, E10012, E10013, E10014, E10015, E10016, E10017, E10019
+	case E10010, E10011, E10012, E10013, E10014, E10015, E10016, E10017, E10018, E10019
 	case E10020, E10021, E10022, E10023, E10024, E10025, E10026, E10027, E10028, E10029
 	case E10030, E10031
 }
@@ -21,7 +21,7 @@ enum ApiError: String, StringEnumType {
 	case API10050, API10051
 }
 
-class ErrorInfo {
+final class ErrorInfo: Sendable {
 	let message: String
 	let additionalInfo: String?
 
@@ -58,6 +58,12 @@ let errorDictionary: [ErrorCode: ErrorInfo] = [
 		additionalInfo: "this can be because the parent rule is with another groupOwnerId"
 	),
 	.E10017: ErrorInfo(message: "Import from file returned an ID that was not found in the DB"),
+	.E10018: ErrorInfo(
+		message:
+			"Commerz Bank  Date Regex was invalid and was not able to be generated correctly",
+		additionalInfo:
+			"the regex is defined in the code, which means a big bug in the code"
+	),
 	.E10019: ErrorInfo(message: "Database url not supported"),
 	.E10020: ErrorInfo(message: "Old database is not an sql"),
 	.E10021: ErrorInfo(message: "Old tag Id was not found in the labels relations"),

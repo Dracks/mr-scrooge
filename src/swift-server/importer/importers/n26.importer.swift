@@ -2,7 +2,7 @@ import CSV
 import Foundation
 import Vapor
 
-class N26Importer: ParserFactory {
+final class N26Importer: ParserFactory, Sendable {
 	let transformHelper: TransformHelper<[String]>
 	let key: String = "n26/es"
 	let fileRegex: String = "Cuenta.*\\.csv"

@@ -30,6 +30,8 @@ final class CaixaEnginyersImporterTests: BaseImporterTests {
 			groupIds: [groupOwnerId])
 		XCTAssertEqual(reports.list.count, 1)
 		XCTAssertEqual(reports.list.first?.status, .ok)
+		XCTAssertEqual(reports.list.first?.description, "")
+		XCTAssertNil(reports.list.first?.context)
 
 		let (transactions, _) = try await bankTransactionService.getAll(
 			groupIds: [groupOwnerId])
@@ -61,7 +63,7 @@ final class CaixaEnginyersImporterTests: BaseImporterTests {
 		XCTAssertEqual(october8Transaction?.details, "Bill")
 	}
 
-	func testCaixaEnginiersCreditImport() async throws {
+	func testCaixaEnginyersCreditImport() async throws {
 		let groupOwnerId = try self.group.requireID()
 		let db = try getDb()
 

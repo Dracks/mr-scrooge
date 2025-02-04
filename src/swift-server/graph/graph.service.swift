@@ -158,7 +158,7 @@ class GraphBuilder {
 	}
 }
 
-class GraphService: ServiceWithDb {
+class GraphService: ServiceWithDb, @unchecked Sendable {
 	private let cursorHandler = CursorHandler<Label, String>(["id"])
 
 	struct InvalidLabels {

@@ -1,7 +1,7 @@
 import Fluent
 import Vapor
 
-class LabelService: ServiceWithDb {
+final class LabelService: ServiceWithDb, @unchecked Sendable {
 	private let cursorHandler = CursorHandler<Label, String>(["id"])
 	func createLabel(label: Label) async throws -> Label {
 		try await label.save(on: db)

@@ -1,7 +1,7 @@
 import Fluent
 import Vapor
 
-class BankTransactionService: ServiceWithQueueAndDb {
+final class BankTransactionService: ServiceWithQueueAndDb, @unchecked Sendable {
 	private let logger = Logger(label: "BankTransactionService")
 	private let cursorHandler = CursorHandler<BankTransaction, String>(["date", "id"])
 
@@ -90,8 +90,9 @@ class BankTransactionService: ServiceWithQueueAndDb {
 	}
 
 	func insertBatch(movements: [BankTransaction]) -> EventLoopFuture<Void> {
+	   let logger = self.logger
 		return movements.create(on: db).map { _ in
-			self.logger.info("Insert batch", metadata: ["sql": "Bulk insert"])
+			logger.info("Insert batch", metadata: ["sql": "Bulk insert"])
 		}
 	}
 

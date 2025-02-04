@@ -1,7 +1,7 @@
 import Fluent
 import Vapor
 
-class UserService: ServiceWithDb {
+final class UserService: ServiceWithDb, @unchecked Sendable {
 	private let cursorHandler = CursorHandler<User, String>(["id"])
 	struct NewUser {
 		var username: String
@@ -81,7 +81,7 @@ class UserService: ServiceWithDb {
 	}
 }
 
-class UserGroupService: ServiceWithDb {
+final class UserGroupService: ServiceWithDb, @unchecked Sendable {
 
 	func validateGroupId(groupId: String, forUserId userId: UUID) async throws
 		-> UUID?

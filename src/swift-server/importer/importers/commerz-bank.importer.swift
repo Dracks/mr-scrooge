@@ -2,8 +2,8 @@ import CSV
 import Foundation
 import Vapor
 
-class CommerzBankEnImporter: ParserFactory {
-	let DATE_REGEX = try! NSRegularExpression(
+final class CommerzBankEnImporter: ParserFactory, Sendable {
+	static let DATE_REGEX = try? NSRegularExpression(
 		pattern: "(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})T\\d{2}:\\d{2}:\\d{2}",
 		options: [])
 	let transformHelper: TransformHelper<[String?]>
@@ -21,6 +21,9 @@ class CommerzBankEnImporter: ParserFactory {
 	}
 
 	func splitMessage(_ msg: String) throws -> (String, String?, String?) {
+		guard let dateRegex = CommerzBankEnImporter.DATE_REGEX else {
+			throw Exception(.E10018)
+		}
 		var message = msg
 
 		if message.hasPrefix("/") {
@@ -36,7 +39,7 @@ class CommerzBankEnImporter: ParserFactory {
 			message = String(message.prefix(upTo: doubleSlashIndex.lowerBound))
 		}
 
-		let dateMatch = DATE_REGEX.firstMatch(
+		let dateMatch = dateRegex.firstMatch(
 			in: message, options: [], range: NSRange(location: 0, length: message.count)
 		)
 		if let dateMatch {

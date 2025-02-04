@@ -1,9 +1,9 @@
-class Exception: Error, CustomStringConvertible {
+final class Exception: Error, CustomStringConvertible {
 
 	let errorCode: ErrorCode
-	let context: [String: Any]
-	var allContext: [String: Any] {
-		var context: [String: Any] = [:]
+	let context: [String: any Sendable]
+	var allContext: [String: any Sendable] {
+		var context: [String: any Sendable] = [:]
 		if let cause = cause as? Exception {
 			for (key, value) in cause.allContext {
 				context[key] = value
@@ -20,7 +20,7 @@ class Exception: Error, CustomStringConvertible {
 	let cause: Error?
 
 	init(
-		_ errorCode: ErrorCode, context: [String: Any] = [:], cause: Error? = nil,
+		_ errorCode: ErrorCode, context: [String: any Sendable] = [:], cause: Error? = nil,
 		file: String = #file,
 		line: UInt = #line,
 		function: String = #function

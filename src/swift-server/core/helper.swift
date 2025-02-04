@@ -26,11 +26,11 @@ extension Array: IndexedCollection {
 }
 
 // Extend Dictionary to conform to IndexedCollection with IndexType as the Dictionary's Key
-extension Dictionary: IndexedCollection {
+extension Dictionary: IndexedCollection{
 	typealias IndexType = Key
-	typealias Element = Value
+	typealias ValueType = Value
 
 	func get(_ index: Key) -> Value? {
-		return self[index]
+					return self[index]
 	}
 }

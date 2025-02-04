@@ -1,6 +1,6 @@
 import Foundation
 
-class DateOnly: Codable, Equatable {
+final class DateOnly: Codable, Equatable, Sendable {
 	static func == (lhs: DateOnly, rhs: DateOnly) -> Bool {
 		return lhs.year == rhs.year && lhs.month == rhs.month && lhs.day == rhs.day
 	}
