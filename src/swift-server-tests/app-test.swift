@@ -110,6 +110,7 @@ class AbstractBaseTestsClass: XCTestCase {
 
 	override func tearDown() async throws {
 		try await self.app?.asyncShutdown()
+		try await Task.sleep(nanoseconds: 10000)
 		self.app = nil
 	}
 
