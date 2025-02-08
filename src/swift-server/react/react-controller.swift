@@ -4,7 +4,8 @@ import Vapor
 struct ReactContext: Content {
 	let debug: Bool
 	let staticPath: String
-	var version: String?
+	let version: String
+	let commit: String
 	let environment: String
 	let decimalCount: UInt8
 }
@@ -15,11 +16,13 @@ struct ReactController: RouteCollection {
 
 	init() {
 		self.logger = Logger(label: "ReactController")
-		let buildInfo = BuildInfo()
 		self.ctx = ReactContext(
-			debug: true,  // Todo: get from app env
+			// Todo: get from app env
+			debug: true,
 			staticPath: "/",
-			version: buildInfo.appVersion,
+			version: BuildInfo.appVersion,
+			commit: BuildInfo.commit,
+			// This should be extracted from env vars
 			environment: "development",
 			decimalCount: 2
 		)

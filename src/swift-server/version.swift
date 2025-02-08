@@ -1,4 +1,4 @@
 struct BuildInfo {
-	let appVersion: String = "dev-build"
-	let commit: String = ""
+	static let appVersion: String = "dev-build"
+	static let commit: String = ""
 }
