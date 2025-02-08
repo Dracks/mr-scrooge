@@ -15,6 +15,9 @@ RUN npx pnpm run build:view
 
 FROM swift:6.0.3-noble AS server-build
 
+ARG VERSION
+ARG GIT_COMMIT
+
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update \
     && apt-get -q dist-upgrade -y \
@@ -29,9 +32,9 @@ RUN swift package resolve \
 
 COPY src src
 COPY --from=client-build /home/app/Resources/Views/react.leaf /home/vapor/Resources/Views/react.leaf
- 
-RUN swift sdk list
-RUN swift build -c release
+RUN echo "struct BuildInfo { static let appVersion = \"$VERSION\"; static let commit = \"$GIT_COMMIT\" }" > src/swift-server/version.swift
+
+RUN swift build -c release --static-swift-stdlib
 
 FROM ubuntu:noble
 
