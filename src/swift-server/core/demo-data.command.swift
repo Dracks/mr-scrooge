@@ -122,7 +122,8 @@ struct DemoDataCommand: AsyncCommand {
 			groupOwnerId: groupOwnerId,
 			name: "Income vs expenses",
 			kind: .bar,
-			dateRange: .halfYear
+			dateRange: .halfYear,
+			order: 1
 		)
 		try await incomeVsExpensesGraph.save(on: app.db)
 
@@ -142,7 +143,8 @@ struct DemoDataCommand: AsyncCommand {
 			groupOwnerId: groupOwnerId,
 			name: "Compare labels",
 			kind: .line,
-			dateRange: .twoYears
+			dateRange: .twoYears,
+			order: 2
 		)
 		try await compareLabelsGraph.save(on: app.db)
 

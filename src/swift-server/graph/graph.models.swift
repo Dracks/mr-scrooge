@@ -45,6 +45,9 @@ final class Graph: Model, Content, @unchecked Sendable {
 	@Enum(key: "date_range")
 	var dateRange: GraphDateRange
 
+	@Field(key: "order")
+	var order: Int
+
 	@OptionalChild(for: \.$id.$parent)
 	var group: GraphGroup?
 
@@ -55,7 +58,7 @@ final class Graph: Model, Content, @unchecked Sendable {
 
 	init(
 		id: UUID? = nil, groupOwnerId: UserGroup.IDValue, name: String, kind: GraphKind,
-		labelFilterId: Label.IDValue? = nil, dateRange: GraphDateRange
+		labelFilterId: Label.IDValue? = nil, dateRange: GraphDateRange, order: Int
 	) {
 		self.id = id
 		self.$groupOwner.id = groupOwnerId
@@ -63,6 +66,7 @@ final class Graph: Model, Content, @unchecked Sendable {
 		self.kind = kind
 		self.$labelFilter.id = labelFilterId
 		self.dateRange = dateRange
+		self.order = order
 	}
 }
 /*

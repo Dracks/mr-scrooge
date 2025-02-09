@@ -551,6 +551,8 @@ export interface components {
             dateRange: components["schemas"]["GraphDateRange"];
             group: components["schemas"]["Group"];
             horizontalGroup?: components["schemas"]["HorizontalGroup"];
+            /** Format: uint64 */
+            order: number;
         };
         /** @enum {string} */
         GraphDateRange: "all" | "halfYear" | "oneMonth" | "oneYear" | "sixYears" | "twoYears";

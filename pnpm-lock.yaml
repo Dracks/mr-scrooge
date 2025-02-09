@@ -87,9 +87,12 @@ importers:
       '@typespec/json-schema':
         specifier: 0.61.0
         version: 0.61.0(@typespec/compiler@0.61.0)
+      '@typespec/openapi':
+        specifier: ^0.64.0
+        version: 0.64.0(@typespec/compiler@0.61.0)(@typespec/http@0.61.0(@typespec/compiler@0.61.0))
       '@typespec/openapi3':
         specifier: 0.61.0
-        version: 0.61.0(@typespec/compiler@0.61.0)(@typespec/http@0.61.0(@typespec/compiler@0.61.0))(@typespec/openapi@0.60.0(@typespec/compiler@0.61.0)(@typespec/http@0.61.0(@typespec/compiler@0.61.0)))(@typespec/versioning@0.60.1(@typespec/compiler@0.61.0))(openapi-types@12.1.3)
+        version: 0.61.0(@typespec/compiler@0.61.0)(@typespec/http@0.61.0(@typespec/compiler@0.61.0))(@typespec/openapi@0.64.0(@typespec/compiler@0.61.0)(@typespec/http@0.61.0(@typespec/compiler@0.61.0)))(@typespec/versioning@0.60.1(@typespec/compiler@0.61.0))(openapi-types@12.1.3)
       '@typespec/rest':
         specifier: 0.61.0
         version: 0.61.0(@typespec/compiler@0.61.0)(@typespec/http@0.61.0(@typespec/compiler@0.61.0))
@@ -1008,12 +1011,12 @@ packages:
       '@typespec/openapi': ~0.61.0
       '@typespec/versioning': ~0.61.0
 
-  '@typespec/openapi@0.60.0':
-    resolution: {integrity: sha512-YVwLppgHY8r/MudHNSLSUXzdw+CIpjmb31gI2a0KDGnI6sWDwY7LSWfjGU4TY/ubt0+X0Tjoy330mTvw71YBTg==}
+  '@typespec/openapi@0.64.0':
+    resolution: {integrity: sha512-C4sPdj86ejsNkpmEaAMMqQR+0kq4Ayp4sPKvj4OTtawLXacXKzZ9NYng2jrguO6WbLr5f3NyRZKi7Ys2suT27A==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      '@typespec/compiler': ~0.60.0
-      '@typespec/http': ~0.60.0
+      '@typespec/compiler': ~0.64.0
+      '@typespec/http': ~0.64.0
 
   '@typespec/rest@0.61.0':
     resolution: {integrity: sha512-L9Oyor+l42p6S8GE+UvaZTi+dcu6WubGZKmaBRpX8mCZGsa69EgIK8DQoyxrfMcxAO4I5U0sfkzCKwCVFtRr9g==}
@@ -5476,18 +5479,18 @@ snapshots:
       '@typespec/compiler': 0.61.0
       yaml: 2.5.1
 
-  '@typespec/openapi3@0.61.0(@typespec/compiler@0.61.0)(@typespec/http@0.61.0(@typespec/compiler@0.61.0))(@typespec/openapi@0.60.0(@typespec/compiler@0.61.0)(@typespec/http@0.61.0(@typespec/compiler@0.61.0)))(@typespec/versioning@0.60.1(@typespec/compiler@0.61.0))(openapi-types@12.1.3)':
+  '@typespec/openapi3@0.61.0(@typespec/compiler@0.61.0)(@typespec/http@0.61.0(@typespec/compiler@0.61.0))(@typespec/openapi@0.64.0(@typespec/compiler@0.61.0)(@typespec/http@0.61.0(@typespec/compiler@0.61.0)))(@typespec/versioning@0.60.1(@typespec/compiler@0.61.0))(openapi-types@12.1.3)':
     dependencies:
       '@readme/openapi-parser': 2.6.0(openapi-types@12.1.3)
       '@typespec/compiler': 0.61.0
       '@typespec/http': 0.61.0(@typespec/compiler@0.61.0)
-      '@typespec/openapi': 0.60.0(@typespec/compiler@0.61.0)(@typespec/http@0.61.0(@typespec/compiler@0.61.0))
+      '@typespec/openapi': 0.64.0(@typespec/compiler@0.61.0)(@typespec/http@0.61.0(@typespec/compiler@0.61.0))
       '@typespec/versioning': 0.60.1(@typespec/compiler@0.61.0)
       yaml: 2.5.1
     transitivePeerDependencies:
       - openapi-types
 
-  '@typespec/openapi@0.60.0(@typespec/compiler@0.61.0)(@typespec/http@0.61.0(@typespec/compiler@0.61.0))':
+  '@typespec/openapi@0.64.0(@typespec/compiler@0.61.0)(@typespec/http@0.61.0(@typespec/compiler@0.61.0))':
     dependencies:
       '@typespec/compiler': 0.61.0
       '@typespec/http': 0.61.0(@typespec/compiler@0.61.0)

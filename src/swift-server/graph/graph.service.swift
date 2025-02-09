@@ -122,7 +122,8 @@ class GraphBuilder {
 				hideOthers: _group.hideOthers,
 				labels: _groupLabelIds?.map { $0.uuidString }
 			),
-			horizontalGroup: horizontalGroup
+			horizontalGroup: horizontalGroup,
+			order: _graph.order
 		)
 	}
 
@@ -236,12 +237,17 @@ class GraphService: ServiceWithDb, @unchecked Sendable {
 					labelFilterId = UUID(uuidString: _labelFilterId)
 				}
 
+				let graphsInGroup = try await Graph.query(on: transaction).filter(
+					\.$groupOwner.$id == groupOwnerId
+				).count()
+
 				let graph = Graph(
 					groupOwnerId: groupOwnerId,
 					name: newGraph.name,
 					kind: newGraph.kind.toInternal(),
 					labelFilterId: labelFilterId,
-					dateRange: newGraph.dateRange.toInternal()
+					dateRange: newGraph.dateRange.toInternal(),
+					order: graphsInGroup
 				)
 				try await graph.save(on: transaction)
 
