@@ -75,8 +75,10 @@ struct V2MigrateCommand: AsyncCommand {
 				context.console.print("Migrating graphs...")
 				try await migrator.migrateGraphs()
 			}
-
 			context.console.print("Migration complete!")
+
+			// When not executed, the group attach seems to not work
+			try await Task.sleep(nanoseconds: 2_000_000)
 		} catch let error as Exception {
 			context.console.error(String(describing: error))
 		} catch let error as InvalidArgument {

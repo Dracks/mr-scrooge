@@ -171,7 +171,7 @@ final class GraphGroupLabels: Model, Content, @unchecked Sendable {
 	static let schema = "graph_group_labels"
 
 	final class IDValue: Fields, Hashable, @unchecked Sendable {
-        @Parent(key: "graph_id")
+		@Parent(key: "graph_id")
 		var graph: Graph
 
 		@Parent(key: "label_id")
@@ -212,7 +212,7 @@ final class GraphHorizontalGroupLabels: Model, Content, @unchecked Sendable {
 	static let schema = "graph_horizontal_group_labels"
 
 	final class IDValue: Fields, Hashable, @unchecked Sendable {
-        @Parent(key:"graph_id")
+		@Parent(key: "graph_id")
 		var graph: Graph
 
 		@Parent(key: "label_id")

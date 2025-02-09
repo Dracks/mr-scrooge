@@ -48,7 +48,7 @@ extension DjangoMigrationService.OldDb {
 		var parent: TagModel?
 
 		@Field(key: "negate_conditional")
-		var negateConditional: Int
+		var negateConditional: Bool
 	}
 
 	final class FilterModel: Model, @unchecked Sendable {
@@ -163,7 +163,9 @@ extension DjangoMigrationService {
 		for tag in tagsList {
 			let tagId = try tag.requireID()
 			newIds.append(tagId)
-			let rule = Rule(groupOwnerId: groupOwnerId, name: tag.name)
+			let rule = Rule(
+				groupOwnerId: groupOwnerId, name: tag.name,
+				conditionsRelation: tag.negateConditional ? .or : .notAnd)
 			if let tagParentId = tag.$parent.id {
 				guard let parentRuleId = tagToRuleDictId[tagParentId] else {
 					throw Exception(
@@ -199,14 +201,14 @@ extension DjangoMigrationService.OldDb {
 	final class RawDataSource: Model, @unchecked Sendable {
 		struct TagsRelation {
 			var tagId: Int64
-			var enabled: Int8
-			var automatic: Int8
+			var enabled: Int64
+			var automatic: Int64
 
 			init(row: SQLRow) throws {
 				tagId = try row.decode(column: "tag_id", as: Int64.self)
-				enabled = try row.decode(column: "enable", as: Int8.self)
+				enabled = try row.decode(column: "enable", as: Int64.self)
 				automatic = try row.decode(
-					column: "automatic", as: Int8.self)
+					column: "automatic", as: Int64.self)
 			}
 		}
 		static let schema = "core_rawdatasource"
@@ -482,6 +484,10 @@ extension DjangoMigrationService.OldDb {
 }
 
 extension DjangoMigrationService {
+	struct LabelLingWithDebugInfo<T> {
+		let link: T
+		let tagId: Int64
+	}
 	private func migrateGraph(graph oldGraph: OldDb.Graph) async throws {
 		let labelFilterId: UUID?
 		if let tagFilter = oldGraph.tagFilter {
@@ -511,13 +517,28 @@ extension DjangoMigrationService {
 
 		let oldGroupTags = try await OldDb.GraphGroupTag.query(
 			table: .graphGroupTag, for: oldGroup.id, on: oldSqlDb)
-		let groupLabels: [GraphGroupLabels] = try oldGroupTags.enumerated().map {
-			.init(
-				graphId: graphId,
-				labelId: try getLabelId($1.tagId), order: $0)
-		}
-		for groupLabel in groupLabels {
-			try await groupLabel.save(on: newDb)
+
+		let groupLabels: [LabelLingWithDebugInfo<GraphGroupLabels>] =
+			try oldGroupTags.enumerated().map {
+				.init(
+					link: .init(
+						graphId: graphId,
+						labelId: try getLabelId($1.tagId), order: $0),
+					tagId: $1.tagId
+				)
+
+			}
+
+		for (id, groupLabel) in groupLabels.enumerated() {
+			let firstIdx = groupLabels.firstIndex { $0.tagId == groupLabel.tagId }
+			if firstIdx == id {
+				try await groupLabel.link.save(on: newDb)
+			} else {
+				let label = try getLabel(groupLabel.tagId)
+				print(
+					"Skipping duplicated tag (\(groupLabel.tagId):\(label.name)) on graph \"\(graph.name)\" for group"
+				)
+			}
 		}
 
 		let oldHorizontalGroup = try await OldDb.GraphGroup.query(
@@ -531,15 +552,28 @@ extension DjangoMigrationService {
 
 			let oldHorizontalGroupTags = try await OldDb.GraphGroupTag.query(
 				table: .graphHorizontalGroupTag, for: oldGroup.id, on: oldSqlDb)
-			let horizontalGroupLabels: [GraphHorizontalGroupLabels] =
-				try oldHorizontalGroupTags.enumerated().map {
-					.init(
-						graphId: graphId,
-						labelId: try getLabelId($1.tagId),
-						order: $0)
+			let horizontalGroupLabels:
+				[LabelLingWithDebugInfo<GraphHorizontalGroupLabels>] =
+					try oldHorizontalGroupTags.enumerated().map {
+						.init(
+							link: .init(
+								graphId: graphId,
+								labelId: try getLabelId($1.tagId),
+								order: $0),
+							tagId: $1.tagId)
+					}
+			for (id, groupLabel) in horizontalGroupLabels.enumerated() {
+				let firstIdx = horizontalGroupLabels.firstIndex {
+					$0.tagId == groupLabel.tagId
 				}
-			for groupLabel in horizontalGroupLabels {
-				try await groupLabel.save(on: newDb)
+				if firstIdx == id {
+					try await groupLabel.link.save(on: newDb)
+				} else {
+					let label = try getLabel(groupLabel.tagId)
+					print(
+						"Skipping duplicated tag (\(groupLabel.tagId):\(label.name)) on graph \"\(graph.name)\" for horizontal group"
+					)
+				}
 			}
 		}
 	}
