@@ -23,6 +23,7 @@ devDependencies:
   '@typespec/compiler': 0.61.0
   '@typespec/http': 0.61.0
   '@typespec/json-schema': 0.61.0
+  '@typespec/openapi': ^0.64.0
   '@typespec/openapi3': 0.61.0
   '@typespec/rest': 0.61.0
   eslint: ^9.11.1

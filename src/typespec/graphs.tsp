@@ -46,6 +46,7 @@ model GraphParam {
 model Graph {
   id: UUID;
   ...GraphParam;
+  order: uint64;
 }
 
 model Group {

@@ -27,7 +27,7 @@
 
 
 # Server tasks (swift)
-* [ ] Create enums in DB, and use the enums
+* [x] Create enums in DB, and use the enums
 * [ ] graphs
   * [x] Modify graph
   * [x] Create graph
@@ -41,7 +41,7 @@
   * [x] Call to apply rules
 * [ ] Bank transactions
   * [x] get bank transactions data
-  * [ ] add/remove label
+  * [x] add/remove label
 * [ ] labels
   * [x] get labels
   * [x] create label

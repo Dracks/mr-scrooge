@@ -184,6 +184,8 @@ struct InitialMigration: AsyncMigration {
 			.field("kind", graphKindEnum, .required)
 			.field("label_filter", .uuid, .references("core_label", "id"))
 			.field("date_range", dateRangeEnum, .required)
+			// Postgres doesn't support uint
+			.field("order", .int64)
 			.create()
 
 		try await sqlDb?.create(index: "graph_graph_group_owner_idx")

@@ -93,6 +93,7 @@ describe('useGraphData', () => {
                 hideOthers: true,
             },
             id: generateUUID(2, 'graph'),
+            order: 0,
         };
         expect(useGraphDataGenerator(enrichGraph(graph, labelsList))).toEqual([
             {

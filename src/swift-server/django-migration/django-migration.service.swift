@@ -500,7 +500,9 @@ extension DjangoMigrationService {
 			groupOwnerId: groupOwnerId, name: oldGraph.name,
 			kind: oldGraph.getKindEnum(),
 			labelFilterId: labelFilterId,
-			dateRange: oldGraph.getDateRangeEnum())
+			dateRange: oldGraph.getDateRangeEnum(),
+			order: Int(oldGraphId)
+		)
 
 		try await graph.save(on: newDb)
 		let graphId = try graph.requireID()
@@ -578,7 +580,7 @@ extension DjangoMigrationService {
 		}
 	}
 	func migrateGraphs() async throws {
-		let graphs = try await OldDb.Graph.query(on: oldDb).all()
+		let graphs = try await OldDb.Graph.query(on: oldDb).sort(\.$id, .ascending).all()
 		for graph in graphs {
 			try await migrateGraph(graph: graph)
 		}

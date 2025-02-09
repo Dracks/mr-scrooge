@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: Mr Scrooge API
-  version: 0.0.0
+  version: 3.0.0
 tags:
   - name: session
   - name: user
@@ -1552,6 +1552,7 @@ components:
         - kind
         - dateRange
         - group
+        - order
       properties:
         id:
           $ref: '#/components/schemas/UUID'
@@ -1569,6 +1570,9 @@ components:
           $ref: '#/components/schemas/Group'
         horizontalGroup:
           $ref: '#/components/schemas/HorizontalGroup'
+        order:
+          type: integer
+          format: uint64
     GraphDateRange:
       type: string
       enum:

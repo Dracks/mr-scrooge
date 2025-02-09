@@ -14,6 +14,7 @@ describe('[graph.transformer]', () => {
         id: generateUUID(34, 'graph'),
         kind: 'pie',
         name: 'minimum',
+        order: 0,
     };
 
     const subjectWithAllFields: Graph = {
@@ -32,6 +33,7 @@ describe('[graph.transformer]', () => {
         id: generateUUID(34, 'graph'),
         kind: 'line',
         name: 'max',
+        order: 0,
     };
 
     it('graphData with minimum transforms', () => {
