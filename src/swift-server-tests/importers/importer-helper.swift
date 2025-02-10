@@ -100,24 +100,29 @@ class BaseImporterTests: XCTestCase {
 
 	override func setUp() async throws {
 		try await super.setUp()
-		let app = try await Application.make(.testing)
-		try await configure(app)
+		do {
+			let app = try await Application.make(.testing)
+			try await configure(app)
 
-		print("Starting auto-migration")
-		try await app.autoMigrate()
-		print("Finishing auto-migration")
+			print("Starting auto-migration")
+			try await app.autoMigrate()
+			print("Finishing auto-migration")
 
-		self.app = app
+			self.app = app
 
-		self.group = UserGroup(name: "Test User Group")
-		try await self.group.save(on: app.db)
-		print("UserCreated")
+			self.group = UserGroup(name: "Test User Group")
+			try await self.group.save(on: app.db)
+			print("UserCreated")
 
-		let testParsers: [ParserFactory] = try getParsers()
-		importerService = NewImportService(parsers: testParsers, withApp: app)
-		bankTransactionService = app.bankTransactionService
-		statusReportsService = app.fileImportService
-		print("Set Up Correctly")
+			let testParsers: [ParserFactory] = try getParsers()
+			importerService = NewImportService(parsers: testParsers, withApp: app)
+			bankTransactionService = app.bankTransactionService
+			statusReportsService = app.fileImportService
+			print("Set Up Correctly")
+		} catch {
+			print("importer-helper {}", String(reflecting: error))
+			XCTAssertTrue(false)
+		}
 	}
 
 	override func tearDown() async throws {

@@ -107,7 +107,7 @@ class AbstractBaseTestsClass: XCTestCase {
 			self.app = app
 		} catch {
 			print("App Test {}", String(reflecting: error))
-			throw error
+			XCTAssertTrue(false)
 		}
 	}
 
