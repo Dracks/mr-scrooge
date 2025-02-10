@@ -126,7 +126,7 @@ class BaseImporterTests: XCTestCase {
 		}
 		try await app.asyncShutdown()
 		print("Async shutdown")
-		self.app = nil
+		//self.app = nil
 		print("Finish")
 
 	}
