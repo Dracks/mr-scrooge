@@ -15,10 +15,12 @@ class GraphTests: AbstractBaseTestsClass {
 
 		// Create test data
 		let graph1 = Graph(
-			groupOwnerId: testGroup.id!, name: "first", kind: .bar, dateRange: .all)
+			groupOwnerId: testGroup.id!, name: "first", kind: .bar, dateRange: .all,
+			order: 0)
 		let graph2 = Graph(
 			groupOwnerId: testGroup.id!, name: "huge graph", kind: .line,
-			dateRange: .oneYear)
+			dateRange: .oneYear,
+			order: 1)
 		try await graph1.save(on: app.db)
 		try await graph2.save(on: app.db)
 		try await GraphGroup(
@@ -53,7 +55,8 @@ class GraphTests: AbstractBaseTestsClass {
 		// Other owner graph
 		let graph3 = Graph(
 			groupOwnerId: testGroup2.id!, name: "huge graph", kind: .line,
-			dateRange: .oneYear)
+			dateRange: .oneYear,
+			order: 0)
 		try await graph3.save(on: app.db)
 		try await GraphGroup(graphId: graph3.id!, group: .day, hideOthers: false).save(
 			on: app.db)

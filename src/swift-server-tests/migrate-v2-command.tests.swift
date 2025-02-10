@@ -57,6 +57,19 @@ final class MigrateV2Test: AbstractBaseTestsClass {
 
 		XCTAssertEqual(rules.count, 3, "Rules number is not valid")
 
+		let ruleExpenses = rules.filter { $0.name == "Expenses" }.first
+		XCTAssertNotNil(ruleExpenses)
+		if let ruleExpenses {
+			try await ruleExpenses.$labels.load(on: app.db)
+			try await ruleExpenses.$conditions.load(on: app.db)
+			XCTAssertNil(ruleExpenses.$parent.id, "Parent rule")
+			XCTAssertEqual(ruleExpenses.labels.map({ $0.name }), ["Expenses"])
+			XCTAssertEqual(ruleExpenses.conditionsRelation, .or)
+			XCTAssertEqual(
+				ruleExpenses.conditions.count, 1,
+				"It has the correct number of conditions")
+		}
+
 		let ruleWithParent = rules.filter { $0.name == "With parent" }.first
 		XCTAssertNotNil(ruleWithParent)
 		if let ruleWithParent {
@@ -64,6 +77,7 @@ final class MigrateV2Test: AbstractBaseTestsClass {
 			try await ruleWithParent.$conditions.load(on: app.db)
 			XCTAssertNotNil(ruleWithParent.$parent.id, "Parent rule")
 			XCTAssertEqual(ruleWithParent.labels.map({ $0.name }), ["With parent"])
+			XCTAssertEqual(ruleWithParent.conditionsRelation, .notAnd)
 			XCTAssertEqual(
 				ruleWithParent.conditions.count, 6,
 				"It has the correct number of conditions")
@@ -123,7 +137,8 @@ final class MigrateV2Test: AbstractBaseTestsClass {
 					name: "Income vs outcome", kind: .bar,
 					dateRange: .oneYear,
 					group: .init(group: .sign),
-					horizontalGroup: .init(group: .month, accumulate: false)
+					horizontalGroup: .init(group: .month, accumulate: false),
+					order: 1
 				),
 				"Income vs Outcome correctly transformed")
 		}
@@ -139,7 +154,8 @@ final class MigrateV2Test: AbstractBaseTestsClass {
 					labelFilterId: getLabelIdByName("Expenses")?.uuidString,
 					dateRange: .halfYear,
 					group: .init(group: .month),
-					horizontalGroup: .init(group: .day, accumulate: true)
+					horizontalGroup: .init(group: .day, accumulate: true),
+					order: 2
 				),
 				"Compare by day graph correctly transformed")
 		}
@@ -160,7 +176,8 @@ final class MigrateV2Test: AbstractBaseTestsClass {
 						labels: ["With parent", "Expenses"].map {
 							try getLabelIdByName($0)?.uuidString ?? ""
 						}
-					)
+					),
+					order: 3
 				), "Test pie graph correctly transformed")
 		}
 	}

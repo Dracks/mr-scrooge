@@ -165,7 +165,7 @@ extension DjangoMigrationService {
 			newIds.append(tagId)
 			let rule = Rule(
 				groupOwnerId: groupOwnerId, name: tag.name,
-				conditionsRelation: tag.negateConditional ? .or : .notAnd)
+				conditionsRelation: tag.negateConditional ? .notAnd : .or)
 			if let tagParentId = tag.$parent.id {
 				guard let parentRuleId = tagToRuleDictId[tagParentId] else {
 					throw Exception(
