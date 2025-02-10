@@ -60,6 +60,10 @@ public func configure(_ app: Application) async throws {
 
 		try await configureDb(app)
 
+		if app.environment == .testing {
+			try await app.autoMigrate()
+		}
+
 		app.sessions.use(.fluent)
 		app.views.use(.leaf)
 		app.queues.use(.fluent())
