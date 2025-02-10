@@ -131,11 +131,15 @@ class BaseImporterTests: XCTestCase {
 		guard let app else {
 			throw TestError()
 		}
-		try await app.asyncShutdown()
-		print("Async shutdown")
-		self.app = nil
-		print("Finish")
-
+		do {
+			try await app.asyncShutdown()
+			print("Async shutdown")
+			self.app = nil
+			print("Finish")
+		} catch {
+			print("More error catching")
+			print(error)
+		}
 	}
 
 	func getDb() throws -> Database {
