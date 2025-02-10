@@ -101,20 +101,34 @@ class BaseImporterTests: XCTestCase {
 	override func setUp() async throws {
 		let app = try await Application.make(.testing)
 		try await configure(app)
+
+		print("Starting auto-migration")
+		try await app.autoMigrate()
+		print("Finishing auto-migration")
+
 		self.app = app
 
 		self.group = UserGroup(name: "Test User Group")
 		try await self.group.save(on: app.db)
+		print("UserCreated")
 
 		let testParsers: [ParserFactory] = try getParsers()
 		importerService = NewImportService(parsers: testParsers, withApp: app)
 		bankTransactionService = app.bankTransactionService
 		statusReportsService = app.fileImportService
+		print("Set Up Correctly")
 	}
 
 	override func tearDown() async throws {
-		try await self.app?.asyncShutdown()
+		print("Tearing down")
+		guard let app else {
+			throw TestError()
+		}
+		try await app.asyncShutdown()
+		print("Async shutdown")
 		self.app = nil
+		print("Finish")
+
 	}
 
 	func getDb() throws -> Database {

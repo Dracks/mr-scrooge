@@ -62,6 +62,8 @@ class AbstractBaseTestsClass: XCTestCase {
 			let app = try await Application.make(.testing)
 			try await configure(app)
 
+			try await app.autoMigrate()
+
 			// Override the driver being used for testing
 			app.queues.use(.asyncTest)
 			//app.queues.add(NewTransactionJob())
@@ -103,7 +105,7 @@ class AbstractBaseTestsClass: XCTestCase {
 
 			self.app = app
 		} catch {
-			print(error)
+			print("App Test {}", String(reflecting: error))
 			throw error
 		}
 	}
