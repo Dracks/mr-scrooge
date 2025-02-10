@@ -99,6 +99,7 @@ class BaseImporterTests: XCTestCase {
 	}
 
 	override func setUp() async throws {
+		try await super.setUp()
 		let app = try await Application.make(.testing)
 		try await configure(app)
 
@@ -120,13 +121,14 @@ class BaseImporterTests: XCTestCase {
 	}
 
 	override func tearDown() async throws {
+		try await super.tearDown()
 		print("Tearing down")
 		guard let app else {
 			throw TestError()
 		}
 		try await app.asyncShutdown()
 		print("Async shutdown")
-		//self.app = nil
+		self.app = nil
 		print("Finish")
 
 	}

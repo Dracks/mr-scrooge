@@ -57,6 +57,7 @@ class AbstractBaseTestsClass: XCTestCase {
 	}
 
 	override func setUp() async throws {
+		try await super.setUp()
 		do {
 			testIds = [:]
 			let app = try await Application.make(.testing)
@@ -111,8 +112,9 @@ class AbstractBaseTestsClass: XCTestCase {
 	}
 
 	override func tearDown() async throws {
+		try await super.tearDown()
 		try await self.app?.asyncShutdown()
-		// self.app = nil
+		self.app = nil
 	}
 
 }
