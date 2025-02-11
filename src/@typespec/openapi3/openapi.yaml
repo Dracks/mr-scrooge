@@ -1722,8 +1722,8 @@ components:
       type: object
       required:
         - graphs
-        - graphs_group
-        - graph_horizontal_group
+        - graphsGroup
+        - graphHorizontalGroup
         - rules
         - transactions
       properties:
@@ -1731,11 +1731,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UUID'
-        graphs_group:
+        graphsGroup:
           type: array
           items:
             $ref: '#/components/schemas/UUID'
-        graph_horizontal_group:
+        graphHorizontalGroup:
           type: array
           items:
             $ref: '#/components/schemas/UUID'

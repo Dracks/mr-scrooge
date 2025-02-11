@@ -603,8 +603,8 @@ export interface components {
         };
         LabelInUse: {
             graphs: components["schemas"]["UUID"][];
-            graphs_group: components["schemas"]["UUID"][];
-            graph_horizontal_group: components["schemas"]["UUID"][];
+            graphsGroup: components["schemas"]["UUID"][];
+            graphHorizontalGroup: components["schemas"]["UUID"][];
             rules: components["schemas"]["UUID"][];
             transactions: components["schemas"]["UUID"][];
         };
@@ -1310,6 +1310,7 @@ export interface operations {
     ApiLabels_delete: {
         parameters: {
             query?: {
+                /** @description Force to delete the label cleaning it from all relations */
                 force?: boolean;
             };
             header?: never;

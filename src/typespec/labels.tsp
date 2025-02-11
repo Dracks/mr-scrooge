@@ -33,8 +33,8 @@ model NotFoundLabel {
 model LabelInUse {
   @statusCode _: 409;
   graphs: UUID[];
-  graphs_group: UUID[];
-  graph_horizontal_group: UUID[];
+  graphsGroup: UUID[];
+  graphHorizontalGroup: UUID[];
   rules: UUID[];
   transactions: UUID[];
 }

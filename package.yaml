@@ -10,6 +10,7 @@ scripts:
   lint: eslint 'src/react-view/**/*.{ts,tsx}' --no-warn-ignored
   lint:fix: eslint --fix 'src/react-view/**/*.{ts,tsx}'
   format:fix: prettier --config config/prettierrc --write 'src/react-view/**/*.{ts,tsx}'
+  format:typespec: tsp format src/typespec/*.tsp
   test: jest --config config/jest.json
   test:watch: jest --config config/jest.json --watch
   type-check: tsc -p tsconfig.json --noEmit

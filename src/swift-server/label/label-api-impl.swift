@@ -116,10 +116,10 @@ extension MrScroogeAPIImpl {
 					body: .json(
 						.init(
 							graphs: graphs.map { $0.uuidString },
-							graphs_group: graphGroups.map {
+							graphsGroup: graphGroups.map {
 								$0.uuidString
 							},
-							graph_horizontal_group:
+							graphHorizontalGroup:
 								graphHorizontalGroups.map {
 									$0.uuidString
 								},
