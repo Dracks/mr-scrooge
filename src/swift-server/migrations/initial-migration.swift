@@ -168,11 +168,11 @@ struct InitialMigration: AsyncMigration {
 			.id()
 			.field(
 				"rule_label_id", .uuid, .required,
-				.references("core_rule_label_action", "id")
+				.references("core_rule_label_action", "id", onDelete: .cascade)
 			)
 			.field(
 				"label_transaction_id", .uuid, .required,
-				.references("core_label_transaction", "id")
+				.references("core_label_transaction", "id", onDelete: .cascade)
 			)
 			.unique(on: "rule_label_id", "label_transaction_id")
 			.create()

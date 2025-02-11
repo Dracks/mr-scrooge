@@ -15,7 +15,7 @@ using TypeSpec.Http;
   description: "API for Mr Scrooge",
 })
 @TypeSpec.OpenAPI.info({
-    version: "3.0.0"
+  version: "3.0.0",
 })
 @server("/api", "Development")
 namespace MrScrooge;

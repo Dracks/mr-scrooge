@@ -31,7 +31,7 @@ export const Login: React.FC = () => {
             invalidCredentials={invalidCredentials}
             error={loginRequest.error instanceof Error ? { message: loginRequest.error.message } : undefined}
             login={credentials => {
-                catchAndLog(loginRequest.execute(credentials), "Error login the user", logger)
+                catchAndLog(loginRequest.execute(credentials), 'Error login the user', logger);
             }}
         />
     );

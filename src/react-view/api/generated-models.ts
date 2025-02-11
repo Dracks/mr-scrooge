@@ -601,6 +601,13 @@ export interface components {
             name: string;
             groupOwnerId: components["schemas"]["UUID"];
         };
+        LabelInUse: {
+            graphs: components["schemas"]["UUID"][];
+            graphsGroup: components["schemas"]["UUID"][];
+            graphHorizontalGroup: components["schemas"]["UUID"][];
+            rules: components["schemas"]["UUID"][];
+            transactions: components["schemas"]["UUID"][];
+        };
         ListFileParsers: {
             parsers: components["schemas"]["FileParserType"][];
         };
@@ -1227,8 +1234,8 @@ export interface operations {
             };
         };
         responses: {
-            /** @description The request has succeeded. */
-            200: {
+            /** @description The request has succeeded and a new resource has been created as a result. */
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1302,7 +1309,10 @@ export interface operations {
     };
     ApiLabels_delete: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Force to delete the label cleaning it from all relations */
+                force?: boolean;
+            };
             header?: never;
             path: {
                 labelId: components["schemas"]["UUID"];
@@ -1317,7 +1327,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Label"];
+                    "application/json": boolean;
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -1336,6 +1346,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The request conflicts with the current state of the server. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabelInUse"];
                 };
             };
         };

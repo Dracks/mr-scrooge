@@ -31,6 +31,7 @@ enum LabelTransitionReason: String, Content {
 final class LabelTransaction: Model, Content, @unchecked Sendable {
 	static let schema = "core_label_transaction"
 
+	#warning("Change to a combined Id with label_id and transaction_id")
 	@ID(key: .id)
 	var id: UUID?
 
@@ -49,6 +50,7 @@ final class LabelTransaction: Model, Content, @unchecked Sendable {
 		id: UUID? = nil, labelId: Label.IDValue, transactionId: BankTransaction.IDValue,
 		linkReason: LabelTransitionReason
 	) {
+		// TODO: Change this table to work with a key transaction/label
 		self.id = id
 		self.$label.id = labelId
 		self.$transaction.id = transactionId

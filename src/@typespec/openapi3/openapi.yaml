@@ -522,8 +522,8 @@ paths:
       operationId: ApiLabels_create
       parameters: []
       responses:
-        '200':
-          description: The request has succeeded.
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
           content:
             application/json:
               schema:
@@ -592,13 +592,21 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/UUID'
+        - name: force
+          in: query
+          required: false
+          description: When true, forcefully deletes the label and removes it from all relations. Use with caution as this will modify dependent entities.
+          schema:
+            type: boolean
+            default: false
+          explode: false
       responses:
         '200':
           description: The request has succeeded.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Label'
+                type: boolean
         '400':
           description: Bad request, usually when providing an invalid string as UUID
           content:
@@ -611,6 +619,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabelInUse'
       tags:
         - labels
   /rules:
@@ -1704,6 +1718,35 @@ components:
           type: string
         groupOwnerId:
           $ref: '#/components/schemas/UUID'
+    LabelInUse:
+      type: object
+      required:
+        - graphs
+        - graphsGroup
+        - graphHorizontalGroup
+        - rules
+        - transactions
+      properties:
+        graphs:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
+        graphsGroup:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
+        graphHorizontalGroup:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
     ListFileParsers:
       type: object
       required:
