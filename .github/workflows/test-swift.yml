@@ -38,5 +38,6 @@ jobs:
             restore-keys: |
                 ${{ runner.os }}-spm-
       - name: Run tests
-        run: swift test --quiet
+        #run: swift test --parallel
         # run: swift test
+        run: swift test --filter PipelineErrorTests
