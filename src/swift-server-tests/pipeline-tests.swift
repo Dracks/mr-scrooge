@@ -38,6 +38,7 @@ final class PipelineErrorTests: XCTestCase {
 	override func tearDown() async throws {
 		try await super.tearDown()
 		print("Tearing down")
+		self.group = nil
 		guard let app else {
 			throw TestError()
 		}
