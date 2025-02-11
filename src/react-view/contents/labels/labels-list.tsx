@@ -1,4 +1,4 @@
-import { Box, Tag } from 'grommet';
+import { Box, Layer, Tag } from 'grommet';
 import React, { useState } from 'react';
 
 import { Label } from '../../api/models';
@@ -12,36 +12,36 @@ export const LabelsList: React.FC = () => {
     const groups = useUserGroupsMap();
     const [editing, setEditing] = useState<Label | undefined>();
     const [showNew, setShowNew] = useState<boolean>(false)
+    
+    let modal : React.ReactElement | undefined = undefined
+    if (editing || showNew){
+        const onClose = () => { setEditing(undefined);  setShowNew(false) }
+        modal = <Layer onEsc={() => { onClose() }} onClickOutside={() => { onClose() }} modal position="center">
+            { editing ?                 
+                <EditLabelModal
+                label={editing}
+                onClose={() => {
+                    setEditing(undefined);
+                }}
+            /> : undefined }
+            { showNew ?  <NewLabelModal onClose={(label)=>{
+                if (label){
+                    setEditing(label)
+                }
+                setShowNew(false)
+            }} /> : undefined }
+        </Layer>
+    }
 
     return (
         <>
-            {editing ? (
-                <EditLabelModal
-                    label={editing}
-                    onClose={() => {
-                        setEditing(undefined);
-                    }}
-                />
-            ) : undefined}
-            {showNew ? (
-                <NewLabelModal onClose={(label)=>{
-                    setShowNew(false)
-                    if (label){
-                        setEditing(label)
-                    }
-                }} />
-            ): undefined}
+            {modal}
             <Box
                 direction="row"
                 align="center"
                 pad="small"
                 gap="small"
                 wrap={true}
-                style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                }}
             >
                 {labels.map(label => (
                     <Tag

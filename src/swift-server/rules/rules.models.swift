@@ -209,6 +209,7 @@ final class Rule: Model, Content, @unchecked Sendable {
 final class RuleLabelAction: Model, @unchecked Sendable {
 	static let schema = "core_rule_label_action"
 
+	// This table is referenced from the RuleLabelPivot, and to make it simple, is better to have an id here
 	@ID(key: .id)
 	var id: UUID?
 
@@ -230,7 +231,7 @@ final class RuleLabelAction: Model, @unchecked Sendable {
 	}
 }
 
-// This one is for safe the labels that are applied automatically
+// This one is for save the labels that are applied automatically
 // To the bank Transaction
 final class RuleLabelPivot: Model, @unchecked Sendable {
 	static let schema = "core_rule_label_pivot"
@@ -238,6 +239,7 @@ final class RuleLabelPivot: Model, @unchecked Sendable {
 	@ID(key: .id)
 	var id: UUID?
 
+	#warning("Change to a combined Id with label_id and rule_id")
 	@Parent(key: "rule_label_id")
 	var ruleLabel: RuleLabelAction
 
@@ -250,6 +252,7 @@ final class RuleLabelPivot: Model, @unchecked Sendable {
 		id: UUID? = nil, ruleLabelId: RuleLabelAction.IDValue,
 		labelTransactionId: LabelTransaction.IDValue
 	) {
+		// todo change the id to ruleId, labelId
 		self.id = id
 		self.$ruleLabel.id = ruleLabelId
 		self.$labelTransaction.id = labelTransactionId

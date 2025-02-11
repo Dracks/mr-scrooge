@@ -19,9 +19,9 @@ model BaseUserData {
   lastName?: string;
 }
 model BaseModifyUserData {
-    ...BaseUserData;
-    isActive: boolean;
-    isAdmin: boolean;
+  ...BaseUserData;
+  isActive: boolean;
+  isAdmin: boolean;
 }
 
 model CreateUserParams {
@@ -47,7 +47,10 @@ model UserProfile {
 @route("/users")
 @tag("user")
 interface ApiUser {
-  @post create(...CreateUserParams): { @statusCode _ : 201, ...UserProfile} | Unauthorized;
+  @post create(...CreateUserParams): {
+    @statusCode _: 201;
+    ...UserProfile;
+  } | Unauthorized;
   @get list(
     @query cursor?: string,
     @query limit?: int16,

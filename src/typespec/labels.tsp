@@ -30,16 +30,31 @@ model NotFoundLabel {
   labelSuplied: UUID;
 }
 
+model LabelInUse {
+  @statusCode _: 409;
+  graphs: UUID[];
+  graphs_group: UUID[];
+  graph_horizontal_group: UUID[];
+  rules: UUID[];
+  transactions: UUID[];
+}
+
 @route("/labels")
 @tag("labels")
 interface ApiLabels {
   @get list(@query cursor?: string, @query limit?: uint16): PageList<Label>;
-  @post create(...CreateLabel): {@statusCode _: 201; ...Label} | InvalidGroupOwnerId | InvalidUUID;
+  @post create(...CreateLabel): {
+    @statusCode _: 201;
+    ...Label;
+  } | InvalidGroupOwnerId | InvalidUUID;
   @put @route("{labelId}") update(
     @path labelId: UUID,
     ...UpdateLabel,
   ): Label | NotFound | InvalidUUID;
   @delete @route("{labelId}") delete(
     @path labelId: UUID,
-  ): boolean | NotFound | InvalidUUID;
+    @doc("Force to delete the label cleaning it from all relations")
+    @query
+    force?: boolean=false,
+  ): boolean | NotFound | InvalidUUID | LabelInUse;
 }

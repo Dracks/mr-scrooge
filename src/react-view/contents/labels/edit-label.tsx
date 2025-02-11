@@ -1,9 +1,9 @@
-import { Box, Button, Form, FormField, Heading, Layer, TextInput } from 'grommet';
+import { Box, Button, Form, FormField, Heading, TextInput } from 'grommet';
 import React, { useEffect, useState } from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 
 import { useApiClient } from '../../api/client';
-import { ApiUUID, Label, LabelUpdate } from '../../api/models';
+import { ApiUUID, Label, LabelInUse, LabelUpdate } from '../../api/models';
 import { useLogger } from '../../utils/logger/logger.context';
 import { catchAndLog } from '../../utils/promises';
 import { ConfirmationButton } from '../../utils/ui/confirmation-button';
@@ -17,9 +17,12 @@ export const EditLabelModal: React.FC<{
     const apiClient = useApiClient();
     const labels = useLabelsContext();
     const [editingLabel, setEditingLabel] = useState<LabelUpdate>(label);
+    const [labelInUse, setLabelInUse] = useState<LabelInUse | undefined>();
+    
     useEffect(() => {
         setEditingLabel(label);
     }, [label.id]);
+    
     const saveUpdate = useAsyncCallback(async (labelId: ApiUUID, label: LabelUpdate) => {
         const response = await apiClient.PUT('/labels/{labelId}', { body: label, params: { path: { labelId } } });
         if (response.data) {
@@ -27,15 +30,33 @@ export const EditLabelModal: React.FC<{
         }
     });
 
-    const deleteLabel = useAsyncCallback(async (labelId: ApiUUID) => {
-        const response = await apiClient.DELETE('/labels/{labelId}', { params: { path: { labelId } } });
-        if (response.response.status == 200) {
+    const deleteLabel = useAsyncCallback(async (labelId: ApiUUID, force?: boolean) => {
+        const response = await apiClient.DELETE('/labels/{labelId}', { params: { path: { labelId }, query: {force} } });
+        if (response.response.status === 200) {
             onClose();
             labels.delete(label);
+        } else if (response.response.status === 409 ) {
+            setLabelInUse(response.error as LabelInUse)
         }
     });
+    if (labelInUse){
+        return <Box pad="medium">
+            <Heading level="2"> Delete label in use?</Heading>
+            <Box direction="row" gap="small">
+                <Button primary label="Cancel" type="submit" onClick={() => { setLabelInUse(undefined)} } />
+                <Button label="Close" onClick={onClose} />
+                <Button
+                    color="accent-4"
+                    label="Delete"
+                    onClick={() => {
+                        catchAndLog(deleteLabel.execute(label.id, true), 'Error deleting the label', logger);
+                    }}
+                />
+            </Box>
+        </Box>
+    }
+    
     return (
-        <Layer onEsc={onClose} onClickOutside={onClose} modal position="center">
             <Box pad="medium">
                 <Heading level="2">Edit Label</Heading>
                 <Form<LabelUpdate>
@@ -62,6 +83,5 @@ export const EditLabelModal: React.FC<{
                     </Box>
                 </Form>
             </Box>
-        </Layer>
     );
 };

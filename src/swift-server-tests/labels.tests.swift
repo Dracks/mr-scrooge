@@ -107,6 +107,116 @@ final class LabelResolverTests: AbstractBaseTestsClass {
 
 		let labelsCount = try await Label.query(on: app.db).count()
 		XCTAssertEqual(labelsCount, 17)
+	}
+	func testFailToDeleteLinkedLabel() async throws {
+		let app = try getApp()
+
+		let groupOwnerId = try testGroup.requireID()
+
+		let targetLabel = labels[0]
+		let targetLabelId = try targetLabel.requireID()
+
+		// Create bank transaction with label
+		let transaction = BankTransaction(
+			groupOwnerId: groupOwnerId, movementName: "Test",
+			date: .init(Date()), value: 123.2, kind: "test")
+		try await transaction.save(on: app.db)
+		let labelTransaction = try LabelTransaction(
+			labelId: targetLabelId, transactionId: transaction.requireID(),
+			linkReason: .automatic)
+		try await labelTransaction.save(on: app.db)
+
+		// Create rule with label
+		let rule = Rule(
+			groupOwnerId: groupOwnerId,
+			name: "Some rule"
+		)
+		try await rule.save(on: app.db)
+
+		let ruleLabelAction = RuleLabelAction(
+			ruleId: try rule.requireID(), labelId: targetLabelId)
+		try await ruleLabelAction.save(on: app.db)
+		try await RuleLabelPivot(
+			ruleLabelId: ruleLabelAction.requireID(),
+			labelTransactionId: labelTransaction.requireID()
+		).save(on: app.db)
+
+		// Create graph with label
+		let graph = Graph(
+			groupOwnerId: groupOwnerId,
+			name: "Test graph",
+			kind: .line,
+			labelFilterId: targetLabelId,
+			dateRange: .all,
+			order: 0
+		)
+		try await graph.save(on: app.db)
+		let graphId = try graph.requireID()
+
+		try await GraphGroup(graphId: graphId, group: .labels).save(on: app.db)
+		try await GraphGroupLabels(
+			graphId: graphId, labelId: targetLabelId, order: 0
+		).save(on: app.db)
+
+		try await GraphHorizontalGroup(graphId: graphId, group: .labels).save(on: app.db)
+		try await GraphHorizontalGroupLabels(
+			graphId: graphId, labelId: targetLabelId, order: 0
+		).save(on: app.db)
+
+		let headers = try await app.getHeaders(
+			forUser: .init(
+				username: testUser.username, password: "test-password"))
+
+		// Try to delete the label
+		let response = try await app.sendRequest(
+			.DELETE, "/api/labels/\(targetLabelId.uuidString)",
+			headers: headers
+		)
+
+		// Assert the response indicates conflict
+		XCTAssertEqual(response.status, .conflict)
+
+		let data = try? response.content.decode(Components.Schemas.LabelInUse.self)
+
+		XCTAssertNotNil(data)
+		if let data {
+			try XCTAssertEqual(data.transactions, [transaction.requireID().uuidString])
+			XCTAssertEqual(data.graphs, [graphId.uuidString])
+			XCTAssertEqual(data.graphs_group, [graphId.uuidString])
+			XCTAssertEqual(data.graph_horizontal_group, [graphId.uuidString])
+
+			try XCTAssertEqual(data.rules, [rule.requireID().uuidString])
+		}
+
+		// Verify label still exists
+		var labelsCount = try await Label.query(on: app.db).count()
+		XCTAssertEqual(labelsCount, 18)
+
+		// Try to delete the label
+		let response2 = try await app.sendRequest(
+			.DELETE, "/api/labels/\(targetLabelId.uuidString)?force=true",
+			headers: headers
+		)
+
+		// Assert the response indicates conflict
+		XCTAssertEqual(response2.status, .ok)
+
+		labelsCount = try await Label.query(on: app.db).count()
+		XCTAssertEqual(labelsCount, 17)
+
+		// check nothing was deleted by error
+		let graphReloaded = try await Graph.find(graphId, on: app.db)
+		XCTAssertNotNil(
+			graphReloaded, "Graph should still exist after force deleting label")
+
+		let ruleReloaded = try await Rule.find(rule.requireID(), on: app.db)
+		XCTAssertNotNil(ruleReloaded, "Rule should still exist after force deleting label")
+
+		let transactionReloaded = try await BankTransaction.find(
+			transaction.requireID(), on: app.db)
+		XCTAssertNotNil(
+			transactionReloaded,
+			"Transaction should still exist after force deleting label")
 
 	}
 }

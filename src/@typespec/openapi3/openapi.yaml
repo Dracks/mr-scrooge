@@ -592,6 +592,14 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/UUID'
+        - name: force
+          in: query
+          required: false
+          description: Force to delete the label cleaning it from all relations
+          schema:
+            type: boolean
+            default: false
+          explode: false
       responses:
         '200':
           description: The request has succeeded.
@@ -611,6 +619,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabelInUse'
       tags:
         - labels
   /rules:
@@ -1704,6 +1718,35 @@ components:
           type: string
         groupOwnerId:
           $ref: '#/components/schemas/UUID'
+    LabelInUse:
+      type: object
+      required:
+        - graphs
+        - graphs_group
+        - graph_horizontal_group
+        - rules
+        - transactions
+      properties:
+        graphs:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
+        graphs_group:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
+        graph_horizontal_group:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUID'
     ListFileParsers:
       type: object
       required:

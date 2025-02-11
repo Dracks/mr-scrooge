@@ -1,4 +1,4 @@
-import { Box, Button, Form, FormField, Heading, Layer, TextInput } from 'grommet';
+import { Box, Button, Form, FormField, Heading, TextInput } from 'grommet';
 import React, { useEffect, useState } from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 
@@ -6,8 +6,8 @@ import { useApiClient } from '../../api/client';
 import { Label, LabelCreate } from '../../api/models';
 import { useLogger } from '../../utils/logger/logger.context';
 import { catchAndLog } from '../../utils/promises';
-import { useLabelsContext } from '../common/label.context';
 import { useUserProfileOrThrows } from '../../utils/session/session-context';
+import { useLabelsContext } from '../common/label.context';
 
 export const NewLabelModal: React.FC<{
     onClose: (label?: Label) => void;
@@ -35,7 +35,7 @@ export const NewLabelModal: React.FC<{
     });
 
     return (
-        <Layer onEsc={() => { onClose() }} onClickOutside={() => { onClose() }} modal position="center">
+        
             <Box pad="medium">
                 <Heading level="2">New Label</Heading>
                 <Form<LabelCreate>
@@ -50,11 +50,10 @@ export const NewLabelModal: React.FC<{
                     <FormField name="name" label="Label Name" component={TextInput} />
 
                     <Box direction="row" gap="small">
-                        <Button primary label="Create" type="submit" disabled={!editingLabel.name} />
+                        <Button primary label="Create" type="submit" disabled={!editingLabel.name || saveUpdate.loading} />
                         <Button label="Close" onClick={() => { onClose() }} />
                     </Box>
                 </Form>
             </Box>
-        </Layer>
     );
 };

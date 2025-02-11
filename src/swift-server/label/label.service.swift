@@ -57,19 +57,88 @@ final class LabelService: ServiceWithDb, @unchecked Sendable {
 	enum DeleteLabelReturn {
 		case ok
 		case notFound
+		case inUse(
+			transactions: [UUID], graphs: [UUID], graphGroups: [UUID],
+			graphHorizontalGroups: [UUID], rules: [UUID])
 	}
 
-	func deleteLabel(withId labelId: UUID, forUser user: User) async throws -> DeleteLabelReturn
+	func deleteLabel(withId labelId: UUID, deleteAll: Bool, forUser user: User) async throws
+		-> DeleteLabelReturn
 	{
 		let validGroupsIds = try user.groups.map { return try $0.requireID() }
-		let label = try await Label.query(on: db).filter(\.$id == labelId).filter(
-			\.$groupOwner.$id ~~ validGroupsIds
-		).first()
-		guard let label else {
-			return .notFound
+		return try await db.transaction { transaction in
+			let label = try await Label.query(on: transaction).filter(\.$id == labelId)
+				.filter(
+					\.$groupOwner.$id ~~ validGroupsIds
+				).first()
+			guard let label else {
+				return .notFound
+			}
+			let labelId = try label.requireID()
+
+			let transactionsLinks = try await LabelTransaction.query(on: transaction)
+				.filter(
+					\.$label.$id == labelId
+				).all()
+
+			let graphs = try await Graph.query(on: transaction).filter(
+				\.$labelFilter.$id == labelId
+			).all()
+
+			let graphsGroup = try await GraphGroupLabels.query(on: transaction).filter(
+				\.$id.$label.$id == labelId
+			).all()
+
+			let graphsHorizontalGroup = try await GraphHorizontalGroupLabels.query(
+				on: transaction
+			).filter(
+				\.$id.$label.$id == labelId
+			).all()
+
+			let rules = try await RuleLabelAction.query(on: transaction).filter(
+				\.$label.$id == labelId
+			).all()
+			if !transactionsLinks.isEmpty || !graphs.isEmpty || !graphsGroup.isEmpty
+				|| !graphsHorizontalGroup.isEmpty || !rules.isEmpty
+			{
+				if !deleteAll {
+					return try .inUse(
+						transactions: transactionsLinks.map {
+							$0.$transaction.id
+						},
+						graphs: graphs.map { try $0.requireID() },
+						graphGroups: graphsGroup.map {
+							try $0.requireID().$graph.id
+						},
+						graphHorizontalGroups: graphsHorizontalGroup.map {
+							try $0.requireID().$graph.id
+						}, rules: rules.map { $0.$rule.id })
+				} else {
+					for graph in graphs {
+						graph.$labelFilter.id = nil
+						try await graph.save(on: transaction)
+					}
+
+					for groupLabel in graphsGroup {
+						try await groupLabel.delete(on: transaction)
+					}
+
+					for groupLabel in graphsHorizontalGroup {
+						try await groupLabel.delete(on: transaction)
+					}
+
+					for transactionLabel in transactionsLinks {
+						try await transactionLabel.delete(on: transaction)
+					}
+
+					for ruleLabel in rules {
+						try await ruleLabel.delete(on: transaction)
+					}
+				}
+			}
+
+			try await label.delete(on: transaction)
+			return .ok
 		}
-		#warning("We should check and delete all references of this label")
-		try await label.delete(on: db)
-		return .ok
 	}
 }

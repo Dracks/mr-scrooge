@@ -97,8 +97,10 @@ extension MrScroogeAPIImpl {
 				msg: "Label ID should be an UUID", code: ApiError.API10054)
 		}
 
+		let force = input.query.force ?? false
+
 		let data = try await request.application.labelService.deleteLabel(
-			withId: labelId, forUser: user)
+			withId: labelId, deleteAll: force, forUser: user)
 
 		switch data {
 		case .ok:
@@ -106,6 +108,25 @@ extension MrScroogeAPIImpl {
 		case .notFound:
 			return #BasicNotFound(
 				msg: "Label ID not found for this user", code: ApiError.API10055)
+		case .inUse(
+			let transactions, let graphs, let graphGroups, let graphHorizontalGroups,
+			let rules):
+			return .conflict(
+				.init(
+					body: .json(
+						.init(
+							graphs: graphs.map { $0.uuidString },
+							graphs_group: graphGroups.map {
+								$0.uuidString
+							},
+							graph_horizontal_group:
+								graphHorizontalGroups.map {
+									$0.uuidString
+								},
+							rules: rules.map { $0.uuidString },
+							transactions: transactions.map {
+								$0.uuidString
+							}))))
 		}
 	}
 }
