@@ -595,7 +595,7 @@ paths:
         - name: force
           in: query
           required: false
-          description: Force to delete the label cleaning it from all relations
+          description: When true, forcefully deletes the label and removes it from all relations. Use with caution as this will modify dependent entities.
           schema:
             type: boolean
             default: false
