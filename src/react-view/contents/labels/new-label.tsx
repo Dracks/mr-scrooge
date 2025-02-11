@@ -14,46 +14,50 @@ export const NewLabelModal: React.FC<{
 }> = ({ onClose }) => {
     const logger = useLogger('NewLabelModal');
     const apiClient = useApiClient();
-    const user = useUserProfileOrThrows()
+    const user = useUserProfileOrThrows();
     const labels = useLabelsContext();
     const [editingLabel, setEditingLabel] = useState<LabelCreate>({
-        name: "",
-        groupOwnerId: user.defaultGroupId
+        name: '',
+        groupOwnerId: user.defaultGroupId,
     });
-    useEffect(()=>{
+    useEffect(() => {
         setEditingLabel({
-            name: "",
-            groupOwnerId: user.defaultGroupId
-        })
-    }, [])
-    const saveUpdate = useAsyncCallback(async ( label: LabelCreate) => {
+            name: '',
+            groupOwnerId: user.defaultGroupId,
+        });
+    }, []);
+    const saveUpdate = useAsyncCallback(async (label: LabelCreate) => {
         const response = await apiClient.POST('/labels', { body: label });
         if (response.data) {
             labels.replace(response.data);
-            onClose(response.data)
+            onClose(response.data);
         }
     });
 
     return (
-        
-            <Box pad="medium">
-                <Heading level="2">New Label</Heading>
-                <Form<LabelCreate>
-                    value={editingLabel}
-                    onChange={newValue => {
-                        setEditingLabel(newValue);
-                    }}
-                    onSubmit={() => {
-                        catchAndLog(saveUpdate.execute(editingLabel), 'Error creating the new label', logger);
-                    }}
-                >
-                    <FormField name="name" label="Label Name" component={TextInput} />
+        <Box pad="medium">
+            <Heading level="2">New Label</Heading>
+            <Form<LabelCreate>
+                value={editingLabel}
+                onChange={newValue => {
+                    setEditingLabel(newValue);
+                }}
+                onSubmit={() => {
+                    catchAndLog(saveUpdate.execute(editingLabel), 'Error creating the new label', logger);
+                }}
+            >
+                <FormField name="name" label="Label Name" component={TextInput} />
 
-                    <Box direction="row" gap="small">
-                        <Button primary label="Create" type="submit" disabled={!editingLabel.name || saveUpdate.loading} />
-                        <Button label="Close" onClick={() => { onClose() }} />
-                    </Box>
-                </Form>
-            </Box>
+                <Box direction="row" gap="small">
+                    <Button primary label="Create" type="submit" disabled={!editingLabel.name || saveUpdate.loading} />
+                    <Button
+                        label="Close"
+                        onClick={() => {
+                            onClose();
+                        }}
+                    />
+                </Box>
+            </Form>
+        </Box>
     );
 };

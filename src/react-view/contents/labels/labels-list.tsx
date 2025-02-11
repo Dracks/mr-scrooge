@@ -11,38 +11,51 @@ export const LabelsList: React.FC = () => {
     const labels = useLabelsListContext();
     const groups = useUserGroupsMap();
     const [editing, setEditing] = useState<Label | undefined>();
-    const [showNew, setShowNew] = useState<boolean>(false)
-    
-    let modal : React.ReactElement | undefined = undefined
-    if (editing || showNew){
-        const onClose = () => { setEditing(undefined);  setShowNew(false) }
-        modal = <Layer onEsc={() => { onClose() }} onClickOutside={() => { onClose() }} modal position="center">
-            { editing ?                 
-                <EditLabelModal
-                label={editing}
-                onClose={() => {
-                    setEditing(undefined);
+    const [showNew, setShowNew] = useState<boolean>(false);
+
+    let modal: React.ReactElement | undefined = undefined;
+    if (editing || showNew) {
+        const onClose = () => {
+            setEditing(undefined);
+            setShowNew(false);
+        };
+        modal = (
+            <Layer
+                onEsc={() => {
+                    onClose();
                 }}
-            /> : undefined }
-            { showNew ?  <NewLabelModal onClose={(label)=>{
-                if (label){
-                    setEditing(label)
-                }
-                setShowNew(false)
-            }} /> : undefined }
-        </Layer>
+                onClickOutside={() => {
+                    onClose();
+                }}
+                modal
+                position="center"
+            >
+                {editing ? (
+                    <EditLabelModal
+                        label={editing}
+                        onClose={() => {
+                            setEditing(undefined);
+                        }}
+                    />
+                ) : undefined}
+                {showNew ? (
+                    <NewLabelModal
+                        onClose={label => {
+                            if (label) {
+                                setEditing(label);
+                            }
+                            setShowNew(false);
+                        }}
+                    />
+                ) : undefined}
+            </Layer>
+        );
     }
 
     return (
         <>
             {modal}
-            <Box
-                direction="row"
-                align="center"
-                pad="small"
-                gap="small"
-                wrap={true}
-            >
+            <Box direction="row" align="center" pad="small" gap="small" wrap={true}>
                 {labels.map(label => (
                     <Tag
                         key={label.id}
@@ -55,7 +68,12 @@ export const LabelsList: React.FC = () => {
                         }}
                     />
                 ))}
-                <Tag value="add" onClick={()=>{setShowNew(true)}}/>
+                <Tag
+                    value="add"
+                    onClick={() => {
+                        setShowNew(true);
+                    }}
+                />
             </Box>
         </>
     );

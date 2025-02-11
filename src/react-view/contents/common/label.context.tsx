@@ -40,7 +40,7 @@ export const ProvideLabelsData: React.FC<PropsWithChildren> = ({ children }) => 
             if (data) {
                 return data;
             } else {
-                throw Error("Get labels didn't had data");
+                throw new Error('Failed to fetch labels: Response data is missing');
             }
         },
         { autostart: true, hash: (label: Label) => label.id },
