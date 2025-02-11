@@ -23,7 +23,7 @@ final class PipelineErrorTests: XCTestCase {
 
 			let group = UserGroup(name: "Test User Group")
 			try await group.save(on: app.db)
-			self.group = group
+			// self.group = group
 			print("UserCreated")
 
 			let testParsers: [ParserFactory] = try getParsers()
