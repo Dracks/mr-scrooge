@@ -108,15 +108,13 @@ final class LabelResolverTests: AbstractBaseTestsClass {
 		let labelsCount = try await Label.query(on: app.db).count()
 		XCTAssertEqual(labelsCount, 17)
 
-		let labelsCount = try await Label.query(on: app.db).count()
-		XCTAssertEqual(labelsCount, 17)
-
 		// Verify the specific label was deleted
 		let deletedLabel = try await Label.query(on: app.db)
 			.filter(\.$id == labels[3].requireID())
 			.first()
 		XCTAssertNil(deletedLabel, "Label should have been deleted")
 	}
+
 	func testFailToDeleteLinkedLabel() async throws {
 		let app = try getApp()
 
