@@ -21,6 +21,10 @@ final class PipelineErrorTests: XCTestCase {
 
 			self.app = app
 
+			self.group = UserGroup(name: "Test User Group")
+			try await self.group.save(on: app.db)
+			print("UserCreated")
+
 			let testParsers: [ParserFactory] = try getParsers()
 			importerService = NewImportService(parsers: testParsers, withApp: app)
 			print("Set Up Correctly")
