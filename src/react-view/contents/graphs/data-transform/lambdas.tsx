@@ -49,13 +49,10 @@ export const groupLambdas: Record<
 };
 
 const customSort = (data: string[]) => {
-    const hash = {} as Record<string, number>;
-    data.forEach((name, k) => {
-        hash[name] = k + 1;
-    });
+    const map = new Map<string, number>(data.map((elem, key) => [elem, key+1]));
     return (a: string, b: string) => {
-        const v1 = hash[a];
-        const v2 = hash[b];
+        const v1 = map.get(a);
+        const v2 = map.get(b);
         if (!v1) {
             return 1;
         } else if (!v2) {
@@ -69,6 +66,6 @@ export const sortLambdas: Record<GroupKeys, (p: string[]) => (a: string, b: stri
     month: () => (a: string, b: string) => a.localeCompare(b),
     day: () => (a: string, b: string) => parseInt(a, 10) - parseInt(b, 10),
     year: () => (a: string, b: string) => a.localeCompare(b),
-    sign: () => customSort(['expenses', 'income']),
+    sign: () => customSort(['income', 'expenses']),
     labels: customSort,
 };

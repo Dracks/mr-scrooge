@@ -128,13 +128,13 @@ describe('useGraphData', () => {
                 value: [
                     {
                         groupName: 'month',
-                        label: '2022-10',
-                        value: 5,
+                        label: '2022-06',
+                        value: 0,
                     },
                     {
                         groupName: 'month',
-                        label: '2022-06',
-                        value: 0,
+                        label: '2022-10',
+                        value: 5,
                     },
                 ],
             },
@@ -144,13 +144,13 @@ describe('useGraphData', () => {
                 value: [
                     {
                         groupName: 'month',
-                        label: '2022-10',
-                        value: 8,
+                        label: '2022-06',
+                        value: 0,
                     },
                     {
                         groupName: 'month',
-                        label: '2022-06',
-                        value: 0,
+                        label: '2022-10',
+                        value: 8,
                     },
                 ],
             },
@@ -160,13 +160,13 @@ describe('useGraphData', () => {
                 value: [
                     {
                         groupName: 'month',
-                        label: '2022-10',
-                        value: 10,
+                        label: '2022-06',
+                        value: 0,
                     },
                     {
                         groupName: 'month',
-                        label: '2022-06',
-                        value: 0,
+                        label: '2022-10',
+                        value: 10,
                     },
                 ],
             },
@@ -176,13 +176,13 @@ describe('useGraphData', () => {
                 value: [
                     {
                         groupName: 'month',
-                        label: '2022-10',
-                        value: 11,
+                        label: '2022-06',
+                        value: 7,
                     },
                     {
                         groupName: 'month',
-                        label: '2022-06',
-                        value: 7,
+                        label: '2022-10',
+                        value: 11,
                     },
                 ],
             },
