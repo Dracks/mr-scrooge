@@ -1,5 +1,6 @@
 import XCTVapor
 import XCTest
+import Fluent
 
 @testable import MrScroogeServer
 
@@ -92,13 +93,14 @@ final class LabelResolverTests: AbstractBaseTestsClass {
 
 	func testDeleteLabel() async throws {
 		let app = try getApp()
+        let targetLabelId = try labels[3].requireID()
 		// Get headers for authenticated request
 		let headers = try await app.getHeaders(
 			forUser: .init(
 				username: testUser.username, password: "test-password"))
 
 		let response = try await app.sendRequest(
-			.DELETE, "/api/labels/\(labels[3].requireID().uuidString)",
+			.DELETE, "/api/labels/\(targetLabelId.uuidString)",
 			headers: headers
 		)
 
@@ -110,7 +112,7 @@ final class LabelResolverTests: AbstractBaseTestsClass {
 
 		// Verify the specific label was deleted
 		let deletedLabel = try await Label.query(on: app.db)
-			.filter(\.$id == labels[3].requireID())
+			.filter(\.$id == targetLabelId)
 			.first()
 		XCTAssertNil(deletedLabel, "Label should have been deleted")
 	}
