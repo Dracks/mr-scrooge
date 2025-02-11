@@ -6,7 +6,7 @@ import XCTest
 
 final class PipelineErrorTests: XCTestCase {
 	var importerService: NewImportService!
-	var group: UserGroup!
+	var group: UserGroup?
 	var app: Application?
 
 	override func setUp() async throws {
@@ -21,8 +21,9 @@ final class PipelineErrorTests: XCTestCase {
 
 			self.app = app
 
-			self.group = UserGroup(name: "Test User Group")
-			try await self.group.save(on: app.db)
+			let group = UserGroup(name: "Test User Group")
+			try await group.save(on: app.db)
+			self.group = group
 			print("UserCreated")
 
 			let testParsers: [ParserFactory] = try getParsers()
