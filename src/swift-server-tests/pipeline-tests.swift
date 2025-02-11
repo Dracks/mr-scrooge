@@ -21,4 +21,6 @@ final class PipelineErrorTests: BaseImporterTests {
 		let match = try? regex.firstMatch(in: fileTest)
 		XCTAssertNotNil(match)
 	}
+
+	func te_stUpdateWithInvalidDefaultGroupId() async throws {}
 }

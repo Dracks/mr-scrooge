@@ -12,8 +12,11 @@ final class CommerzBankEnImporterTests: BaseImporterTests {
 		let factory = importerService.getParsers().first
 
 		XCTAssertNotNil(factory)
+        guard let factory else {
+            return
+        }
 
-		let regex = try Regex(factory!.fileRegex)
+		let regex = try Regex(factory.fileRegex)
 
 		let fileTest = "DE19821450020041545900_EUR_11-08-2024_2056.csv"
 		let match = try? regex.firstMatch(in: fileTest)
