@@ -20,8 +20,7 @@ final class PipelineErrorTests: XCTestCase {
 
 		let group = UserGroup(name: "Test User Group")
 		try await group.save(on: app.db)
-		// self.group = group
-		print("UserCreated")
+		app.logger.info("User created")
 
 		/*let testParsers: [ParserFactory] = try getParsers()
 		importerService = NewImportService(parsers: testParsers, withApp: app)
@@ -29,11 +28,13 @@ final class PipelineErrorTests: XCTestCase {
 	}
 
 	override func tearDown() async throws {
+		app?.logger.info("Tear down")
 		try await super.tearDown()
-		print("Tearing down")
+
 		if let app {
+			app.logger.info("We have app")
 			try await app.asyncShutdown()
-			print("Async shutdown")
+			app.logger.info("Shutting down")
 			self.app = nil
 			print("Finish")
 		}
@@ -44,7 +45,7 @@ final class PipelineErrorTests: XCTestCase {
 	}
 
 	func testRegexFile() async throws {
-		print("Test is starting!")
+		app?.logger.info("test Regex")
 		/*let factory = importerService.getParsers().first
 
 		XCTAssertNotNil(factory)
