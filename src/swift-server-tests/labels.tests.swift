@@ -1,3 +1,4 @@
+import Fluent
 import XCTVapor
 import XCTest
 
@@ -189,8 +190,8 @@ final class LabelResolverTests: AbstractBaseTestsClass {
 		if let data {
 			try XCTAssertEqual(data.transactions, [transaction.requireID().uuidString])
 			XCTAssertEqual(data.graphs, [graphId.uuidString])
-			XCTAssertEqual(data.graphs_group, [graphId.uuidString])
-			XCTAssertEqual(data.graph_horizontal_group, [graphId.uuidString])
+			XCTAssertEqual(data.graphsGroup, [graphId.uuidString])
+			XCTAssertEqual(data.graphHorizontalGroup, [graphId.uuidString])
 
 			try XCTAssertEqual(data.rules, [rule.requireID().uuidString])
 		}
