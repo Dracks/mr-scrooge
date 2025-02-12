@@ -6,50 +6,36 @@ import XCTest
 
 final class PipelineErrorTests: XCTestCase {
 	var importerService: NewImportService!
-	var group: UserGroup?
 	var app: Application?
 
 	override func setUp() async throws {
 		try await super.setUp()
-		do {
-			let app = try await Application.make(.testing)
-			try await configure(app)
 
-			print("Starting auto-migration")
-			try await app.autoMigrate()
-			print("Finishing auto-migration")
+		let app = try await Application.make(.testing)
+		try await configure(app)
 
-			self.app = app
+		app.queues.use(.asyncTest)
 
-			let group = UserGroup(name: "Test User Group")
-			try await group.save(on: app.db)
-			// self.group = group
-			print("UserCreated")
+		self.app = app
 
-			let testParsers: [ParserFactory] = try getParsers()
-			importerService = NewImportService(parsers: testParsers, withApp: app)
-			print("Set Up Correctly")
-		} catch {
-			print("importer-helper {}", String(reflecting: error))
-			XCTAssertTrue(false)
-		}
+		let group = UserGroup(name: "Test User Group")
+		try await group.save(on: app.db)
+		// self.group = group
+		print("UserCreated")
+
+		let testParsers: [ParserFactory] = try getParsers()
+		importerService = NewImportService(parsers: testParsers, withApp: app)
+		print("Set Up Correctly")
 	}
 
 	override func tearDown() async throws {
 		try await super.tearDown()
 		print("Tearing down")
-		self.group = nil
-		guard let app else {
-			throw TestError()
-		}
-		do {
+		if let app {
 			try await app.asyncShutdown()
 			print("Async shutdown")
 			self.app = nil
 			print("Finish")
-		} catch {
-			print("More error catching")
-			print(error)
 		}
 	}
 
