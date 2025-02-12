@@ -35,7 +35,7 @@ final class PipelineErrorTests: XCTestCase {
 			app.logger.info("We have app")
 			try await app.asyncShutdown()
 			app.logger.info("Shutting down")
-			self.app = nil
+			// self.app = nil
 			print("Finish")
 		}
 	}
