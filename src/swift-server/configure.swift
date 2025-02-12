@@ -1,6 +1,5 @@
 import Fluent
 import FluentSQLiteDriver
-import Leaf
 import Vapor
 
 public func registerMigrations(_ app: Application) async throws {
@@ -20,8 +19,6 @@ public func configure(_ app: Application) async throws {
 		if app.environment == .testing {
 			try await app.autoMigrate()
 		}
-
-		app.views.use(.leaf)
 
 	} catch {
 		print("Configure {}", String(reflecting: error))

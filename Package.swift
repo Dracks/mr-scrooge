@@ -12,7 +12,6 @@ let package = Package(
 	dependencies: [
 		// Vapor
 		.package(url: "https://github.com/vapor/vapor", from: "4.112.0"),
-		.package(url: "https://github.com/vapor/leaf.git", from: "4.4.1"),
 
 		// 🔵 Non-blocking, event-driven networking for Swift. Used for custom executors
 		.package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
@@ -29,7 +28,6 @@ let package = Package(
 				.product(name: "NIOCore", package: "swift-nio"),
 				.product(name: "NIOPosix", package: "swift-nio"),
 				.product(name: "Fluent", package: "fluent"),
-				.product(name: "Leaf", package: "leaf"),
 				.product(
 					name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
 			],
