@@ -101,6 +101,22 @@ let package = Package(
 				.process("test_files/old.sqlite3"),
 			]
 		),
+		.testTarget(
+			name: "MrScroogeServerSwiftTests",
+			dependencies: [
+				.target(name: "MrScroogeServer"),
+				.product(name: "VaporTesting", package: "vapor"),
+				.product(name: "XCTQueues", package: "queues"),
+			],
+			path: "src/swift-server-swift-tests",
+			resources: [
+				.process("test_files/commerz_bank.CSV"),
+				.process("test_files/MovimientosCuenta.xls"),
+				.process("test_files/MovimientosTarjetaCredito.xls"),
+				.process("test_files/n26_es.csv"),
+				.process("test_files/old.sqlite3"),
+			]
+		),
 
 	]
 )

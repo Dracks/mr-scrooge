@@ -43,4 +43,4 @@ jobs:
       - name: Run tests
         #run: swift test --parallel
         # run: swift test
-        run: swift test --filter PipelineErrorTests
+        run: swift test --filter MrScroogeServerSwiftTests
