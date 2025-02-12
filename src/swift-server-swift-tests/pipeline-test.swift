@@ -1,6 +1,5 @@
 import Testing
 import VaporTesting
-import XCTQueues
 
 @testable import MrScroogeServer
 

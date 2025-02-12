@@ -14,8 +14,6 @@ final class PipelineErrorTests: XCTestCase {
 		let app = try await Application.make(.testing)
 		try await configure(app)
 
-		app.queues.use(.asyncTest)
-
 		self.app = app
 
 		let group = UserGroup(name: "Test User Group")
@@ -38,10 +36,6 @@ final class PipelineErrorTests: XCTestCase {
 			// self.app = nil
 			print("Finish")
 		}
-	}
-
-	func getParsers() throws -> [any ParserFactory] {
-		return [CommerzBankEnImporter()]
 	}
 
 	func testRegexFile() async throws {

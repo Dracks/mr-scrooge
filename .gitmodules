@@ -1,6 +1,0 @@
-[submodule "server"]
-	path = server
-	url = https://github.com/Dracks/mr-scrooge-server.git
-[submodule "view"]
-	path = view
-	url = https://github.com/Dracks/mr-scrooge-view.git
