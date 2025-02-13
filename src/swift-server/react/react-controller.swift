@@ -16,15 +16,14 @@ struct ReactController: RouteCollection {
 
 	init() {
 		self.logger = Logger(label: "ReactController")
+		let config = EnvConfig.shared
 		self.ctx = ReactContext(
-			// Todo: get from app env
-			debug: true,
-			staticPath: "/",
+			debug: config.debug,
+			staticPath: config.staticPath,
 			version: BuildInfo.appVersion,
 			commit: BuildInfo.commit,
-			// This should be extracted from env vars
-			environment: "development",
-			decimalCount: 2
+			environment: config.environment,
+			decimalCount: config.decimalCount
 		)
 	}
 

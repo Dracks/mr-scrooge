@@ -15,12 +15,14 @@ func getDbConfig(url dbUrl: String) throws -> (DatabaseConfigurationFactory, Dat
 	let dbType = components[0].lowercased()
 	let filePath = String(components[1].dropFirst(2))
 
-	let sqlLogLevel: Logger.Level =
-		Environment.get("SQL_LOG_LEVEL").flatMap { Logger.Level(rawValue: $0) } ?? .debug
+	let sqlLogLevel = EnvConfig.shared.sqlLogLevel
 
 	switch dbType {
 	case "postgres":
-		return (try DatabaseConfigurationFactory.postgres(url: dbUrl), .psql)
+		return (
+			try DatabaseConfigurationFactory.postgres(
+				url: dbUrl, sqlLogLevel: sqlLogLevel), .psql
+		)
 	case "sqlite":
 		if filePath == "memory" {
 			return (
@@ -39,8 +41,7 @@ func getDbConfig(url dbUrl: String) throws -> (DatabaseConfigurationFactory, Dat
 }
 
 func configureDb(_ app: Application) async throws {
-	let dbUrl = Environment.get("DB_URL") ?? "sqlite://db.sqlite3"
-	let (dbFactory, dbId) = try getDbConfig(url: dbUrl)
+	let (dbFactory, dbId) = try getDbConfig(url: EnvConfig.shared.dbUrl)
 	app.databases.use(dbFactory, as: dbId)
 }
 
