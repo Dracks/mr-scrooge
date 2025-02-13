@@ -3,10 +3,10 @@ import React, { PropsWithChildren, useContext } from 'react';
 import { useApiClient } from '../../api/client';
 import { BankTransaction, Label } from '../../api/models';
 import { usePagination } from '../../api/pagination';
+import { TRANSACTION_REFRESH_RATE } from '../../constants';
 import { EventTypes, useEventEmitter } from '../../utils/providers/event-emitter.provider';
 import { useThrottledData } from '../../utils/use-throttle-data';
 import { useLabelsListContext } from './label.context';
-import { TRANSACTION_REFRESH_RATE } from '../../constants';
 
 export type BankTransactionEnriched = Omit<BankTransaction, 'date'> & {
     date: Date;
