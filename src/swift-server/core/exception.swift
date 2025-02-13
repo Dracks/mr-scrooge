@@ -1,3 +1,5 @@
+import Foundation
+
 final class Exception: Error, CustomStringConvertible {
 
 	let errorCode: ErrorCode
@@ -14,6 +16,7 @@ final class Exception: Error, CustomStringConvertible {
 		}
 		return context
 	}
+	let stackTrace: [String]
 	let file: String
 	let line: UInt
 	let function: String
@@ -27,10 +30,12 @@ final class Exception: Error, CustomStringConvertible {
 	) {
 		self.errorCode = errorCode
 		self.context = context
+		self.cause = cause
 		self.file = file
 		self.line = line
-		self.cause = cause
 		self.function = function
+
+		stackTrace = Thread.callStackSymbols
 	}
 
 	var localizedDescription: String {

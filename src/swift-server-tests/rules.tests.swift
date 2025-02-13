@@ -63,7 +63,7 @@ final class RulesTests: AbstractBaseTestsClass {
 	) throws {
 		let label = operationToLabel[operation]
 		guard let label else {
-			print("Label for operation \(operation) not found!")
+			app?.logger.error("Label for operation \(operation) not found!")
 			throw TestError()
 		}
 		XCTAssertTrue(

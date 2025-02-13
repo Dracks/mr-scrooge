@@ -51,17 +51,23 @@ const normalizeSubGroups = (data: DSDoubleGroup<string, string>[]): DSDoubleGrou
 
 const labelMap = ({ name }: Label) => name;
 
-const sortData = (data: DSDoubleGroup<string, string>[], group: EnrichedGraph<GraphParam>["group"], horizontalGroup: EnrichedGraph<GraphParam>["horizontalGroup"] ):DSDoubleGroup<string, string>[] => {
-    const groupSort = sortLambdas[group.group](group.labels?.map(labelMap) ?? [])
-    if (horizontalGroup){
-        const firstSort = sortLambdas[horizontalGroup.group](horizontalGroup.labels?.map(labelMap) ?? [])
-        return data.map(({value, ...elem})=>({
-            ...elem,
-            value: value.sort((first, second)=>groupSort(first.label, second.label))
-        })).sort((first, second)=> firstSort(first.label, second.label))
+const sortData = (
+    data: DSDoubleGroup<string, string>[],
+    group: EnrichedGraph<GraphParam>['group'],
+    horizontalGroup: EnrichedGraph<GraphParam>['horizontalGroup'],
+): DSDoubleGroup<string, string>[] => {
+    const groupSort = sortLambdas[group.group](group.labels?.map(labelMap) ?? []);
+    if (horizontalGroup) {
+        const firstSort = sortLambdas[horizontalGroup.group](horizontalGroup.labels?.map(labelMap) ?? []);
+        return data
+            .map(({ value, ...elem }) => ({
+                ...elem,
+                value: value.sort((first, second) => groupSort(first.label, second.label)),
+            }))
+            .sort((first, second) => firstSort(first.label, second.label));
     }
     return data.sort((first, second) => groupSort(first.label, second.label));
-}
+};
 
 export const useGraphDataGenerator = <T extends GraphParam>({
     labelFilterId,
@@ -92,15 +98,13 @@ export const useGraphDataGenerator = <T extends GraphParam>({
     const rdsGroupedSum = sumGroups(rdsGrouped);
     const normalizedRdsGroupedSum = horizontalGroup ? normalizeSubGroups(rdsGroupedSum) : rdsGroupedSum;
 
-    console.log("sortLambda", horizontalGroup, group)
-    
     /*
     const sortLambda = horizontalGroup
         ? sortLambdas[horizontalGroup.group](horizontalGroup.labels?.map(labelMap) ?? [])
         : sortLambdas[group.group](group.labels?.map(labelMap) ?? []);
     let rdsSorted = normalizedRdsGroupedSum.sort((first, second) => sortLambda(first.label, second.label));
     */
-    let rdsSorted = sortData(normalizedRdsGroupedSum, group, horizontalGroup)
+    let rdsSorted = sortData(normalizedRdsGroupedSum, group, horizontalGroup);
 
     const { accumulate } = horizontalGroup ?? { accumulate: false };
 

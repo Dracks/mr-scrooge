@@ -3,7 +3,9 @@ import React, { PropsWithChildren, useContext } from 'react';
 import { useApiClient } from '../../api/client';
 import { BankTransaction, Label } from '../../api/models';
 import { usePagination } from '../../api/pagination';
+import { TRANSACTION_REFRESH_RATE } from '../../constants';
 import { EventTypes, useEventEmitter } from '../../utils/providers/event-emitter.provider';
+import { useThrottledData } from '../../utils/use-throttle-data';
 import { useLabelsListContext } from './label.context';
 
 export type BankTransactionEnriched = Omit<BankTransaction, 'date'> & {
@@ -47,6 +49,8 @@ export const ProvideTransactionsData: React.FC<PropsWithChildren> = ({ children 
         { autostart: true, hash: (bt: BankTransactionEnriched) => bt.id },
     );
 
+    const throttledData = useThrottledData(paginator.loadedData, TRANSACTION_REFRESH_RATE);
+
     const eventEmitter = useEventEmitter();
     React.useEffect(() => {
         const unsub = eventEmitter.subscribe(EventTypes.OnQueueUploadFinish, paginator.reset);
@@ -58,7 +62,7 @@ export const ProvideTransactionsData: React.FC<PropsWithChildren> = ({ children 
         return <div>Some Error happened loading Bank Transactions </div>; //<ErrorHandler error={query.error} />;
     }
     const context: BankTransactionsContextType = {
-        data: paginator.loadedData,
+        data: throttledData,
         reset: paginator.reset,
         replace: data => {
             paginator.update([enrichTransactions(data)]);

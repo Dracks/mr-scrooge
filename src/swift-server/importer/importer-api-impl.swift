@@ -83,7 +83,6 @@ struct ImportUpload: RouteCollection {
 		let tmpDir = NSTemporaryDirectory()
 		let filePath =
 			"\(tmpDir)/mr-scrooge-\(UUID().uuidString).\(upload.file.extension ?? "unknown")"
-		// print(filePath)
 
 		try await request.fileio.writeFile(upload.file.data, at: filePath)
 
@@ -91,7 +90,9 @@ struct ImportUpload: RouteCollection {
 			do {
 				try FileManager.default.removeItem(atPath: filePath)
 			} catch {
-				print(error)
+				request.application.logger.warning(
+					"Cannot delete a file after processing",
+					metadata: ["error": "\(String(reflecting: error))"])
 			}
 		}
 

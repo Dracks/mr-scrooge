@@ -101,6 +101,7 @@ extension TransformerAndValidator {
 				\.$groupOwner.$id == userGroup
 			).first()
 			guard let retrieveParentRule else {
+				#warning("Transform this into an error, that is handled correctly")
 				print(
 					"Rule \(try parentRule.requireID()) is corrupted as is pointing to a parent that is not found for the user group \(userGroup)."
 				)

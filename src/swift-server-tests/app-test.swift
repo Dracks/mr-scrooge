@@ -9,9 +9,20 @@ import XCTest
 final class TestError: Error {
 	let message: String?
 	let context: [String: String]?
-	init(message: String? = nil, context: [String: String]? = nil) {
+	let file: String
+	let line: UInt
+	let function: String
+	init(
+		message: String? = nil, context: [String: String]? = nil,
+		file: String = #file,
+		line: UInt = #line,
+		function: String = #function
+	) {
 		self.message = message
 		self.context = context
+		self.file = file
+		self.line = line
+		self.function = function
 	}
 }
 

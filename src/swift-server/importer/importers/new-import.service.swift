@@ -1,5 +1,6 @@
 import Fluent
 import Foundation
+import Logging
 import Queues
 import Vapor
 
@@ -34,6 +35,7 @@ struct PartialBankTransaction {
 class NewImportService: ServiceWithQueueAndDb {
 	private var parsersMap: [String: ParserFactory]
 	private let bankTransactionService: BankTransactionService
+	private let logger = Logger(label: "\(NewImportService.self)")
 
 	init(parsers: [ParserFactory], withApp app: Application) {
 		parsersMap = Dictionary(uniqueKeysWithValues: parsers.map { ($0.key, $0) })
@@ -73,6 +75,7 @@ class NewImportService: ServiceWithQueueAndDb {
 			status: .ok
 		)
 		try await status.create(on: db)
+		let statusId = try status.requireID()
 
 		do {
 			guard let parser = parsersMap[key] else {
@@ -136,10 +139,16 @@ class NewImportService: ServiceWithQueueAndDb {
 				}
 			}
 		} catch {
-			print(error)
+			logger.info(
+				"Error processing import file",
+				metadata: [
+					"error": "\(String(reflecting: error))",
+					"filename": "\(fileName)", "key": "\(key)",
+					"report-id": "\(statusId)",
+				])
 			status.description = String(reflecting: error)
-			// status.stack = String(describing: error)
 			if let error = error as? Exception {
+				status.stack = error.stackTrace.joined(separator: "\n")
 				let jsonData = try JSONSerialization.data(
 					withJSONObject: error.allContext, options: [])
 				status.context = String(data: jsonData, encoding: .utf8)
