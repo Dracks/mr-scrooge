@@ -327,7 +327,11 @@ extension DjangoMigrationService {
 				try await migrateTransaction(rds: rds)
 				done = done + 1
 			}
-			app.logger.info("Migrated \(done)/\(page.metadata.total)")
+
+			let percentage = Double(done) / Double(page.metadata.total) * 100
+			app.logger.info(
+				"Migrated \(done)/\(page.metadata.total) (\(String(format: "%.1f", percentage))%)"
+			)
 		}
 	}
 }

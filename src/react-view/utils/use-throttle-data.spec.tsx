@@ -5,46 +5,43 @@ import { useThrottledData } from './use-throttle-data';
 describe('useThrottledData', () => {
     jest.useFakeTimers();
 
-    
-    it('Should only process the first element until delay happened', ()=>{
+    it('Should only process the first element until delay happened', () => {
         const { result, rerender } = renderHook(({ data }) => useThrottledData(data, 1000), {
-            initialProps: { data: [1,2,3] },
+            initialProps: { data: [1, 2, 3] },
         });
-        
+
         expect(result.current).toEqual([1, 2, 3]);
-        rerender({data: [2,3]})
-        
+        rerender({ data: [2, 3] });
+
         expect(result.current).toEqual([1, 2, 3]);
-    })
-    
-    it('Should update to the last update when the time expires', ()=>{
-        
+    });
+
+    it('Should update to the last update when the time expires', () => {
         const { result, rerender } = renderHook(({ data }) => useThrottledData(data, 500), {
-            initialProps: { data: [1,2,3] },
+            initialProps: { data: [1, 2, 3] },
         });
-        
-        rerender({data: [2,3]})
+
+        rerender({ data: [2, 3] });
         act(() => {
             jest.advanceTimersByTime(255);
         });
-        expect(result.current).toEqual([1,2,3])
-        rerender({data: [5,6]})
-        
+        expect(result.current).toEqual([1, 2, 3]);
+        rerender({ data: [5, 6] });
+
         // Fast forward past delay
         act(() => {
             jest.advanceTimersByTime(255);
         });
-        
-        expect(result.current).toEqual([5,6])
-    })
-    
-    it('Should clear the timer when the component is removed to avoid errors', ()=>{
-        const {unmount} = renderHook(()=> useThrottledData([1,2], 500))
-        unmount()
-        
-        
+
+        expect(result.current).toEqual([5, 6]);
+    });
+
+    it('Should clear the timer when the component is removed to avoid errors', () => {
+        const { unmount } = renderHook(() => useThrottledData([1, 2], 500));
+        unmount();
+
         act(() => {
             jest.advanceTimersByTime(1000);
         });
-    })
+    });
 });

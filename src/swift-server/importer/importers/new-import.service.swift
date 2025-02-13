@@ -147,8 +147,8 @@ class NewImportService: ServiceWithQueueAndDb {
 					"report-id": "\(statusId)",
 				])
 			status.description = String(reflecting: error)
-			// status.stack = String(describing: error)
 			if let error = error as? Exception {
+				status.stack = error.stackTrace.joined(separator: "\n")
 				let jsonData = try JSONSerialization.data(
 					withJSONObject: error.allContext, options: [])
 				status.context = String(data: jsonData, encoding: .utf8)

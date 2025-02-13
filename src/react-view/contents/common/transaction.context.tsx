@@ -48,8 +48,8 @@ export const ProvideTransactionsData: React.FC<PropsWithChildren> = ({ children 
         },
         { autostart: true, hash: (bt: BankTransactionEnriched) => bt.id },
     );
-    
-    const throttledData = useThrottledData(paginator.loadedData, TRANSACTION_REFRESH_RATE)
+
+    const throttledData = useThrottledData(paginator.loadedData, TRANSACTION_REFRESH_RATE);
 
     const eventEmitter = useEventEmitter();
     React.useEffect(() => {

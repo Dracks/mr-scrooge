@@ -17,7 +17,7 @@ import {
 } from 'recharts';
 
 import { ApiUUID, GraphKind, GraphParam } from '../../../api/models';
-import { DECIMAL_COUNT,  } from '../../../constants';
+import { DECIMAL_COUNT } from '../../../constants';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { DSDoubleGroup } from '../data-transform/types';
 import { EnrichedGraph } from '../types';

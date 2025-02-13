@@ -98,8 +98,6 @@ export const useGraphDataGenerator = <T extends GraphParam>({
     const rdsGroupedSum = sumGroups(rdsGrouped);
     const normalizedRdsGroupedSum = horizontalGroup ? normalizeSubGroups(rdsGroupedSum) : rdsGroupedSum;
 
-    console.log('sortLambda', horizontalGroup, group);
-
     /*
     const sortLambda = horizontalGroup
         ? sortLambdas[horizontalGroup.group](horizontalGroup.labels?.map(labelMap) ?? [])
