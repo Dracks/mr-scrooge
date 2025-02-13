@@ -65,7 +65,6 @@ final class BankTransactionTests: AbstractBaseTestsClass {
 		guard let lastId = results.last?.id else {
 			throw TestError()
 		}
-		print(lastId)
 		XCTAssertEqual(data.next, "2022-02-02:\(lastId)")
 	}
 

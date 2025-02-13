@@ -49,7 +49,7 @@ export const groupLambdas: Record<
 };
 
 const customSort = (data: string[]) => {
-    const map = new Map<string, number>(data.map((elem, key) => [elem, key+1]));
+    const map = new Map<string, number>(data.map((elem, key) => [elem, key + 1]));
     return (a: string, b: string) => {
         const v1 = map.get(a);
         const v2 = map.get(b);

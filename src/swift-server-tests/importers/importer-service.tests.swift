@@ -44,7 +44,6 @@ final class ImporterServiceTests: BaseImporterTests {
 
 		let reports = try await statusReportsService.getAll(
 			groupIds: [groupOwnerId])
-		print(reports)
 		XCTAssertEqual(reports.list.count, 1)
 		let importReport = reports.list.first
 		XCTAssertEqual(importReport?.status, .error)

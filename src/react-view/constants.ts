@@ -29,3 +29,4 @@ export const GRAPHQL_URL = '/graphql/';
 export const ENVIRONMENT = constants.environment;
 export const VERSION = constants.version;
 export const DECIMAL_COUNT = constants.decimalCount;
+export const TRANSACTION_REFRESH_RATE = 2000

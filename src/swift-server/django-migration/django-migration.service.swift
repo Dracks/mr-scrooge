@@ -327,7 +327,7 @@ extension DjangoMigrationService {
 				try await migrateTransaction(rds: rds)
 				done = done + 1
 			}
-			print("Migrated \(done)/\(page.metadata.total)")
+			app.logger.info("Migrated \(done)/\(page.metadata.total)")
 		}
 	}
 }
@@ -537,7 +537,7 @@ extension DjangoMigrationService {
 				try await groupLabel.link.save(on: newDb)
 			} else {
 				let label = try getLabel(groupLabel.tagId)
-				print(
+				app.logger.warning(
 					"Skipping duplicated tag (\(groupLabel.tagId):\(label.name)) on graph \"\(graph.name)\" for group"
 				)
 			}
@@ -572,7 +572,7 @@ extension DjangoMigrationService {
 					try await groupLabel.link.save(on: newDb)
 				} else {
 					let label = try getLabel(groupLabel.tagId)
-					print(
+					app.logger.warning(
 						"Skipping duplicated tag (\(groupLabel.tagId):\(label.name)) on graph \"\(graph.name)\" for horizontal group"
 					)
 				}

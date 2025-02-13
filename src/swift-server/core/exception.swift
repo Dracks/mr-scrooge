@@ -27,9 +27,9 @@ final class Exception: Error, CustomStringConvertible {
 	) {
 		self.errorCode = errorCode
 		self.context = context
+		self.cause = cause
 		self.file = file
 		self.line = line
-		self.cause = cause
 		self.function = function
 	}
 

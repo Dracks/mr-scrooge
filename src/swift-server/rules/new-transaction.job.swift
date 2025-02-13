@@ -22,7 +22,8 @@ final class NewTransactionJob: AsyncJob {
 	func error(_ context: QueueContext, _ error: Error, _ payload: TransactionSummary)
 		async throws
 	{
-		print("Some error happened processing \(payload.id) transaction")
-		print(error)
+		context.logger.error(
+			"Some error happened processing \(payload.id) transaction",
+			metadata: ["error": "\(String(reflecting: error))"])
 	}
 }

@@ -81,7 +81,9 @@ public func configure(_ app: Application) async throws {
 		try app.queues.startInProcessJobs(on: .default)
 		//try app.queues.startScheduledJobs()
 	} catch {
-		print(error)
+		app.logger.error(
+			"Error configuring the application",
+			metadata: ["error": "\(String(reflecting: error))"])
 		throw error
 	}
 }

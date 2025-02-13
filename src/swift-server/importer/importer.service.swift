@@ -64,7 +64,6 @@ final class FileImportService: ServiceWithQueueAndDb, @unchecked Sendable {
 					}
 					group.filter(\.$createdAt < date)
 				}
-				print(query)
 			}
 		}
 
