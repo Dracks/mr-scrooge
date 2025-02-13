@@ -40,7 +40,6 @@ final class EnvConfig: Sendable {
 		} else {
 			sqlLogLevel = .info
 		}
-		print(sqlLogLevel)
 
 	}
 
