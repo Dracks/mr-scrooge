@@ -41,7 +41,6 @@ final class TransformHelper<D: IndexedCollection>: @unchecked Sendable {
 		var value: Double?
 		var dateValue: Date?
 		var details: String?
-		var description: String?
 
 		if let name = row.get(mapping.movementName) as? String {
 			movementName = name
@@ -77,12 +76,6 @@ final class TransformHelper<D: IndexedCollection>: @unchecked Sendable {
 			}
 		}
 
-		if let descriptionKey = mapping.description {
-			if let parsedDescription = row.get(descriptionKey) as? String {
-				description = parsedDescription
-			}
-		}
-
 		if !errorFields.isEmpty {
 			throw Exception(.E10004, context: ["invalidFields": errorFields])
 		}
@@ -91,8 +84,7 @@ final class TransformHelper<D: IndexedCollection>: @unchecked Sendable {
 			date: DateOnly(date!),
 			dateValue: dateValue.map { DateOnly($0) },
 			details: details,
-			value: value!,
-			comment: description
+			value: value!
 		)
 	}
 }

@@ -16,7 +16,6 @@ struct PartialBankTransaction {
 	var dateValue: DateOnly?
 	var details: String?
 	var value: Double
-	var comment: String?
 
 	func toBankTransaction(kind: String, groupOwnerId: UUID) -> BankTransaction {
 		return BankTransaction(
@@ -26,8 +25,7 @@ struct PartialBankTransaction {
 			dateValue: dateValue,
 			details: details,
 			value: value,
-			kind: kind,
-			comment: comment
+			kind: kind
 		)
 	}
 }
@@ -49,17 +47,16 @@ class NewImportService: ServiceWithQueueAndDb {
 
 	func generateStatusTransaction(
 		status: FileImportReport, transaction: PartialBankTransaction
-	)
+	) throws
 		-> FileImportRow
 	{
-		return .init(
-			reportId: status.id!,
+		return try .init(
+			reportId: status.requireID(),
 			movementName: transaction.movementName,
 			date: transaction.date,
 			dateValue: transaction.dateValue,
 			details: transaction.details,
-			value: transaction.value,
-			description: transaction.comment
+			value: transaction.value
 		)
 	}
 
@@ -90,7 +87,7 @@ class NewImportService: ServiceWithQueueAndDb {
 			for try await partialTransaction in source {
 				let transaction = partialTransaction.toBankTransaction(
 					kind: key, groupOwnerId: groupOwnerId)
-				let statusTransaction = generateStatusTransaction(
+				let statusTransaction = try generateStatusTransaction(
 					status: status, transaction: partialTransaction)
 
 				if try await bankTransactionService.existsSimilar(
@@ -122,7 +119,7 @@ class NewImportService: ServiceWithQueueAndDb {
 								transaction: previousValidated)
 						previousStateValidated.message =
 							"Repeated row, but inserted"
-						previousStateValidated.transactionId =
+						previousStateValidated.$transaction.id =
 							try record.requireID()
 						try await previousStateValidated.save(on: db)
 						previous = nil
@@ -134,7 +131,7 @@ class NewImportService: ServiceWithQueueAndDb {
 							transaction: transaction
 
 						)
-					statusTransaction.transactionId = record.id
+					statusTransaction.$transaction.id = record.id
 					try await statusTransaction.save(on: db)
 				}
 			}

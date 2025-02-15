@@ -78,7 +78,7 @@ final class LabelService: ServiceWithDb, @unchecked Sendable {
 
 			let transactionsLinks = try await LabelTransaction.query(on: transaction)
 				.filter(
-					\.$label.$id == labelId
+					\.$id.$label.$id == labelId
 				).all()
 
 			let graphs = try await Graph.query(on: transaction).filter(
@@ -96,7 +96,7 @@ final class LabelService: ServiceWithDb, @unchecked Sendable {
 			).all()
 
 			let rules = try await RuleLabelAction.query(on: transaction).filter(
-				\.$label.$id == labelId
+				\.$id.$label.$id == labelId
 			).all()
 			if !transactionsLinks.isEmpty || !graphs.isEmpty || !graphsGroup.isEmpty
 				|| !graphsHorizontalGroup.isEmpty || !rules.isEmpty
@@ -104,7 +104,7 @@ final class LabelService: ServiceWithDb, @unchecked Sendable {
 				if !deleteAll {
 					return try .inUse(
 						transactions: transactionsLinks.map {
-							$0.$transaction.id
+							$0.$id.$transaction.id
 						},
 						graphs: graphs.map { try $0.requireID() },
 						graphGroups: graphsGroup.map {
@@ -112,7 +112,7 @@ final class LabelService: ServiceWithDb, @unchecked Sendable {
 						},
 						graphHorizontalGroups: graphsHorizontalGroup.map {
 							try $0.requireID().$graph.id
-						}, rules: rules.map { $0.$rule.id })
+						}, rules: rules.map { $0.$id.$rule.id })
 				} else {
 					for graph in graphs {
 						graph.$labelFilter.id = nil

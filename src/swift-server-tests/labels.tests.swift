@@ -145,8 +145,9 @@ final class LabelResolverTests: AbstractBaseTestsClass {
 			ruleId: try rule.requireID(), labelId: targetLabelId)
 		try await ruleLabelAction.save(on: app.db)
 		try await RuleLabelPivot(
-			ruleLabelId: ruleLabelAction.requireID(),
-			labelTransactionId: labelTransaction.requireID()
+			ruleId: ruleLabelAction.$id.$rule.id,
+			labelId: ruleLabelAction.$id.$label.id,
+			transactionId: labelTransaction.$id.$transaction.id
 		).save(on: app.db)
 
 		// Create graph with label

@@ -6,6 +6,9 @@ import XCTest
 
 @testable import MrScroogeServer
 
+/*
+* Todo: Add some tests for when two rules apply the same label
+*/
 final class RulesTests: AbstractBaseTestsClass {
 	var operationToLabel: [ConditionOperation: UUID] = [:]
 
@@ -453,7 +456,7 @@ final class RulesTests: AbstractBaseTestsClass {
 
 		let transactionId = try transaction.requireID()
 		let labels = try await LabelTransaction.query(on: app.db).filter(
-			\.$transaction.$id == transactionId
+			\.$id.$transaction.$id == transactionId
 		).all()
 		XCTAssertEqual(labels.count, 1)
 		let label = labels.first

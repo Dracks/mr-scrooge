@@ -74,14 +74,15 @@ class RuleEngine {
 		for transaction: TransactionSummary
 	) async throws {
 		for labelAction in ruleLabels {
+			let labelId = labelAction.$id.$label.id
 			let labelTransaction = LabelTransaction(
-				labelId: labelAction.$label.id,
+				labelId: labelId,
 				transactionId: transaction.id,
 				linkReason: .automatic)
 			try await labelTransaction.save(on: db)
-			try await labelAction.$transactionPivot.attach(
-				labelTransaction,
-				on: db)
+			try await RuleLabelPivot(
+				ruleId: ruleId, labelId: labelId, transactionId: transaction.id
+			).save(on: db)
 		}
 	}
 

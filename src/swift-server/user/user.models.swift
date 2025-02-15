@@ -28,7 +28,7 @@ final class User: Model, Content, @unchecked Sendable {
 	@Field(key: "is_superuser")
 	var isAdmin: Bool
 
-	@Siblings(through: UserGroupPivot.self, from: \.$user, to: \.$group)
+	@Siblings(through: UserGroupPivot.self, from: \.$id.$user, to: \.$id.$group)
 	var groups: [UserGroup]
 
 	@Parent(key: "default_group_id")
@@ -91,7 +91,7 @@ final class UserGroup: Model, Content, @unchecked Sendable {
 	@Field(key: "name")
 	var name: String
 
-	@Siblings(through: UserGroupPivot.self, from: \.$group, to: \.$user)
+	@Siblings(through: UserGroupPivot.self, from: \.$id.$group, to: \.$id.$user)
 	var users: [User]
 
 	@Timestamp(key: "created_at", on: .create)
@@ -111,19 +111,36 @@ final class UserGroup: Model, Content, @unchecked Sendable {
 final class UserGroupPivot: Model, @unchecked Sendable {
 	static let schema = "user_group_pivot"
 
-	@ID(key: .id)
-	var id: UUID?
+	final class IDValue: Fields, Hashable, @unchecked Sendable {
 
-	@Parent(key: "user_id")
-	var user: User
+		@Parent(key: "user_id")
+		var user: User
 
-	@Parent(key: "group_id")
-	var group: UserGroup
+		@Parent(key: "group_id")
+		var group: UserGroup
+
+		init() {}
+		init(userId: User.IDValue, groupId: UserGroup.IDValue) {
+			$user.id = userId
+			$group.id = groupId
+		}
+
+		static func == (lhs: IDValue, rhs: IDValue) -> Bool {
+			lhs.$user.id == rhs.$user.id && lhs.$group.id == rhs.$group.id
+		}
+
+		func hash(into hasher: inout Hasher) {
+			hasher.combine($user.id)
+			hasher.combine($group.id)
+		}
+	}
+
+	@CompositeID
+	var id: IDValue?
 
 	init() {}
 
 	init(userId: User.IDValue, groupId: UserGroup.IDValue) {
-		self.$user.id = userId
-		self.$group.id = groupId
+		id = .init(userId: userId, groupId: groupId)
 	}
 }

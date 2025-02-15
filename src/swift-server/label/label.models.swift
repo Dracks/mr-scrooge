@@ -31,15 +31,32 @@ enum LabelTransitionReason: String, Content {
 final class LabelTransaction: Model, Content, @unchecked Sendable {
 	static let schema = "core_label_transaction"
 
-	#warning("Change to a combined Id with label_id and transaction_id")
-	@ID(key: .id)
-	var id: UUID?
+	final class IDValue: Fields, Hashable, @unchecked Sendable {
+		@Parent(key: "label_id")
+		var label: Label
 
-	@Parent(key: "label_id")
-	var label: Label
+		@Parent(key: "transaction_id")
+		var transaction: BankTransaction
 
-	@Parent(key: "transaction_id")
-	var transaction: BankTransaction
+		init() {}
+
+		init(labelId: Label.IDValue, transactionId: BankTransaction.IDValue) {
+			self.$label.id = labelId
+			self.$transaction.id = transactionId
+		}
+
+		static func == (lhs: IDValue, rhs: IDValue) -> Bool {
+			lhs.$transaction.id == rhs.$transaction.id && lhs.$label.id == rhs.$label.id
+		}
+
+		func hash(into hasher: inout Hasher) {
+			hasher.combine(self.$label.id)
+			hasher.combine(self.$transaction.id)
+		}
+	}
+
+	@CompositeID
+	var id: IDValue?
 
 	@Enum(key: "link_reason")
 	var linkReason: LabelTransitionReason
@@ -50,10 +67,7 @@ final class LabelTransaction: Model, Content, @unchecked Sendable {
 		id: UUID? = nil, labelId: Label.IDValue, transactionId: BankTransaction.IDValue,
 		linkReason: LabelTransitionReason
 	) {
-		// TODO: Change this table to work with a key transaction/label
-		self.id = id
-		self.$label.id = labelId
-		self.$transaction.id = transactionId
+		self.id = .init(labelId: labelId, transactionId: transactionId)
 		self.linkReason = linkReason
 	}
 }

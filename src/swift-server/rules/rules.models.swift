@@ -136,12 +136,12 @@ final class Rule: Model, Content, @unchecked Sendable {
 	@Children(for: \.$rule)
 	var conditions: [Condition]
 
-	@Siblings(through: RuleLabelAction.self, from: \.$rule, to: \.$label)
+	@Siblings(through: RuleLabelAction.self, from: \.$id.$rule, to: \.$id.$label)
 	var labels: [Label]
 
 	// Not a big fan of this duplication, but since Some parts simply only care about the labels
 	// and other need to work with the pivot, I added this here as a helper.
-	@Children(for: \.$rule)
+	@Children(for: \.$id.$rule)
 	var labelPivots: [RuleLabelAction]
 
 	@Enum(key: "conditions_relation")
@@ -209,25 +209,46 @@ final class Rule: Model, Content, @unchecked Sendable {
 final class RuleLabelAction: Model, @unchecked Sendable {
 	static let schema = "core_rule_label_action"
 
-	// This table is referenced from the RuleLabelPivot, and to make it simple, is better to have an id here
-	@ID(key: .id)
-	var id: UUID?
+	final class IDValue: Fields, Hashable, @unchecked Sendable {
 
-	@Parent(key: "rule_id")
-	var rule: Rule
+		@Parent(key: "rule_id")
+		var rule: Rule
 
-	@Parent(key: "label_id")
-	var label: Label
+		@Parent(key: "label_id")
+		var label: Label
 
-	@Siblings(through: RuleLabelPivot.self, from: \.$ruleLabel, to: \.$labelTransaction)
-	var transactionPivot: [LabelTransaction]
+		init() {}
+
+		init(
+			ruleId: Rule.IDValue, labelId: Label.IDValue
+		) {
+			$rule.id = ruleId
+			$label.id = labelId
+		}
+
+		static func == (lhs: IDValue, rhs: IDValue) -> Bool {
+			lhs.$rule.id == rhs.$rule.id
+				&& lhs.$label.id == rhs.$label.id
+		}
+
+		func hash(into hasher: inout Hasher) {
+			hasher.combine($rule.id)
+			hasher.combine($label.id)
+		}
+	}
+
+	@CompositeID
+	var id: IDValue?
+
+	//@Composi(through: RuleLabelPivot.self, from: \.$ruleLabel, to: \.$labelTransaction)
+	//@CompositeChildren(for: \.$ruleLabel)
+	//@Siblings(through: RuleLabelPivot.self, from: \.$ruleLabel, to: \.$labelTransaction)
+	//var transactionPivot: [LabelTransaction]
 
 	init() {}
 
 	init(id: UUID? = nil, ruleId: UUID, labelId: UUID) {
-		self.id = id
-		self.$rule.id = ruleId
-		self.$label.id = labelId
+		self.id = .init(ruleId: ruleId, labelId: labelId)
 	}
 }
 
@@ -236,25 +257,50 @@ final class RuleLabelAction: Model, @unchecked Sendable {
 final class RuleLabelPivot: Model, @unchecked Sendable {
 	static let schema = "core_rule_label_pivot"
 
-	@ID(key: .id)
-	var id: UUID?
+	final class IDValue: Fields, Hashable, @unchecked Sendable {
 
-	#warning("Change to a combined Id with label_id and rule_id")
-	@Parent(key: "rule_label_id")
-	var ruleLabel: RuleLabelAction
+		@Parent(key: "rule_id")
+		var rule: Rule
 
-	@Parent(key: "label_transaction_id")
-	var labelTransaction: LabelTransaction
+		@Parent(key: "label_id")
+		var label: Label
+
+		@Parent(key: "transaction_id")
+		var transaction: BankTransaction
+
+		init() {}
+
+		init(
+			ruleId: Rule.IDValue, labelId: Label.IDValue,
+			transactionId: BankTransaction.IDValue
+		) {
+			$rule.id = ruleId
+			$label.id = labelId
+			$transaction.id = transactionId
+		}
+
+		static func == (lhs: IDValue, rhs: IDValue) -> Bool {
+			lhs.$rule.id == rhs.$rule.id && lhs.$transaction.id == rhs.$transaction.id
+				&& lhs.$label.id == rhs.$label.id
+		}
+
+		func hash(into hasher: inout Hasher) {
+			hasher.combine($rule.id)
+			hasher.combine($label.id)
+			hasher.combine($transaction.id)
+		}
+	}
+
+	@CompositeID
+	var id: IDValue?
 
 	init() {}
 
 	init(
-		id: UUID? = nil, ruleLabelId: RuleLabelAction.IDValue,
-		labelTransactionId: LabelTransaction.IDValue
+		ruleId: Rule.IDValue, labelId: Label.IDValue,
+		transactionId: BankTransaction.IDValue
 	) {
 		// todo change the id to ruleId, labelId
-		self.id = id
-		self.$ruleLabel.id = ruleLabelId
-		self.$labelTransaction.id = labelTransactionId
+		self.id = .init(ruleId: ruleId, labelId: labelId, transactionId: transactionId)
 	}
 }

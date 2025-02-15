@@ -1,5 +1,6 @@
 import Fluent
 import Foundation
+import SQLKit
 import Vapor
 
 final class RuleService: ServiceWithDb, @unchecked Sendable {
@@ -90,14 +91,9 @@ final class RuleService: ServiceWithDb, @unchecked Sendable {
 			}
 			try await Condition.query(on: database).filter(\.$rule.$id == ruleId)
 				.delete()
+			try await RuleService.removeLabelActionPivot(rule: rule, on: database)
 			let ruleLabelQuery = RuleLabelAction.query(on: database).filter(
-				\.$rule.$id == ruleId)
-			let ruleLabelActions = try await ruleLabelQuery.with(\.$transactionPivot)
-				.all()
-			for ruleLabelAction in ruleLabelActions {
-				try await RuleService.removeLabelActionPivot(
-					labelAction: ruleLabelAction, on: database)
-			}
+				\.$id.$rule.$id == ruleId)
 			try await ruleLabelQuery.delete()
 			try await rule.delete(on: database)
 			return .ok
@@ -242,14 +238,15 @@ final class RuleService: ServiceWithDb, @unchecked Sendable {
 			}
 
 			let labelAction = try await RuleLabelAction.query(on: database)
-				.filter(\.$rule.$id == ruleId)
-				.filter(\.$label.$id == labelId)
-				.with(\.$transactionPivot)
+				.filter(\.$id.$rule.$id == ruleId)
+				.filter(\.$id.$label.$id == labelId)
+				// .with(\.$transactionPivot)
 				.first()
 
 			if let labelAction {
 				try await RuleService.removeLabelActionPivot(
-					labelAction: labelAction, on: database)
+					rule: rule, labelId: labelAction.requireID().$label.id,
+					on: database)
 				try await labelAction.delete(on: database)
 			}
 
@@ -261,13 +258,40 @@ final class RuleService: ServiceWithDb, @unchecked Sendable {
 }
 
 extension RuleService {
-	private static func removeLabelActionPivot(labelAction: RuleLabelAction, on db: Database)
+	private static func removeLabelActionPivot(
+		rule: Rule, labelId: UUID? = nil, on db: Database
+	)
 		async throws
 	{
-		for labelTransaction in labelAction.transactionPivot {
-			labelTransaction.linkReason = .manualEnabled
-			try await labelTransaction.save(on: db)
+		var query = try RuleLabelPivot.query(on: db).filter(
+			\.$id.$rule.$id == rule.requireID())
+		if let labelId {
+			query = query.filter(\.$id.$label.$id == labelId)
 		}
-		try await labelAction.$transactionPivot.detachAll(on: db)
+		let all = try await query.all()
+		for ruleLabelPivot in all {
+			let alternativeLinksCount = try await RuleLabelPivot.query(on: db)
+				.filter(
+					\.$id.$transaction.$id == ruleLabelPivot.$id.$transaction.id
+				)
+				.filter(
+					\.$id.$label.$id == ruleLabelPivot.$id.$label.id
+				)
+				.count()
+
+			if alternativeLinksCount == 1 {
+				let labelTransaction = try await LabelTransaction.query(on: db)
+					.filter(
+						\.$id.$transaction.$id
+							== ruleLabelPivot.$id.$transaction.id
+					)
+					.filter(
+						\.$id.$label.$id == ruleLabelPivot.$id.$label.id
+					).first()
+				labelTransaction?.linkReason = .manualEnabled
+				try await labelTransaction?.save(on: db)
+			}
+		}
+		try await query.delete()
 	}
 }
