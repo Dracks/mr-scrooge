@@ -6,9 +6,6 @@ import XCTest
 
 @testable import MrScroogeServer
 
-/*
-* Todo: Add some tests for when two rules apply the same label
-*/
 final class RulesTests: AbstractBaseTestsClass {
 	var operationToLabel: [ConditionOperation: UUID] = [:]
 
