@@ -177,6 +177,102 @@ final class RulesTests: AbstractBaseTestsClass {
 			labelsForTransactions[4], for: .less, context: transactions[4].movementName)
 	}
 
+	func testMultipleRulesApplyingSameLabel() async throws {
+		let app = try getApp()
+		let testGroupId = try testGroup.requireID()
+
+		// Create two rules that apply the same label
+		let _ = try await Rule.createRule(
+			on: app.db,
+			for: testGroupId,
+			name: "Rule 1",
+			with: .init(.contains, valueStr: "expense1"),
+			toApply: labels[0]  // Both rules apply the same label
+		)
+
+		let _ = try await Rule.createRule(
+			on: app.db,
+			for: testGroupId,
+			name: "Rule 2",
+			with: .init(.contains, valueStr: "expense2"),
+			toApply: labels[0]  // Both rules apply the same label
+		)
+
+		// Create test transactions
+		let transactions = [
+			// Transaction matching rule1
+			transactionFactory.build {
+				$0.$groupOwner.id = testGroupId
+				$0.movementName = "expense1 transaction"
+				$0.value = -100
+				return $0
+			},
+			// Transaction matching rule2
+			transactionFactory.build {
+				$0.$groupOwner.id = testGroupId
+				$0.movementName = "expense2 transaction"
+				$0.value = -200
+				return $0
+			},
+			// Transaction matching both rules
+			transactionFactory.build {
+				$0.$groupOwner.id = testGroupId
+				$0.movementName = "expense1 and expense2 combined"
+				$0.value = -300
+				return $0
+			},
+		]
+
+		// Add transactions
+		for transaction in transactions {
+			let _ = try await bankTransactionService.addTransaction(
+				transaction: transaction)
+		}
+
+		// Process the rules
+		try await app.queues.queue.worker.run()
+
+		// Load labels for verification
+		for transaction in transactions {
+			try await transaction.$labels.load(on: app.db)
+		}
+
+		let labelsForTransactions = transactions.map {
+			$0.labels.map { label in
+				return label.id!
+			}
+		}
+
+		// Verify each transaction has the label applied exactly once
+		XCTAssertEqual(
+			labelsForTransactions[0].count, 1,
+			"Transaction matching rule1 should have exactly one label")
+		XCTAssertEqual(
+			labelsForTransactions[1].count, 1,
+			"Transaction matching rule2 should have exactly one label")
+		XCTAssertEqual(
+			labelsForTransactions[2].count, 1,
+			"Transaction matching both rules should still have exactly one label")
+
+		// Verify the correct label was applied
+		let expectedLabelId = try labels[0].requireID()
+		XCTAssertEqual(
+			labelsForTransactions[0].first, expectedLabelId,
+			"First transaction should have the correct label")
+		XCTAssertEqual(
+			labelsForTransactions[1].first, expectedLabelId,
+			"Second transaction should have the correct label")
+		XCTAssertEqual(
+			labelsForTransactions[2].first, expectedLabelId,
+			"Third transaction should have the correct label")
+
+		let pivotCounts = try await RuleLabelPivot.query(on: app.db).filter(
+			\.$id.$transaction.$id == transactions[2].requireID()
+		).count()
+		XCTAssertEqual(pivotCounts, 2, "The transaction is link to two rules")
+
+	}
+
 	func testConditionsRelation() async throws {
 		let app = try getApp()
 		let testGroupId = try testGroup.requireID()
@@ -461,6 +557,82 @@ final class RulesTests: AbstractBaseTestsClass {
 		XCTAssertEqual(labels.count, 1)
 		let label = labels.first
 		XCTAssertEqual(label?.linkReason, .manualEnabled)
+	}
+
+	func testDeleteRuleWithSharedLabel() async throws {
+		let app = try getApp()
+		let testGroupId = try testGroup.requireID()
+
+		// Create two rules that apply the same label
+		let rule1 = try await Rule.createRule(
+			on: app.db,
+			for: testGroupId,
+			name: "Rule to delete",
+			with: .init(.contains, valueStr: "shared"),
+			toApply: labels[0]  // Both rules apply the same label
+		)
+
+		let rule2 = try await Rule.createRule(
+			on: app.db,
+			for: testGroupId,
+			name: "Rule to keep",
+			with: .init(.contains, valueStr: "shared"),
+			toApply: labels[0]  // Both rules apply the same label
+		)
+
+		// Create a transaction that matches both rules
+		let transaction = transactionFactory.build {
+			$0.$groupOwner.id = testGroupId
+			$0.movementName = "shared transaction"
+			$0.value = -100
+			return $0
+		}
+
+		// Add transaction
+		let _ = try await bankTransactionService.addTransaction(transaction: transaction)
+
+		// Process the rules
+		try await app.queues.queue.worker.run()
+
+		// Load labels before deletion
+		try await transaction.$labels.load(on: app.db)
+		XCTAssertEqual(
+			transaction.labels.count, 1,
+			"Transaction should have exactly one label before rule deletion")
+		XCTAssertEqual(
+			transaction.labels.first?.id, try labels[0].requireID(),
+			"Transaction should have the correct label")
+
+		// Delete rule1
+		let _ = try await app.ruleService.deleteRule(
+			withId: rule1.requireID(), for: [rule1.$groupOwner.id])
+
+		// XCTAssertTrue(deleteResult == .ok)
+
+		// Reload transaction and labels
+		try await transaction.$labels.load(on: app.db)
+
+		// Verify that:
+		// 1. The transaction still has the label (since rule2 still applies it)
+		XCTAssertEqual(
+			transaction.labels.count, 1,
+			"Transaction should still have exactly one label after rule deletion")
+		XCTAssertEqual(
+			transaction.labels.first?.id, try labels[0].requireID(),
+			"Transaction should still have the correct label")
+
+		// 2. The RuleLabelPivot entries are correct
+		let pivots = try await RuleLabelPivot.query(on: app.db)
+			.filter(\.$id.$transaction.$id == transaction.requireID())
+			.all()
+
+		XCTAssertEqual(pivots.count, 1, "Should have exactly one RuleLabelPivot entry")
+		try XCTAssertEqual(
+			pivots[0].$id.$rule.id, rule2.requireID(),
+			"RuleLabelPivot should reference the remaining rule")
+		try XCTAssertEqual(
+			pivots[0].$id.$label.id, labels[0].requireID(),
+			"RuleLabelPivot should reference the correct label")
 	}
 
 	func testAddRuleCondition() async throws {

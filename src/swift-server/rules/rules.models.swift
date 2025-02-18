@@ -295,7 +295,6 @@ final class RuleLabelPivot: Model, @unchecked Sendable {
 		ruleId: Rule.IDValue, labelId: Label.IDValue,
 		transactionId: BankTransaction.IDValue
 	) {
-		// todo change the id to ruleId, labelId
 		self.id = .init(ruleId: ruleId, labelId: labelId, transactionId: transactionId)
 	}
 }

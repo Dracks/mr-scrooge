@@ -75,14 +75,25 @@ class RuleEngine {
 	) async throws {
 		for labelAction in ruleLabels {
 			let labelId = labelAction.$id.$label.id
-			let labelTransaction = LabelTransaction(
-				labelId: labelId,
-				transactionId: transaction.id,
-				linkReason: .automatic)
-			try await labelTransaction.save(on: db)
-			try await RuleLabelPivot(
-				ruleId: ruleId, labelId: labelId, transactionId: transaction.id
-			).save(on: db)
+			var labelTransaction = try await LabelTransaction.query(on: db)
+				.filter(\.$id.$transaction.$id == transaction.id)
+				.filter(\.$id.$label.$id == labelId)
+				.first()
+
+			if labelTransaction == nil {
+				let _labelTransaction = LabelTransaction(
+					labelId: labelId,
+					transactionId: transaction.id,
+					linkReason: .automatic)
+				try await _labelTransaction.save(on: db)
+				labelTransaction = _labelTransaction
+			}
+			if labelTransaction?.linkReason == .automatic {
+				try await RuleLabelPivot(
+					ruleId: ruleId, labelId: labelId,
+					transactionId: transaction.id
+				).save(on: db)
+			}
 		}
 	}
 
