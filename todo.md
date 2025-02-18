@@ -57,7 +57,7 @@
   * [ ] admin users
     * [x] list
     * [x] modify
-    * [ ] create
+    * [x] create
     * [ ] delete
   * [x] edit my profile
   * [ ] Command to change the password
