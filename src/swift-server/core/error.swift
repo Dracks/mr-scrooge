@@ -93,6 +93,10 @@ let errorDictionary: [ErrorCode: ErrorInfo] = [
 	.E10029: ErrorInfo(message: "Retrieving the groups of a graph, we get multiple groups"),
 	.E10030: ErrorInfo(
 		message: "We didn't found the group related to a graph in the old database"),
+	.E10031: ErrorInfo(
+		message:
+			"This app requires a SQL database (e.g., PostgreSQL, MySQL). Non-SQL databases are not supported."
+	),
 ]
 
 extension ErrorCode {

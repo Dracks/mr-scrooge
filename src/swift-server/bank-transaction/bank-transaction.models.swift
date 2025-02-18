@@ -53,7 +53,7 @@ final class BankTransaction: Model, Content, @unchecked Sendable {
 	@Field(key: "kind")
 	var kind: String
 
-	@Siblings(through: LabelTransaction.self, from: \.$transaction, to: \.$label)
+	@Siblings(through: LabelTransaction.self, from: \.$id.$transaction, to: \.$id.$label)
 	var labels: [Label]
 
 	@OptionalField(key: "comment")

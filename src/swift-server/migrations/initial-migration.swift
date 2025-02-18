@@ -3,7 +3,10 @@ import FluentSQL
 
 struct InitialMigration: AsyncMigration {
 	func prepare(on database: Database) async throws {
-		let sqlDb = database as? SQLDatabase
+		guard let sqlDb = database as? SQLDatabase else {
+			throw Exception(.E10031)
+		}
+
 		let labelTransactionLinkReasonEnum = try await database.enum(
 			"label_transaction_link_reason"
 		)
@@ -57,6 +60,8 @@ struct InitialMigration: AsyncMigration {
 			.case("error")
 			.create()
 
+		// User tables
+
 		try await database.schema("user_groups")
 			.id()
 			.field("name", .string, .required)
@@ -84,11 +89,12 @@ struct InitialMigration: AsyncMigration {
 			.create()
 
 		try await database.schema("user_group_pivot")
-			.id()
 			.field("user_id", .uuid, .required, .references("users", "id"))
 			.field("group_id", .uuid, .required, .references("user_groups", "id"))
-			.unique(on: "user_id", "group_id")
+			.compositeIdentifier(over: "user_id", "group_id")
 			.create()
+
+		// Core Transaction tables
 
 		try await database.schema("core_bank_transaction")
 			.id()
@@ -102,31 +108,39 @@ struct InitialMigration: AsyncMigration {
 			.field("comment", .string)
 			.create()
 
-		try await sqlDb?.create(index: "group_owner_idx")
+		try await sqlDb.create(index: "bank_transaction_group_owner_idx")
 			.on("core_bank_transaction")
 			.column("group_owner_id")
 			.run()
 
+		// Core Label Tables
 		try await database.schema("core_label")
 			.id()
 			.field("group_owner_id", .uuid, .required, .references("user_groups", "id"))
 			.field("name", .string, .required)
 			.create()
 
+		try await sqlDb.create(index: "label_group_owner_idx")
+			.on("core_label")
+			.column("group_owner_id")
+			.run()
+
 		try await database.schema("core_label_transaction")
-			.id()
 			.field("label_id", .uuid, .required, .references("core_label", "id"))
 			.field(
 				"transaction_id", .uuid, .required,
 				.references("core_bank_transaction", "id")
 			)
 			.field("link_reason", labelTransactionLinkReasonEnum, .required)
-			.unique(on: "label_id", "transaction_id")
+			.compositeIdentifier(over: "transaction_id", "label_id")
 			.create()
-		try await sqlDb?.create(index: "label_transaction_transaction_idx")
+
+		try await sqlDb.create(index: "label_transaction_label_idx")
 			.on("core_label_transaction")
-			.column("transaction_id")
+			.column("label_id")
 			.run()
+
+		// Core rule Tables
 
 		try await database.schema("core_rule")
 			.id()
@@ -135,7 +149,8 @@ struct InitialMigration: AsyncMigration {
 			.field("conditions_relation", conditionsRelationEnum, .required)
 			.field("parent_id", .uuid, .references("core_rule", "id"))
 			.create()
-		try await sqlDb?.create(index: "core_rule_group_owner_idx")
+
+		try await sqlDb.create(index: "core_rule_group_owner_idx")
 			.on("core_rule")
 			.column("group_owner_id")
 			.run()
@@ -147,35 +162,44 @@ struct InitialMigration: AsyncMigration {
 			.field("value_str", .string)
 			.field("value_double", .double)
 			.create()
-		try await sqlDb?.create(index: "core_condition_rule_idx")
+
+		try await sqlDb.create(index: "core_condition_rule_idx")
 			.on("core_condition")
 			.column("rule_id")
 			.run()
 
 		try await database.schema("core_rule_label_action")
-			.id()
 			.field("rule_id", .uuid, .required, .references("core_rule", "id"))
 			.field("label_id", .uuid, .required, .references("core_label", "id"))
-			.unique(on: "rule_id", "label_id")
+			.compositeIdentifier(over: "rule_id", "label_id")
 			.create()
 
-		try await sqlDb?.create(index: "core_rule_label_action_label_idx")
+		try await sqlDb.create(index: "core_rule_label_action_label_idx")
 			.on("core_rule_label_action")
 			.column("label_id")
 			.run()
 
 		try await database.schema("core_rule_label_pivot")
-			.id()
 			.field(
-				"rule_label_id", .uuid, .required,
-				.references("core_rule_label_action", "id", onDelete: .cascade)
+				"rule_id", .uuid, .required,
+				.references("core_rule", "id", onDelete: .cascade)
 			)
 			.field(
-				"label_transaction_id", .uuid, .required,
-				.references("core_label_transaction", "id", onDelete: .cascade)
+				"transaction_id", .uuid, .required,
+				.references("core_bank_transaction", "id", onDelete: .cascade)
 			)
-			.unique(on: "rule_label_id", "label_transaction_id")
+			.field(
+				"label_id", .uuid, .required,
+				.references("core_label", "id", onDelete: .cascade)
+			)
+			.compositeIdentifier(over: "rule_id", "label_id", "transaction_id")
 			.create()
+
+		try await sqlDb.create(index: "core_rule_label_pivot_traansaction_idx")
+			.on("core_rule_label_pivot")
+			.column("transaction_id")
+			.column("label_id")
+			.run()
 
 		try await database.schema("graph_graph")
 			.id()
@@ -188,7 +212,7 @@ struct InitialMigration: AsyncMigration {
 			.field("order", .int64)
 			.create()
 
-		try await sqlDb?.create(index: "graph_graph_group_owner_idx")
+		try await sqlDb.create(index: "graph_graph_group_owner_idx")
 			.on("graph_graph")
 			.column("group_owner_id")
 			.run()
@@ -245,7 +269,7 @@ struct InitialMigration: AsyncMigration {
 			.field("stack", .string)
 			.field("context", .string)
 			.create()
-		try await sqlDb?.create(index: "import_fileimport_group_owner_idx")
+		try await sqlDb.create(index: "import_fileimport_group_owner_idx")
 			.on("import_fileimport")
 			.column("group_owner_id")
 			.run()
@@ -261,12 +285,11 @@ struct InitialMigration: AsyncMigration {
 			.field("date_value", .date)
 			.field("details", .string)
 			.field("value", .double, .required)
-			.field("description", .string)
 			.field("message", .string)
 			.field("transaction_id", .uuid)
 			.create()
 
-		try await sqlDb?.create(index: "import_fileimport_row_report_idx")
+		try await sqlDb.create(index: "import_fileimport_row_report_idx")
 			.on("import_fileimport_row")
 			.column("report_id")
 			.run()

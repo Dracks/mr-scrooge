@@ -136,7 +136,7 @@ extension Components.Schemas.FileImport: Content {
 				value: row.value,
 				description: row.description,
 				message: row.message,
-				transactionId: row.transactionId?.uuidString
+				transactionId: row.$transaction.id?.uuidString
 			)
 		}
 	}

@@ -9,7 +9,7 @@ final class BankTransactionService: ServiceWithQueueAndDb, @unchecked Sendable {
 		[UUID]]
 	{
 		let labelsPivot = try await LabelTransaction.query(on: db).filter(
-			\.$transaction.$id ~~ transactionsIds
+			\.$id.$transaction.$id ~~ transactionsIds
 		).filter(\.$linkReason != .manualDisabled).all()
 
 		var grouping: [UUID: [UUID]] = [:]
@@ -17,7 +17,7 @@ final class BankTransactionService: ServiceWithQueueAndDb, @unchecked Sendable {
 			grouping[transId] = []
 		}
 		for labelPivot in labelsPivot {
-			grouping[labelPivot.$transaction.id]?.append(labelPivot.$label.id)
+			grouping[labelPivot.$id.$transaction.id]?.append(labelPivot.$id.$label.id)
 		}
 
 		return grouping
@@ -129,8 +129,8 @@ final class BankTransactionService: ServiceWithQueueAndDb, @unchecked Sendable {
 		}
 
 		let labelPivot = try await LabelTransaction.query(on: db).filter(
-			\.$label.$id == labelId
-		).filter(\.$transaction.$id == transactionId).first()
+			\.$id.$label.$id == labelId
+		).filter(\.$id.$transaction.$id == transactionId).first()
 		if let labelPivot = labelPivot {
 			if labelPivot.linkReason == .manualDisabled {
 				labelPivot.linkReason = .manualEnabled
@@ -175,8 +175,8 @@ final class BankTransactionService: ServiceWithQueueAndDb, @unchecked Sendable {
 		}
 
 		let labelPivot = try await LabelTransaction.query(on: db).filter(
-			\.$label.$id == labelId
-		).filter(\.$transaction.$id == transactionId).first()
+			\.$id.$label.$id == labelId
+		).filter(\.$id.$transaction.$id == transactionId).first()
 		if let labelPivot = labelPivot {
 			if labelPivot.linkReason == .automatic {
 				labelPivot.linkReason = .manualDisabled

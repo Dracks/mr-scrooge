@@ -99,8 +99,8 @@ final class UserGroupService: ServiceWithDb, @unchecked Sendable {
 		-> Bool
 	{
 		let existsRelation = try await UserGroupPivot.query(on: db).filter(
-			\.$group.$id == groupId
-		).filter(\.$user.$id == userId).count()
+			\.$id.$group.$id == groupId
+		).filter(\.$id.$user.$id == userId).count()
 
 		return existsRelation > 0
 	}

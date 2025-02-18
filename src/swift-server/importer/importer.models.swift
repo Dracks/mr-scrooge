@@ -99,21 +99,18 @@ final class FileImportRow: Model, @unchecked Sendable {
 	@Field(key: "value")
 	var value: Double
 
-	@OptionalField(key: "description")
-	var description: String?
-
 	@OptionalField(key: "message")
 	var message: String?
 
-	@OptionalField(key: "transaction_id")
-	var transactionId: UUID?
+	@OptionalParent(key: "transaction_id")
+	var transaction: BankTransaction?
 
 	init() {}
 
 	init(
 		id: UUID? = nil, reportId: UUID, movementName: String, date: DateOnly,
 		dateValue: DateOnly? = nil, details: String? = nil, value: Double,
-		description: String? = nil
+		message: String? = nil, transactionId: UUID? = nil
 	) {
 		self.id = id
 		self.$report.id = reportId
@@ -122,6 +119,7 @@ final class FileImportRow: Model, @unchecked Sendable {
 		self.dateValue = dateValue
 		self.details = details
 		self.value = value
-		self.description = description
+		self.message = message
+		self.$transaction.id = transactionId
 	}
 }
