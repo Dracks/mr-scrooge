@@ -240,11 +240,6 @@ final class RuleLabelAction: Model, @unchecked Sendable {
 	@CompositeID
 	var id: IDValue?
 
-	//@Composi(through: RuleLabelPivot.self, from: \.$ruleLabel, to: \.$labelTransaction)
-	//@CompositeChildren(for: \.$ruleLabel)
-	//@Siblings(through: RuleLabelPivot.self, from: \.$ruleLabel, to: \.$labelTransaction)
-	//var transactionPivot: [LabelTransaction]
-
 	init() {}
 
 	init(id: UUID? = nil, ruleId: UUID, labelId: UUID) {

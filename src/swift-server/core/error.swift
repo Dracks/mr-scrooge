@@ -95,7 +95,7 @@ let errorDictionary: [ErrorCode: ErrorInfo] = [
 		message: "We didn't found the group related to a graph in the old database"),
 	.E10031: ErrorInfo(
 		message:
-			"Using a non-sql database as db. This app is not compatible with non-sql databases"
+			"This app requires a SQL database (e.g., PostgreSQL, MySQL). Non-SQL databases are not supported."
 	),
 ]
 
