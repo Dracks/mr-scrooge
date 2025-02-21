@@ -36,9 +36,9 @@ final class EnvConfig: Sendable {
 		{
 			sqlLogLevel = envSqlLogLevel
 		} else if debug {
-			sqlLogLevel = .debug
-		} else {
 			sqlLogLevel = .info
+		} else {
+			sqlLogLevel = .debug
 		}
 
 	}

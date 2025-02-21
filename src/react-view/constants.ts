@@ -10,6 +10,7 @@ export const getDataFromScript = <T>(scriptName: string, schema: z.Schema<T>): T
 const envValues = ['production', 'development'] as const;
 
 const JsConstants = z.object({
+    // Todo: should I only accept string?
     environment: z.enum(envValues),
 
     version: z.string(),
