@@ -53,8 +53,9 @@ interface ApiLabels {
   ): Label | NotFound | InvalidUUID;
   @delete @route("{labelId}") delete(
     @path labelId: UUID,
+
     @doc("When true, forcefully deletes the label and removes it from all relations. Use with caution as this will modify dependent entities.")
     @query
-    force?: boolean=false,
+    force?: boolean = false,
   ): boolean | NotFound | InvalidUUID | LabelInUse;
 }

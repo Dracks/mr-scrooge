@@ -293,6 +293,55 @@ paths:
                 $ref: '#/components/schemas/Error'
       tags:
         - graphs
+  /graphs/{id}/move:
+    put:
+      operationId: ApiGraphs_move
+      description: Move up or down a graph inside the list of graphs for the same user group
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Graph'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - graphs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                direction:
+                  $ref: '#/components/schemas/MoveDirection'
+              required:
+                - direction
   /groups:
     get:
       operationId: ApiGroup_list
@@ -1756,6 +1805,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FileParserType'
+    MoveDirection:
+      type: string
+      enum:
+        - up
+        - down
     NotFoundBankTransaction:
       type: object
       required:

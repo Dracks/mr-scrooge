@@ -66,6 +66,11 @@ model NotFoundLabels {
   invalidLabels: UUID[];
 }
 
+enum MoveDirection {
+  up,
+  down,
+}
+
 @tag("graphs")
 @route("/graphs")
 interface ApiGraphs {
@@ -83,5 +88,12 @@ interface ApiGraphs {
     | InvalidGroupOwnerId
     | NotFoundLabels
     | NotFound;
+  @doc("Move up or down a graph inside the list of graphs for the same user group")
+  @route("/{id}/move")
+  @put
+  move(
+    @path id: UUID,
+    direction: MoveDirection,
+  ): List<Graph> | NotFound | InvalidUUID;
   @route("/{id}") @delete delete(@path id: UUID): boolean | NotFound;
 }

@@ -299,7 +299,6 @@ class GraphTests: AbstractBaseTestsClass {
 			notFoundLabels.invalidLabels.contains(where: {
 				invalidLabels.contains($0)
 			}))
-
 	}
 	// Todo add a test to try to update a not existing graph
 	func testUpdateNonExistingGraph() async throws {
@@ -339,6 +338,100 @@ class GraphTests: AbstractBaseTestsClass {
 		XCTAssertEqual(result?["__typename"].string, "GraphNotFound")
 		XCTAssertEqual(result?["graphId"].string, nonExistingGraphId.uuidString)
 		*/
+	}
+
+	func testMoveUpGraphWithDeletedGraphInTheMiddle() async throws {
+		let app = try getApp()
+
+		// Create an existing graph
+		try await generateGraphs()
+
+		// Create a third graph with order 3
+		let graph3 = Graph(
+			groupOwnerId: testGroup.id!, name: "third graph", kind: .bar,
+			dateRange: .all,
+			order: 3)
+		try await graph3.save(on: app.db)
+		let subjectId = try graph3.requireID()
+		try await GraphGroup(graphId: subjectId, group: .day).save(on: app.db)
+		let body = Operations.ApiGraphs_move.Input.Body.jsonPayload(direction: .up)
+
+		let headers = try await app.getHeaders(
+			forUser: .init(
+				username: testUser.username, password: "test-password"))
+
+		let response = try await app.sendRequest(
+			.PUT, "/api/graphs/\(subjectId)/move", body: body, headers: headers)
+
+		XCTAssertEqual(response.status, .ok)
+		let error = try? response.content.decode(Components.Schemas._Error.self)
+		XCTAssertNil(error)
+
+		let data = try response.content.decode(
+			Operations.ApiGraphs_move.Output.Ok.Body.jsonPayload.self)
+
+		// Should only return the two modified graphs
+		XCTAssertEqual(data.results.count, 2)
+		let graphsList = data.results
+
+		// Check orders were updated correctly
+		let updatedGraph2 = graphsList.first(where: {
+			$0.id == testIds["graph"]?.uuidString
+		})
+		let updatedGraph3 = graphsList.first(where: { $0.id == subjectId.uuidString }
+		)
+
+		XCTAssertEqual(updatedGraph2?.order, 2)
+		XCTAssertEqual(updatedGraph3?.order, 1)
+	}
+
+	func testMoveDownGraphWithDeletedGraphInTheMiddle() async throws {
+		let app = try getApp()
+
+		// Create an existing graph
+		try await generateGraphs()
+
+		// Create a third graph with order 3
+		let graph3 = Graph(
+			groupOwnerId: testGroup.id!, name: "third graph", kind: .bar,
+			dateRange: .all,
+			order: 3)
+		try await graph3.save(on: app.db)
+		guard let subjectId = testIds["graph"] else {
+			XCTAssertFalse(true, "graph should be found in testIds")
+			return
+		}
+		let graph3Id = try graph3.requireID()
+		try await GraphGroup(graphId: graph3Id, group: .day).save(on: app.db)
+		let body = Operations.ApiGraphs_move.Input.Body.jsonPayload(direction: .down)
+
+		let headers = try await app.getHeaders(
+			forUser: .init(
+				username: testUser.username, password: "test-password"))
+
+		let response = try await app.sendRequest(
+			.PUT, "/api/graphs/\(subjectId)/move", body: body, headers: headers)
+
+		XCTAssertEqual(response.status, .ok)
+		let error = try? response.content.decode(Components.Schemas._Error.self)
+		XCTAssertNil(error)
+
+		let data = try response.content.decode(
+			Operations.ApiGraphs_move.Output.Ok.Body.jsonPayload.self)
+
+		// Should only return the two modified graphs
+		XCTAssertEqual(data.results.count, 2)
+		let graphsList = data.results
+
+		// Check orders were updated correctly
+		let updatedGraph2 = graphsList.first(where: {
+			$0.id == subjectId.uuidString
+		})
+		let updatedGraph3 = graphsList.first(where: { $0.id == graph3Id.uuidString }
+		)
+
+		XCTAssertEqual(updatedGraph2?.order, 2)
+		XCTAssertEqual(updatedGraph3?.order, 1)
 	}
 
 	func testDeleteGraph() async throws {

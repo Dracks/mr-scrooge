@@ -87,6 +87,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    '/graphs/{id}/move': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** @description Move up or down a graph inside the list of graphs for the same user group */
+        put: operations['ApiGraphs_move'];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     '/groups': {
         parameters: {
             query?: never;
@@ -611,6 +628,8 @@ export interface components {
         ListFileParsers: {
             parsers: components['schemas']['FileParserType'][];
         };
+        /** @enum {string} */
+        MoveDirection: 'up' | 'down';
         NotFoundBankTransaction: {
             message: string;
             code: components['schemas']['ErrorCode'];
@@ -998,6 +1017,54 @@ export interface operations {
             };
         };
     };
+    ApiGraphs_move: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components['schemas']['UUID'];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                'application/json': {
+                    direction: components['schemas']['MoveDirection'];
+                };
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': {
+                        results: components['schemas']['Graph'][];
+                    };
+                };
+            };
+            /** @description Bad request, usually when providing an invalid string as UUID */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
     ApiGroup_list: {
         parameters: {
             query?: {
@@ -1314,7 +1381,7 @@ export interface operations {
     ApiLabels_delete: {
         parameters: {
             query?: {
-                /** @description Force to delete the label cleaning it from all relations */
+                /** @description When true, forcefully deletes the label and removes it from all relations. Use with caution as this will modify dependent entities. */
                 force?: boolean;
             };
             header?: never;

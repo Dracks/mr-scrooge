@@ -50,6 +50,10 @@ model LabelGroupIdMismatch {
   ...Error;
 }
 
+model List<Item> {
+  results: Item[];
+}
+
 model PageList<Item> {
   results: Item[];
   next?: string;

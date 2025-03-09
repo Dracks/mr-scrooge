@@ -16,6 +16,7 @@ export type Label = components['schemas']['Label'];
 export type LabelUpdate = components['schemas']['UpdateLabel'];
 export type LabelCreate = components['schemas']['CreateLabel'];
 export type LabelInUse = components['schemas']['LabelInUse'];
+export type MoveDirection = components['schemas']['MoveDirection'];
 export type MyProfile = components['schemas']['GetMyProfile'];
 export type UpdateMyProfile = components['schemas']['UpdateMyProfile'];
 export type OperationString = components['schemas']['OperationString'];
