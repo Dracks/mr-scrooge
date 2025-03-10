@@ -13,6 +13,22 @@ Currently this application supports the following bank file formats:
 
 ## Demo
 
+## Run it
+* You can run it via [docker image](https://hub.docker.com/r/dracks/mrscrooge)
+* Or have it run in cloning the code and building it, see [How to contribute](#How-to-contribute)
+
+### Environment vars
+No matter which environment you use, the server accepts the following environment vars
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DB_URL` | Connection string for the database | `sqlite://db.sqlite3` |
+| `SQL_LOG_LEVEL` | Log level for SQL queries, one of: [trace, debug, info, notice, warning, error, critical] | `debug` (or `info` if debug mode) |
+| `STATIC_PATH` | Path prefix for static asset downloads in frontend | `/` |
+| `DECIMAL_COUNT` | Number of decimal places to show in frontend | `2` |
+| `APP_DEBUG` | Enable debug mode features in the frontend | `false` (production), `true` (debug build) |
+| `ENVIRONMENT` | Environment name shown in frontend footer | `development` |
+
 ## How to Migrate from Mr Scrooge V2
 The migration from Django to Vapor brought significant database improvements, including group data ownership capabilities that enable multiple users to operate on a single instance. This upgrade requires a complete data migration from the previous database version.
 
