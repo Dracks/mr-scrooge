@@ -559,13 +559,14 @@ class GraphService: ServiceWithDb, @unchecked Sendable {
 		guard let graphToMove else {
 			return .notFound
 		}
-		return db.transaction { transaction in
-			let graphsOnGroupOwner = try await Graph.query(on: db).field(\.$id).field(
-				\.$order
-			)
-			.filter(\.$groupOwner.$id == graphToMove.$groupOwner.id).sort(
-				\.$order, .ascending
-			).all()
+		return try await db.transaction { transaction in
+			let graphsOnGroupOwner = try await Graph.query(on: transaction).field(\.$id)
+				.field(
+					\.$order
+				)
+				.filter(\.$groupOwner.$id == graphToMove.$groupOwner.id).sort(
+					\.$order, .ascending
+				).all()
 
 			var previousGraph: Graph? = nil
 			var changedGraphs: [UUID: Int] = [:]
@@ -597,13 +598,14 @@ class GraphService: ServiceWithDb, @unchecked Sendable {
 				previousGraph = graph
 			}
 			for (updateGraphId, order) in changedGraphs {
-				try await Graph.query(on: db).set(\.$order, to: order).filter(
-					\.$id == updateGraphId
-				).update()
+				try await Graph.query(on: transaction).set(\.$order, to: order)
+					.filter(
+						\.$id == updateGraphId
+					).update()
 			}
 
 			let changedGraphsArray = changedGraphs.keys.map { $0 }
-			let graphs = try await getGraphs(
+			let graphs = try await self.getGraphs(
 				pageQuery: .init(limit: changedGraphs.count),
 				groupsId: [graphToMove.$groupOwner.id],
 				graphsIds: changedGraphsArray)
