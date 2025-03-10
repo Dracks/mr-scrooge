@@ -559,7 +559,7 @@ class GraphService: ServiceWithDb, @unchecked Sendable {
 		guard let graphToMove else {
 			return .notFound
 		}
-		return try await db.transaction { transaction in
+		let changedGraphs = try await db.transaction { transaction in
 			let graphsOnGroupOwner = try await Graph.query(on: transaction).field(\.$id)
 				.field(
 					\.$order
@@ -604,14 +604,14 @@ class GraphService: ServiceWithDb, @unchecked Sendable {
 					).update()
 			}
 
-			let changedGraphsArray = changedGraphs.keys.map { $0 }
-			let graphs = try await self.getGraphs(
-				pageQuery: .init(limit: changedGraphs.count),
-				groupsId: [graphToMove.$groupOwner.id],
-				graphsIds: changedGraphsArray)
-
-			return .updated(graphs: graphs.list)
+			return changedGraphs.keys.map { $0 }
 		}
+		let graphs = try await self.getGraphs(
+			pageQuery: .init(limit: changedGraphs.count),
+			groupsId: [graphToMove.$groupOwner.id],
+			graphsIds: changedGraphs)
+
+		return .updated(graphs: graphs.list)
 	}
 
 	func deleteGraph(graphId: UUID, forUser user: User) async throws
