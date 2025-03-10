@@ -1,6 +1,7 @@
 import Foundation
 import OpenAPIRuntime
 import OpenAPIVapor
+import swift_macros
 
 extension MrScroogeAPIImpl {
 	func ApiGraphs_create(_ input: Operations.ApiGraphs_create.Input) async throws
@@ -92,6 +93,7 @@ extension MrScroogeAPIImpl {
 		}
 
 		guard let graphId = UUID(uuidString: input.path.id) else {
+			// ToDo this should be a bad request
 			return .notFound(
 				.init(
 					body: .json(
@@ -128,6 +130,31 @@ extension MrScroogeAPIImpl {
 			)
 		case let .ok(data: newGraph):
 			return .ok(.init(body: .json(newGraph)))
+		}
+	}
+
+	func ApiGraphs_move(_ input: Operations.ApiGraphs_move.Input) async throws
+		-> Operations.ApiGraphs_move.Output
+	{
+		let user = try await getUser(fromRequest: request)
+		let validGroupsIds = try user.groups.map { return try $0.requireID() }
+		guard let graphId = UUID(uuidString: input.path.id) else {
+			return #BasicBadRequest(
+				msg: "Graph ID should be an UUID", code: ApiError.API10056
+			)
+		}
+		let direction: Components.Schemas.MoveDirection
+		switch input.body {
+		case .json(let inputData):
+			direction = inputData.direction
+		}
+		switch try await request.application.graphService.moveGraph(
+			graphId: graphId, direction: direction, for: validGroupsIds)
+		{
+		case .notFound:
+			return #BasicNotFound(msg: "Graph not found", code: ApiError.API10057)
+		case .updated(let graphs):
+			return .ok(.init(body: .json(.init(results: graphs))))
 		}
 	}
 

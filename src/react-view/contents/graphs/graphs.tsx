@@ -13,14 +13,17 @@ import { GraphWrapperWithRechart } from './graph-with-rechart/graph';
 export const Graphs: React.FC = () => {
     const client = useApiClient();
     const logger = useLogger('Graphs');
-    const graphs = usePagination(async next => {
-        const { data } = await client.GET('/graphs', { params: { query: { cursor: next } } });
-        if (data) {
-            return data;
-        } else {
-            throw Error("Get graphs didn't had data");
-        }
-    });
+    const graphs = usePagination(
+        async next => {
+            const { data } = await client.GET('/graphs', { params: { query: { cursor: next } } });
+            if (data) {
+                return data;
+            } else {
+                throw Error("Get graphs didn't had data");
+            }
+        },
+        { autostart: true, hash: graph => graph.id },
+    );
     const { labels } = useLabelsContext();
 
     const responseGraphList = graphs.loadedData;
@@ -43,6 +46,9 @@ export const Graphs: React.FC = () => {
                         graph={graph}
                         reload={() => {
                             graphs.reset();
+                        }}
+                        update={updatedGraphs => {
+                            graphs.update(updatedGraphs);
                         }}
                     />
                 ))}
