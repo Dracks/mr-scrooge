@@ -45,7 +45,7 @@ export const GraphWrapperWithRechart: React.FC<GraphWrapperArgs> = ({ graph, rel
                 <Button
                     icon={<FormDown />}
                     onClick={() => {
-                        catchAndLog(moveGraph.execute(graph.id, 'down'), 'Moving a graph up', logger);
+                        catchAndLog(moveGraph.execute(graph.id, 'down'), 'Moving a graph down', logger);
                     }}
                 />
                 <Button

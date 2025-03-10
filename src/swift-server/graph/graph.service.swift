@@ -559,52 +559,57 @@ class GraphService: ServiceWithDb, @unchecked Sendable {
 		guard let graphToMove else {
 			return .notFound
 		}
+		return db.transaction { transaction in
+			let graphsOnGroupOwner = try await Graph.query(on: db).field(\.$id).field(
+				\.$order
+			)
+			.filter(\.$groupOwner.$id == graphToMove.$groupOwner.id).sort(
+				\.$order, .ascending
+			).all()
 
-		let graphsOnGroupOwner = try await Graph.query(on: db).field(\.$id).field(\.$order)
-			.filter(\.$groupOwner.$id == graphToMove.$groupOwner.id).all()
+			var previousGraph: Graph? = nil
+			var changedGraphs: [UUID: Int] = [:]
+			var toMoveUp: Bool = false
 
-		var previousGraph: Graph? = nil
-		var changedGraphs: [UUID: Int] = [:]
-		var toMoveUp: Bool = false
-
-		for (idx, graph) in graphsOnGroupOwner.enumerated() {
-			let checkGraphId = try graph.requireID()
-			if graph.order != idx {
-				changedGraphs[checkGraphId] = idx
-			}
-			if toMoveUp {
-				toMoveUp = false
-				changedGraphs[checkGraphId] = idx - 1
-			}
-			if checkGraphId == graphId {
-				switch direction {
-				case .up:
-					guard let previousGraph else {
-						break
-					}
-					let previousGraphId = try previousGraph.requireID()
-					changedGraphs[previousGraphId] = idx
-					changedGraphs[checkGraphId] = idx - 1
-				case .down:
-					toMoveUp = true
-					changedGraphs[checkGraphId] = idx + 1
+			for (idx, graph) in graphsOnGroupOwner.enumerated() {
+				let checkGraphId = try graph.requireID()
+				if graph.order != idx {
+					changedGraphs[checkGraphId] = idx
 				}
+				if toMoveUp {
+					toMoveUp = false
+					changedGraphs[checkGraphId] = idx - 1
+				}
+				if checkGraphId == graphId {
+					switch direction {
+					case .up:
+						guard let previousGraph else {
+							break
+						}
+						let previousGraphId = try previousGraph.requireID()
+						changedGraphs[previousGraphId] = idx
+						changedGraphs[checkGraphId] = idx - 1
+					case .down:
+						toMoveUp = true
+						changedGraphs[checkGraphId] = idx + 1
+					}
+				}
+				previousGraph = graph
 			}
-			previousGraph = graph
-		}
-		for (updateGraphId, order) in changedGraphs {
-			try await Graph.query(on: db).set(\.$order, to: order).filter(
-				\.$id == updateGraphId
-			).update()
-		}
+			for (updateGraphId, order) in changedGraphs {
+				try await Graph.query(on: db).set(\.$order, to: order).filter(
+					\.$id == updateGraphId
+				).update()
+			}
 
-		let changedGraphsArray = changedGraphs.keys.map { $0 }
-		let graphs = try await getGraphs(
-			pageQuery: .init(limit: changedGraphs.count),
-			groupsId: [graphToMove.$groupOwner.id],
-			graphsIds: changedGraphsArray)
+			let changedGraphsArray = changedGraphs.keys.map { $0 }
+			let graphs = try await getGraphs(
+				pageQuery: .init(limit: changedGraphs.count),
+				groupsId: [graphToMove.$groupOwner.id],
+				graphsIds: changedGraphsArray)
 
-		return .updated(graphs: graphs.list)
+			return .updated(graphs: graphs.list)
+		}
 	}
 
 	func deleteGraph(graphId: UUID, forUser user: User) async throws
