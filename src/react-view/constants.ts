@@ -7,10 +7,8 @@ export const getDataFromScript = <T>(scriptName: string, schema: z.Schema<T>): T
     return schema.parse(obj);
 };
 
-const envValues = ['production', 'development'] as const;
-
 const JsConstants = z.object({
-    environment: z.enum(envValues),
+    environment: z.string(),
 
     version: z.string(),
 
