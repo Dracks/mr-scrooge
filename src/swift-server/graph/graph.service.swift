@@ -568,7 +568,7 @@ class GraphService: ServiceWithDb, @unchecked Sendable {
 					\.$order, .ascending
 				).all()
 
-			var previousGraph: Graph? = nil
+			var previousGraph: Graph?
 			var changedGraphs: [UUID: Int] = [:]
 			var toMoveUp: Bool = false
 

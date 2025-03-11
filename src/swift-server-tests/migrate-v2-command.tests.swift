@@ -214,7 +214,7 @@ final class MigrateV2Test: AbstractBaseTestsClass {
 			.testOutputQueue
 			.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
 
-		XCTAssertTrue(output.count > 0)
+		XCTAssertTrue(!output.isEmpty)
 		XCTAssertContains(
 			output.first,
 			"Invalid database URL format. Must start with \'sqlite://\' or \'postgres://\'"
