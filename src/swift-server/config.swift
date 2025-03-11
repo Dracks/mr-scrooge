@@ -49,7 +49,7 @@ final class EnvConfig: Sendable {
 		}
 
 		latencyOnInvalidPassword =
-			Int(Environment.get("LATENCY_ON__INVALID_PASSWORD") ?? "2") ?? 2
+			Int(Environment.get("LATENCY_ON_INVALID_PASSWORD") ?? "2") ?? 2
 		maxLoginAttempts = Int(Environment.get("MAX_LOGIN_ATTEMPTS") ?? "5") ?? 5
 		if let envTimeInMinutes = Environment.get("MAX_LOGIN_ATTEMPTS_PERIOD") {
 			let minutes = TimeInterval(envTimeInMinutes) ?? 60
