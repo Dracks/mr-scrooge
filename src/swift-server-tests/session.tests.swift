@@ -9,6 +9,13 @@ final class SessionTests: AbstractBaseTestsClass {
 	let meEndpoint = "/api/session"
 	let logoutEndpoint = "/api/session"
 
+	func addLoginAttempts(count: Int, time: Date, on db: Database) async throws {
+		for _ in 1...count {
+			try await UserLoginAttempt(username: "test-user", timestamp: time).save(
+				on: db)
+		}
+	}
+
 	func testLoginEndpointWithValidCredentials() async throws {
 		let app = try getApp()
 
@@ -28,6 +35,42 @@ final class SessionTests: AbstractBaseTestsClass {
 			username: "test-user", password: "wrong-password")
 		let response = try await app.sendRequest(.POST, loginEndpoint, body: login)
 		XCTAssertEqual(response.status, .unauthorized)
+	}
+
+	func testLoginEndpointWithInvalidCredentialsBlockTheAccount() async throws {
+		let app = try getApp()
+
+		try await addLoginAttempts(
+			count: EnvConfig.shared.maxLoginAttempts - 1, time: Date(), on: app.db)
+		// login that triggers the maximum
+		let invalidLogin = Components.Schemas.UserCredentials(
+			username: "test-user", password: "wrong-password")
+		var response = try await app.sendRequest(.POST, loginEndpoint, body: invalidLogin)
+		XCTAssertEqual(response.status, .unauthorized)
+
+		let login = Components.Schemas.UserCredentials(
+			username: "test-user", password: "test-password")
+		response = try await app.sendRequest(.POST, loginEndpoint, body: login)
+		XCTAssertEqual(response.status, .unauthorized)
+	}
+
+	func testLoginEndpointAfterThePeriodWindowOfTheBlockWithValidCredentials() async throws {
+		let app = try getApp()
+
+		let unauthorizedAttemptsDate: Date = Date(
+			timeIntervalSinceNow: -(EnvConfig.shared.maxLoginAttemptsTimePeriod + 1)
+		)
+		try await addLoginAttempts(
+			count: EnvConfig.shared.maxLoginAttempts,
+			time: unauthorizedAttemptsDate,
+			on: app.db)
+		let login = Components.Schemas.UserCredentials(
+			username: "test-user", password: "test-password")
+		let response = try await app.sendRequest(.POST, loginEndpoint, body: login)
+		XCTAssertEqual(response.status, .ok)
+		let profile = try response.content.decode(Components.Schemas.UserProfile.self)
+		XCTAssertEqual(profile.username, testUser.username)
+		XCTAssertEqual(profile.isAdmin, testUser.isAdmin)
 	}
 
 	func testMeEndpointWithValidSession() async throws {

@@ -12,19 +12,41 @@ extension MrScroogeAPIImpl {
 		case let .json(body):
 			credentials = body
 		}
-		let req = request
-		let user = try await User.query(on: req.db)
+		try await UserLoginAttempt.query(on: request.db).filter(
+			\.$timestamp
+				< Date(
+					timeIntervalSinceNow: -EnvConfig.shared
+						.maxLoginAttemptsTimePeriod)
+		).delete()
+		try await UserLoginAttempt(username: credentials.username).save(on: request.db)
+		let onUnauthorizedLatency = EnvConfig.shared.latencyOnInvalidPassword
+
+		guard
+			try await UserLoginAttempt.query(on: request.db).filter(
+				\.$username == credentials.username
+			).count() <= EnvConfig.shared.maxLoginAttempts
+		else {
+			try await Task.sleep(for: .seconds(onUnauthorizedLatency))
+			return .unauthorized(
+				.init(
+					body: .json(
+						.init(details: "User or password not valid")
+					)))
+		}
+
+		let user = try await User.query(on: request.db)
 			.filter(\.$username == credentials.username)
 			.first()
 
 		if let user = user, user.verifyPassword(pwd: credentials.password) {
-			req.auth.login(user)
-			try await user.$groups.load(on: req.db)
-			try await user.$defaultGroup.load(on: req.db)
+			request.auth.login(user)
+			try await user.$groups.load(on: request.db)
+			try await user.$defaultGroup.load(on: request.db)
 
 			return .ok(.init(body: .json(.init(user: user))))
 		}
 
+		try await Task.sleep(for: .seconds(onUnauthorizedLatency))
 		return .unauthorized(
 			.init(body: .json(.init(details: "User or password not valid"))))
 	}

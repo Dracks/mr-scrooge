@@ -82,6 +82,26 @@ extension User: SessionAuthenticatable {
 	}
 }
 
+final class UserLoginAttempt: Model, Content, @unchecked Sendable {
+	static let schema = "user_login_attempt"
+	@ID(key: .id)
+	var id: UUID?
+
+	@Field(key: "username")
+	var username: String
+
+	@Field(key: "timestamp")
+	var timestamp: Date
+
+	init() {}
+
+	init(id: UUID? = nil, username: String, timestamp: Date = Date()) {
+		self.id = id
+		self.username = username
+		self.timestamp = timestamp
+	}
+}
+
 final class UserGroup: Model, Content, @unchecked Sendable {
 	static let schema = "user_groups"
 
