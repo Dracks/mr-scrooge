@@ -28,6 +28,10 @@ No matter which environment you use, the server accepts the following environmen
 | `DECIMAL_COUNT` | Number of decimal places to show in frontend | `2` |
 | `APP_DEBUG` | Enable debug mode features in the frontend | `false` (production), `true` (debug build) |
 | `ENVIRONMENT` | Environment name shown in frontend footer | `development` |
+| `LATENCY_ON_INVALID_PASSWORD` | Time in seconds to wait before responding to invalid login attempts | `2` |
+| `MAX_LOGIN_ATTEMPTS` | Maximum number of failed login attempts before locking the user | `5` |
+| `MAX_LOGIN_ATTEMPTS_PERIOD` | Time period in minutes during which failed login attempts are counted | `60` |
+
 
 ## How to Migrate from Mr Scrooge V2
 The migration from Django to Vapor brought significant database improvements, including group data ownership capabilities that enable multiple users to operate on a single instance. This upgrade requires a complete data migration from the previous database version.

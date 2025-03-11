@@ -49,6 +49,7 @@ public func registerMigrations(_ app: Application) async throws {
 	app.migrations.add(SessionRecord.migration)
 	app.migrations.add(JobModelMigration())
 	app.migrations.add(InitialMigration())
+	app.migrations.add(LoginSafetyMigration())
 }
 
 // configures your application
