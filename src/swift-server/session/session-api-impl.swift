@@ -12,21 +12,23 @@ extension MrScroogeAPIImpl {
 		case let .json(body):
 			credentials = body
 		}
-		try await UserLoginAttempt.query(on: request.db).filter(
-			\.$timestamp
-				< Date(
-					timeIntervalSinceNow: -EnvConfig.shared
-						.maxLoginAttemptsTimePeriod)
-		).delete()
+		let cleanupDate = Date(
+			timeIntervalSinceNow: -EnvConfig.shared.maxLoginAttemptsTimePeriod)
+		try await UserLoginAttempt.query(on: request.db)
+			.filter(\.$timestamp < cleanupDate).delete()
 		try await UserLoginAttempt(username: credentials.username).save(on: request.db)
 		let onUnauthorizedLatency = EnvConfig.shared.latencyOnInvalidPassword
+		let loginAttemptsCount = try await UserLoginAttempt.query(on: request.db).filter(
+			\.$username == credentials.username
+		).count()
 
 		guard
-			try await UserLoginAttempt.query(on: request.db).filter(
-				\.$username == credentials.username
-			).count() <= EnvConfig.shared.maxLoginAttempts
+			loginAttemptsCount <= EnvConfig.shared.maxLoginAttempts
 		else {
 			try await Task.sleep(for: .seconds(onUnauthorizedLatency))
+			request.application.logger.info(
+				"User \"\(credentials.username)\" unauthorized because he had too many attempts (\(loginAttemptsCount)) in since \(cleanupDate)"
+			)
 			return .unauthorized(
 				.init(
 					body: .json(
