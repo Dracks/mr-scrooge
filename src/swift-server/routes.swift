@@ -49,12 +49,6 @@ struct MrScroogeAPIImpl {
 		return .undocumented(statusCode: 501, UndocumentedPayload())
 	}
 
-	func ApiGroup_listOrphaned(_ input: Operations.ApiGroup_listOrphaned.Input) async throws
-		-> Operations.ApiGroup_listOrphaned.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
 	func ApiGroup_create(_ input: Operations.ApiGroup_create.Input) async throws
 		-> Operations.ApiGroup_create.Output
 	{
@@ -63,6 +57,12 @@ struct MrScroogeAPIImpl {
 
 	func ApiGroup_list(_ input: Operations.ApiGroup_list.Input) async throws
 		-> Operations.ApiGroup_list.Output
+	{
+		return .undocumented(statusCode: 501, UndocumentedPayload())
+	}
+
+	func ApiGroup_updateGroup(_ input: Operations.ApiGroup_updateGroup.Input) async throws
+		-> Operations.ApiGroup_updateGroup.Output
 	{
 		return .undocumented(statusCode: 501, UndocumentedPayload())
 	}

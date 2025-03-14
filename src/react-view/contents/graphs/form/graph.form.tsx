@@ -3,7 +3,7 @@ import { Analytics } from 'grommet-icons';
 import React from 'react';
 import { useNavigate } from 'react-router';
 
-import { GraphDateRange, GraphKind, GraphParam, GroupType, Label } from '../../../api/models';
+import { GraphDateRange, GraphKind, GraphInput, GroupType, Label } from '../../../api/models';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { ConfirmationButton } from '../../../utils/ui/confirmation-button';
 import { EnumSelectOption } from '../../../utils/ui/enum-option';
@@ -13,7 +13,7 @@ import { enrichGraph } from '../graph-with-rechart/enrich-graph';
 import { GraphViewer } from '../graph-with-rechart/view';
 import { graphToUi, GraphUiRepresentation, uiToGraph } from './graph.transformer';
 
-interface GraphFormProps<T extends GraphParam> {
+interface GraphFormProps<T extends GraphInput> {
     graphData: Partial<T>;
     save: () => void;
     update: (graphData: T) => void;
@@ -51,8 +51,8 @@ const GroupOptions: EnumSelectOption<GroupType>[] = [
     { id: 'labels', label: 'Labels' },
 ];
 
-export const GraphForm: <T extends GraphParam>(p: GraphFormProps<T>) => React.ReactElement<GraphFormProps<T>> = <
-    T extends GraphParam,
+export const GraphForm: <T extends GraphInput>(p: GraphFormProps<T>) => React.ReactElement<GraphFormProps<T>> = <
+    T extends GraphInput,
 >({
     graphData,
     update,

@@ -4,7 +4,7 @@ import React from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 
 import { useApiClient } from '../../../api/client';
-import { ApiUUID, RuleConditionParam } from '../../../api/models';
+import { ApiUUID, RuleConditionInput } from '../../../api/models';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { catchAndLog } from '../../../utils/promises';
 import { ConfirmationButton } from '../../../utils/ui/confirmation-button';
@@ -17,7 +17,7 @@ export const NewCondition: React.FC<{ ruleId: ApiUUID }> = ({ ruleId }) => {
 
     const { updateRaw } = useRuleCtx();
 
-    const [newCondition, setNewCondition] = useState<RuleConditionParam>({
+    const [newCondition, setNewCondition] = useState<RuleConditionInput>({
         operation: 'contains',
         value: '',
     });
@@ -25,7 +25,7 @@ export const NewCondition: React.FC<{ ruleId: ApiUUID }> = ({ ruleId }) => {
         setNewCondition({ operation: 'contains', value: '' });
     };
 
-    const createCondition = useAsyncCallback(async (newCondition: RuleConditionParam) => {
+    const createCondition = useAsyncCallback(async (newCondition: RuleConditionInput) => {
         const response = await client.POST('/rules/{ruleId}/condition', {
             body: { condition: newCondition },
             params: { path: { ruleId } },

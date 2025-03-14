@@ -7,9 +7,13 @@ using TypeSpec.JsonSchema;
 
 namespace MrScrooge;
 
+model UserGroupInput {
+   name: string;
+}
+
 model UserGroup {
   id: UUID;
-  name: string;
+  ...UserGroupInput;
 }
 
 model BaseUserData {
@@ -24,7 +28,7 @@ model BaseModifyUserData {
   isAdmin: boolean;
 }
 
-model CreateUserParams {
+model CreateUserInput {
   ...BaseModifyUserData;
   password: string;
 }
@@ -47,7 +51,7 @@ model UserProfile {
 @route("/users")
 @tag("user")
 interface ApiUser {
-  @post create(...CreateUserParams): {
+  @post create(...CreateUserInput): {
     @statusCode _: 201;
     ...UserProfile;
   } | Unauthorized;
@@ -74,11 +78,8 @@ interface ApiUser {
 @route("/groups")
 @tag("user")
 interface ApiGroup {
-  @get list(@query cursor?: string, @query limit?: int16): UserGroup[];
-  @doc("List all groups that are not assigned to a user")
-  @route("orphaned")
-  @get
-  listOrphaned(): UserGroup[];
-  @post create(...UserGroup): UserGroup;
-  @route("{id}") @delete delete(@path id: UUID): void;
+  @post create(...UserGroupInput): UserGroup;
+  @get list(@query cursor?: string, @query limit?: int16, @query orphaned: boolean): UserGroup[];
+  @route("{id}") @put  updateGroup(@path id: UUID, ...UserGroupInput): UserGroup | NotFound;
+  @route("{id}") @delete delete(@path id: UUID): void | Unauthorized;
 }

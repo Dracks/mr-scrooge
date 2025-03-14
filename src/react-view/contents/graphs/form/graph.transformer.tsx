@@ -1,4 +1,4 @@
-import { GraphDateRange, GraphKind, GraphParam, Group, GroupType, HorizontalGroup } from '../../../api/models';
+import { GraphDateRange, GraphKind, GraphInput, Group, GroupType, HorizontalGroup } from '../../../api/models';
 
 export interface GraphUiRepresentation {
     dateRange?: GraphDateRange;
@@ -23,7 +23,7 @@ export const graphToUi = ({
     kind,
     labelFilterId: tagFilter,
     ...graph
-}: Partial<GraphParam>): GraphUiRepresentation => ({
+}: Partial<GraphInput>): GraphUiRepresentation => ({
     ...graph,
     groupHideOthers: group?.hideOthers,
     groupType: group?.group,
@@ -45,7 +45,7 @@ export const uiToGraph = ({
     horizontalGroupLabels,
     horizontalAccumulate,
     ...graphUi
-}: GraphUiRepresentation): Partial<GraphParam> => ({
+}: GraphUiRepresentation): Partial<GraphInput> => ({
     ...graphUi,
     group: groupKind
         ? ({

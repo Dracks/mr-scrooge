@@ -1,8 +1,8 @@
-import { ApiUUID, GraphParam } from '../../../api/models';
+import { ApiUUID, GraphInput } from '../../../api/models';
 import { listLabelIds } from '../../../utils/data-factory/label.factory';
 import { mainGroupOwnerId } from '../../../utils/data-factory/user-group.factory';
 
-export const GraphPie: GraphParam = {
+export const GraphPie: GraphInput = {
     dateRange: 'all',
     group: {
         group: 'labels',
@@ -14,7 +14,7 @@ export const GraphPie: GraphParam = {
     name: 'Percentatge',
 };
 
-export const GraphLine: GraphParam = {
+export const GraphLine: GraphInput = {
     dateRange: 'halfYear',
     group: {
         group: 'month',
@@ -29,7 +29,7 @@ export const GraphLine: GraphParam = {
     name: 'Compare by day',
 };
 
-export const GraphBar: GraphParam = {
+export const GraphBar: GraphInput = {
     dateRange: 'oneYear',
     group: {
         group: 'sign',

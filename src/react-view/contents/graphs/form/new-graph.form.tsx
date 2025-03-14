@@ -3,7 +3,7 @@ import { useAsyncCallback } from 'react-async-hook';
 import { useNavigate } from 'react-router';
 
 import { useApiClient } from '../../../api/client';
-import { GraphParam } from '../../../api/models';
+import { GraphInput } from '../../../api/models';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { useUserProfileOrThrows } from '../../../utils/session/session-context';
 import { GraphForm } from './graph.form';
@@ -11,12 +11,12 @@ import { GraphForm } from './graph.form';
 export const GraphNew = () => {
     const logger = useLogger('GraphNew');
     const client = useApiClient();
-    const newFormRequest = useAsyncCallback((graph: GraphParam) => {
+    const newFormRequest = useAsyncCallback((graph: GraphInput) => {
         return client.POST('/graphs', { body: graph });
     });
     const userProfile = useUserProfileOrThrows();
     const navigate = useNavigate();
-    const [graphData, setGraphData] = React.useState<Partial<GraphParam>>({
+    const [graphData, setGraphData] = React.useState<Partial<GraphInput>>({
         groupOwnerId: userProfile.defaultGroupId,
     });
 
@@ -25,7 +25,7 @@ export const GraphNew = () => {
             graphData={graphData}
             update={setGraphData}
             save={() => {
-                newFormRequest.execute(graphData as GraphParam).then(
+                newFormRequest.execute(graphData as GraphInput).then(
                     response => {
                         const newGraph = response.data;
                         if (newGraph) {

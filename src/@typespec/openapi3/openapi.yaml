@@ -188,7 +188,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GraphParam'
+              $ref: '#/components/schemas/GraphInput'
     get:
       operationId: ApiGraphs_list
       parameters:
@@ -269,7 +269,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GraphParam'
+              $ref: '#/components/schemas/GraphInput'
     delete:
       operationId: ApiGraphs_delete
       parameters:
@@ -343,33 +343,6 @@ paths:
               required:
                 - direction
   /groups:
-    get:
-      operationId: ApiGroup_list
-      parameters:
-        - name: cursor
-          in: query
-          required: false
-          schema:
-            type: string
-          explode: false
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int16
-          explode: false
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserGroup'
-      tags:
-        - user
     post:
       operationId: ApiGroup_create
       parameters: []
@@ -387,12 +360,29 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserGroup'
-  /groups/orphaned:
+              $ref: '#/components/schemas/UserGroupInput'
     get:
-      operationId: ApiGroup_listOrphaned
-      description: List all groups that are not assigned to a user
-      parameters: []
+      operationId: ApiGroup_list
+      parameters:
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int16
+          explode: false
+        - name: orphaned
+          in: query
+          required: true
+          schema:
+            type: boolean
+          explode: false
       responses:
         '200':
           description: The request has succeeded.
@@ -405,6 +395,35 @@ paths:
       tags:
         - user
   /groups/{id}:
+    put:
+      operationId: ApiGroup_updateGroup
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroup'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserGroupInput'
     delete:
       operationId: ApiGroup_delete
       parameters:
@@ -416,6 +435,12 @@ paths:
       responses:
         '204':
           description: 'There is no content to send for this request, but the headers may be useful. '
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
       tags:
         - user
   /imports:
@@ -746,7 +771,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RuleParam'
+              $ref: '#/components/schemas/RuleInput'
   /rules/{ruleId}:
     put:
       operationId: ApiRule_update
@@ -794,7 +819,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RuleParam'
+              $ref: '#/components/schemas/RuleInput'
     delete:
       operationId: ApiRule_delete
       parameters:
@@ -906,7 +931,7 @@ paths:
               type: object
               properties:
                 condition:
-                  $ref: '#/components/schemas/ConditionParams'
+                  $ref: '#/components/schemas/ConditionInput'
               required:
                 - condition
   /rules/{ruleId}/condition/{condId}:
@@ -952,7 +977,7 @@ paths:
               type: object
               properties:
                 condition:
-                  $ref: '#/components/schemas/ConditionParams'
+                  $ref: '#/components/schemas/ConditionInput'
               required:
                 - condition
     delete:
@@ -1171,7 +1196,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateUserParams'
+              $ref: '#/components/schemas/CreateUserInput'
     get:
       operationId: ApiUser_list
       parameters:
@@ -1431,7 +1456,7 @@ components:
         value:
           type: number
           format: double
-    ConditionParamDouble:
+    ConditionDoubleInput:
       type: object
       required:
         - operation
@@ -1442,20 +1467,10 @@ components:
         value:
           type: number
           format: double
-    ConditionParamString:
-      type: object
-      required:
-        - operation
-        - value
-      properties:
-        operation:
-          $ref: '#/components/schemas/OperationString'
-        value:
-          type: string
-    ConditionParams:
+    ConditionInput:
       oneOf:
-        - $ref: '#/components/schemas/ConditionParamDouble'
-        - $ref: '#/components/schemas/ConditionParamString'
+        - $ref: '#/components/schemas/ConditionDoubleInput'
+        - $ref: '#/components/schemas/ConditionStringInput'
     ConditionString:
       type: object
       required:
@@ -1465,6 +1480,16 @@ components:
       properties:
         id:
           $ref: '#/components/schemas/UUID'
+        operation:
+          $ref: '#/components/schemas/OperationString'
+        value:
+          type: string
+    ConditionStringInput:
+      type: object
+      required:
+        - operation
+        - value
+      properties:
         operation:
           $ref: '#/components/schemas/OperationString'
         value:
@@ -1484,7 +1509,7 @@ components:
           type: string
         groupOwnerId:
           $ref: '#/components/schemas/UUID'
-    CreateUserParams:
+    CreateUserInput:
       type: object
       required:
         - username
@@ -1653,13 +1678,7 @@ components:
         - month
         - sign
         - year
-    GraphKind:
-      type: string
-      enum:
-        - bar
-        - line
-        - pie
-    GraphParam:
+    GraphInput:
       type: object
       required:
         - groupOwnerId
@@ -1682,6 +1701,12 @@ components:
           $ref: '#/components/schemas/Group'
         horizontalGroup:
           $ref: '#/components/schemas/HorizontalGroup'
+    GraphKind:
+      type: string
+      enum:
+        - bar
+        - line
+        - pie
     Group:
       type: object
       required:
@@ -1907,7 +1932,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UUID'
-    RuleParam:
+    RuleInput:
       type: object
       required:
         - groupOwnerId
@@ -2014,6 +2039,13 @@ components:
       properties:
         id:
           $ref: '#/components/schemas/UUID'
+        name:
+          type: string
+    UserGroupInput:
+      type: object
+      required:
+        - name
+      properties:
         name:
           type: string
     UserProfile:

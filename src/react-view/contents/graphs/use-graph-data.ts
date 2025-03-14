@@ -1,4 +1,4 @@
-import { GraphDateRange, GraphParam, Label } from '../../api/models';
+import { GraphDateRange, GraphInput, Label } from '../../api/models';
 import { useTransactionsData } from '../common/transaction.context';
 import { accumulateFn } from './data-transform/accumulate';
 import { createGroupWithSubGroup } from './data-transform/create-groups';
@@ -53,8 +53,8 @@ const labelMap = ({ name }: Label) => name;
 
 const sortData = (
     data: DSDoubleGroup<string, string>[],
-    group: EnrichedGraph<GraphParam>['group'],
-    horizontalGroup: EnrichedGraph<GraphParam>['horizontalGroup'],
+    group: EnrichedGraph<GraphInput>['group'],
+    horizontalGroup: EnrichedGraph<GraphInput>['horizontalGroup'],
 ): DSDoubleGroup<string, string>[] => {
     const groupSort = sortLambdas[group.group](group.labels?.map(labelMap) ?? []);
     if (horizontalGroup) {
@@ -69,7 +69,7 @@ const sortData = (
     return data.sort((first, second) => groupSort(first.label, second.label));
 };
 
-export const useGraphDataGenerator = <T extends GraphParam>({
+export const useGraphDataGenerator = <T extends GraphInput>({
     labelFilterId,
     dateRange,
     horizontalGroup,

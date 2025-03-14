@@ -9,7 +9,7 @@ extension MrScroogeAPIImpl {
 	{
 		let user = try await getUser(fromRequest: request)
 		let validGroupsId = try user.groups.map { return try $0.requireID() }
-		var graphData: Components.Schemas.GraphParam
+		var graphData: Components.Schemas.GraphInput
 		switch input.body {
 		case .json(let _graphData):
 			graphData = _graphData
@@ -71,7 +71,7 @@ extension MrScroogeAPIImpl {
 	{
 		let user = try await getUser(fromRequest: request)
 		let validGroupsId = try user.groups.map { return try $0.requireID() }
-		var graphData: Components.Schemas.GraphParam
+		var graphData: Components.Schemas.GraphInput
 		switch input.body {
 		case .json(let _graphData):
 			graphData = _graphData
