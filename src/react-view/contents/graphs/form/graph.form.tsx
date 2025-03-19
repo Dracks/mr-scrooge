@@ -3,7 +3,7 @@ import { Analytics } from 'grommet-icons';
 import React from 'react';
 import { useNavigate } from 'react-router';
 
-import { GraphDateRange, GraphKind, GraphInput, GroupType, Label } from '../../../api/models';
+import { GraphDateRange, GraphInput, GraphKind, GroupType, Label } from '../../../api/models';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { ConfirmationButton } from '../../../utils/ui/confirmation-button';
 import { EnumSelectOption } from '../../../utils/ui/enum-option';

@@ -3,7 +3,7 @@ import React from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 
 import { useApiClient } from '../../api/client';
-import { ApiUUID, RuleParam } from '../../api/models';
+import { ApiUUID, RuleInput } from '../../api/models';
 import { useLogger } from '../../utils/logger/logger.context';
 import { catchAndLog } from '../../utils/promises';
 import NotFound from '../extra/not-found';
@@ -27,7 +27,7 @@ export const EditRule: React.FC<EditRuleFormProps> = ({ id }) => {
     return <NotFound />;
 };
 
-const getRuleParam = ({ groupOwnerId, name, relations, parentRuleId }: RuleEnriched): RuleParam => ({
+const getRuleParam = ({ groupOwnerId, name, relations, parentRuleId }: RuleEnriched): RuleInput => ({
     groupOwnerId,
     name,
     relations,
@@ -51,13 +51,13 @@ const EditRuleForm: React.FC<{ rule: RuleEnriched }> = ({ rule }) => {
     const logger = useLogger('EditRule');
     const { list: allRules, updateRaw } = useRuleCtx();
     const client = useApiClient();
-    const [formData, setFormData] = React.useState<RuleParam>(getRuleParam(rule));
+    const [formData, setFormData] = React.useState<RuleInput>(getRuleParam(rule));
     const validParents = React.useMemo(() => {
         const allChildren = getAllChildrenIds(rule);
         return allRules.filter(toCheck => !allChildren.has(toCheck.id));
     }, [rule.id, allRules]);
 
-    const updateRule = useAsyncCallback(async (ruleId: ApiUUID, updatedRule: RuleParam) => {
+    const updateRule = useAsyncCallback(async (ruleId: ApiUUID, updatedRule: RuleInput) => {
         const response = await client.PUT('/rules/{ruleId}', { body: updatedRule, params: { path: { ruleId } } });
         if (response.data) {
             updateRaw(response.data);
@@ -75,7 +75,7 @@ const EditRuleForm: React.FC<{ rule: RuleEnriched }> = ({ rule }) => {
                             <Heading data-testid="heading" level="2">
                                 Edit rule: {formData.name}
                             </Heading>
-                            <Form<RuleParam>
+                            <Form<RuleInput>
                                 value={formData}
                                 onChange={newValue => {
                                     setFormData(newValue);

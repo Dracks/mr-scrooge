@@ -4,7 +4,7 @@ import { useAsyncCallback } from 'react-async-hook';
 import { useNavigate } from 'react-router';
 
 import { useApiClient } from '../../api/client';
-import { RuleParam } from '../../api/models';
+import { RuleInput } from '../../api/models';
 import { useLogger } from '../../utils/logger/logger.context';
 import { catchAndLog } from '../../utils/promises';
 import { useUserProfileOrThrows } from '../../utils/session/session-context';
@@ -17,12 +17,12 @@ export const NewRuleForm: React.FC = () => {
     const client = useApiClient();
     const profile = useUserProfileOrThrows();
     const navigate = useNavigate();
-    const [formData, setFormData] = React.useState<RuleParam>({
+    const [formData, setFormData] = React.useState<RuleInput>({
         groupOwnerId: profile.defaultGroupId,
         name: '',
         relations: 'or',
     });
-    const createRule = useAsyncCallback((newRule: RuleParam) => {
+    const createRule = useAsyncCallback((newRule: RuleInput) => {
         return client.POST('/rules', { body: newRule });
     });
     logger.info('Updated form data', { formData });
@@ -30,7 +30,7 @@ export const NewRuleForm: React.FC = () => {
     return (
         <Box pad="small">
             <Heading level="2">New Rule</Heading>
-            <Form<RuleParam>
+            <Form<RuleInput>
                 value={formData}
                 onChange={newValue => {
                     setFormData(newValue);

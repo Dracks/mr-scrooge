@@ -1,4 +1,4 @@
-import { GraphDateRange, GraphKind, GraphInput, Group, GroupType, HorizontalGroup } from '../../../api/models';
+import { GraphDateRange, GraphInput, GraphKind, Group, GroupType, HorizontalGroup } from '../../../api/models';
 
 export interface GraphUiRepresentation {
     dateRange?: GraphDateRange;

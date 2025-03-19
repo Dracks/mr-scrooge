@@ -16,7 +16,7 @@ import {
     YAxis,
 } from 'recharts';
 
-import { ApiUUID, GraphKind, GraphInput } from '../../../api/models';
+import { ApiUUID, GraphInput,GraphKind } from '../../../api/models';
 import { DECIMAL_COUNT } from '../../../constants';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { DSDoubleGroup } from '../data-transform/types';
