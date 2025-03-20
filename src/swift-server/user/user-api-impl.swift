@@ -16,7 +16,7 @@ extension MrScroogeAPIImpl {
 				code: ApiError.API10051)
 		}
 
-		let newUserInput: Components.Schemas.CreateUserParams
+		let newUserInput: Components.Schemas.CreateUserInput
 		switch input.body {
 		case .json(let _newUser):
 			newUserInput = _newUser

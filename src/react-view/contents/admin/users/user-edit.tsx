@@ -3,7 +3,7 @@ import React from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 
 import { useApiClient } from '../../../api/client';
-import { ApiUUID, UpdateUserParams, UserProfile } from '../../../api/models';
+import { ApiUUID, UpdateUserInput, UserProfile } from '../../../api/models';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { catchAndLog } from '../../../utils/promises';
 import { UserForm, UserWarning } from './user-form';
@@ -26,10 +26,10 @@ const getUpdateFromUser = (user: UserProfile) => ({
 export const EditUser: React.FC<EditUserParams> = ({ user }) => {
     const logger = useLogger('EditUser');
     const client = useApiClient();
-    const saveUser = useAsyncCallback((id: ApiUUID, body: UpdateUserParams) => {
+    const saveUser = useAsyncCallback((id: ApiUUID, body: UpdateUserInput) => {
         return client.PUT('/users/{id}', { body, params: { path: { id } } });
     });
-    const [userData, setUserData] = React.useState<UpdateUserParams>(getUpdateFromUser(user));
+    const [userData, setUserData] = React.useState<UpdateUserInput>(getUpdateFromUser(user));
 
     React.useEffect(() => {
         setUserData(getUpdateFromUser(user));
@@ -37,7 +37,7 @@ export const EditUser: React.FC<EditUserParams> = ({ user }) => {
     return (
         <Box>
             <Heading level={2}>Editing user</Heading>
-            <Form<UpdateUserParams>
+            <Form<UpdateUserInput>
                 value={userData}
                 onChange={setUserData}
                 onSubmit={() => {

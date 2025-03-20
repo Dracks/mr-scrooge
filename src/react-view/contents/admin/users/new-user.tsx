@@ -4,7 +4,7 @@ import { useAsyncCallback } from 'react-async-hook';
 import { useNavigate } from 'react-router';
 
 import { useApiClient } from '../../../api/client';
-import { CreateUserParams } from '../../../api/models';
+import { CreateUserInput } from '../../../api/models';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { catchAndLog } from '../../../utils/promises';
 import { UserForm, UserWarning } from './user-form';
@@ -13,10 +13,10 @@ export const NewUser: React.FC<{ reload: () => void }> = ({ reload }) => {
     const logger = useLogger('New User Form');
     const navigate = useNavigate();
     const client = useApiClient();
-    const createUser = useAsyncCallback((body: CreateUserParams) => {
+    const createUser = useAsyncCallback((body: CreateUserInput) => {
         return client.POST('/users', { body });
     });
-    const [userData, setUserData] = React.useState<CreateUserParams>({
+    const [userData, setUserData] = React.useState<CreateUserInput>({
         email: '',
         isActive: true,
         isAdmin: false,
@@ -28,7 +28,7 @@ export const NewUser: React.FC<{ reload: () => void }> = ({ reload }) => {
     return (
         <Box>
             <Heading level={2}>Create new user</Heading>
-            <Form<CreateUserParams>
+            <Form<CreateUserInput>
                 value={userData}
                 onChange={setUserData}
                 onSubmit={() => {

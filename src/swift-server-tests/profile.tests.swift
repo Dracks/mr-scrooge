@@ -119,7 +119,7 @@ final class ProfileTests: AbstractBaseTestsClass {
 		let headers = try await app.getHeaders(
 			forUser: .init(username: testUser.username, password: "test-password"))
 
-		let newUser = Components.Schemas.CreateUserParams(
+		let newUser = Components.Schemas.CreateUserInput(
 			username: "Some new user",
 			email: "test@test-change.com",
 			firstName: "First naming",
@@ -143,7 +143,7 @@ final class ProfileTests: AbstractBaseTestsClass {
 			forUser: .init(
 				username: testAdmin.username, password: "test-admin-password"))
 
-		let newUser = Components.Schemas.CreateUserParams(
+		let newUser = Components.Schemas.CreateUserInput(
 			username: "Some new user",
 			email: "test@test-change.com",
 			firstName: "First naming",

@@ -218,7 +218,7 @@ class GraphService: ServiceWithDb, @unchecked Sendable {
 		return nil
 	}
 
-	func createGraph(_ newGraph: Components.Schemas.GraphParam) async throws
+	func createGraph(_ newGraph: Components.Schemas.GraphInput) async throws
 		-> CreateGraphResponse
 	{
 		let groupOwnerId = UUID(uuidString: newGraph.groupOwnerId)!
@@ -395,7 +395,7 @@ class GraphService: ServiceWithDb, @unchecked Sendable {
 	}
 
 	func updateGraph(
-		withId id: UUID, graph updatedGraph: Components.Schemas.GraphParam,
+		withId id: UUID, graph updatedGraph: Components.Schemas.GraphInput,
 		forUser user: User
 	) async throws -> UpdateGraphResponse {
 		return try await db.transaction { transaction in

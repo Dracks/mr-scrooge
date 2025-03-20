@@ -1,14 +1,14 @@
 import { Box, Form, Select, TextInput } from 'grommet';
 import React from 'react';
 
-import { RuleConditionParam } from '../../../api/models';
+import { RuleConditionInput } from '../../../api/models';
 import { allOperationsTuples, isOperationDouble, isOperationString } from './condition-helpers';
 
 interface ConditionFormArgs {
-    condition: RuleConditionParam;
+    condition: RuleConditionInput;
     actions: React.ReactElement[];
     onSave: () => void;
-    onChange: (c: RuleConditionParam) => void;
+    onChange: (c: RuleConditionInput) => void;
 }
 
 export const ConditionForm: React.FC<ConditionFormArgs> = ({ condition, actions, onChange, onSave }) => {
@@ -19,7 +19,7 @@ export const ConditionForm: React.FC<ConditionFormArgs> = ({ condition, actions,
         valueFormPart = <TextInput data-testid="condition-value" name="value" type="number" />;
     }
     return (
-        <Form<RuleConditionParam>
+        <Form<RuleConditionInput>
             value={condition}
             onChange={data => {
                 onChange(data);

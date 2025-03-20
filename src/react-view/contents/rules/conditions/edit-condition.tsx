@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 
 import { useApiClient } from '../../../api/client';
-import { ApiUUID, RuleCondition, RuleConditionParam } from '../../../api/models';
+import { ApiUUID, RuleCondition, RuleConditionInput } from '../../../api/models';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { catchAndLog } from '../../../utils/promises';
 import { ConfirmationButton } from '../../../utils/ui/confirmation-button';
@@ -20,7 +20,7 @@ export const EditCondition: React.FC<{ condition: RuleCondition; ruleId: ApiUUID
         setEditCondition(condition);
     }, [condition.id]);
 
-    const saveCondition = useAsyncCallback(async (updatedCondition: RuleConditionParam) => {
+    const saveCondition = useAsyncCallback(async (updatedCondition: RuleConditionInput) => {
         const response = await client.PUT('/rules/{ruleId}/condition/{condId}', {
             body: { condition: updatedCondition },
             params: { path: { ruleId, condId: condition.id } },

@@ -28,7 +28,7 @@ extension MrScroogeAPIImpl {
 	{
 		let user = try await getUser(fromRequest: request)
 		let userGroupId: UUID
-		let rule: Components.Schemas.RuleParam
+		let rule: Components.Schemas.RuleInput
 		let parent: Rule?
 		switch input.body {
 		case .json(let _data):
@@ -92,7 +92,7 @@ extension MrScroogeAPIImpl {
 		let user = try await getUser(fromRequest: request)
 		let validGroupsIds = try user.groups.map { return try $0.requireID() }
 		let userGroupId: UUID
-		let inputRule: Components.Schemas.RuleParam
+		let inputRule: Components.Schemas.RuleInput
 		let parent: Rule?
 		switch input.body {
 		case .json(let _data):
@@ -388,7 +388,7 @@ extension MrScroogeAPIImpl {
 	}
 }
 
-extension Components.Schemas.RuleParam: InputWithUserGroup, InputWithParentRule {}
+extension Components.Schemas.RuleInput: InputWithUserGroup, InputWithParentRule {}
 
 extension Components.Schemas.Rule {
 	init(rule: Rule) throws {
@@ -451,14 +451,14 @@ extension Components.Schemas.Rule {
 	}
 }
 
-extension Components.Schemas.ConditionParams {
+extension Components.Schemas.ConditionInput {
 	func toBaseCondition() -> Rule.BaseCondition {
 		switch self {
-		case .ConditionParamDouble(let condDouble):
+		case .ConditionDoubleInput(let condDouble):
 			return .init(
 				condDouble.operation.toInternal(),
 				valueDouble: condDouble.value)
-		case .ConditionParamString(let condString):
+		case .ConditionStringInput(let condString):
 			return .init(
 				condString.operation.toInternal(),
 				valueStr: condString.value)

@@ -156,7 +156,7 @@ class GraphTests: AbstractBaseTestsClass {
 
 		let app = try getApp()
 
-		let updateGraph = Components.Schemas.GraphParam(
+		let updateGraph = Components.Schemas.GraphInput(
 			groupOwnerId: testGroup.id!.uuidString,
 			name: "New Graph",
 			kind: .bar,
@@ -187,7 +187,7 @@ class GraphTests: AbstractBaseTestsClass {
 	func testCreateNewGraphWithInvalidOwnerId() async throws {
 		let app = try getApp()
 
-		let updateGraph = Components.Schemas.GraphParam(
+		let updateGraph = Components.Schemas.GraphInput(
 			groupOwnerId: testGroup2.id!.uuidString,
 			name: "New Graph",
 			kind: .bar,
@@ -217,7 +217,7 @@ class GraphTests: AbstractBaseTestsClass {
 
 		try await generateGraphs()
 
-		let updateGraph = Components.Schemas.GraphParam(
+		let updateGraph = Components.Schemas.GraphInput(
 			groupOwnerId: testGroup.id!.uuidString,
 			name: "Updated Graph",
 			kind: .line,
@@ -263,7 +263,7 @@ class GraphTests: AbstractBaseTestsClass {
 		// Create an existing graph
 		try await generateGraphs()
 
-		let updatedGraph = Components.Schemas.GraphParam(
+		let updatedGraph = Components.Schemas.GraphInput(
 			groupOwnerId: testGroup.id!.uuidString, name: "Updated Graph", kind: .line,
 			dateRange: .halfYear,
 			group: .init(
@@ -308,7 +308,7 @@ class GraphTests: AbstractBaseTestsClass {
 		// Create a non-existing graph ID
 		let nonExistingGraphId = UUID()
 
-		let updateGraph = Components.Schemas.GraphParam(
+		let updateGraph = Components.Schemas.GraphInput(
 			groupOwnerId: testGroup.id!.uuidString,
 			name: "Non-Existing Graph",
 			kind: .line,

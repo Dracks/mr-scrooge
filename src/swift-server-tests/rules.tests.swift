@@ -436,7 +436,7 @@ final class RulesTests: AbstractBaseTestsClass {
 			forUser: .init(username: testUser.username, password: "test-password")
 		)
 
-		let NewRule = Components.Schemas.RuleParam(
+		let NewRule = Components.Schemas.RuleInput(
 			groupOwnerId: testGroup.id!.uuidString,
 			name: "Some rule",
 			relations: .or
@@ -474,7 +474,7 @@ final class RulesTests: AbstractBaseTestsClass {
 		let ruleId = try ruleToChange.requireID()
 		let groupOwnerId = try testGroup.requireID().uuidString
 
-		let NewRule = Components.Schemas.RuleParam(
+		let NewRule = Components.Schemas.RuleInput(
 			groupOwnerId: groupOwnerId,
 			name: "Change Rule",
 			relations: .notAnd
@@ -652,7 +652,7 @@ final class RulesTests: AbstractBaseTestsClass {
 		).requireID()
 		let ruleId = try ruleToAddCond.requireID()
 
-		let conditionInput = Components.Schemas.ConditionParams.ConditionParamString(
+		let conditionInput = Components.Schemas.ConditionInput.ConditionStringInput(
 			.init(operation: .contains, value: "condition"))
 
 		let response = try await app.sendRequest(
@@ -711,7 +711,7 @@ final class RulesTests: AbstractBaseTestsClass {
 		let ruleId = try ruleToUpdateCond.requireID()
 		let conditionId = try ruleToUpdateCond.conditions.first!.requireID()
 
-		let conditionInput = Components.Schemas.ConditionParams.ConditionParamDouble(
+		let conditionInput = Components.Schemas.ConditionInput.ConditionDoubleInput(
 			.init(operation: .greaterEqual, value: 0))
 
 		let response = try await app.sendRequest(

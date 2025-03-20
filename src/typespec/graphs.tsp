@@ -33,7 +33,7 @@ enum GraphDateRange {
   twoYears,
 }
 
-model GraphParam {
+model GraphInput {
   groupOwnerId: UUID;
   name: string;
   kind: GraphKind;
@@ -45,7 +45,7 @@ model GraphParam {
 
 model Graph {
   id: UUID;
-  ...GraphParam;
+  ...GraphInput;
   order: uint64;
 }
 
@@ -74,7 +74,7 @@ enum MoveDirection {
 @tag("graphs")
 @route("/graphs")
 interface ApiGraphs {
-  @post create(...GraphParam): {
+  @post create(...GraphInput): {
     @statusCode _: 201;
     ...Graph;
   } | InvalidGroupOwnerId | NotFoundLabels;
@@ -83,7 +83,7 @@ interface ApiGraphs {
     @query cursor?: string,
     @query limit?: uint16 = 100,
   ): PageList<Graph>;
-  @route("/{id}") @put update(@path id: UUID, ...GraphParam):
+  @route("/{id}") @put update(@path id: UUID, ...GraphInput):
     | Graph
     | InvalidGroupOwnerId
     | NotFoundLabels

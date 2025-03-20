@@ -1,4 +1,4 @@
-import { ApiUUID, GraphParam, Group, Label } from '../../../api/models';
+import { ApiUUID, GraphInput, Group, Label } from '../../../api/models';
 import { EnrichedGraph, EnrichedGroup } from '../types';
 
 export const enrichGroup = <T extends Group>(
@@ -13,7 +13,7 @@ export const enrichGroup = <T extends Group>(
     };
 };
 
-export const enrichGraph = <T extends GraphParam>(graph: T, labelsList: Label[]): EnrichedGraph<T> => {
+export const enrichGraph = <T extends GraphInput>(graph: T, labelsList: Label[]): EnrichedGraph<T> => {
     const { horizontalGroup, group } = graph;
     const ownedLabels = labelsList.filter(({ groupOwnerId }) => groupOwnerId === graph.groupOwnerId);
     const ownMapedLabels = new Map(ownedLabels.map(label => [label.id, label]));

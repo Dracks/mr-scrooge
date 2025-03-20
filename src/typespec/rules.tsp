@@ -12,7 +12,7 @@ enum ConditionalRelation {
   notAnd,
 }
 
-model RuleParam {
+model RuleInput {
   parentRuleId?: UUID;
   groupOwnerId: UUID;
   name: string;
@@ -21,7 +21,7 @@ model RuleParam {
 
 model Rule {
   id: UUID;
-  ...RuleParam;
+  ...RuleInput;
   conditions: Condition[];
   labelIds: UUID[];
 }
@@ -58,19 +58,19 @@ union Condition {
   string: ConditionString,
 }
 
-model ConditionParamDouble {
+model ConditionDoubleInput {
   operation: OperationDouble;
   value: float64;
 }
-model ConditionParamString {
+model ConditionStringInput {
   operation: OperationString;
   value: string;
 }
 
 @oneOf
-union ConditionParams {
-  double: ConditionParamDouble,
-  string: ConditionParamString,
+union ConditionInput {
+  double: ConditionDoubleInput,
+  string: ConditionStringInput,
 }
 
 model SetLabelAction {
@@ -93,7 +93,7 @@ model HasChildren {
 @tag("rule")
 interface ApiRule {
   list(@query cursor?: string, @query limit?: int16): PageList<Rule>;
-  @post create(...RuleParam):
+  @post create(...RuleInput):
     | {
         @statusCode _: 201;
         ...Rule;
@@ -101,7 +101,7 @@ interface ApiRule {
     | InvalidGroupOwnerId
     | InvalidUUID
     | NotFound;
-  @put @route("{ruleId}") update(@path ruleId: UUID, ...RuleParam):
+  @put @route("{ruleId}") update(@path ruleId: UUID, ...RuleInput):
     | Rule
     | InvalidGroupOwnerId
     | InvalidUUID
@@ -122,12 +122,12 @@ interface ApiRule {
   // Here is the conditions
   @post @route("{ruleId}/condition") addCondition(
     @path ruleId: UUID,
-    condition: ConditionParams,
+    condition: ConditionInput,
   ): Rule | NotFound | InvalidUUID;
   @put @route("{ruleId}/condition/{condId}") updateCondition(
     @path ruleId: UUID,
     @path condId: UUID,
-    condition: ConditionParams,
+    condition: ConditionInput,
   ): Rule | NotFound | InvalidUUID;
   @delete @route("{ruleId}/condition/{condId}") removeCondition(
     @path ruleId: UUID,
