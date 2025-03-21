@@ -30,9 +30,16 @@ final class UserService: ServiceWithDb, @unchecked Sendable {
 		return (user, group)
 	}
 
-	func getUsersPage(pageQuery: PageQuery) async throws -> ListWithCursor<
-		User
-	> {
+	struct SearchUserQuery {
+		var username: String? = nil
+	}
+
+	func getUsersPage(pageQuery: PageQuery = .init(), filter: SearchUserQuery = .init())
+		async throws
+		-> ListWithCursor<
+			User
+		>
+	{
 		let query = User.query(on: db).with(\.$groups)
 
 		if let cursor = pageQuery.cursor {

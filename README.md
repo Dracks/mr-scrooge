@@ -32,6 +32,29 @@ No matter which environment you use, the server accepts the following environmen
 | `MAX_LOGIN_ATTEMPTS` | Maximum number of failed login attempts before locking the user | `5` |
 | `MAX_LOGIN_ATTEMPTS_PERIOD` | Time period in minutes during which failed login attempts are counted | `60` |
 
+Environment vars available in the docker
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DEMO` | Enable demo mode and user setup | `false` |
+| `DEMO_USER` | Override the default username for the create user command | - |
+| `DEMO_PWD` | Override the default password for the create user command | - |
+| `DEMO_EMAIL` | Override the default email the create user command | - |
+| `DEMO_DATA` | Generate sample data for demo user | `false` |
+
+### Commands available in the server application
+
+The server application has multiple commands to make the initial creation easy, and also maintainance
+
+* `create_user`: it will create a user in the database
+  * `-u`, `--username`: define a username
+  * `-p`, `--password`: define the password
+  * `-e`, `--email`: define the e-mail
+  * `--admin`: sets the user as admin
+  * `-g`, `--groupname`: defines the group name
+  
+* `demo_data`: generate basic graphs, labels and random movements
+
+
 
 ## How to Migrate from Mr Scrooge V2
 The migration from Django to Vapor brought significant database improvements, including group data ownership capabilities that enable multiple users to operate on a single instance. This upgrade requires a complete data migration from the previous database version.
