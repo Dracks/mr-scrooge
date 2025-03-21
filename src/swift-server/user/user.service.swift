@@ -31,7 +31,7 @@ final class UserService: ServiceWithDb, @unchecked Sendable {
 	}
 
 	struct SearchUserQuery {
-		var username: String? = nil
+		var username: String?
 	}
 
 	func getUsersPage(pageQuery: PageQuery = .init(), filter: SearchUserQuery = .init())
