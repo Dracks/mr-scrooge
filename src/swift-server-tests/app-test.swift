@@ -162,6 +162,39 @@ final class MrScroogeServerTest: AbstractBaseTestsClass {
 		XCTAssertEqual(groups.count, 1)
 		XCTAssertEqual(user.isAdmin, false)
 	}
+
+	func testCreateAdminUserCommand() async throws {
+		let app = try getApp()
+
+		let command = CreateUserCommand()
+		let arguments = [
+			"create_user", "--username", "custom-admin", "--admin", "--if-not-exists",
+		]
+
+		let console = TestConsole()
+		let input = CommandInput(arguments: arguments)
+		var context = CommandContext(
+			console: console,
+			input: input
+		)
+		context.application = app
+
+		try await console.run(command, with: context)
+
+		let output = console
+			.testOutputQueue
+			.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+
+		XCTAssertContains(output[0], "User \"custom-admin\" created with groupId: ")
+		let users = try await User.query(on: app.db).filter(\.$username == "custom-admin")
+			.all()
+
+		XCTAssertEqual(users.count, 1)
+		let user = users.first!
+		let groups = try await user.$groups.get(on: app.db)
+		XCTAssertEqual(groups.count, 1)
+		XCTAssertEqual(user.isAdmin, true)
+	}
 }
 
 extension Application {
