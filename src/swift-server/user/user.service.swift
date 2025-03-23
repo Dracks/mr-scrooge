@@ -42,6 +42,11 @@ final class UserService: ServiceWithDb, @unchecked Sendable {
 	{
 		let query = User.query(on: db).with(\.$groups)
 
+		// Apply username filter if provided
+		if let username = filter.username {
+			query.filter(\.$username == username)
+		}
+
 		if let cursor = pageQuery.cursor {
 			let cursorData = try self.cursorHandler.parse(cursor)
 			if let idString = cursorData["id"], let id = UUID(uuidString: idString) {

@@ -3,6 +3,13 @@ set -e
 
 SERVER="./server"
 
+# Validate command-line arguments
+if [ -z "$1" ] || [ -z "$2" ]; then
+    echo "Error: Missing required arguments"
+    echo "Usage: $0 <hostname> <port>"
+    exit 1
+fi
+
 echo "Migrating DB to the last version"
 $SERVER migrate -y
 
