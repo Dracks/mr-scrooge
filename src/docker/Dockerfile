@@ -56,6 +56,8 @@ RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
 RUN useradd --user-group --create-home --system --skel /dev/null --home-dir /home/app vapor
 WORKDIR /home/app
 
+COPY src/docker/start.sh /home/app/
+RUN chmod +x /home/app/start.sh
 COPY --chown=vapor:vapor --from=server-build /build/.build/release/MrScroogeServer /home/app/server
 COPY --chown=vapor:vapor Public /home/app/Public
 COPY --chown=vapor:vapor --from=client-build /home/app/Public/react /home/app/Public/react
@@ -71,4 +73,4 @@ ENV ENVIRONMENT=docker
 USER vapor:vapor
 
 EXPOSE 8080
-CMD ["./server", "serve", "--hostname", "0.0.0.0", "--port", "8080"]
+CMD ["./start.sh", "0.0.0.0", "8080"]

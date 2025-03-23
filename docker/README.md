@@ -5,7 +5,7 @@ WIP: See https://github.com/Dracks/mr-scrooge/issues/62
 Is the one of the sample in the documentation.
 
 Features:
-  * It creates the user demo with password demo
+  * It creates the admin user demo with password demo
   * It creates random demo data
   * It creates two sample graphs
   * It creates two sample tags

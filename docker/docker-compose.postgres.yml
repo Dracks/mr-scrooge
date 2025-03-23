@@ -8,6 +8,9 @@ services:
       - postgres
     environment:
       DB_URL: postgres://postgres:postgres@postgres/mrscrooge
+      DEMO: true
+      DEMO_USER: user
+      DEMO_PWD: pwd
     ports:
       - 3333:8080
 
