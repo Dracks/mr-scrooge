@@ -60,6 +60,7 @@ public func configure(_ app: Application) async throws {
 
 		try await registerMigrations(app)
 
+		app.logger.info("Configure DB")
 		try await configureDb(app)
 
 		if app.environment == .testing {
