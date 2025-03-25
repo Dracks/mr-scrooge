@@ -13,7 +13,11 @@
         }]
     },
     "setupFilesAfterEnv": ["<rootDir>/config/setupTests.js"],
-    "coverageDirectory": "/coverage/react-view",
+    "coverageDirectory": "<rootDir>/coverage/react-view",
+    "coverageReporters": [
+          "text",
+          "cobertura"
+        ],
     "testEnvironment": "jest-fixed-jsdom",
     "testEnvironmentOptions": {
         "customExportConditions": [""]
