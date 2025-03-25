@@ -31,6 +31,4 @@ jobs:
             llvm-cov export -format="lcov" .build/debug/mr-scroogePackageTests.xctest -instr-profile .build/debug/codecov/default.profdata > info.lcov
       - uses: codecov/codecov-action@v5
         with:
-            files: info.lcov
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_ORG_TOKEN }}
+            token: ${{ secrets.CODECOV_TOKEN }}
