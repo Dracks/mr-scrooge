@@ -36,8 +36,8 @@ final class TestConsole: Console, @unchecked Sendable {
 	var testOutputQueue: [String]
 	var userInfo: [AnySendableHashable: any Sendable]
 
-	init() {
-		self.testInputQueue = []
+	init(input: [String] = []) {
+		self.testInputQueue = input
 		self.testOutputQueue = []
 		self.userInfo = [:]
 	}

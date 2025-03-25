@@ -1,4 +1,5 @@
 import Fluent
+import Testing
 import Vapor
 import XCTQueues
 import XCTVapor
@@ -43,6 +44,54 @@ func createGroup(app: Application, name: String) async throws -> UserGroup {
 	return group
 }
 
+func withApp(_ test: (Application) async throws -> Void) async throws {
+	let app = try await Application.make(.testing)
+	do {
+		try await configure(app)
+
+		app.queues.use(.asyncTest)
+
+		try await test(app)
+	} catch {
+		try await app.asyncShutdown()
+		throw error
+	}
+	try await app.asyncShutdown()
+}
+
+struct GroupsAndUsers {
+	var user: User
+	var admin: User
+	var group: UserGroup
+	var group2: UserGroup
+	var group3: UserGroup
+}
+
+func createGroupsAndUsers(app: Application) async throws -> GroupsAndUsers {
+	// Create a test group
+	let testGroup2 = try await createGroup(app: app, name: "Other Group")
+	let testGroup = try await createGroup(app: app, name: "Test Group")
+	let testGroup3 = try await createGroup(app: app, name: "Other group for main")
+	let testGroupId = try testGroup.requireID()
+
+	// Create users
+	let testUser = try await createUser(
+		app: app, username: "test-user", email: "test@example.com",
+		password: "test-password", defaultGroupId: testGroupId)
+	try await testUser.$groups.attach(testGroup, on: app.db)
+	try await testUser.$groups.attach(testGroup3, on: app.db)
+
+	let testAdmin = try await createUser(
+		app: app, username: "admin", email: "admin@example.com",
+		password: "test-admin-password", defaultGroupId: testGroupId,
+		isAdmin: true)
+	try await testAdmin.$groups.attach(testGroup, on: app.db)
+
+	return .init(
+		user: testUser, admin: testAdmin, group: testGroup, group2: testGroup2,
+		group3: testGroup3)
+}
+
 class AbstractBaseTestsClass: XCTestCase {
 	var app: Application?
 
@@ -77,25 +126,16 @@ class AbstractBaseTestsClass: XCTestCase {
 			app.queues.use(.asyncTest)
 			//app.queues.add(NewTransactionJob())
 
-			// Create a test group
-			testGroup2 = try await createGroup(app: app, name: "Other Group")
-			testGroup = try await createGroup(app: app, name: "Test Group")
-			testGroup3 = try await createGroup(app: app, name: "Other group for main")
+			let testUsersAndGroups = try await createGroupsAndUsers(app: app)
+
+			testGroup2 = testUsersAndGroups.group2
+			testGroup = testUsersAndGroups.group
+			testGroup3 = testUsersAndGroups.group3
 			let testGroupId = try testGroup.requireID()
 			let testGroupId2 = try testGroup2.requireID()
 
-			// Create users
-			testUser = try await createUser(
-				app: app, username: "test-user", email: "test@example.com",
-				password: "test-password", defaultGroupId: testGroupId)
-			try await testUser.$groups.attach(testGroup, on: app.db)
-			try await testUser.$groups.attach(testGroup3, on: app.db)
-
-			testAdmin = try await createUser(
-				app: app, username: "admin", email: "admin@example.com",
-				password: "test-admin-password", defaultGroupId: testGroupId,
-				isAdmin: true)
-			try await testAdmin.$groups.attach(testGroup, on: app.db)
+			testUser = testUsersAndGroups.user
+			testAdmin = testUsersAndGroups.admin
 
 			// Create labels
 			labels = labelFactory.createSequence(10) {
@@ -131,69 +171,6 @@ final class MrScroogeServerTest: AbstractBaseTestsClass {
 		let app = try getApp()
 		let res = try await app.sendRequest(.POST, "/api/session", body: "")
 		XCTAssertEqual(res.status, .badRequest)
-	}
-
-	func testCreateUserCommand() async throws {
-		let app = try getApp()
-
-		let command = CreateUserCommand()
-		let arguments = ["create_user"]
-
-		let console = TestConsole()
-		let input = CommandInput(arguments: arguments)
-		var context = CommandContext(
-			console: console,
-			input: input
-		)
-		context.application = app
-
-		try await console.run(command, with: context)
-
-		let output = console
-			.testOutputQueue
-			.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-
-		XCTAssertContains(output[0], "User \"demo\" created with groupId: ")
-		let users = try await User.query(on: app.db).filter(\.$username == "demo").all()
-
-		XCTAssertEqual(users.count, 1)
-		let user = users.first!
-		let groups = try await user.$groups.get(on: app.db)
-		XCTAssertEqual(groups.count, 1)
-		XCTAssertEqual(user.isAdmin, false)
-	}
-
-	func testCreateAdminUserCommand() async throws {
-		let app = try getApp()
-
-		let command = CreateUserCommand()
-		let arguments = [
-			"create_user", "--username", "custom-admin", "--admin", "--if-not-exists",
-		]
-
-		let console = TestConsole()
-		let input = CommandInput(arguments: arguments)
-		var context = CommandContext(
-			console: console,
-			input: input
-		)
-		context.application = app
-
-		try await console.run(command, with: context)
-
-		let output = console
-			.testOutputQueue
-			.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-
-		XCTAssertContains(output[0], "User \"custom-admin\" created with groupId: ")
-		let users = try await User.query(on: app.db).filter(\.$username == "custom-admin")
-			.all()
-
-		XCTAssertEqual(users.count, 1)
-		let user = users.first!
-		let groups = try await user.$groups.get(on: app.db)
-		XCTAssertEqual(groups.count, 1)
-		XCTAssertEqual(user.isAdmin, true)
 	}
 }
 

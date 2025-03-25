@@ -59,6 +59,7 @@
     * [x] modify
     * [x] create
     * [ ] delete
+  * [ ] admin groups
   * [x] edit my profile
   * [ ] Command to change the password
   * [ ] Reset my password
