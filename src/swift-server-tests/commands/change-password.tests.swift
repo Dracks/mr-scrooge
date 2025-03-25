@@ -27,7 +27,6 @@ class ChangePasswordTests {
 			let output = console
 				.testOutputQueue
 				.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-			app.logger.info("output: \(console.testOutputQueue)")
 
 			#expect(output.contains("Password changed correctly"))
 

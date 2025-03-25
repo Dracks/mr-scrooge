@@ -40,7 +40,6 @@ final class CreateUserTests {
 	}
 
 	@Test("Create an admin user")
-
 	func testCreateAdminUserCommand() async throws {
 		try await withApp { app in
 
