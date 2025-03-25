@@ -43,7 +43,6 @@ jobs:
       - name: Prepare Coverage
         run:
             llvm-cov export -format="lcov" .build/debug/mr-scroogePackageTests.xctest -instr-profile .build/debug/codecov/default.profdata > info.lcov
-      - name: Upload to CodeCov.io
-        run: bash <(curl -s https://codecov.io/bash)
+      - uses: codecov/codecov-action@v5
         env:
-            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          CODECOV_TOKEN: ${{ secrets.CODECOV_ORG_TOKEN }}
