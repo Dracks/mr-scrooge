@@ -9,23 +9,6 @@ on:
         - mr-scrooge-3.0.0
 
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-24.04-arm
-    container: swift:6.0
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Install zstd
-        run: |
-            apt-get update -y
-            apt-get install -y zstd
-      - uses: actions/cache@v4
-        with:
-            path: .build
-            key: ${{ runner.os }}-spm-${{ hashFiles('Package.resolved') }}
-      - name: Build
-        run: swift build
   test:
     name: Test
     needs: build
@@ -37,7 +20,7 @@ jobs:
       - name: Install zstd
         run: |
             apt-get update -y
-            apt-get install -y zstd
+            apt-get install -y zstd curl
       - uses: actions/cache@v4
         with:
             path: .build
