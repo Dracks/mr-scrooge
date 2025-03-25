@@ -14,8 +14,8 @@ Currently this application supports the following bank file formats:
 ## Demo
 
 ## Run it
-* You can run it via [docker image](https://hub.docker.com/r/dracks/mrscrooge)
-* Or have it run in cloning the code and building it, see [How to contribute](#How-to-contribute)
+- You can run it via [docker image](https://hub.docker.com/r/dracks/mrscrooge)
+- Or have it run in cloning the code and building it, see [How to contribute](#How-to-contribute)
 
 ### Environment vars
 No matter which environment you use, the server accepts the following environment vars
@@ -45,14 +45,21 @@ Environment vars available in the docker
 
 The server application has multiple commands to make the initial creation easy, and also maintainance
 
-* `create_user`: it will create a user in the database
-  * `-u`, `--username`: define a username
-  * `-p`, `--password`: define the password
-  * `-e`, `--email`: define the e-mail
-  * `--admin`: sets the user as admin
-  * `-g`, `--groupname`: defines the group name
+- `create_user`: it will create a user in the database
+  - `-u`, `--username`: define a username
+  - `-p`, `--password`: define the password
+  - `-e`, `--email`: define the e-mail
+  - `--admin`: sets the user as admin
+  - `-g`, `--groupname`: defines the group name
   
-* `demo_data`: generate basic graphs, labels and random movements
+- `demo_data`: generate basic graphs, labels and random movements
+  - `-g`, `--group-owner-id`: defines the group owner id of the generated data
+
+- `change_password`: Change the password of a user
+  - `username`: the username of the user to change the password
+
+  
+
 
 
 
