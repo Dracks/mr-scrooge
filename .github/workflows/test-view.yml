@@ -34,4 +34,12 @@ jobs:
           cache: 'pnpm'
 
       - run: pnpm install
-      - run: pnpm run ${{ matrix.action }}
+      - if: matrix.action != 'test'
+        run: pnpm run ${{ matrix.action }}
+      - if: matrix.action == 'test'
+        run: pnpm run ${{ matrix.action }} --coverage
+      - if: matrix.action == 'test'
+        name: Upload results to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+            token: ${{ secrets.CODECOV_TOKEN }}

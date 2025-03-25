@@ -23,5 +23,12 @@ jobs:
             restore-keys: |
                 ${{ runner.os }}-spm-
       - name: Run tests
-        run: swift test --parallel
+        run: swift test --parallel --enable-code-coverage
         # run: swift test
+      - name: Prepare Coverage
+        run:
+            llvm-cov export -format="lcov" .build/x86_64-unknown-linux-gnu/debug/mr-scroogePackageTests.xctest -instr-profile .build/debug/codecov/default.profdata > info.lcov
+      - name: Upload to CodeCov.io
+        run: bash <(curl https://codecov.io/bash)
+        env:
+            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
