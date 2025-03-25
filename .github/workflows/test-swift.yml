@@ -9,8 +9,24 @@ on:
         - mr-scrooge-3.0.0
 
 jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-24.04-arm
+    container: swift:6.0
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+            path: .build
+            key: ${{ runner.os }}-spm-${{ hashFiles('Package.resolved') }}
+            restore-keys: |
+                ${{ runner.os }}-spm-
+      - name: Build
+        run: swift build
   test:
     name: Test
+    needs: build
     runs-on: ubuntu-24.04-arm
     container: swift:6.0
     steps:
@@ -24,11 +40,10 @@ jobs:
                 ${{ runner.os }}-spm-
       - name: Run tests
         run: swift test --parallel --enable-code-coverage
-        # run: swift test
       - name: Prepare Coverage
         run:
             llvm-cov export -format="lcov" .build/debug/mr-scroogePackageTests.xctest -instr-profile .build/debug/codecov/default.profdata > info.lcov
       - name: Upload to CodeCov.io
-        run: bash <(curl https://codecov.io/bash)
+        run: bash <(curl -s https://codecov.io/bash)
         env:
             CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
