@@ -3,6 +3,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 on:
+  push:
+    branches:
+        - main
+        - mr-scrooge-3.0.0
   pull_request:
     branches:
         - main

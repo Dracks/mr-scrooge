@@ -3,7 +3,15 @@
 
 name: Test view
 
-on: [pull_request]
+on: 
+  push:
+    branches:
+        - main
+        - mr-scrooge-3.0.0
+  pull_request:
+    branches:
+        - main
+        - mr-scrooge-3.0.0
 
 env:
   NODE_VERSION: 20
