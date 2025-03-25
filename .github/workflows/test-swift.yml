@@ -16,12 +16,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Install zstd
+        run: |
+            apt-get update -y
+            apt-get install -y zstd curl
       - uses: actions/cache@v4
         with:
             path: .build
             key: ${{ runner.os }}-spm-${{ hashFiles('Package.resolved') }}
-            restore-keys: |
-                ${{ runner.os }}-spm-
       - name: Run tests
-        run: swift test --parallel
-        # run: swift test
+        run: swift test --parallel --enable-code-coverage
+      - name: Prepare Coverage
+        run:
+            llvm-cov export -format="lcov" .build/debug/mr-scroogePackageTests.xctest -instr-profile .build/debug/codecov/default.profdata > info.lcov
+      - uses: codecov/codecov-action@v5
+        with:
+            token: ${{ secrets.CODECOV_TOKEN }}
