@@ -18,6 +18,8 @@ jobs:
     name: Build
     runs-on: ubuntu-24.04-arm
     container: swift:6.0
+    outputs:
+        md5: ${{ steps.mmd5.outputs.value }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -25,10 +27,13 @@ jobs:
         run: |
             apt-get update -y
             apt-get install -y zstd curl
+      - name: Md5
+        id: md5
+        run: echo "value=$(md5sum Package.resolved)" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@v4
         with:
             path: .build
-            key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+            key: ${{ runner.os }}-spm-${{ steps.mmd5.outputs.value }}
       - name: Build everything
         run: swift build --build-tests --enable-code-coverage
   test:
@@ -46,7 +51,7 @@ jobs:
       - uses: actions/cache@v4
         with:
             path: .build
-            key:  ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+            key:  ${{ runner.os }}-spm-${{ needs.build.outputs.md5 }}
       - name: Run tests
         run: swift test --parallel --skip-build --enable-code-coverage
       - name: Prepare Coverage
