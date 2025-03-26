@@ -11,7 +11,7 @@ on:
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
   pull_request:
-    branches: [ main, mr-scrooge-3.0.0 ]
+    branches: [ main ]
 
 env:
   # Use docker.io for Docker Hub if empty
