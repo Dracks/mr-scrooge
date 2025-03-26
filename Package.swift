@@ -30,7 +30,7 @@ let package = Package(
 
 		// Parser libs
 		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.8.7"),
-		.package(url: "https://github.com/yaslab/CSV.swift.git", from: "2.5.0"),
+		.package(url: "https://github.com/yaslab/CSV.swift.git", from: "2.5.2"),
 
 		// Tools
 		.package(url: "https://github.com/swiftlang/swift-format", from: "600.0.0"),
