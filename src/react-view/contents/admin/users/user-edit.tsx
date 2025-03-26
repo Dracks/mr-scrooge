@@ -61,7 +61,7 @@ export const EditUser: React.FC<EditUserParams> = ({ user }) => {
                     primary
                     label="Save"
                     type="submit"
-                    disabled={!userData.username || !userData.password || saveUser.loading}
+                    disabled={!userData.username || saveUser.loading}
                 />
             </Form>
         </Box>
