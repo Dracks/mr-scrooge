@@ -13,8 +13,31 @@ on:
         - mr-scrooge-3.0.0
 
 jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-24.04-arm
+    container: swift:6.0
+    outputs:
+        md5: ${{ steps.md5.outputs.value }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install zstd
+        run: |
+            apt-get update -y
+            apt-get install -y zstd curl
+      - name: Md5
+        id: md5
+        run: echo "value=$(md5sum Package.resolved)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+            path: .build
+            key: ${{ runner.os }}-spm-${{ steps.md5.outputs.value }}
+      - name: Build everything
+        run: swift build --build-tests --enable-code-coverage
   test:
     name: Test
+    needs: build
     runs-on: ubuntu-24.04-arm
     container: swift:6.0
     steps:
@@ -27,9 +50,9 @@ jobs:
       - uses: actions/cache@v4
         with:
             path: .build
-            key: ${{ runner.os }}-spm-${{ hashFiles('Package.resolved') }}
+            key:  ${{ runner.os }}-spm-${{ needs.build.outputs.md5 }}
       - name: Run tests
-        run: swift test --parallel --enable-code-coverage
+        run: swift test --parallel --skip-build --enable-code-coverage
       - name: Prepare Coverage
         run:
             llvm-cov export -format="lcov" .build/debug/mr-scroogePackageTests.xctest -instr-profile .build/debug/codecov/default.profdata > info.lcov
