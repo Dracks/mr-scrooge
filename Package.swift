@@ -17,7 +17,7 @@ let package = Package(
 		// Vapor
 		.package(url: "https://github.com/vapor/vapor.git", from: "4.114.0"),
 		.package(url: "https://github.com/vapor/leaf.git", from: "4.4.1"),
-		.package(url: "https://github.com/vapor/queues.git", from: "1.17.0"),
+		.package(url: "https://github.com/vapor/queues.git", from: "1.17.1"),
 
 		// fluent
 		.package(url: "https://github.com/vapor/fluent.git", from: "4.12.0"),
