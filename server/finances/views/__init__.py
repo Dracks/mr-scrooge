@@ -1,1 +1,0 @@
-from .react_view import react_view

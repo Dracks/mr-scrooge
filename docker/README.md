@@ -1,10 +1,11 @@
 # Docker compose samples
+WIP: See https://github.com/Dracks/mr-scrooge/issues/62
 
-## Demo
+## sqlite
 Is the one of the sample in the documentation.
 
 Features:
-  * It creates the user demo with password demo
+  * It creates the admin user demo with password demo
   * It creates random demo data
   * It creates two sample graphs
   * It creates two sample tags
@@ -18,5 +19,5 @@ Is a sample docker compose, more complex, with custom user and connection to a p
 Features:
   * Connects to remote postgress server
   * Creates custom user "user" with password "pwd"
-  * Opens the port 333
+  * Opens the port 3333
   * Don't create anything
