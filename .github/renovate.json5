@@ -5,16 +5,16 @@
   ],
   "customManagers": [
       {
-        "customType": "jsonata",
-        "datasourceTemplate": "npm",
-        "fileFormat": "yaml",
-        "fileMatch": [
-          "(^|/)package.yaml$"
-        ],
-        "matchStrings": [
-            "dependencies.{ depName:currentValue }",
-            "devDependencies.{ depName:currentValue }"
-        ]
-      }
+    "customType": "jsonata",
+    "fileMatch": ["package.yaml"],
+    "fileFormat": "yaml",
+    "matchStrings": [
+        "$each(dependencies, function($v, $k) { {\"depName\":$k, \"currentValue\": $v, \"depType\": \"dependencies\"}})",
+        "$each(devDependencies, function($v, $k) { {\"depName\":$k, \"currentValue\": $v, \"depType\": \"devDependencies\"}})",
+        "$each(optionalDependencies, function($v, $k) { {\"depName\":$k, \"currentValue\": $v, \"depType\": \"optionalDependencies\"}})",
+        "{ \"depName\": \"pnpm\", \"currentValue\": $substring(packageManager, 5),  \"depType\": \"packageManager\"}"
+    ],
+    "datasourceTemplate": "npm"
+    }
     ]
 }
