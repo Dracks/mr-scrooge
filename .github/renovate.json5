@@ -9,7 +9,7 @@
         "datasourceTemplate": "npm",
         "fileFormat": "yaml",
         "fileMatch": [
-          "(^|/)package.yaml?$"
+          "(^|/)package.yaml$"
         ],
         "matchStrings": [
             "dependencies.{ depName:currentValue }",
