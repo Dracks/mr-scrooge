@@ -3,9 +3,18 @@
   "extends": [
     "config:recommended"
   ],
-  "npm": {
-      "fileMatch": [
-          "(^|/)package\\.yaml$"
-      ]
-  }
+  "customManagers": [
+      {
+        "customType": "jsonata",
+        "datasourceTemplate": "npm",
+        "fileFormat": "yaml",
+        "fileMatch": [
+          "(^|/)package.yaml?$"
+        ],
+        "matchStrings": [
+            "dependencies.{ package:version }",
+            "devDependencies.{ package:version }"
+        ]
+      }
+    ]
 }
