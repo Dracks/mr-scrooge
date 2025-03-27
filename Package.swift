@@ -36,7 +36,7 @@ let package = Package(
 		.package(url: "https://github.com/swiftlang/swift-format", from: "600.0.0"),
 
 		// dependency injection
-		.package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.4.1"),
+		.package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.8.1"),
 		.package(
 			url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.1"
 		),
