@@ -12,8 +12,8 @@
           "(^|/)package.yaml?$"
         ],
         "matchStrings": [
-            "dependencies.{ package:version }",
-            "devDependencies.{ package:version }"
+            "dependencies.{ depName:currentValue }",
+            "devDependencies.{ depName:currentValue }"
         ]
       }
     ]
