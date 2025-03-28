@@ -3,18 +3,20 @@
   "extends": [
     "config:recommended"
   ],
-  "customManagers": [
-      {
-    "customType": "jsonata",
-    "fileMatch": ["package.yaml"],
-    "fileFormat": "yaml",
-    "matchStrings": [
-        "$each(dependencies, function($v, $k) { {\"depName\":$k, \"currentValue\": $v, \"depType\": \"dependencies\"}})",
-        "$each(devDependencies, function($v, $k) { {\"depName\":$k, \"currentValue\": $v, \"depType\": \"devDependencies\"}})",
-        "$each(optionalDependencies, function($v, $k) { {\"depName\":$k, \"currentValue\": $v, \"depType\": \"optionalDependencies\"}})",
-        "{ \"depName\": \"pnpm\", \"currentValue\": $substring(packageManager, 5),  \"depType\": \"packageManager\"}"
-    ],
-    "datasourceTemplate": "npm"
-    }
+  "npm": {
+      "fileMatch": [
+          "(^|/)package\\.yaml$"
+      ]
+  },
+  packageRules: [
+        {
+            "groupName": "all non-major dependencies",
+            "groupSlug": "all-minor-patch",
+            "matchUpdateTypes": ["minor", "patch", "digest"],
+            "matchPackageNames": [
+                "*",
+            ]
+        },
     ]
 }
+
