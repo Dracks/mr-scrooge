@@ -10,11 +10,8 @@ import "./rules.tsp";
 
 using TypeSpec.Http;
 
-@service({
+@service(#{
   title: "Mr Scrooge API",
-  description: "API for Mr Scrooge",
-})
-@TypeSpec.OpenAPI.info({
   version: "3.0.0",
 })
 @server("/api", "Development")
