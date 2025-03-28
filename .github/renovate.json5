@@ -1,22 +1,45 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ],
-  "npm": {
-      "fileMatch": [
-          "(^|/)package\\.yaml$"
-      ]
-  },
-  packageRules: [
+
+    $schema: "https://docs.renovatebot.com/renovate-schema.json",
+    configMigration: true,
+    baseBranches: ["main"],
+    extends: ["config:recommended", "group:monorepos"],
+    npm: {
+        fileMatch: ["(^|/)package\\.yaml$"],
+    },
+    packageRules: [
         {
-            "groupName": "all non-major dependencies",
-            "groupSlug": "all-minor-patch",
-            "matchUpdateTypes": ["minor", "patch", "digest"],
-            "matchPackageNames": [
-                "*",
-            ]
+            groupName: "Typespec",
+            groupSlug: "typespec",
+            matchUpdateTypes: ["digest", "patch", "minor", "major"],
+            matchPackageNames: ["@typespec/*"],
         },
-    ]
+        {
+            groupName: "eslint packages",
+            groupSlug: "eslint",
+            matchPackageNames: ["@eslint/js", "@typescript-eslint/*", "eslint{/,}**"],
+            matchUpdateTypes: ["digest", "patch", "minor", "major"],
+        },
+        {
+            groupName: "react packages",
+            groupSlug: "react",
+            matchPackageNames: ["@types/react*", "react*"],
+            matchUpdateTypes: ["digest", "patch", "minor", "major"],
+        },
+        {
+            groupName: "all non-major dependencies",
+            groupSlug: "all-minor-patch",
+            matchUpdateTypes: ["minor", "patch", "digest"],
+            matchPackageNames: [
+                "*",
+                "!@typespec/*",
+                "!@eslint/js",
+                "!@typescript-eslint/*",
+                "!eslint{/,}**",
+                "!@types/react*",
+                "!react*",
+            ],
+        },
+    ],
 }
 

@@ -31,6 +31,8 @@ jobs:
         with:
             path: .build
             key: ${{ runner.os }}-spm-${{ steps.md5.outputs.value }}
+      - name: Resolve dependencies
+        run: swift package resolve --force-resolved-versions
       - name: Build everything
         run: swift build --build-tests --enable-code-coverage
   test:
