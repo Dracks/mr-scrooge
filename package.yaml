@@ -25,7 +25,7 @@ devDependencies:
   '@typespec/http': 0.61.0
   '@typespec/json-schema': 0.61.0
   '@typespec/openapi': ^0.64.0
-  '@typespec/openapi3': 0.61.0
+  '@typespec/openapi3': 0.67.1
   '@typespec/rest': 0.61.0
   eslint: ^9.11.1
   eslint-config-prettier: ^9.1.0
