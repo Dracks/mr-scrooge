@@ -33,7 +33,7 @@ let package = Package(
 		.package(url: "https://github.com/yaslab/CSV.swift.git", from: "2.5.2"),
 
 		// Tools
-		.package(url: "https://github.com/swiftlang/swift-format", from: "600.0.0"),
+		.package(url: "https://github.com/swiftlang/swift-format", from: "601.0.0"),
 
 		// dependency injection
 		.package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.8.1"),
