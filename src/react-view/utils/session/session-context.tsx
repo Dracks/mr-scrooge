@@ -98,8 +98,7 @@ export const useUserProfileOrThrows = (): UserProfile => {
 
 export const useIsAuthenticated = (): boolean => {
     const info = useContext(SessionContext);
-    console.log(info);
-    return info.session.user !== 'anonymous';
+    return info.session.user === 'identified';
 };
 
 export const useUserGroupsMap = () => useContext(SessionContext).userGroups;

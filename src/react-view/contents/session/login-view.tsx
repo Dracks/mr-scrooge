@@ -32,6 +32,7 @@ const LoginView = ({ login, isLoading, error, invalidCredentials }: LoginProps) 
                     onSubmit={() => {
                         login(credentials);
                     }}
+                    data-testid="login-form"
                 >
                     <FormField label="User" name="username" required component={TextInput} />
 
