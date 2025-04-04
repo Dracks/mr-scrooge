@@ -27,6 +27,12 @@ const TransactionsContext = React.createContext<BankTransactionsContextType>({
 
 export const useTransactionsData = (): BankTransactionsContextType => useContext(TransactionsContext);
 
+export const useThrottledTransactionsData = ():BankTransactionEnriched[] => {
+    const {data} = useContext(TransactionsContext)
+    
+    return  useThrottledData(data, TRANSACTION_REFRESH_RATE);
+}
+
 export const ProvideTransactionsData: React.FC<PropsWithChildren> = ({ children }) => {
     const client = useApiClient();
     const labels = useLabelsListContext();
@@ -38,7 +44,6 @@ export const ProvideTransactionsData: React.FC<PropsWithChildren> = ({ children 
     });
     const paginator = usePagination(
         async next => {
-            console.log(next);
             const response = await client.GET('/bank-transactions', { params: { query: { cursor: next } } });
             const results = response.data?.results ?? [];
             return {
@@ -48,8 +53,6 @@ export const ProvideTransactionsData: React.FC<PropsWithChildren> = ({ children 
         },
         { autostart: true, hash: (bt: BankTransactionEnriched) => bt.id },
     );
-
-    const throttledData = useThrottledData(paginator.loadedData, TRANSACTION_REFRESH_RATE);
 
     const eventEmitter = useEventEmitter();
     React.useEffect(() => {
@@ -62,7 +65,7 @@ export const ProvideTransactionsData: React.FC<PropsWithChildren> = ({ children 
         return <div>Some Error happened loading Bank Transactions </div>; //<ErrorHandler error={query.error} />;
     }
     const context: BankTransactionsContextType = {
-        data: throttledData,
+        data: paginator.loadedData,
         reset: paginator.reset,
         replace: data => {
             paginator.update([enrichTransactions(data)]);
