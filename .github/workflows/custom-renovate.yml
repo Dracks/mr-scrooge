@@ -1,0 +1,40 @@
+name: Run Renovate at Night
+
+on:
+  schedule:
+    - cron: '14 3 * * *'
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: 20
+  PNPM_VERSION: 10.7.0
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Renovate
+        uses: actions/checkout@v3
+        with:
+          repository: dracks/renovate
+          ref: feat/adding-package-yaml-support
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run Renovate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm start Dracks/mr-scrooge
