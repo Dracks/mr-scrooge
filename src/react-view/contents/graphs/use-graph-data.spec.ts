@@ -42,6 +42,7 @@ jest.mock('../common/transaction.context', () => ({
     useTransactionsData: jest.fn().mockImplementation(() => ({
         data: getData(),
     })),
+    useThrottledTransactionsData: jest.fn().mockImplementation(()=>getData())
 }));
 
 describe('useGraphData', () => {
