@@ -53,6 +53,8 @@ devDependencies:
   webpack-cli: ^5.1.4
 dependencies:
   '@types/d3-scale-chromatic': ^3.0.3
+  d3-color: ^3.1.0
+  d3-interpolate: ^3.0.1
   d3-scale-chromatic: ^3.1.0
   date-fns: ^4.1.0
   factory.ts: ^1.4.1

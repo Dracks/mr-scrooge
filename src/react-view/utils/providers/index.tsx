@@ -12,14 +12,13 @@ import { LoggerUi } from '../logger/logger-ui';
 import { SessionProvider } from '../session/session-context';
 import { ProvideEventEmitter } from './event-emitter.provider';
 
-const AllProviders: React.FC<PropsWithChildren> = ({ children }) => {
-    // const queryClient = new QueryClient()
+const AllProviders: React.FC<PropsWithChildren &{server?: string}> = ({ children, server }) => {
     return (
         <Router basename="/">
             <Grommet theme={MyTheme}>
                 <ProvideEventEmitter>
                     <ProvideLogger>
-                        <ProvideApi>
+                        <ProvideApi server={server}>
                             <SessionProvider>
                                 <React.Fragment>
                                     {DEBUG ? <LoggerUi /> : undefined}

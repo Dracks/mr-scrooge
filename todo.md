@@ -61,6 +61,6 @@
     * [ ] delete
   * [ ] admin groups
   * [x] edit my profile
-  * [ ] Command to change the password
+  * [x] Command to change the password
   * [ ] Reset my password
 * [x] Move services to dependency injection (in the app or in the context)

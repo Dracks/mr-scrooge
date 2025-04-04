@@ -1,5 +1,5 @@
 import { GraphDateRange, GraphInput, Label } from '../../api/models';
-import { useTransactionsData } from '../common/transaction.context';
+import { useThrottledTransactionsData } from '../common/transaction.context';
 import { accumulateFn } from './data-transform/accumulate';
 import { createGroupWithSubGroup } from './data-transform/create-groups';
 import { getRangeFilter, groupLambdas, sortLambdas } from './data-transform/lambdas';
@@ -76,7 +76,7 @@ export const useGraphDataGenerator = <T extends GraphInput>({
     group,
     groupOwnerId,
 }: EnrichedGraph<T>) => {
-    const { data } = useTransactionsData();
+    const data = useThrottledTransactionsData();
     const monthRange: number | undefined = hashDateRange[dateRange];
     let rdsList = labelFilterId ? data.filter(rds => rds.labelIds.indexOf(labelFilterId) >= 0) : data;
     rdsList = rdsList.filter(rds => rds.groupOwnerId === groupOwnerId);
