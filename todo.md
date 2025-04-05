@@ -59,7 +59,13 @@
     * [x] modify
     * [x] create
     * [ ] delete
+    * [ ] add group
+    * [ ] remove group
   * [ ] admin groups
+    * [x] create
+    * [x] list
+    * [ ] modify
+    * [ ] delete
   * [x] edit my profile
   * [x] Command to change the password
   * [ ] Reset my password

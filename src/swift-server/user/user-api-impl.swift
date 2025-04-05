@@ -32,7 +32,7 @@ extension MrScroogeAPIImpl {
 				isActive: newUserInput.isActive,
 				isAdmin: newUserInput.isAdmin
 			), groupName: "default group for \(newUserInput.username)")
-		return .created(.init(body: .json(.init(user: newUser))))
+		return try .created(.init(body: .json(.init(user: newUser))))
 	}
 
 	func ApiUser_list(_ input: Operations.ApiUser_list.Input) async throws
@@ -49,12 +49,12 @@ extension MrScroogeAPIImpl {
 			pageQuery: .init(
 				limit: input.query.limit ?? 100, cursor: input.query.cursor))
 
-		return .ok(
+		return try .ok(
 			.init(
 				body: .json(
 					.init(
 						results: data.list.map {
-							Components.Schemas.UserProfile(user: $0)
+							try .init(user: $0)
 						}, next: data.next))))
 	}
 
@@ -119,7 +119,7 @@ extension MrScroogeAPIImpl {
 							code: ApiError.API10016.rawValue))))
 		case .ok(let user):
 			try await user.$groups.load(on: request.db)
-			return .ok(.init(body: .json(.init(user: user))))
+			return try .ok(.init(body: .json(.init(user: user))))
 		}
 	}
 
@@ -143,8 +143,8 @@ extension MrScroogeAPIImpl {
 }
 
 extension Components.Schemas.UserProfile {
-	init(user: User) {
-		id = user.id!.uuidString
+	init(user: User) throws {
+		id = try user.requireID().uuidString
 		username = user.username
 		email = user.email
 		firstName = user.firstName
@@ -152,13 +152,6 @@ extension Components.Schemas.UserProfile {
 		isActive = user.isActive
 		isAdmin = user.isAdmin
 		defaultGroupId = user.$defaultGroup.id.uuidString
-		groups = user.groups.map { .init(group: $0) }
-	}
-}
-
-extension Components.Schemas.UserGroup {
-	init(group: UserGroup) {
-		id = group.id!.uuidString
-		name = group.name
+		groups = try user.groups.map { try .init(group: $0) }
 	}
 }

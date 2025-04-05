@@ -61,7 +61,9 @@ func withApp(_ test: (Application) async throws -> Void) async throws {
 
 struct GroupsAndUsers {
 	var user: User
+	var userPwd: String
 	var admin: User
+	var adminPwd: String
 	var group: UserGroup
 	var group2: UserGroup
 	var group3: UserGroup
@@ -86,9 +88,11 @@ func createGroupsAndUsers(app: Application) async throws -> GroupsAndUsers {
 		password: "test-admin-password", defaultGroupId: testGroupId,
 		isAdmin: true)
 	try await testAdmin.$groups.attach(testGroup, on: app.db)
+	try await testAdmin.$groups.attach(testGroup2, on: app.db)
 
 	return .init(
-		user: testUser, admin: testAdmin, group: testGroup, group2: testGroup2,
+		user: testUser, userPwd: "test-password", admin: testAdmin,
+		adminPwd: "test-admin-password", group: testGroup, group2: testGroup2,
 		group3: testGroup3)
 }
 

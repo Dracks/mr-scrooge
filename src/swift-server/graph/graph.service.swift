@@ -336,6 +336,7 @@ class GraphService: ServiceWithDb, @unchecked Sendable {
 			try await graphsQuery
 			.with(\.$group)
 			.with(\.$horizontalGroup)
+			.limit(pageQuery.limit)
 			.all()
 
 		return try await withThrowingTaskGroup(of: Components.Schemas.Graph.self) { group in

@@ -45,7 +45,7 @@ extension MrScroogeAPIImpl {
 			try await user.$groups.load(on: request.db)
 			try await user.$defaultGroup.load(on: request.db)
 
-			return .ok(.init(body: .json(.init(user: user))))
+			return try .ok(.init(body: .json(.init(user: user))))
 		}
 
 		try await Task.sleep(for: .seconds(onUnauthorizedLatency))
@@ -62,7 +62,7 @@ extension MrScroogeAPIImpl {
 			try await user.$groups.load(on: req.db)
 			try await user.$defaultGroup.load(on: req.db)
 
-			return .ok(
+			return try .ok(
 				.init(
 					body: .json(
 						.identified(
@@ -136,7 +136,7 @@ extension MrScroogeAPIImpl {
 
 		try await user.save(on: request.db)
 
-		return .ok(.init(body: .json(.init(user: user))))
+		return try .ok(.init(body: .json(.init(user: user))))
 	}
 
 	func ApiSession_logout(_ input: Operations.ApiSession_logout.Input) async throws

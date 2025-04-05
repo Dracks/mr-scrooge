@@ -16,7 +16,7 @@ model UserCredentials {
 
 enum SessionType {
   identified,
-  anonymous
+  anonymous,
 }
 
 model InvalidCredentials {
@@ -24,7 +24,7 @@ model InvalidCredentials {
   details: string;
 }
 
-model GetMyProfile  {
+model GetMyProfile {
   user: SessionType.identified;
   profile: UserProfile;
 }
@@ -40,8 +40,7 @@ model UpdateMyProfile {
   password?: string;
 }
 
-
-@discriminated(#{envelope: "none", discriminatorPropertyName:"user"})
+@discriminated(#{ envelope: "none", discriminatorPropertyName: "user" })
 union CheckMyProfile {
   identified: GetMyProfile,
   anonymous: NotIdentified,
