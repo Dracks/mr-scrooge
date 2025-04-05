@@ -1,5 +1,5 @@
 {
-  "originHash" : "dd81856f70006fa3f2918cbc508c8d3c3a8a7a4e255989a8876ba1aa6709395c",
+  "originHash" : "58a80892465c471d25936f9a9d5e3c87fed129af4bda9ae581aed91eeccd897b",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -87,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/leaf.git",
       "state" : {
-        "revision" : "bf48d2423c00292b5937c60166c7db99705cae47",
-        "version" : "4.4.1"
+        "revision" : "d469584b9186851c5a4012d11325fb9db3207ebb",
+        "version" : "4.5.0"
       }
     },
     {
@@ -267,8 +267,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-dependencies",
       "state" : {
-        "revision" : "ec2862d1364536fc22ec56a3094e7a034bbc7da8",
-        "version" : "1.8.1"
+        "revision" : "4e6b6a814675daf2c1973514314283448f95f941",
+        "version" : "1.9.0"
       }
     },
     {
@@ -375,8 +375,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-openapi-runtime",
       "state" : {
-        "revision" : "81c309c7b43cd56b2d2b90ca0170f17ff3d0c433",
-        "version" : "1.8.1"
+        "revision" : "8f33cc5dfe81169fb167da73584b9c72c3e8bc23",
+        "version" : "1.8.2"
       }
     },
     {
