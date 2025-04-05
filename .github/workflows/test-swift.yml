@@ -14,7 +14,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-24.04-arm
-    container: swift:6.0
+    container: swift:6.1
     outputs:
         md5: ${{ steps.md5.outputs.value }}
     steps:
@@ -39,7 +39,7 @@ jobs:
     name: Test
     needs: build
     runs-on: ubuntu-24.04-arm
-    container: swift:6.0
+    container: swift:6.1
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
