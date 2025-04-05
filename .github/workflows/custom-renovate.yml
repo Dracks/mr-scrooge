@@ -1,4 +1,4 @@
-name: Run Renovate at Night
+name: Run Custom Renovate
 
 on:
   schedule:
@@ -36,5 +36,5 @@ jobs:
 
       - name: Run Renovate
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm start Dracks/mr-scrooge
