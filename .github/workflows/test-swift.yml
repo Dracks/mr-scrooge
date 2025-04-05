@@ -11,13 +11,13 @@ on:
         - main
 
 env:
-    SWIFT_VERSION: 6.0
+    SWIFT_VERSION: swift:6.0
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-24.04-arm
-    container: swift:${{env.SWIFT_VERSION}}
+    container: ${{env.SWIFT_VERSION}}
     outputs:
         md5: ${{ steps.md5.outputs.value }}
     steps:
@@ -42,7 +42,7 @@ jobs:
     name: Test
     needs: build
     runs-on: ubuntu-24.04-arm
-    container: swift:${{env.SWIFT_VERSION}}
+    container: ${{env.SWIFT_VERSION}}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
