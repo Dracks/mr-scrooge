@@ -9,6 +9,11 @@
     },
     packageRules: [
         {
+            groupName: "Swift",
+            matchPackageNames: ["swift"],
+            matchUpdateTypes: ["digest", "patch", "minor", "major"],
+        },
+        {
             groupName: "Typespec",
             groupSlug: "typespec",
             matchUpdateTypes: ["digest", "patch", "minor", "major"],
@@ -38,6 +43,7 @@
                 "!eslint{/,}**",
                 "!@types/react*",
                 "!react*",
+                "!swift",
             ],
         },
     ],
