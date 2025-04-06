@@ -193,7 +193,7 @@ extension MrScroogeAPIImpl {
 			withId: ruleId, for: validGroupsIds)
 		{
 		case .ok:
-			return .ok(.init(body: .json(true)))
+			return .ok(.init(body: .plainText("true")))
 		case .notFound:
 			return .notFound(
 				.init(

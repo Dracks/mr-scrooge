@@ -5,8 +5,6 @@ import "@typespec/openapi3";
 import "./global.tsp";
 
 using TypeSpec.Http;
-using TypeSpec.OpenAPI;
-using TypeSpec.Rest;
 
 namespace MrScrooge;
 
@@ -16,11 +14,13 @@ enum ImportStatus {
   error,
 }
 
-// Todo: add the groupOwnerId
-model UploadData {
-  kind: string;
-  file: bytes;
-}
+// ToDo: Try to get it working again with OpenApiGenerator,
+// For the moment this will be disabled, and manually created in Vapor
+/*model UploadData {
+  kind: HttpPart<string>;
+  groupOwnerId: HttpPart<UUID>;
+  file: HttpPart<File>;
+}*/
 
 model FileImport {
   id: UUID;
@@ -30,7 +30,7 @@ model FileImport {
   groupOwnerId: UUID;
   kind: string;
   status: ImportStatus;
-  context: string | null;
+  context?: string;
   rows: FileImportTransaction[];
 }
 
@@ -57,7 +57,7 @@ model ListFileParsers {
 @route("imports")
 @tag("imports")
 interface ApiImports {
-  // @post upload(@header contentType: "multipart/form-data", ...UploadData): {@statusCode _: 201, ...FileImport} | InvalidGroupOwnerId | NotFound;
+  // @post upload(@header contentType: "multipart/form-data", @multipartBody body: UploadData): {@statusCode _: 201, ...FileImport} | InvalidGroupOwnerId | NotFound;
   @get list(@query cursor?: string, @query limit?: int16): PageList<FileImport>;
   @route("parsers") @get parserTypes(): ListFileParsers;
   @delete delete(@path id: UUID): boolean;

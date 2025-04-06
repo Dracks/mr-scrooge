@@ -61,16 +61,19 @@ extension MrScroogeAPIImpl {
 			let user = try await getUser(fromRequest: req)
 			try await user.$groups.load(on: req.db)
 			try await user.$defaultGroup.load(on: req.db)
-			// return ProfileController.GetProfile(from: user)
+
 			return .ok(
 				.init(
 					body: .json(
 						.identified(
 							.init(
 								user: .identified,
-								profile: .init(user: user))))))
+								profile: .init(user: user))
+						))))
 		} catch is NotIdentifiedError {
-			return .ok(.init(body: .json(.anonymous(.init(user: .anonymous)))))
+			return .ok(
+				.init(
+					body: .json(.anonymous(.init(user: .anonymous)))))
 		}
 	}
 
@@ -140,6 +143,6 @@ extension MrScroogeAPIImpl {
 		-> Operations.ApiSession_logout.Output
 	{
 		request.auth.logout(User.self)
-		return .ok(.init(body: .json(true)))
+		return .ok(.init(body: .plainText("true")))
 	}
 }

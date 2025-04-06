@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: Mr Scrooge API
-  version: 3.0.0
+  version: 0.0.0
 tags:
   - name: session
   - name: user
@@ -282,7 +282,7 @@ paths:
         '200':
           description: The request has succeeded.
           content:
-            application/json:
+            text/plain:
               schema:
                 type: boolean
         '404':
@@ -504,7 +504,7 @@ paths:
         '200':
           description: The request has succeeded.
           content:
-            application/json:
+            text/plain:
               schema:
                 type: boolean
       tags:
@@ -528,7 +528,7 @@ paths:
         '200':
           description: The request has succeeded.
           content:
-            application/json:
+            text/plain:
               schema:
                 type: boolean
       tags:
@@ -552,7 +552,7 @@ paths:
         '200':
           description: The request has succeeded.
           content:
-            application/json:
+            text/plain:
               schema:
                 type: boolean
       tags:
@@ -678,7 +678,7 @@ paths:
         '200':
           description: The request has succeeded.
           content:
-            application/json:
+            text/plain:
               schema:
                 type: boolean
         '400':
@@ -832,7 +832,7 @@ paths:
         '200':
           description: The request has succeeded.
           content:
-            application/json:
+            text/plain:
               schema:
                 type: boolean
         '400':
@@ -868,7 +868,7 @@ paths:
         '200':
           description: The request has succeeded.
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/Date'
         '400':
@@ -1142,7 +1142,7 @@ paths:
         '200':
           description: The request has succeeded.
           content:
-            application/json:
+            text/plain:
               schema:
                 type: boolean
       tags:
@@ -1291,7 +1291,7 @@ paths:
         '200':
           description: The request has succeeded.
           content:
-            application/json:
+            text/plain:
               schema:
                 type: boolean
         '401':
@@ -1430,6 +1430,7 @@ components:
         lastName:
           type: string
     CheckMyProfile:
+      type: object
       oneOf:
         - $ref: '#/components/schemas/GetMyProfile'
         - $ref: '#/components/schemas/NotIdentified'
@@ -1561,7 +1562,6 @@ components:
         - groupOwnerId
         - kind
         - status
-        - context
         - rows
       properties:
         id:
@@ -1580,7 +1580,6 @@ components:
           $ref: '#/components/schemas/ImportStatus'
         context:
           type: string
-          nullable: true
         rows:
           type: array
           items:
@@ -1947,6 +1946,11 @@ components:
           type: string
         relations:
           $ref: '#/components/schemas/ConditionalRelation'
+    SessionType:
+      type: string
+      enum:
+        - identified
+        - anonymous
     SetLabelAction:
       type: object
       required:
@@ -2010,17 +2014,6 @@ components:
           type: string
         defaultGroupId:
           $ref: '#/components/schemas/UUID'
-    UploadData:
-      type: object
-      required:
-        - kind
-        - file
-      properties:
-        kind:
-          type: string
-        file:
-          type: string
-          format: byte
     UserCredentials:
       type: object
       required:

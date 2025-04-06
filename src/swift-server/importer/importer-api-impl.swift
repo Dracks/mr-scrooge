@@ -65,7 +65,7 @@ extension MrScroogeAPIImpl {
 		try await fileImportService.delete(
 			groupIds: validGroupsId, importId: importId)
 
-		return .ok(.init(body: .json(.init(true))))
+		return .ok(.init(body: .plainText("true")))
 	}
 
 }
