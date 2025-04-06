@@ -37,7 +37,7 @@ model UpdateMyProfile {
   password?: string;
 }
 
-@discriminated
+@discriminated(#{discriminatorPropertyName:"user"})
 @oneOf
 union CheckMyProfile {
   identified: GetMyProfile,

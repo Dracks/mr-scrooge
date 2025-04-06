@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.1.0
 info:
   title: Mr Scrooge API
   version: 0.0.0
@@ -1435,17 +1435,17 @@ components:
         - $ref: '#/components/schemas/CheckMyProfileIdentified'
         - $ref: '#/components/schemas/CheckMyProfileAnonymous'
       discriminator:
-        propertyName: kind
+        propertyName: user
         mapping:
           identified: '#/components/schemas/CheckMyProfileIdentified'
           anonymous: '#/components/schemas/CheckMyProfileAnonymous'
     CheckMyProfileAnonymous:
       type: object
       required:
-        - kind
+        - user
         - value
       properties:
-        kind:
+        user:
           type: string
           enum:
             - anonymous
@@ -1454,10 +1454,10 @@ components:
     CheckMyProfileIdentified:
       type: object
       required:
-        - kind
+        - user
         - value
       properties:
-        kind:
+        user:
           type: string
           enum:
             - identified
@@ -1604,8 +1604,9 @@ components:
         status:
           $ref: '#/components/schemas/ImportStatus'
         context:
-          type: string
-          nullable: true
+          anyOf:
+            - type: string
+            - type: 'null'
         rows:
           type: array
           items:
@@ -2045,7 +2046,7 @@ components:
           type: string
         file:
           type: string
-          format: byte
+          contentEncoding: base64
     UserCredentials:
       type: object
       required:
