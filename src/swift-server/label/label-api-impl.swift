@@ -104,7 +104,7 @@ extension MrScroogeAPIImpl {
 
 		switch data {
 		case .ok:
-			return .ok(.init(body: .json(true)))
+			return .ok(.init(body: .plainText("true")))
 		case .notFound:
 			return #BasicNotFound(
 				msg: "Label ID not found for this user", code: ApiError.API10055)

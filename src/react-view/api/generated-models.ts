@@ -460,7 +460,23 @@ export interface components {
             firstName?: string;
             lastName?: string;
         };
-        CheckMyProfile: components["schemas"]["GetMyProfile"] | components["schemas"]["NotIdentified"];
+        CheckMyProfile: components["schemas"]["CheckMyProfileIdentified"] | components["schemas"]["CheckMyProfileAnonymous"];
+        CheckMyProfileAnonymous: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            user: "anonymous";
+            value: components["schemas"]["NotIdentified"];
+        };
+        CheckMyProfileIdentified: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            user: "identified";
+            value: components["schemas"]["GetMyProfile"];
+        };
         Condition: components["schemas"]["ConditionDouble"] | components["schemas"]["ConditionString"];
         ConditionDouble: {
             id: components["schemas"]["UUID"];
@@ -516,7 +532,7 @@ export interface components {
             groupOwnerId: components["schemas"]["UUID"];
             kind: string;
             status: components["schemas"]["ImportStatus"];
-            context: string | null;
+            context?: string;
             rows: components["schemas"]["FileImportTransaction"][];
         };
         FileImportTransaction: {
@@ -535,10 +551,7 @@ export interface components {
             fileNameRegex: string;
         };
         GetMyProfile: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
+            /** @enum {string} */
             user: "identified";
             profile: components["schemas"]["UserProfile"];
         };
@@ -630,10 +643,7 @@ export interface components {
             invalidLabels: components["schemas"]["UUID"][];
         };
         NotIdentified: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
+            /** @enum {string} */
             user: "anonymous";
         };
         /** @enum {string} */
@@ -681,11 +691,6 @@ export interface components {
             isAdmin: boolean;
             password?: string;
             defaultGroupId: components["schemas"]["UUID"];
-        };
-        UploadData: {
-            kind: string;
-            /** Format: byte */
-            file: string;
         };
         UserCredentials: {
             username: string;
@@ -985,7 +990,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": boolean;
+                    "text/plain": boolean;
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -1222,7 +1227,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": boolean;
+                    "text/plain": boolean;
                 };
             };
         };
@@ -1245,7 +1250,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": boolean;
+                    "text/plain": boolean;
                 };
             };
         };
@@ -1268,7 +1273,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": boolean;
+                    "text/plain": boolean;
                 };
             };
         };
@@ -1405,7 +1410,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": boolean;
+                    "text/plain": boolean;
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -1593,7 +1598,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": boolean;
+                    "text/plain": boolean;
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -1642,7 +1647,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Date"];
+                    "text/plain": components["schemas"]["Date"];
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -1976,7 +1981,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": boolean;
+                    "text/plain": boolean;
                 };
             };
         };
@@ -2152,7 +2157,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": boolean;
+                    "text/plain": boolean;
                 };
             };
             /** @description Access is unauthorized. */

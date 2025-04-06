@@ -182,7 +182,7 @@ extension MrScroogeAPIImpl {
 							message: "Graph ID \(graphId) not found",
 							code: ApiError.API10010.rawValue))))
 		case .ok:
-			return .ok(.init(body: .json(.init(true))))
+			return .ok(.init(body: .plainText("true")))
 		}
 	}
 }
