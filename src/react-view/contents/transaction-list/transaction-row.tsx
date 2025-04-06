@@ -59,9 +59,9 @@ export const TransactionRow: React.FC<TransactionRowProps> = ({ transaction, lab
             await setComment.execute(transaction.id, realComment);
         }
     };
-    useLogger().info('raw data source', { rds: transaction });
+    useLogger().info('raw data source', { transaction });
     return (
-        <TableRow>
+        <TableRow data-testid={`transaction-row-${transaction.id}`}>
             <TableCell>{transaction.kind}</TableCell>
             <TableCell>
                 <LabelInput

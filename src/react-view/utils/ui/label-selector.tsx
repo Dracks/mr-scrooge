@@ -43,6 +43,7 @@ export const LabelInput = <T extends ILabelModel>({
                 size="small"
                 key={v.id}
                 value={v.name}
+                data-testid={`selector-tag-${v.id}`}
                 onRemove={() => {
                     onRemove(v);
                 }}
