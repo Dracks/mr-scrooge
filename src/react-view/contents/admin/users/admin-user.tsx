@@ -35,7 +35,7 @@ export const AdminUsers: React.FC = () => {
                         <TextInput
                             placeholder="Search user"
                             value={searchText}
-                            onChange={evt => {
+                            onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
                                 setSearchText(evt.target.value);
                             }}
                         />

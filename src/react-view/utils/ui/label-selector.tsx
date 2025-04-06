@@ -1,5 +1,5 @@
 import { Box, Tag, TextInput } from 'grommet';
-import React, { ChangeEventHandler, MutableRefObject } from 'react';
+import React, { ChangeEventHandler } from 'react';
 
 export interface ILabelModel {
     id: string;
@@ -24,7 +24,7 @@ export const LabelInput = <T extends ILabelModel>({
     ...rest
 }: LabelInputProps<T> & { 'data-testid'?: unknown }): React.ReactElement => {
     const [currentTag, setCurrentTag] = React.useState('');
-    const boxRef = React.useRef<HTMLDivElement>();
+    const boxRef = React.useRef<HTMLDivElement>(document.createElement("div"));
 
     const updateCurrentLabel: ChangeEventHandler<HTMLInputElement> = event => {
         setCurrentTag(event.target.value);
@@ -55,7 +55,9 @@ export const LabelInput = <T extends ILabelModel>({
             align="center"
             pad={{ horizontal: 'xsmall' }}
             border="all"
-            ref={boxRef as MutableRefObject<HTMLDivElement>}
+            ref={(ref: HTMLDivElement) => {
+                    boxRef.current = ref
+                }}
             wrap
             data-testid={dataTestId}
         >
@@ -74,7 +76,7 @@ export const LabelInput = <T extends ILabelModel>({
                                 value: tag.id,
                             })) ?? []
                     }
-                    onChange={event => {
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         updateCurrentLabel(event);
                     }}
                     value={currentTag}

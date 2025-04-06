@@ -81,7 +81,7 @@ export const TransactionRow: React.FC<TransactionRowProps> = ({ transaction, lab
             <TableCell>
                 <TextArea
                     defaultValue={transaction.comment ?? ''}
-                    onBlur={event => {
+                    onBlur={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
                         catchAndLog(updateDesc(event.target.value), 'Updating comment on transaction', logger);
                     }}
                 />

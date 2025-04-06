@@ -1,5 +1,5 @@
 import { Anchor, AnchorProps } from 'grommet';
-import React from 'react';
+import React, { JSX } from 'react';
 import { Link, LinkProps } from 'react-router-dom';
 
 export type AnchorLinkProps = Omit<LinkProps, 'to'> &
