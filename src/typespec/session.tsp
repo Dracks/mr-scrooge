@@ -6,8 +6,6 @@ import "./global.tsp";
 import "./profile.tsp";
 
 using TypeSpec.Http;
-using TypeSpec.OpenAPI;
-using TypeSpec.Rest;
 
 namespace MrScrooge;
 
@@ -16,18 +14,23 @@ model UserCredentials {
   password: string;
 }
 
+enum SessionType {
+  identified,
+  anonymous
+}
+
 model InvalidCredentials {
   @statusCode _: 401;
   details: string;
 }
 
-model GetMyProfile {
-  user: "identified";
+model GetMyProfile  {
+  user: SessionType.identified;
   profile: UserProfile;
 }
 
 model NotIdentified {
-  user: "anonymous";
+  user: SessionType.anonymous;
 }
 
 model UpdateMyProfile {
@@ -37,8 +40,8 @@ model UpdateMyProfile {
   password?: string;
 }
 
-@discriminated(#{discriminatorPropertyName:"user"})
-@oneOf
+
+@discriminated(#{envelope: "none", discriminatorPropertyName:"user"})
 union CheckMyProfile {
   identified: GetMyProfile,
   anonymous: NotIdentified,

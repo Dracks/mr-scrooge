@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.0.0
 info:
   title: Mr Scrooge API
   version: 0.0.0
@@ -1432,37 +1432,13 @@ components:
     CheckMyProfile:
       type: object
       oneOf:
-        - $ref: '#/components/schemas/CheckMyProfileIdentified'
-        - $ref: '#/components/schemas/CheckMyProfileAnonymous'
+        - $ref: '#/components/schemas/GetMyProfile'
+        - $ref: '#/components/schemas/NotIdentified'
       discriminator:
         propertyName: user
         mapping:
-          identified: '#/components/schemas/CheckMyProfileIdentified'
-          anonymous: '#/components/schemas/CheckMyProfileAnonymous'
-    CheckMyProfileAnonymous:
-      type: object
-      required:
-        - user
-        - value
-      properties:
-        user:
-          type: string
-          enum:
-            - anonymous
-        value:
-          $ref: '#/components/schemas/NotIdentified'
-    CheckMyProfileIdentified:
-      type: object
-      required:
-        - user
-        - value
-      properties:
-        user:
-          type: string
-          enum:
-            - identified
-        value:
-          $ref: '#/components/schemas/GetMyProfile'
+          identified: '#/components/schemas/GetMyProfile'
+          anonymous: '#/components/schemas/NotIdentified'
     Condition:
       oneOf:
         - $ref: '#/components/schemas/ConditionDouble'
@@ -1970,6 +1946,11 @@ components:
           type: string
         relations:
           $ref: '#/components/schemas/ConditionalRelation'
+    SessionType:
+      type: string
+      enum:
+        - identified
+        - anonymous
     SetLabelAction:
       type: object
       required:

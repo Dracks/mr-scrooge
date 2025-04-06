@@ -68,18 +68,12 @@ extension MrScroogeAPIImpl {
 						.identified(
 							.init(
 								user: .identified,
-								value: .init(
-									user: .identified,
-									profile: .init(user: user)))
+								profile: .init(user: user))
 						))))
 		} catch is NotIdentifiedError {
 			return .ok(
 				.init(
-					body: .json(
-						.anonymous(
-							.init(
-								user: .anonymous,
-								value: .init(user: .anonymous))))))
+					body: .json(.anonymous(.init(user: .anonymous)))))
 		}
 	}
 

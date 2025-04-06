@@ -460,23 +460,7 @@ export interface components {
             firstName?: string;
             lastName?: string;
         };
-        CheckMyProfile: components["schemas"]["CheckMyProfileIdentified"] | components["schemas"]["CheckMyProfileAnonymous"];
-        CheckMyProfileAnonymous: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            user: "anonymous";
-            value: components["schemas"]["NotIdentified"];
-        };
-        CheckMyProfileIdentified: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            user: "identified";
-            value: components["schemas"]["GetMyProfile"];
-        };
+        CheckMyProfile: components["schemas"]["GetMyProfile"] | components["schemas"]["NotIdentified"];
         Condition: components["schemas"]["ConditionDouble"] | components["schemas"]["ConditionString"];
         ConditionDouble: {
             id: components["schemas"]["UUID"];
@@ -551,7 +535,10 @@ export interface components {
             fileNameRegex: string;
         };
         GetMyProfile: {
-            /** @enum {string} */
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
             user: "identified";
             profile: components["schemas"]["UserProfile"];
         };
@@ -643,7 +630,10 @@ export interface components {
             invalidLabels: components["schemas"]["UUID"][];
         };
         NotIdentified: {
-            /** @enum {string} */
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
             user: "anonymous";
         };
         /** @enum {string} */
@@ -665,6 +655,8 @@ export interface components {
             name: string;
             relations: components["schemas"]["ConditionalRelation"];
         };
+        /** @enum {string} */
+        SessionType: "identified" | "anonymous";
         SetLabelAction: {
             label: components["schemas"]["UUID"];
         };
