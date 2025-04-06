@@ -3,8 +3,12 @@ import { Add } from 'grommet-icons';
 import React from 'react';
 import { useNavigate } from 'react-router';
 
+import { useLogger } from '../../../utils/logger/logger.context';
+import { catchAndLog } from '../../../utils/promises';
+
 export const AddGraphPlaceholder = () => {
     const navigate = useNavigate();
+    const logger = useLogger("Add Graph Placeholder")
     return (
         <Box direction="column" pad="small" data-testid="add-graph-placeholder">
             <Heading level={3}>Add a new graph</Heading>
@@ -12,7 +16,7 @@ export const AddGraphPlaceholder = () => {
                 <Button
                     icon={<Add size="large" />}
                     onClick={() => {
-                        navigate(`/graph/new-graph`);
+                        catchAndLog(Promise.resolve(navigate(`/graph/new-graph`)), "Navigate to new graph", logger);
                     }}
                 />
             </Box>

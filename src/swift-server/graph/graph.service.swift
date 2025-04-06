@@ -617,7 +617,7 @@ class GraphService: ServiceWithDb, @unchecked Sendable {
 	func deleteGraph(graphId: UUID, forUser user: User) async throws
 		-> DeleteGraphResponse
 	{
-		return try await db.transaction<DeleteGraphResponse> { transaction in
+		return try await db.transaction { transaction in
 			let validGroupsId = try user.groups.map { try $0.requireID() }
 			// Delete the graph
 			let graph = try await Graph.query(on: transaction)

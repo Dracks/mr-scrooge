@@ -81,7 +81,7 @@ export const TransactionList: React.FC = () => {
                         <TextInput
                             placeholder="Search movement"
                             value={filters.movement}
-                            onChange={event => {
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                 setFilters({
                                     ...filters,
                                     movement: event.target.value,

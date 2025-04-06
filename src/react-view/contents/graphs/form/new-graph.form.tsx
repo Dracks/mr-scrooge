@@ -26,10 +26,10 @@ export const GraphNew = () => {
             update={setGraphData}
             save={() => {
                 newFormRequest.execute(graphData as GraphInput).then(
-                    response => {
+                    async response => {
                         const newGraph = response.data;
                         if (newGraph) {
-                            navigate(`../${newGraph.id}`);
+                            await navigate(`../${newGraph.id}`);
                         } else {
                             logger.error('Some error on the request', { error: response.error });
                         }
