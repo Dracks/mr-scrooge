@@ -37,11 +37,11 @@ export const NewRuleForm: React.FC = () => {
                 }}
                 onSubmit={() => {
                     catchAndLog(
-                        createRule.execute(formData).then(response => {
+                        createRule.execute(formData).then(async response => {
                             refresh();
                             const newRule = response.data;
                             if (newRule) {
-                                navigate(`../${newRule.id}`);
+                                await navigate(`../${newRule.id}`);
                             } else {
                                 logger.error('Some error from creating the rule', { error: response.error });
                             }

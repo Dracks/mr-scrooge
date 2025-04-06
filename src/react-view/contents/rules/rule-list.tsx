@@ -39,7 +39,7 @@ const RuleSummary: React.FC<{ rule: RuleEnriched }> = ({ rule }) => {
                             primary
                             label="Edit"
                             onClick={() => {
-                                navigate(`/rule/${rule.id}`);
+                                catchAndLog(Promise.resolve(navigate(`/rule/${rule.id}`)),"Error navigating",logger);
                             }}
                         />
                         <ConfirmationButton
@@ -69,12 +69,13 @@ const RuleSubList: React.FC<{ rules: RuleEnriched[] }> = ({ rules }) => {
 
 const AddRulePlaceholder: React.FC = () => {
     const navigate = useNavigate();
+    const logger = useLogger("AddRulePlaceholder")
     return (
         <Box pad="small" background="light-2" justify="center" align="center">
             <Button
                 icon={<Add size="medium" />}
                 onClick={() => {
-                    navigate(`/rule/new-rule`);
+                    catchAndLog(Promise.resolve(navigate(`/rule/new-rule`)), "Navigate to new rule", logger);
                 }}
             />
         </Box>

@@ -33,11 +33,11 @@ export const NewUser: React.FC<{ reload: () => void }> = ({ reload }) => {
                 onChange={setUserData}
                 onSubmit={() => {
                     catchAndLog(
-                        createUser.execute(userData).then(response => {
+                        createUser.execute(userData).then(async response => {
                             const newUser = response.data;
                             if (newUser) {
                                 reload();
-                                navigate(newUser.id);
+                                await navigate(newUser.id);
                             }
                         }),
                         'Error creating a new user',

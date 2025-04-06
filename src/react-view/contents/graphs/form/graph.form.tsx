@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router';
 
 import { GraphDateRange, GraphInput, GraphKind, GroupType, Label } from '../../../api/models';
 import { useLogger } from '../../../utils/logger/logger.context';
+import { catchAndLog } from '../../../utils/promises';
 import { ConfirmationButton } from '../../../utils/ui/confirmation-button';
 import { EnumSelectOption } from '../../../utils/ui/enum-option';
 import { LabelInput } from '../../../utils/ui/label-selector';
@@ -59,6 +60,7 @@ export const GraphForm: <T extends GraphInput>(p: GraphFormProps<T>) => React.Re
     save,
 }: GraphFormProps<T>) => {
     const { labels: allLabels, labelsMap } = useLabelsContext();
+    const logger = useLogger("GraphForm")
     const labels = allLabels.filter(({ groupOwnerId }) => graphData.groupOwnerId === groupOwnerId);
     const labelsPair = labels.map(({ id, name }) => ({ id, name }));
     const navigate = useNavigate();
@@ -218,7 +220,7 @@ export const GraphForm: <T extends GraphInput>(p: GraphFormProps<T>) => React.Re
                             color="accent-4"
                             label="discard"
                             onConfirm={() => {
-                                navigate('/');
+                                catchAndLog(Promise.resolve(navigate('/')), "Navigate to home", logger);
                             }}
                         />
                     </Box>

@@ -3,11 +3,14 @@ import { Edit, Group, Home, Logout, User, UserAdmin } from 'grommet-icons';
 import React from 'react';
 import { useNavigate } from 'react-router';
 
+import { useLogger } from '../utils/logger/logger.context';
+import { catchAndLog } from '../utils/promises';
 import { useSession } from '../utils/session/session-context';
 import { AnchorLink } from '../utils/ui/anchor-link';
 
 const Headers: React.FC = () => {
     const { session, logout } = useSession();
+    const logger = useLogger("Headers")
     if (session.user === 'anonymous') {
         throw Error('User should not be anonymous');
     }
@@ -25,14 +28,14 @@ const Headers: React.FC = () => {
                 {
                     label: <Box>Users</Box>,
                     onClick: () => {
-                        navigate('/admin/users');
+                        catchAndLog(Promise.resolve(navigate('/admin/users')), "Navigate to admin users", logger);
                     },
                     icon: <User />,
                 },
                 {
                     label: <Box>Groups</Box>,
                     onClick: () => {
-                        navigate('/admin/groups');
+                        catchAndLog(Promise.resolve(navigate('/admin/groups')), "Navigate to admin groups", logger);
                     },
                     icon: <Group />,
                 },
@@ -57,7 +60,7 @@ const Headers: React.FC = () => {
                     {
                         label: userInfo.firstName ?? userInfo.email,
                         onClick: () => {
-                            navigate('/profile');
+                            catchAndLog(Promise.resolve(navigate('/profile')), "navigate to profile", logger);
                         },
                         icon: <Edit />,
                     },
