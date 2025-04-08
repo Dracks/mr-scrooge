@@ -31,6 +31,11 @@ final class BankTransactionTests: AbstractBaseTestsClass {
 				return $0
 			},
 			transactionFactory.build {
+				$0.$groupOwner.id = testGroupId
+				$0.date = DateOnly(year: 2042, month: 1, day: 30)!
+				return $0
+			},
+			transactionFactory.build {
 				$0.$groupOwner.id = testGroupId2
 				return $0
 			},
@@ -61,7 +66,7 @@ final class BankTransactionTests: AbstractBaseTestsClass {
 
 		let results = data.results
 		XCTAssertEqual(results.count, 5)
-		XCTAssertEqual(results.first?.date, "2023-01-30")
+		XCTAssertEqual(results.first?.date, "2042-01-30")
 		guard let lastId = results.last?.id else {
 			throw TestError()
 		}
@@ -100,7 +105,7 @@ final class BankTransactionTests: AbstractBaseTestsClass {
 			Operations.ApiBankTransactions_list.Output.Ok.Body.jsonPayload.self)
 
 		let cursorResults = data.results
-		XCTAssertEqual(cursorResults.count, 3)
+		XCTAssertEqual(cursorResults.count, 4)
 		XCTAssertEqual(cursorResults.first?.date, "2022-02-02")
 		XCTAssertEqual(data.next, nil)
 	}
