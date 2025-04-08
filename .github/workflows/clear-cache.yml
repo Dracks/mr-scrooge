@@ -1,0 +1,19 @@
+name: ClearCache
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Clean cache
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      # Do other steps like checkout, install, compile, etc.
+      - uses: MyAlbum/purge-cache@v2
+        with:
+          accessed: true # Purge caches by their last accessed time (default)
+          created: false # Purge caches by their created time (default)
+          max-age: 604800 # Leave only caches accessed in the last 7 days (default)
