@@ -49,8 +49,8 @@ devDependencies:
   ts-loader: 9.5.2
   ts-node: 10.9.2
   typescript: 5.8.3
-  typescript-eslint: 8.29.0
-  webpack: 5.98.0
+  typescript-eslint: 8.29.1
+  webpack: 5.99.1
   webpack-cli: 6.0.1
 dependencies:
   '@types/d3-scale-chromatic': 3.1.0
@@ -72,4 +72,4 @@ dependencies:
   react-router-dom: 7.5.0
   recharts: 2.15.2
   zod: 3.24.2
-packageManager: pnpm@10.7.1
+packageManager: pnpm@10.8.0
