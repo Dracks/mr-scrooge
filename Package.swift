@@ -26,7 +26,7 @@ let package = Package(
 		.package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.8.0"),
 		.package(
 			url: "https://github.com/vapor-community/vapor-queues-fluent-driver",
-			branch: "main"),
+			branch: "3.0.0"),
 
 		// Parser libs
 		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.8.7"),
