@@ -130,7 +130,7 @@ final class UserGroupService: ServiceWithDb, @unchecked Sendable {
 				UserGroupPivot.schema,
 				method: SQLJoinMethod.left,
 				on: SQLColumn("id", table: UserGroup.schema), .equal,
-				SQLColumn("group_id", table: UserGroupPivot.schema),
+				SQLColumn("group_id", table: UserGroupPivot.schema)
 			)
 			.where(
 				SQLColumn("user_id", table: UserGroupPivot.schema), .is,
