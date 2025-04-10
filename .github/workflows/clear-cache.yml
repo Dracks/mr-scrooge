@@ -2,6 +2,11 @@ name: ClearCache
 
 on:
   workflow_dispatch:
+    inputs:
+        max-age:
+            description: 'Maximum age in seconds for caches to keep'
+            required: false
+            default: '604800'
 
 jobs:
   build:
@@ -16,4 +21,4 @@ jobs:
         with:
           accessed: true # Purge caches by their last accessed time (default)
           created: false # Purge caches by their created time (default)
-          max-age: 604800 # Leave only caches accessed in the last 7 days (default)
+          max-age: ${{ inputs.max-age }} # Leave only caches accessed in the last 7 days (default)
