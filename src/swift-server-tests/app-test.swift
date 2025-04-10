@@ -96,6 +96,26 @@ func createGroupsAndUsers(app: Application) async throws -> GroupsAndUsers {
 		group3: testGroup3)
 }
 
+func createTestLabels(app: Application, testData: GroupsAndUsers) async throws -> [Label] {
+	let labelFactory = LabelFactory()
+	let testGroupId = try testData.group.requireID()
+	let testGroupId2 = try testData.group2.requireID()
+	var labels = labelFactory.createSequence(10) {
+		$0.$groupOwner.id = testGroupId
+		return $0
+	}
+	labelFactory.createSequence(8) {
+		$0.$groupOwner.id = testGroupId2
+		return $0
+	}.forEach { label in
+		labels.append(label)
+	}
+	for label in labels {
+		try await label.save(on: app.db)
+	}
+	return labels
+}
+
 class AbstractBaseTestsClass: XCTestCase {
 	var app: Application?
 
@@ -135,26 +155,12 @@ class AbstractBaseTestsClass: XCTestCase {
 			testGroup2 = testUsersAndGroups.group2
 			testGroup = testUsersAndGroups.group
 			testGroup3 = testUsersAndGroups.group3
-			let testGroupId = try testGroup.requireID()
-			let testGroupId2 = try testGroup2.requireID()
 
 			testUser = testUsersAndGroups.user
 			testAdmin = testUsersAndGroups.admin
 
 			// Create labels
-			labels = labelFactory.createSequence(10) {
-				$0.$groupOwner.id = testGroupId
-				return $0
-			}
-			labelFactory.createSequence(8) {
-				$0.$groupOwner.id = testGroupId2
-				return $0
-			}.forEach { label in
-				labels.append(label)
-			}
-			for label in labels {
-				try await label.save(on: app.db)
-			}
+			labels = try await createTestLabels(app: app, testData: testUsersAndGroups)
 
 			self.app = app
 		} catch {
