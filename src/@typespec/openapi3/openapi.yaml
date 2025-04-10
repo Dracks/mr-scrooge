@@ -347,8 +347,8 @@ paths:
       operationId: ApiGroup_create
       parameters: []
       responses:
-        '200':
-          description: The request has succeeded.
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
           content:
             application/json:
               schema:
@@ -379,7 +379,7 @@ paths:
           explode: false
         - name: orphaned
           in: query
-          required: true
+          required: false
           schema:
             type: boolean
           explode: false
@@ -389,9 +389,16 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserGroup'
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserGroup'
+                  next:
+                    type: string
       tags:
         - user
   /groups/{id}:

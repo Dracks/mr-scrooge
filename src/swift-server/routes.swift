@@ -43,30 +43,6 @@ struct ErrorHandlerMiddleware: AsyncMiddleware {
 struct MrScroogeAPIImpl {
 	@Dependency(\.request) var request
 
-	func ApiGroup_delete(_ input: Operations.ApiGroup_delete.Input) async throws
-		-> Operations.ApiGroup_delete.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiGroup_create(_ input: Operations.ApiGroup_create.Input) async throws
-		-> Operations.ApiGroup_create.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiGroup_list(_ input: Operations.ApiGroup_list.Input) async throws
-		-> Operations.ApiGroup_list.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiGroup_updateGroup(_ input: Operations.ApiGroup_updateGroup.Input) async throws
-		-> Operations.ApiGroup_updateGroup.Output
-	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
 	func ApiImports_rollbackImport(_ input: Operations.ApiImports_rollbackImport.Input)
 		async throws -> Operations.ApiImports_rollbackImport.Output
 	{

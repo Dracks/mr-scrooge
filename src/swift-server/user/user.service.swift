@@ -1,4 +1,5 @@
 import Fluent
+import SQLKit
 import Vapor
 
 final class UserService: ServiceWithDb, @unchecked Sendable {
@@ -94,6 +95,7 @@ final class UserService: ServiceWithDb, @unchecked Sendable {
 }
 
 final class UserGroupService: ServiceWithDb, @unchecked Sendable {
+	private let cursorHandler = CursorHandler<UserGroup, String>(["id"])
 
 	func validateGroupId(groupId: String, forUserId userId: UUID) async throws
 		-> UUID?
@@ -115,5 +117,57 @@ final class UserGroupService: ServiceWithDb, @unchecked Sendable {
 		).filter(\.$id.$user.$id == userId).count()
 
 		return existsRelation > 0
+	}
+
+	private func getOrphanedGroupsIds() async throws -> [UUID] {
+		guard let sqlDb = db as? any SQLDatabase else {
+			return []
+		}
+		let groupsIds = try await sqlDb.select()
+			.column(SQLColumn("id", table: UserGroup.schema))
+			.from(UserGroup.schema)
+			.join(
+				UserGroupPivot.schema,
+				method: SQLJoinMethod.left,
+				on: SQLColumn("id", table: UserGroup.schema), .equal,
+				SQLColumn("group_id", table: UserGroupPivot.schema)
+			)
+			.where(
+				SQLColumn("user_id", table: UserGroupPivot.schema), .is,
+				SQLLiteral.null
+			)
+			.all()
+		return try groupsIds.map {
+			try $0.decode(column: "id", as: UUID.self)
+		}
+	}
+
+	func getAll(user: User, pageQuery: PageQuery, orphaned: Bool) async throws
+		-> ListWithCursor<
+			UserGroup
+		>
+	{
+		let groupsQuery = UserGroup.query(on: db)
+		if !user.isAdmin {
+			try groupsQuery.filter(\.$id ~~ user.groups.map { try $0.requireID() })
+		} else if orphaned {
+			let orphanedIds = try await getOrphanedGroupsIds()
+			groupsQuery.filter(\.$id ~~ orphanedIds)
+		}
+
+		if let cursor = pageQuery.cursor {
+			let cursorData = try self.cursorHandler.parse(cursor)
+			if let idString = cursorData["id"], let id = UUID(uuidString: idString) {
+				groupsQuery.filter(\.$id < id)
+			}
+		}
+
+		let groups = try await groupsQuery.limit(pageQuery.limit).all()
+
+		return pageQuery.getListWithCursor(
+			data: groups,
+			generateCursor: {
+				cursorHandler.stringify(["id": $0.id?.uuidString ?? ""])
+			})
 	}
 }

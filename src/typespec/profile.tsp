@@ -8,7 +8,7 @@ using TypeSpec.JsonSchema;
 namespace MrScrooge;
 
 model UserGroupInput {
-   name: string;
+  name: string;
 }
 
 model UserGroup {
@@ -78,8 +78,18 @@ interface ApiUser {
 @route("/groups")
 @tag("user")
 interface ApiGroup {
-  @post create(...UserGroupInput): UserGroup;
-  @get list(@query cursor?: string, @query limit?: int16, @query orphaned: boolean): UserGroup[];
-  @route("{id}") @put  updateGroup(@path id: UUID, ...UserGroupInput): UserGroup | NotFound;
+  @post create(...UserGroupInput): {
+    @statusCode _: 201;
+    ...UserGroup;
+  };
+  @get list(
+    @query cursor?: string,
+    @query limit?: int16,
+    @query orphaned?: boolean,
+  ): PageList<UserGroup>;
+  @route("{id}") @put updateGroup(
+    @path id: UUID,
+    ...UserGroupInput,
+  ): UserGroup | NotFound;
   @route("{id}") @delete delete(@path id: UUID): void | Unauthorized;
 }

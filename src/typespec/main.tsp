@@ -10,9 +10,6 @@ import "./rules.tsp";
 
 using TypeSpec.Http;
 
-@service(#{
-  title: "Mr Scrooge API",
-  version: "3.0.0",
-})
+@service(#{ title: "Mr Scrooge API", version: "3.0.0" })
 @server("/api", "Development")
 namespace MrScrooge;
