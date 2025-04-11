@@ -221,7 +221,7 @@ final class BankTransactionTests: BaseWithFactories {
 
 			#expect(resultsDic[transactionIds.first!] != nil)
 			#expect(resultsDic[transactionIds.first!]?.labelIds.count == 1)
-			#expect(resultsDic[transactionIds.last!]?.labelIds.count == 0)
+			#expect(resultsDic[transactionIds.last!]?.labelIds.isEmpty ?? false)
 			#expect(
 				try resultsDic[transactionIds.first!]?.labelIds.contains(
 					labels[3].requireID().uuidString) ?? false)
@@ -275,7 +275,7 @@ final class BankTransactionTests: BaseWithFactories {
 			}.mapValues { $0.first! }
 
 			#expect(resultsDic[transactionIds.first!] != nil)
-			#expect(resultsDic[transactionIds.first!]?.labelIds.count == 0)
+			#expect(resultsDic[transactionIds.first!]?.labelIds.isEmpty ?? false)
 			#expect(resultsDic[transactionIds.last!]?.labelIds.count == 1)
 		}
 	}

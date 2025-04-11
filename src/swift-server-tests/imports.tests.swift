@@ -58,7 +58,7 @@ final class ImportTests: BaseWithFactories {
 			let responseData = try parsersResponse.content.decode(
 				Components.Schemas.ListFileParsers.self)
 
-			#expect(responseData.parsers.count > 0)
+			#expect(!responseData.parsers.isEmpty)
 		}
 	}
 

@@ -136,8 +136,8 @@ final class RulesTests: BaseWithFactories {
 				}
 			}
 
-			#expect(labelsForTransactions[0].count == 0)
-			#expect(labelsForTransactions[2].count == 0)
+			#expect(labelsForTransactions[0].isEmpty)
+			#expect(labelsForTransactions[2].isEmpty)
 
 			#expect(labelsForTransactions[1].count == 3)
 			try checkContainsOperationLabel(
@@ -416,9 +416,9 @@ final class RulesTests: BaseWithFactories {
 			}
 
 			#expect(labelsForTransactions[0].count == 2)
-			#expect(labelsForTransactions[1].count == 0)
+			#expect(labelsForTransactions[1].isEmpty)
 			#expect(labelsForTransactions[2].count == 1)
-			#expect(labelsForTransactions[3].count == 0)
+			#expect(labelsForTransactions[3].isEmpty)
 		}
 	}
 
@@ -479,8 +479,8 @@ final class RulesTests: BaseWithFactories {
 			#expect(rule != nil)
 			#expect(rule?.name == "Some rule")
 			#expect(rule?.relations == .or)
-			#expect(rule?.conditions.count == 0)
-			#expect(rule?.labelIds.count == 0)
+			#expect(rule?.conditions.isEmpty ?? false)
+			#expect(rule?.labelIds.isEmpty ?? false)
 		}
 	}
 

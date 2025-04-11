@@ -254,10 +254,10 @@ final class ImporterServiceTests: BaseImporterTesting {
 
 			let (transactions, _) = try await services.bankTransactionService.getAll(
 				groupIds: [groupOwnerId])
-			#expect(transactions.list.count == 0)
+			#expect(transactions.list.isEmpty)
 
 			let statusRows = try await FileImportRow.query(on: app.db).all()
-			#expect(statusRows.count == 0)
+			#expect(statusRows.isEmpty)
 		}
 	}
 }
