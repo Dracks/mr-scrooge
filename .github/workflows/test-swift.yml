@@ -52,7 +52,7 @@ jobs:
             path: .build
             key:  ${{ runner.os }}-spm-${{ needs.build.outputs.md5 }}
       - name: Run tests
-        run: swift test --parallel --skip-build --enable-code-coverage
+        run: swift test --no-parallel --skip-build --enable-code-coverage
       - name: Prepare Coverage
         run:
             llvm-cov export -format="lcov" .build/debug/mr-scroogePackageTests.xctest -instr-profile .build/debug/codecov/default.profdata > info.lcov
