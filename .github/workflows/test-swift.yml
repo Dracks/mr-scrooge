@@ -33,11 +33,6 @@ jobs:
         with:
             path: .build
             key: ${{ runner.os }}-spm-${{ steps.md5.outputs.value }}
-      - uses: actions/cache@v4
-        with:
-            path: .build
-            key: ${{ runner.os }}-spm-${{ steps.md5.outputs.value }}
-            update: true
       - name: Resolve dependencies
         run: swift package resolve --force-resolved-versions
       - name: Build everything
