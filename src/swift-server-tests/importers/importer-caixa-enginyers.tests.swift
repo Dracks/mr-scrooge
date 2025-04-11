@@ -1,124 +1,144 @@
 import Fluent
+import Queues
+import Testing
 import Vapor
-import XCTVapor
-import XCTest
+import VaporTesting
 
 @testable import MrScroogeServer
 
-final class CaixaEnginyersImporterTests: BaseImporterTests {
+@Suite("Caixa Enginyers")
+final class CaixaEnginyersImporterTests: BaseImporterTesting {
 
-	override func getParsers() throws -> [any ParserFactory] {
-		return [
-			CaixaEnginyersAccountImporter(), CaixaEnginiersCreditImporter(),
-		]
-	}
-
+	@Test("Import from Caixa Enginyers Account")
 	func testCaixaEnginyersAccountImport() async throws {
-		let groupOwnerId = try self.group.requireID()
-		let db = try getDb()
+		try await withApp { app in
+			let services = ImporterTestServices(
+				app: app,
+				parsers: [
+					CaixaEnginyersAccountImporter(),
+					CaixaEnginiersCreditImporter(),
+				])
 
-		let filePath = try XCTUnwrap(
-			Bundle.module.url(forResource: "MovimientosCuenta", withExtension: "xls"))
-		// let filePath = getTestFile(file: "test_files/MovimientosCuenta.xls")
+			let testData = try await createGroupsAndUsers(app: app)
+			let groupOwnerId = try testData.group.requireID()
 
-		let _ = try await importerService.importFromFile(
-			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
-			key: "caixa-enginyers/account",
-			fileName: "MovimientosCuenta.xls", filePath: filePath.path)
+			let filePath = try #require(
+				Bundle.module.url(
+					forResource: "MovimientosCuenta", withExtension: "xls"))
 
-		let reports = try await statusReportsService.getAll(
-			groupIds: [groupOwnerId])
-		XCTAssertEqual(reports.list.count, 1)
-		XCTAssertEqual(reports.list.first?.status, .ok)
-		XCTAssertEqual(reports.list.first?.description, "")
-		XCTAssertNil(reports.list.first?.context)
+			let _ = try await services.importerService.importFromFile(
+				on: app.db, withQueue: app.queues.queue,
+				groupOwnerId: groupOwnerId,
+				key: "caixa-enginyers/account",
+				fileName: "MovimientosCuenta.xls",
+				filePath: filePath.path)
 
-		let (transactions, _) = try await bankTransactionService.getAll(
-			groupIds: [groupOwnerId])
-		XCTAssertEqual(transactions.list.count, 4)
+			let reports = try await services.statusReportsService.getAll(
+				groupIds: [groupOwnerId])
+			#expect(reports.list.count == 1)
+			#expect(reports.list.first?.status == .ok)
+			#expect(reports.list.first?.description == "")
+			#expect(reports.list.first?.context == nil)
 
-		// Check specific transactions
-		let august4Transaction = transactions.list.first {
-			$0.date == DateOnly("2019-08-04")
+			let (transactions, _) = try await services.bankTransactionService.getAll(
+				groupIds: [groupOwnerId])
+			#expect(transactions.list.count == 4)
+
+			let august4Transaction = transactions.list.first {
+				$0.date == DateOnly("2019-08-04")
+			}
+			#expect(august4Transaction != nil)
+			#expect(august4Transaction?.value == 1500)
+			#expect(august4Transaction?.movementName == "Dr Who")
+			#expect(august4Transaction?.details == "Transfer")
+
+			let november9Transaction = transactions.list.first {
+				$0.date == DateOnly("2019-11-09")
+			}
+			#expect(november9Transaction != nil)
+			#expect(november9Transaction?.value == -2.88)
+			#expect(november9Transaction?.movementName == "OPERACIÓ VIKINI")
+			#expect(november9Transaction?.details == "TARGETA *5019")
+
+			let october8Transaction = transactions.list.first {
+				$0.date == DateOnly("2019-10-08")
+			}
+			#expect(october8Transaction != nil)
+			#expect(october8Transaction?.value == -120)
+			#expect(october8Transaction?.movementName == "AI DIOS NOS AYUDE")
+			#expect(october8Transaction?.details == "Bill")
 		}
-		XCTAssertNotNil(august4Transaction)
-		XCTAssertEqual(august4Transaction?.value, 1500)
-		XCTAssertEqual(august4Transaction?.movementName, "Dr Who")
-		XCTAssertEqual(august4Transaction?.details, "Transfer")
-
-		let november9Transaction = transactions.list.first {
-			$0.date == DateOnly("2019-11-09")
-		}
-		XCTAssertNotNil(november9Transaction)
-		XCTAssertEqual(november9Transaction?.value, -2.88)
-		XCTAssertEqual(november9Transaction?.movementName, "OPERACIÓ VIKINI")
-		XCTAssertEqual(november9Transaction?.details, "TARGETA *5019")
-
-		let october8Transaction = transactions.list.first {
-			$0.date == DateOnly("2019-10-08")
-		}
-		XCTAssertNotNil(october8Transaction)
-		XCTAssertEqual(october8Transaction?.value, -120)
-		XCTAssertEqual(october8Transaction?.movementName, "AI DIOS NOS AYUDE")
-		XCTAssertEqual(october8Transaction?.details, "Bill")
 	}
 
+	@Test("Import from Caixa Enginyers Credit Card")
 	func testCaixaEnginyersCreditImport() async throws {
-		let groupOwnerId = try self.group.requireID()
-		let db = try getDb()
+		try await withApp { app in
+			let services = ImporterTestServices(
+				app: app,
+				parsers: [
+					CaixaEnginyersAccountImporter(),
+					CaixaEnginiersCreditImporter(),
+				])
 
-		//let filePath = getTestFile(file: "test_files/MovimientosTarjetaCredito.xls")
-		let filePath = try XCTUnwrap(
-			Bundle.module.url(
-				forResource: "MovimientosTarjetaCredito", withExtension: "xls"))
+			let testData = try await createGroupsAndUsers(app: app)
+			let groupOwnerId = try testData.group.requireID()
 
-		let _ = try await importerService.importFromFile(
-			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
-			key: "caixa-enginyers/credit",
-			fileName: "MovimientosTarjetaCredito.xls", filePath: filePath.path)
+			let filePath = try #require(
+				Bundle.module.url(
+					forResource: "MovimientosTarjetaCredito",
+					withExtension: "xls"))
 
-		let reports = try await statusReportsService.getAll(
-			groupIds: [groupOwnerId])
-		XCTAssertEqual(reports.list.count, 1)
-		XCTAssertEqual(reports.list.first?.status, .ok)
-		XCTAssertEqual(reports.list.first?.description, "")
-		XCTAssertNil(reports.list.first?.context)
+			let _ = try await services.importerService.importFromFile(
+				on: app.db, withQueue: app.queues.queue,
+				groupOwnerId: groupOwnerId,
+				key: "caixa-enginyers/credit",
+				fileName: "MovimientosTarjetaCredito.xls",
+				filePath: filePath.path)
 
-		let (transactions, _) = try await bankTransactionService.getAll(
-			groupIds: [groupOwnerId])
-		XCTAssertEqual(transactions.list.count, 1)
+			let reports = try await services.statusReportsService.getAll(
+				groupIds: [groupOwnerId])
+			#expect(reports.list.count == 1)
+			#expect(reports.list.first?.status == .ok)
+			#expect(reports.list.first?.description == "")
+			#expect(reports.list.first?.context == nil)
 
-		// Test specific transaction details
-		let transaction = transactions.list.first
-		XCTAssertNotNil(transaction)
-		XCTAssertEqual(transaction?.date, DateOnly("2018-05-12"))
-		XCTAssertEqual(transaction?.value, -5.31)
-		XCTAssertEqual(transaction?.movementName, "PAYPAL *SOMEHOBBY")
+			let (transactions, _) = try await services.bankTransactionService.getAll(
+				groupIds: [groupOwnerId])
+			#expect(transactions.list.count == 1)
+
+			let transaction = transactions.list.first
+			#expect(transaction != nil)
+			#expect(transaction?.date == DateOnly("2018-05-12"))
+			#expect(transaction?.value == -5.31)
+			#expect(transaction?.movementName == "PAYPAL *SOMEHOBBY")
+		}
 	}
 
 }
 
-final class CaixaEnginyersUnitTests: XCTestCase {
+@Suite("Caixa Enginyers Unit")
+final class CaixaEnginyersUnitTests {
+	@Test("Transform the message correctly")
 	func testCaixaEnginyersAccountSplitMessage() {
 		let caixaEnginyersImporter = CaixaEnginyersAccountImporter()
 
 		let (details1, movementName1) = caixaEnginyersImporter.splitMessage("R/ Some bill")
-		XCTAssertEqual(details1, "Bill")
-		XCTAssertEqual(movementName1, "Some bill")
+		#expect(details1 == "Bill")
+		#expect(movementName1 == "Some bill")
 
 		let (details2, movementName2) = caixaEnginyersImporter.splitMessage(
 			"TRANSF: Some transfer")
-		XCTAssertEqual(details2, "Transfer")
-		XCTAssertEqual(movementName2, "Some transfer")
+		#expect(details2 == "Transfer")
+		#expect(movementName2 == "Some transfer")
 
 		let (details3, movementName3) = caixaEnginyersImporter.splitMessage(
 			"TARGETA *1234 Some card transaction")
-		XCTAssertEqual(details3, "TARGETA *1234")
-		XCTAssertEqual(movementName3, "Some card transaction")
+		#expect(details3 == "TARGETA *1234")
+		#expect(movementName3 == "Some card transaction")
 
 		let (details4, movementName4) = caixaEnginyersImporter.splitMessage(
 			"Regular transaction")
-		XCTAssertEqual(details4, "")
-		XCTAssertEqual(movementName4, "Regular transaction")
+		#expect(details4 == "")
+		#expect(movementName4 == "Regular transaction")
 	}
 }

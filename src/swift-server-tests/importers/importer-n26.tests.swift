@@ -1,62 +1,84 @@
 import Fluent
+import Queues
+import Testing
 import Vapor
-import XCTVapor
-import XCTest
+import VaporTesting
 
 @testable import MrScroogeServer
 
-final class N26ImporterTests: BaseImporterTests {
+@Suite("N26")
+final class N26ImporterTests: BaseImporterTesting {
 
-	override func getParsers() throws -> [any ParserFactory] {
-		return [N26Importer()]
-	}
-
+	@Test("Import from N26")
 	func testN26Import() async throws {
-		let groupOwnerId = try self.group.requireID()
-		let db = try getDb()
+		try await withApp { app in
+			let services = ImporterTestServices(
+				app: app,
+				parsers: [N26Importer()])
 
-		//let filePath = getTestFile(file: "test_files/n26_es.csv")
-		let filePath = try XCTUnwrap(
-			Bundle.module.url(forResource: "n26_es", withExtension: "csv"))
+			let testData = try await createGroupsAndUsers(app: app)
+			let groupOwnerId = try testData.group.requireID()
 
-		let _ = try await importerService.importFromFile(
-			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId, key: "n26/es",
-			fileName: "n26-file.csv", filePath: filePath.path)
+			let filePath = try #require(
+				Bundle.module.url(forResource: "n26_es", withExtension: "csv")
+			)
 
-		let reports = try await statusReportsService.getAll(
-			groupIds: [groupOwnerId])
-		XCTAssertEqual(reports.list.count, 1)
-		XCTAssertEqual(reports.list.first?.status, .ok)
+			let _ = try await services.importerService.importFromFile(
+				on: app.db,
+				withQueue: app.queues.queue,
+				groupOwnerId: groupOwnerId,
+				key: "n26/es",
+				fileName: "n26-file.csv",
+				filePath: filePath.path)
 
-		let (transactions, _) = try await bankTransactionService.getAll(
-			groupIds: [groupOwnerId])
-		XCTAssertEqual(transactions.list.count, 3)
+			let reports = try await services.statusReportsService.getAll(
+				groupIds: [groupOwnerId])
+			#expect(reports.list.count == 1)
+			#expect(reports.list.first?.status == .ok)
 
-		// Check specific transaction
-		let testTransaction = transactions.list.first { $0.date == DateOnly("2019-01-20") }
-		XCTAssertNotNil(testTransaction)
-		XCTAssertEqual(testTransaction?.value, 120)
-		XCTAssertEqual(testTransaction?.movementName, "Dr Who")
+			let (transactions, _) = try await services.bankTransactionService.getAll(
+				groupIds: [groupOwnerId])
+			#expect(transactions.list.count == 3)
+
+			let testTransaction = transactions.list.first {
+				$0.date == DateOnly("2019-01-20")
+			}
+			#expect(testTransaction != nil)
+			#expect(testTransaction?.value == 120)
+			#expect(testTransaction?.movementName == "Dr Who")
+		}
 	}
 
+	@Test("Import invalid file from N26")
 	func testN26ImportInvalidFile() async throws {
-		let groupOwnerId = try self.group.requireID()
-		let db = try getDb()
+		try await withApp { app in
+			let services = ImporterTestServices(
+				app: app,
+				parsers: [N26Importer()])
 
-		let filePath = "invalid"
+			let testData = try await createGroupsAndUsers(app: app)
+			let groupOwnerId = try testData.group.requireID()
 
-		let _ = try await importerService.importFromFile(
-			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId, key: "n26/es",
-			fileName: "n26-file.csv", filePath: filePath)
+			let filePath = "invalid"
 
-		let reports = try await statusReportsService.getAll(
-			groupIds: [groupOwnerId])
-		XCTAssertEqual(reports.list.count, 1)
-		XCTAssertEqual(reports.list.first?.status, .error)
-		XCTAssertEqual(reports.list.first?.fileName, "n26-file.csv")
-		XCTAssertContains(
-			reports.list.first?.description, "E10010: Csv cannot be parsed at")
-		XCTAssertEqual(reports.list.first?.context, "{\"fileName\":\"invalid\"}")
-		// XCTAssert(reports.list.first?.stack?.contains("at N26Importer.") ?? false)
+			let _ = try await services.importerService.importFromFile(
+				on: app.db,
+				withQueue: app.queues.queue,
+				groupOwnerId: groupOwnerId,
+				key: "n26/es",
+				fileName: "n26-file.csv",
+				filePath: filePath)
+
+			let reports = try await services.statusReportsService.getAll(
+				groupIds: [groupOwnerId])
+			#expect(reports.list.count == 1)
+			guard let first = reports.list.first else {
+				return
+			}
+			#expect(first.status == .error)
+			#expect(first.fileName == "n26-file.csv")
+			#expect(first.description.contains("E10010: Csv cannot be parsed at"))
+			#expect(first.context == "{\"fileName\":\"invalid\"}")
+		}
 	}
 }

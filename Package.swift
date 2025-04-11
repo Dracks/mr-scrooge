@@ -86,7 +86,6 @@ let package = Package(
 			name: "MrScroogeServerTests",
 			dependencies: [
 				.target(name: "MrScroogeServer"),
-				.product(name: "XCTVapor", package: "vapor"),
 				.product(name: "XCTQueues", package: "queues"),
 				.product(name: "VaporTesting", package: "vapor"),
 			],

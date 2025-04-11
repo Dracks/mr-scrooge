@@ -1,173 +1,219 @@
 import Fluent
-import XCTVapor
-import XCTest
+import Testing
+import VaporTesting
 
 @testable import MrScroogeServer
 
-final class ProfileTests: AbstractBaseTestsClass {
+@Suite("Profile Tests")
+final class ProfileTests: BaseWithFactories {
+	@Test("List users for admin")
 	func testListUsersForAdmin() async throws {
-		let app = try getApp()
+		try await withApp { app in
+			let testData = try await createGroupsAndUsers(app: app)
 
-		let headers = try await app.getHeaders(
-			forUser: .init(
-				username: testAdmin.username, password: "test-admin-password"))
+			let apiTester = try app.testing()
+			let headers = try await apiTester.headers(
+				forUser: .init(
+					username: testData.admin.username,
+					password: testData.adminPwd))
 
-		let response = try await app.sendRequest(.GET, "/api/users", headers: headers)
+			let response = try await apiTester.sendRequest(
+				.GET, "/api/users", headers: headers)
 
-		XCTAssertEqual(response.status, .ok)
+			#expect(response.status == .ok)
 
-		let data = try response.content.decode(
-			Operations.ApiUser_list.Output.Ok.Body.jsonPayload.self)
+			let data = try response.content.decode(
+				Operations.ApiUser_list.Output.Ok.Body.jsonPayload.self)
 
-		XCTAssertEqual(data.results.count, 2)
+			#expect(data.results.count == 2)
+		}
 	}
 
+	@Test("List users as regular user")
 	func testListUsers() async throws {
-		let app = try getApp()
+		try await withApp { app in
+			let testData = try await createGroupsAndUsers(app: app)
 
-		let headers = try await app.getHeaders(
-			forUser: .init(username: testUser.username, password: "test-password"))
+			let apiTester = try app.testing()
+			let headers = try await apiTester.headers(
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				))
 
-		let response = try await app.sendRequest(.GET, "/api/users", headers: headers)
+			let response = try await apiTester.sendRequest(
+				.GET, "/api/users", headers: headers)
 
-		XCTAssertEqual(response.status, .unauthorized)
+			#expect(response.status == .unauthorized)
 
-		let data = try response.content.decode(Components.Schemas._Error.self)
+			let data = try response.content.decode(Components.Schemas._Error.self)
 
-		XCTAssertEqual(data.code, "API10013")
+			#expect(data.code == "API10013")
+		}
 	}
 
+	@Test("Update my profile")
 	func testUpdateMyProfile() async throws {
-		let app = try getApp()
+		try await withApp { app in
+			let testData = try await createGroupsAndUsers(app: app)
 
-		let headers = try await app.getHeaders(
-			forUser: .init(username: testUser.username, password: "test-password"))
+			let apiTester = try app.testing()
+			let headers = try await apiTester.headers(
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				))
 
-		let newUserInfo = Components.Schemas.UpdateUserData(
-			username: testUser.username,
-			email: "test@test-change.com",
-			firstName: "First naming",
-			lastName: "Last naming",
-			isActive: true,
-			isAdmin: true,
-			defaultGroupId: testGroup.id!.uuidString
-		)
+			let newUserInfo = Components.Schemas.UpdateUserData(
+				username: testData.user.username,
+				email: "test@test-change.com",
+				firstName: "First naming",
+				lastName: "Last naming",
+				isActive: true,
+				isAdmin: true,
+				defaultGroupId: testData.group.id!.uuidString
+			)
 
-		let response = try await app.sendRequest(
-			.PUT, "/api/users/\(testUser.requireID().uuidString)", body: newUserInfo,
-			headers: headers)
+			let response = try await apiTester.sendRequest(
+				.PUT, "/api/users/\(testData.user.requireID().uuidString)",
+				body: newUserInfo,
+				headers: headers)
 
-		XCTAssertEqual(response.status, .unauthorized)
+			#expect(response.status == .unauthorized)
 
-		let error = try response.content.decode(Components.Schemas._Error.self)
-		XCTAssertEqual(error.code, "API10014")
+			let error = try response.content.decode(Components.Schemas._Error.self)
+			#expect(error.code == "API10014")
+		}
 	}
 
+	@Test("Update other profile as admin")
 	func testUpdateOtherProfileAsAdmin() async throws {
-		let app = try getApp()
+		try await withApp { app in
+			let testData = try await createGroupsAndUsers(app: app)
 
-		let headers = try await app.getHeaders(
-			forUser: .init(
-				username: testAdmin.username, password: "test-admin-password"))
+			let apiTester = try app.testing()
+			let headers = try await apiTester.headers(
+				forUser: .init(
+					username: testData.admin.username,
+					password: testData.adminPwd))
 
-		var newUserInfo = Components.Schemas.UpdateUserData(
-			username: testUser.username,
-			email: "test@test-change.com",
-			firstName: "First naming",
-			lastName: "Last naming",
-			isActive: false,
-			isAdmin: true,
-			defaultGroupId: testGroup.id!.uuidString
-		)
+			var newUserInfo = Components.Schemas.UpdateUserData(
+				username: testData.user.username,
+				email: "test@test-change.com",
+				firstName: "First naming",
+				lastName: "Last naming",
+				isActive: false,
+				isAdmin: true,
+				defaultGroupId: testData.group.id!.uuidString
+			)
 
-		let response = try await app.sendRequest(
-			.PUT, "/api/users/\(testUser.requireID().uuidString)", body: newUserInfo,
-			headers: headers)
+			let response = try await apiTester.sendRequest(
+				.PUT, "/api/users/\(testData.user.requireID().uuidString)",
+				body: newUserInfo,
+				headers: headers)
 
-		XCTAssertEqual(response.status, .ok)
+			#expect(response.status == .ok)
 
-		let user = try response.content.decode(Components.Schemas.UserProfile.self)
-		XCTAssertEqual(user.email, "test@test-change.com")
-		XCTAssertEqual(user.firstName, "First naming")
-		XCTAssertEqual(user.lastName, "Last naming")
-		XCTAssertEqual(user.isActive, false)
-		XCTAssertEqual(user.isAdmin, true)
-		XCTAssertEqual(user.defaultGroupId, testGroup.id!.uuidString)
+			let user = try response.content.decode(Components.Schemas.UserProfile.self)
+			#expect(user.email == "test@test-change.com")
+			#expect(user.firstName == "First naming")
+			#expect(user.lastName == "Last naming")
+			#expect(user.isActive == false)
+			#expect(user.isAdmin == true)
+			#expect(user.defaultGroupId == testData.group.id!.uuidString)
 
-		var userFromDb = try await User.query(on: app.db).filter(\.$id == testUser.id!)
+			var userFromDb = try await User.query(on: app.db).filter(
+				\.$id == testData.user.id!
+			)
 			.first()
-		XCTAssertTrue(userFromDb!.verifyPassword(pwd: "test-password"))
+			#expect(userFromDb!.verifyPassword(pwd: testData.userPwd))
 
-		newUserInfo.password = "new-password"
+			newUserInfo.password = "new-password"
 
-		let response2 = try await app.sendRequest(
-			.PUT, "/api/users/\(testUser.requireID().uuidString)", body: newUserInfo,
-			headers: headers)
+			let response2 = try await apiTester.sendRequest(
+				.PUT, "/api/users/\(testData.user.requireID().uuidString)",
+				body: newUserInfo,
+				headers: headers)
 
-		XCTAssertEqual(response2.status, .ok)
+			#expect(response2.status == .ok)
 
-		userFromDb = try await User.query(on: app.db).filter(\.$id == testUser.id!).first()
-		XCTAssertTrue(userFromDb!.verifyPassword(pwd: "new-password"))
-		XCTAssertFalse(userFromDb!.verifyPassword(pwd: "test-password"))
+			userFromDb = try await User.query(on: app.db).filter(
+				\.$id == testData.user.id!
+			).first()
+			#expect(userFromDb!.verifyPassword(pwd: "new-password"))
+			#expect(!userFromDb!.verifyPassword(pwd: testData.userPwd))
+		}
 	}
 
+	@Test("Update with invalid default group ID")
 	func testUpdateWithInvalidDefaultGroupId() async throws {}
 
+	@Test("Create user as regular user")
 	func testCreateUserAsUser() async throws {
-		let app = try getApp()
+		try await withApp { app in
+			let testData = try await createGroupsAndUsers(app: app)
 
-		let headers = try await app.getHeaders(
-			forUser: .init(username: testUser.username, password: "test-password"))
+			let apiTester = try app.testing()
+			let headers = try await apiTester.headers(
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				))
 
-		let newUser = Components.Schemas.CreateUserInput(
-			username: "Some new user",
-			email: "test@test-change.com",
-			firstName: "First naming",
-			lastName: "Last naming",
-			isActive: true,
-			isAdmin: true,
-			password: "Some stupid password"
-		)
+			let newUser = Components.Schemas.CreateUserInput(
+				username: "Some new user",
+				email: "test@test-change.com",
+				firstName: "First naming",
+				lastName: "Last naming",
+				isActive: true,
+				isAdmin: true,
+				password: "Some stupid password"
+			)
 
-		let response = try await app.sendRequest(
-			.POST, "/api/users/", body: newUser,
-			headers: headers)
+			let response = try await apiTester.sendRequest(
+				.POST, "/api/users/", body: newUser,
+				headers: headers)
 
-		XCTAssertEqual(response.status, .unauthorized)
+			#expect(response.status == .unauthorized)
+		}
 	}
 
+	@Test("Create user as admin")
 	func testCreateUserAsAdmin() async throws {
-		let app = try getApp()
+		try await withApp { app in
+			let testData = try await createGroupsAndUsers(app: app)
 
-		let headers = try await app.getHeaders(
-			forUser: .init(
-				username: testAdmin.username, password: "test-admin-password"))
+			let apiTester = try app.testing()
+			let headers = try await apiTester.headers(
+				forUser: .init(
+					username: testData.admin.username,
+					password: testData.adminPwd))
 
-		let newUser = Components.Schemas.CreateUserInput(
-			username: "Some new user",
-			email: "test@test-change.com",
-			firstName: "First naming",
-			lastName: "Last naming",
-			isActive: true,
-			isAdmin: false,
-			password: "Some stupid password"
-		)
+			let newUser = Components.Schemas.CreateUserInput(
+				username: "Some new user",
+				email: "test@test-change.com",
+				firstName: "First naming",
+				lastName: "Last naming",
+				isActive: true,
+				isAdmin: false,
+				password: "Some stupid password"
+			)
 
-		let response = try await app.sendRequest(
-			.POST, "/api/users/", body: newUser,
-			headers: headers)
+			let response = try await apiTester.sendRequest(
+				.POST, "/api/users/", body: newUser,
+				headers: headers)
 
-		XCTAssertEqual(response.status, .created)
-		let user = try response.content.decode(Components.Schemas.UserProfile.self)
-		XCTAssertEqual(user.username, "Some new user")
-		XCTAssertEqual(user.email, "test@test-change.com")
-		XCTAssertEqual(user.firstName, "First naming")
-		XCTAssertEqual(user.lastName, "Last naming")
-		XCTAssertEqual(user.isActive, true)
-		XCTAssertEqual(user.isAdmin, false)
+			#expect(response.status == .created)
+			let user = try response.content.decode(Components.Schemas.UserProfile.self)
+			#expect(user.username == "Some new user")
+			#expect(user.email == "test@test-change.com")
+			#expect(user.firstName == "First naming")
+			#expect(user.lastName == "Last naming")
+			#expect(user.isActive == true)
+			#expect(user.isAdmin == false)
+		}
 	}
 
+	@Test("Delete user")
 	func testDeleteUser() async throws {}
 
+	@Test("Delete user as admin")
 	func testDeleteUserAsAdmin() async throws {}
 }
