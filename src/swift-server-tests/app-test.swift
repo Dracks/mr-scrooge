@@ -45,7 +45,14 @@ func createGroup(app: Application, name: String) async throws -> UserGroup {
 func withApp(_ test: (Application) async throws -> Void) async throws {
 	let app = try await Application.make(.testing)
 	do {
-		try await configure(app)
+		let dbPath = "\(UUID().uuidString).sqlite"
+		defer {
+			do {
+				try FileManager.default.removeItem(atPath: dbPath)
+			} catch {}
+		}
+
+		try await configure(app, dbUrl: "sqlite://\(dbPath)")
 
 		app.queues.use(.asyncTest)
 

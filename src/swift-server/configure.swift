@@ -40,11 +40,6 @@ func getDbConfig(url dbUrl: String) throws -> (DatabaseConfigurationFactory, Dat
 	}
 }
 
-func configureDb(_ app: Application) async throws {
-	let (dbFactory, dbId) = try getDbConfig(url: EnvConfig.shared.dbUrl)
-	app.databases.use(dbFactory, as: dbId)
-}
-
 public func registerMigrations(_ app: Application) async throws {
 	app.migrations.add(SessionRecord.migration)
 	app.migrations.add(JobModelMigration())
@@ -53,7 +48,7 @@ public func registerMigrations(_ app: Application) async throws {
 }
 
 // configures your application
-public func configure(_ app: Application) async throws {
+public func configure(_ app: Application, dbUrl: String? = nil) async throws {
 	do {
 		// uncomment to serve files from /Public folder
 		app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
@@ -61,7 +56,8 @@ public func configure(_ app: Application) async throws {
 		try await registerMigrations(app)
 
 		app.logger.info("Configure DB")
-		try await configureDb(app)
+		let (dbFactory, dbId) = try getDbConfig(url: dbUrl ?? EnvConfig.shared.dbUrl)
+		app.databases.use(dbFactory, as: dbId)
 
 		if app.environment == .testing {
 			try await app.autoMigrate()
