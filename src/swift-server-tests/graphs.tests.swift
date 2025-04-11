@@ -1,24 +1,26 @@
 import Fluent
-import OpenAPIRuntime
-import OpenAPIVapor
-import Vapor
-import XCTVapor
-import XCTest
+import Testing
+import VaporTesting
 
 @testable import MrScroogeServer
 
-class GraphTests: AbstractBaseTestsClass {
+@Suite("Graph Tests")
+final class GraphTests: BaseWithFactories {
 
-	func generateGraphs() async throws {
-		let app = try getApp()
+	private func generateGraphs(
+		app: Application, data testData: GroupsAndUsers, labels: [Label]
+	) async throws -> (
+		Graph, Graph, Graph
+	) {
 		let labels = try labels.map({ try $0.requireID() })
 
 		// Create test data
 		let graph1 = Graph(
-			groupOwnerId: testGroup.id!, name: "first", kind: .bar, dateRange: .all,
+			groupOwnerId: testData.group.id!, name: "first", kind: .bar,
+			dateRange: .all,
 			order: 0)
 		let graph2 = Graph(
-			groupOwnerId: testGroup.id!, name: "huge graph", kind: .line,
+			groupOwnerId: testData.group.id!, name: "huge graph", kind: .line,
 			dateRange: .oneYear,
 			order: 1)
 		try await graph1.save(on: app.db)
@@ -53,451 +55,507 @@ class GraphTests: AbstractBaseTestsClass {
 		).save(on: app.db)
 
 		// Other owner graph
-		let graph3 = Graph(
-			groupOwnerId: testGroup2.id!, name: "huge graph", kind: .line,
+		let graph3 = try Graph(
+			groupOwnerId: testData.group2.requireID(), name: "huge graph", kind: .line,
 			dateRange: .oneYear,
 			order: 0)
 		try await graph3.save(on: app.db)
 		try await GraphGroup(graphId: graph3.id!, group: .day, hideOthers: false).save(
 			on: app.db)
 
-		testIds["graph"] = try graph2.requireID()
-		testIds["otherOwnerGraph"] = try graph3.requireID()
+		return (graph1, graph2, graph3)
 	}
 
+	@Test("Get all graphs")
 	func testGetGraphs() async throws {
-		let app = try getApp()
-
-		let labels = try labels.map({ try $0.requireID() })
-
-		try await generateGraphs()
-
-		let headers = try await app.getHeaders(
-			forUser: .init(
-				username: testUser.username, password: "test-password"))
-
-		let response = try await app.sendRequest(.GET, "/api/graphs", headers: headers)
-
-		XCTAssertEqual(response.status, .ok)
-		let data = try response.content.decode(
-			Operations.ApiGraphs_list.Output.Ok.Body.jsonPayload.self)
-
-		let fistLabelsIds = [1, 2].map { labels[$0].uuidString }
-		let secondLabelsIds = [4, 3].map { labels[$0].uuidString }
-
-		let graphsData = data.results
-
-		XCTAssertEqual(graphsData.count, 2)
-
-		let firstGraph = graphsData.first
-		XCTAssertEqual(firstGraph?.name, "first")
-
-		let secondGraph = graphsData[1]
-		XCTAssertEqual(secondGraph.name, "huge graph")
-		XCTAssertEqual(secondGraph.dateRange, .oneYear)
-		XCTAssertEqual(secondGraph.kind, .line)
-
-		let responseGroup = secondGraph.group
-		XCTAssertEqual(responseGroup.group, .labels)
-		XCTAssertEqual(responseGroup.hideOthers, false)
-		XCTAssertEqual(responseGroup.labels, fistLabelsIds)
-
-		let responseHorizontalGroup = secondGraph.horizontalGroup
-		XCTAssertEqual(responseHorizontalGroup?.group, .labels)
-		XCTAssertEqual(responseHorizontalGroup?.hideOthers, true)
-		XCTAssertEqual(responseHorizontalGroup?.labels, secondLabelsIds)
-
-	}
-
-	func testGetOneGraphs() async throws {
-		let app = try getApp()
-
-		let labels = try labels.map({ try $0.requireID() })
-
-		try await generateGraphs()
-
-		let headers = try await app.getHeaders(
-			forUser: .init(
-				username: testUser.username, password: "test-password"))
-
-		let response = try await app.sendRequest(
-			.GET, "/api/graphs/?graphIds=\(testIds["graph"]!)",
-			headers: headers)
-
-		XCTAssertEqual(response.status, .ok)
-		let data = try response.content.decode(
-			Operations.ApiGraphs_list.Output.Ok.Body.jsonPayload.self)
-
-		let fistLabelsIds = [1, 2].map { labels[$0].uuidString }
-		let secondLabelsIds = [4, 3].map { labels[$0].uuidString }
-
-		let graphsData = data.results
-
-		XCTAssertEqual(graphsData.count, 1)
-
-		let secondGraph = graphsData.first
-		XCTAssertEqual(secondGraph?.name, "huge graph")
-		XCTAssertEqual(secondGraph?.dateRange, .oneYear)
-		XCTAssertEqual(secondGraph?.kind, .line)
-
-		let responseGroup = secondGraph?.group
-		XCTAssertEqual(responseGroup?.group, .labels)
-		XCTAssertEqual(responseGroup?.hideOthers, false)
-		XCTAssertEqual(responseGroup?.labels, fistLabelsIds)
-
-		let responseHorizontalGroup = secondGraph?.horizontalGroup
-		XCTAssertEqual(responseHorizontalGroup?.group, .labels)
-		XCTAssertEqual(responseHorizontalGroup?.hideOthers, true)
-		XCTAssertEqual(responseHorizontalGroup?.labels, secondLabelsIds)
-
-	}
-
-	func testCreateNewGraph() async throws {
-
-		let app = try getApp()
-
-		let updateGraph = Components.Schemas.GraphInput(
-			groupOwnerId: testGroup.id!.uuidString,
-			name: "New Graph",
-			kind: .bar,
-			dateRange: .all,
-			group: .init(group: .month, hideOthers: false, labels: nil)
-		)
-
-		let headers = try await app.getHeaders(
-			forUser: .init(
-				username: testUser.username, password: "test-password"))
-
-		let response = try await app.sendRequest(
-			.POST, "/api/graphs", body: updateGraph, headers: headers)
-
-		XCTAssertEqual(response.status, .created)
-
-		let createdGraph = try response.content.decode(Components.Schemas.Graph.self)
-
-		XCTAssertNotNil(createdGraph.id)
-		XCTAssertEqual(createdGraph.name, "New Graph")
-		XCTAssertEqual(createdGraph.dateRange, .all)
-		XCTAssertEqual(createdGraph.kind, .bar)
-		XCTAssertEqual(createdGraph.group.group, .month)
-		XCTAssertEqual(createdGraph.group.hideOthers, false)
-
-	}
-
-	func testCreateNewGraphWithInvalidOwnerId() async throws {
-		let app = try getApp()
-
-		let updateGraph = Components.Schemas.GraphInput(
-			groupOwnerId: testGroup2.id!.uuidString,
-			name: "New Graph",
-			kind: .bar,
-			dateRange: .all,
-			group: .init(group: .month, hideOthers: false, labels: nil))
-
-		let headers = try await app.getHeaders(
-			forUser: .init(
-				username: testUser.username, password: "test-password"))
-
-		let response = try await app.sendRequest(
-			.POST, "/api/graphs", body: updateGraph, headers: headers)
-
-		XCTAssertEqual(response.status, .forbidden)
-
-		let data = try response.content.decode(Components.Schemas.InvalidGroupOwnerId.self)
-
-		XCTAssertNotNil(data)
-		XCTAssertEqual(data.code, "API10004")
-	}
-
-	func testUpdateGraph() async throws {
-		let app = try getApp()
-		let labels = try labels.map({ try $0.requireID().uuidString })
-
-		// Create an existing graph
-
-		try await generateGraphs()
-
-		let updateGraph = Components.Schemas.GraphInput(
-			groupOwnerId: testGroup.id!.uuidString,
-			name: "Updated Graph",
-			kind: .line,
-			dateRange: .halfYear,
-			group: .init(
-				group: .labels, hideOthers: false, labels: [labels[2], labels[4]]),
-			horizontalGroup: .init(
-				group: .labels, hideOthers: true, labels: [labels[3], labels[5]]))
-
-		let headers = try await app.getHeaders(
-			forUser: .init(
-				username: testUser.username, password: "test-password"))
-
-		let response = try await app.sendRequest(
-			.PUT, "/api/graphs/\(testIds["graph"]!)", body: updateGraph,
-			headers: headers)
-
-		XCTAssertEqual(response.status, .ok)
-
-		let updatedGraph = try response.content.decode(Components.Schemas.Graph.self)
-
-		XCTAssertEqual(updatedGraph.id, testIds["graph"]!.uuidString)
-		XCTAssertEqual(updatedGraph.name, "Updated Graph")
-		XCTAssertEqual(updatedGraph.dateRange, .halfYear)
-		XCTAssertEqual(updatedGraph.kind, .line)
-		XCTAssertEqual(updatedGraph.group.group, .labels)
-		XCTAssertEqual(updatedGraph.group.hideOthers, false)
-		XCTAssertEqual(
-			updatedGraph.group.labels,
-			[2, 4].map({ labels[$0] }))
-		XCTAssertEqual(
-			updatedGraph.horizontalGroup?.group, .labels)
-		XCTAssertEqual(updatedGraph.horizontalGroup?.hideOthers, true)
-		XCTAssertEqual(
-			updatedGraph.horizontalGroup?.labels,
-			[3, 5].map({ labels[$0] }))
-	}
-
-	func testUpdateGraphWithInvalidLabels() async throws {
-		let app = try getApp()
-		let labels = try labels.map({ try $0.requireID().uuidString })
-
-		// Create an existing graph
-		try await generateGraphs()
-
-		let updatedGraph = Components.Schemas.GraphInput(
-			groupOwnerId: testGroup.id!.uuidString, name: "Updated Graph", kind: .line,
-			dateRange: .halfYear,
-			group: .init(
-				group: .labels, hideOthers: false,
-				labels: [labels[2], labels[4], labels[11]]),
-			horizontalGroup: .init(
-				group: .labels, hideOthers: true,
-				labels: [labels[3], labels[5], labels[12]]))
-
-		let headers = try await app.getHeaders(
-			forUser: .init(
-				username: testUser.username, password: "test-password"))
-
-		let response = try await app.sendRequest(
-			.PUT, "/api/graphs/\(testIds["graph"]!)", body: updatedGraph,
-			headers: headers)
-
-		XCTAssertEqual(response.status, .notFound)
-
-		let notFoundLabels = try response.content.decode(
-			Components.Schemas.NotFoundLabels.self)
-
-		XCTAssertEqual(notFoundLabels.validLabels.count, 4)
-		XCTAssertEqual(notFoundLabels.invalidLabels.count, 2)
-		let validLabels = [1, 2, 3, 4].map({ labels[$0] })
-		XCTAssertTrue(
-			notFoundLabels.validLabels.contains(where: {
-				validLabels.contains($0)
-			}))
-
-		let invalidLabels = [11, 12].map({ labels[$0] })
-		XCTAssertTrue(
-			notFoundLabels.invalidLabels.contains(where: {
-				invalidLabels.contains($0)
-			}))
-	}
-	// Todo add a test to try to update a not existing graph
-	func testUpdateNonExistingGraph() async throws {
-		let app = try getApp()
-		let labels = try labels.map({ try $0.requireID().uuidString })
-
-		// Create a non-existing graph ID
-		let nonExistingGraphId = UUID()
-
-		let updateGraph = Components.Schemas.GraphInput(
-			groupOwnerId: testGroup.id!.uuidString,
-			name: "Non-Existing Graph",
-			kind: .line,
-			dateRange: .halfYear,
-			group: .init(
-				group: .labels, hideOthers: false, labels: [labels[0], labels[1]]),
-			horizontalGroup: .init(
-				group: .labels, hideOthers: true, labels: [labels[2], labels[3]]))
-
-		let headers = try await app.getHeaders(
-			forUser: .init(
-				username: testUser.username, password: "test-password"))
-
-		let response = try await app.sendRequest(
-			.PUT, "/api/graphs/\(nonExistingGraphId)", body: updateGraph,
-			headers: headers)
-
-		XCTAssertEqual(response.status, .notFound)
-
-		let data = try response.content.decode(Components.Schemas._Error.self)
-
-		XCTAssertNotNil(data)
-		XCTAssertEqual(data.code, "API10008")
-		/*
-		ToDo: check and transform when needed
-		let result = data.data?["updateGraph"]
-		XCTAssertEqual(result?["__typename"].string, "GraphNotFound")
-		XCTAssertEqual(result?["graphId"].string, nonExistingGraphId.uuidString)
-		*/
-	}
-
-	func testMoveUpGraphWithDeletedGraphInTheMiddle() async throws {
-		let app = try getApp()
-
-		// Create an existing graph
-		try await generateGraphs()
-
-		// Create a third graph with order 3
-		let graph3 = Graph(
-			groupOwnerId: testGroup.id!, name: "third graph", kind: .bar,
-			dateRange: .all,
-			order: 3)
-		try await graph3.save(on: app.db)
-		let subjectId = try graph3.requireID()
-		try await GraphGroup(graphId: subjectId, group: .day).save(on: app.db)
-		let body = Operations.ApiGraphs_move.Input.Body.jsonPayload(direction: .up)
-
-		let headers = try await app.getHeaders(
-			forUser: .init(
-				username: testUser.username, password: "test-password"))
-
-		let response = try await app.sendRequest(
-			.PUT, "/api/graphs/\(subjectId)/move", body: body, headers: headers)
-
-		XCTAssertEqual(response.status, .ok)
-		let error = try? response.content.decode(Components.Schemas._Error.self)
-		XCTAssertNil(error)
-
-		let data = try response.content.decode(
-			Operations.ApiGraphs_move.Output.Ok.Body.jsonPayload.self)
-
-		// Should only return the two modified graphs
-		XCTAssertEqual(data.results.count, 2)
-		let graphsList = data.results
-
-		// Check orders were updated correctly
-		let updatedGraph2 = graphsList.first(where: {
-			$0.id == testIds["graph"]?.uuidString
-		})
-		let updatedGraph3 = graphsList.first(where: { $0.id == subjectId.uuidString }
-		)
-
-		XCTAssertEqual(updatedGraph2?.order, 2)
-		XCTAssertEqual(updatedGraph3?.order, 1)
-	}
-
-	func testMoveDownGraphWithDeletedGraphInTheMiddle() async throws {
-		let app = try getApp()
-
-		// Create an existing graph
-		try await generateGraphs()
-
-		// Create a third graph with order 3
-		let graph3 = Graph(
-			groupOwnerId: testGroup.id!, name: "third graph", kind: .bar,
-			dateRange: .all,
-			order: 3)
-		try await graph3.save(on: app.db)
-		guard let subjectId = testIds["graph"] else {
-			XCTAssertFalse(true, "graph should be found in testIds")
-			return
+		try await withApp { app in
+			let testData = try await createGroupsAndUsers(app: app)
+			let labels = try await createTestLabels(app: app, testData: testData)
+			let _ = try await generateGraphs(
+				app: app, data: testData, labels: labels)
+			let labelIds = try labels.map({ try $0.requireID() })
+
+			let apiTester = try app.testing()
+			let headers = try await apiTester.headers(
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				)
+			)
+
+			let response = try await apiTester.sendRequest(
+				.GET, "/api/graphs", headers: headers)
+
+			#expect(response.status == .ok)
+			let data = try response.content.decode(
+				Operations.ApiGraphs_list.Output.Ok.Body.jsonPayload.self)
+
+			let fistLabelsIds = [1, 2].map { labelIds[$0].uuidString }
+			let secondLabelsIds = [4, 3].map { labelIds[$0].uuidString }
+
+			let graphsData = data.results
+
+			#expect(graphsData.count == 2)
+
+			let firstGraph = graphsData.first
+			#expect(firstGraph?.name == "first")
+
+			let secondGraph = graphsData[1]
+			#expect(secondGraph.name == "huge graph")
+			#expect(secondGraph.dateRange == .oneYear)
+			#expect(secondGraph.kind == .line)
+
+			let responseGroup = secondGraph.group
+			#expect(responseGroup.group == .labels)
+			#expect(responseGroup.hideOthers == false)
+			#expect(responseGroup.labels == fistLabelsIds)
+
+			let responseHorizontalGroup = secondGraph.horizontalGroup
+			#expect(responseHorizontalGroup?.group == .labels)
+			#expect(responseHorizontalGroup?.hideOthers == true)
+			#expect(responseHorizontalGroup?.labels == secondLabelsIds)
 		}
-		let graph3Id = try graph3.requireID()
-		try await GraphGroup(graphId: graph3Id, group: .day).save(on: app.db)
-		let body = Operations.ApiGraphs_move.Input.Body.jsonPayload(direction: .down)
-
-		let headers = try await app.getHeaders(
-			forUser: .init(
-				username: testUser.username, password: "test-password"))
-
-		let response = try await app.sendRequest(
-			.PUT, "/api/graphs/\(subjectId)/move", body: body, headers: headers)
-
-		XCTAssertEqual(response.status, .ok)
-		let error = try? response.content.decode(Components.Schemas._Error.self)
-		XCTAssertNil(error)
-
-		let data = try response.content.decode(
-			Operations.ApiGraphs_move.Output.Ok.Body.jsonPayload.self)
-
-		// Should only return the two modified graphs
-		XCTAssertEqual(data.results.count, 2)
-		let graphsList = data.results
-
-		// Check orders were updated correctly
-		let updatedGraph2 = graphsList.first(where: {
-			$0.id == subjectId.uuidString
-		})
-		let updatedGraph3 = graphsList.first(where: { $0.id == graph3Id.uuidString }
-		)
-
-		XCTAssertEqual(updatedGraph2?.order, 2)
-		XCTAssertEqual(updatedGraph3?.order, 1)
 	}
 
+	@Test("Get single graph")
+	func testGetOneGraphs() async throws {
+		try await withApp { app in
+			let testData = try await createGroupsAndUsers(app: app)
+
+			let labels = try await createTestLabels(app: app, testData: testData)
+			let (_, graph2, _) = try await generateGraphs(
+				app: app, data: testData, labels: labels)
+			let labelIds = try labels.map({ try $0.requireID() })
+
+			let apiTester = try app.testing()
+			let headers = try await apiTester.headers(
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				)
+			)
+
+			let response = try await apiTester.sendRequest(
+				.GET, "/api/graphs/?graphIds=\(graph2.requireID())",
+				headers: headers)
+
+			#expect(response.status == .ok)
+			let data = try response.content.decode(
+				Operations.ApiGraphs_list.Output.Ok.Body.jsonPayload.self)
+
+			let fistLabelsIds = [1, 2].map { labelIds[$0].uuidString }
+			let secondLabelsIds = [4, 3].map { labelIds[$0].uuidString }
+
+			let graphsData = data.results
+
+			#expect(graphsData.count == 1)
+
+			let secondGraph = graphsData.first
+			#expect(secondGraph?.name == "huge graph")
+			#expect(secondGraph?.dateRange == .oneYear)
+			#expect(secondGraph?.kind == .line)
+
+			let responseGroup = secondGraph?.group
+			#expect(responseGroup?.group == .labels)
+			#expect(responseGroup?.hideOthers == false)
+			#expect(responseGroup?.labels == fistLabelsIds)
+
+			let responseHorizontalGroup = secondGraph?.horizontalGroup
+			#expect(responseHorizontalGroup?.group == .labels)
+			#expect(responseHorizontalGroup?.hideOthers == true)
+			#expect(responseHorizontalGroup?.labels == secondLabelsIds)
+		}
+	}
+
+	@Test("Create new graph")
+	func testCreateNewGraph() async throws {
+		try await withApp { app in
+			let testData = try await createGroupsAndUsers(app: app)
+			let updateGraph = Components.Schemas.GraphInput(
+				groupOwnerId: testData.group.id!.uuidString,
+				name: "New Graph",
+				kind: .bar,
+				dateRange: .all,
+				group: .init(group: .month, hideOthers: false, labels: nil)
+			)
+
+			let apiTester = try app.testing()
+			let headers = try await apiTester.headers(
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				)
+			)
+
+			let response = try await apiTester.sendRequest(
+				.POST, "/api/graphs", body: updateGraph, headers: headers)
+
+			#expect(response.status == .created)
+
+			let createdGraph = try response.content.decode(
+				Components.Schemas.Graph.self)
+
+			#expect(createdGraph.id != "")
+			#expect(createdGraph.name == "New Graph")
+			#expect(createdGraph.dateRange == .all)
+			#expect(createdGraph.kind == .bar)
+			#expect(createdGraph.group.group == .month)
+			#expect(createdGraph.group.hideOthers == false)
+		}
+	}
+
+	@Test("Create new graph with invalid owner ID")
+	func testCreateNewGraphWithInvalidOwnerId() async throws {
+		try await withApp { app in
+			let testData = try await createGroupsAndUsers(app: app)
+			let updateGraph = Components.Schemas.GraphInput(
+				groupOwnerId: try testData.group2.requireID().uuidString,
+				name: "New Graph",
+				kind: .bar,
+				dateRange: .all,
+				group: .init(group: .month, hideOthers: false, labels: nil))
+
+			let apiTester = try app.testing()
+			let headers = try await apiTester.headers(
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				)
+			)
+
+			let response = try await apiTester.sendRequest(
+				.POST, "/api/graphs", body: updateGraph, headers: headers)
+
+			#expect(response.status == .forbidden)
+
+			let data = try? response.content.decode(
+				Components.Schemas.InvalidGroupOwnerId.self)
+
+			#expect(data != nil)
+			#expect(data?.code == "API10004")
+		}
+	}
+
+	@Test("Update graph")
+	func testUpdateGraph() async throws {
+		try await withApp { app in
+			let testData = try await createGroupsAndUsers(app: app)
+			let labels = try await createTestLabels(app: app, testData: testData)
+			let (_, graph2, _) = try await generateGraphs(
+				app: app, data: testData, labels: labels)
+			let labelIds = try labels.map({ try $0.requireID().uuidString })
+
+			let updateGraph = Components.Schemas.GraphInput(
+				groupOwnerId: testData.group.id!.uuidString,
+				name: "Updated Graph",
+				kind: .line,
+				dateRange: .halfYear,
+				group: .init(
+					group: .labels, hideOthers: false,
+					labels: [labelIds[2], labelIds[4]]),
+				horizontalGroup: .init(
+					group: .labels, hideOthers: true,
+					labels: [labelIds[3], labelIds[5]]))
+
+			let apiTester = try app.testing()
+			let headers = try await apiTester.headers(
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				)
+			)
+			let graph2Id = try graph2.requireID()
+
+			let response = try await apiTester.sendRequest(
+				.PUT, "/api/graphs/\(graph2Id)", body: updateGraph,
+				headers: headers)
+
+			#expect(response.status == .ok)
+
+			let updatedGraph = try response.content.decode(
+				Components.Schemas.Graph.self)
+
+			#expect(updatedGraph.id == graph2Id.uuidString)
+			#expect(updatedGraph.name == "Updated Graph")
+			#expect(updatedGraph.dateRange == .halfYear)
+			#expect(updatedGraph.kind == .line)
+			#expect(updatedGraph.group.group == .labels)
+			#expect(updatedGraph.group.hideOthers == false)
+			#expect(updatedGraph.group.labels == [2, 4].map({ labelIds[$0] }))
+			#expect(updatedGraph.horizontalGroup?.group == .labels)
+			#expect(updatedGraph.horizontalGroup?.hideOthers == true)
+			#expect(
+				updatedGraph.horizontalGroup?.labels
+					== [3, 5].map({ labelIds[$0] }))
+		}
+	}
+
+	@Test("Update graph with invalid labels")
+	func testUpdateGraphWithInvalidLabels() async throws {
+		try await withApp { app in
+			let testData = try await createGroupsAndUsers(app: app)
+			let labels = try await createTestLabels(app: app, testData: testData)
+			let labelIds = try labels.map({ try $0.requireID().uuidString })
+			let (_, graph2, _) = try await generateGraphs(
+				app: app, data: testData, labels: labels)
+
+			let updatedGraph = Components.Schemas.GraphInput(
+				groupOwnerId: testData.group.id!.uuidString, name: "Updated Graph",
+				kind: .line,
+				dateRange: .halfYear,
+				group: .init(
+					group: .labels, hideOthers: false,
+					labels: [labelIds[2], labelIds[4], labelIds[11]]),
+				horizontalGroup: .init(
+					group: .labels, hideOthers: true,
+					labels: [labelIds[3], labelIds[5], labelIds[12]]))
+
+			let apiTester = try app.testing()
+			let headers = try await apiTester.headers(
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				)
+			)
+
+			let response = try await apiTester.sendRequest(
+				.PUT, "/api/graphs/\(graph2.requireID())", body: updatedGraph,
+				headers: headers)
+
+			#expect(response.status == .notFound)
+
+			let notFoundLabels = try response.content.decode(
+				Components.Schemas.NotFoundLabels.self)
+
+			#expect(notFoundLabels.validLabels.count == 4)
+			#expect(notFoundLabels.invalidLabels.count == 2)
+			let validLabels = [1, 2, 3, 4].map({ labelIds[$0] })
+			#expect(
+				notFoundLabels.validLabels.contains(where: {
+					validLabels.contains($0)
+				}))
+
+			let invalidLabels = [11, 12].map({ labelIds[$0] })
+			#expect(
+				notFoundLabels.invalidLabels.contains(where: {
+					invalidLabels.contains($0)
+				}))
+		}
+	}
+
+	@Test("Update non-existing graph")
+	func testUpdateNonExistingGraph() async throws {
+		try await withApp { app in
+			let testData = try await createGroupsAndUsers(app: app)
+			let labels = try await createTestLabels(app: app, testData: testData)
+			let labelIds = try labels.map({ try $0.requireID().uuidString })
+			let nonExistingGraphId = UUID()
+
+			let updateGraph = Components.Schemas.GraphInput(
+				groupOwnerId: testData.group.id!.uuidString,
+				name: "Non-Existing Graph",
+				kind: .line,
+				dateRange: .halfYear,
+				group: .init(
+					group: .labels, hideOthers: false,
+					labels: [labelIds[0], labelIds[1]]),
+				horizontalGroup: .init(
+					group: .labels, hideOthers: true,
+					labels: [labelIds[2], labelIds[3]]))
+
+			let apiTester = try app.testing()
+			let headers = try await apiTester.headers(
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				)
+			)
+
+			let response = try await apiTester.sendRequest(
+				.PUT, "/api/graphs/\(nonExistingGraphId)", body: updateGraph,
+				headers: headers)
+
+			#expect(response.status == .notFound)
+
+			let data = try? response.content.decode(Components.Schemas._Error.self)
+
+			#expect(data != nil)
+			#expect(data?.code == "API10008")
+		}
+	}
+
+	@Test("Move up graph with deleted graph in the middle")
+	func testMoveUpGraphWithDeletedGraphInTheMiddle() async throws {
+		try await withApp { app in
+			let testData = try await createGroupsAndUsers(app: app)
+			let labels = try await createTestLabels(app: app, testData: testData)
+			let (_, graph2, _) = try await generateGraphs(
+				app: app, data: testData, labels: labels)
+
+			let graph3 = Graph(
+				groupOwnerId: testData.group.id!, name: "third graph", kind: .bar,
+				dateRange: .all,
+				order: 3)
+			try await graph3.save(on: app.db)
+			let subjectId = try graph3.requireID()
+			try await GraphGroup(graphId: subjectId, group: .day).save(on: app.db)
+			let body = Operations.ApiGraphs_move.Input.Body.jsonPayload(direction: .up)
+
+			let apiTester = try app.testing()
+			let headers = try await apiTester.headers(
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				)
+			)
+
+			let response = try await apiTester.sendRequest(
+				.PUT, "/api/graphs/\(subjectId)/move", body: body, headers: headers)
+
+			#expect(response.status == .ok)
+			let error = try? response.content.decode(Components.Schemas._Error.self)
+			#expect(error == nil)
+
+			let data = try response.content.decode(
+				Operations.ApiGraphs_move.Output.Ok.Body.jsonPayload.self)
+
+			#expect(data.results.count == 2)
+			let graphsList = data.results
+
+			let updatedGraph2 = try graphsList.first(where: {
+				try $0.id == graph2.requireID().uuidString
+			})
+			let updatedGraph3 = graphsList.first(where: {
+				$0.id == subjectId.uuidString
+			})
+
+			#expect(updatedGraph2?.order == 2)
+			#expect(updatedGraph3?.order == 1)
+		}
+	}
+
+	@Test("Move down graph with deleted graph in the middle")
+	func testMoveDownGraphWithDeletedGraphInTheMiddle() async throws {
+		try await withApp { app in
+			let testData = try await createGroupsAndUsers(app: app)
+			let labels = try await createTestLabels(app: app, testData: testData)
+			let (_, graph2, _) = try await generateGraphs(
+				app: app, data: testData, labels: labels)
+
+			let graph3 = Graph(
+				groupOwnerId: testData.group.id!, name: "third graph", kind: .bar,
+				dateRange: .all,
+				order: 3)
+			try await graph3.save(on: app.db)
+			let graph3Id = try graph3.requireID()
+			try await GraphGroup(graphId: graph3Id, group: .day).save(on: app.db)
+			let body = Operations.ApiGraphs_move.Input.Body.jsonPayload(
+				direction: .down)
+
+			let apiTester = try app.testing()
+			let headers = try await apiTester.headers(
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				)
+			)
+
+			let response = try await apiTester.sendRequest(
+				.PUT, "/api/graphs/\(graph2.requireID())/move", body: body,
+				headers: headers)
+
+			#expect(response.status == .ok)
+			let error = try? response.content.decode(Components.Schemas._Error.self)
+			#expect(error == nil)
+
+			let data = try response.content.decode(
+				Operations.ApiGraphs_move.Output.Ok.Body.jsonPayload.self)
+
+			#expect(data.results.count == 2)
+			let graphsList = data.results
+
+			let updatedGraph2 = try graphsList.first(where: {
+				try $0.id == graph2.requireID().uuidString
+			})
+			let updatedGraph3 = graphsList.first(where: { $0.id == graph3Id.uuidString }
+			)
+
+			#expect(updatedGraph2?.order == 2)
+			#expect(updatedGraph3?.order == 1)
+		}
+	}
+
+	@Test("Delete graph")
 	func testDeleteGraph() async throws {
-		let app = try getApp()
+		try await withApp { app in
+			let testData = try await createGroupsAndUsers(app: app)
+			let labels = try await createTestLabels(app: app, testData: testData)
+			let (_, graph2, _) = try await generateGraphs(
+				app: app, data: testData, labels: labels)
+			let graphId = try graph2.requireID()
 
-		// Generate test graphs
-		try await generateGraphs()
+			let apiTester = try app.testing()
+			let headers = try await apiTester.headers(
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				)
+			)
 
-		let graphId = testIds["graph"]!
+			let response = try await apiTester.sendRequest(
+				.DELETE, "/api/graphs/\(graphId)", headers: headers)
 
-		let headers = try await app.getHeaders(
-			forUser: .init(
-				username: testUser.username, password: "test-password"))
+			#expect(response.status == .ok)
 
-		let response = try await app.sendRequest(
-			.DELETE, "/api/graphs/\(graphId)", headers: headers)
+			let data = try response.content.decode(Bool.self)
 
-		XCTAssertEqual(response.status, .ok)
+			#expect(data == true)
 
-		let data = try response.content.decode(Bool.self)
-
-		XCTAssertEqual(data, true)
-
-		let count = try await Graph.query(on: app.db).filter(\.$id == graphId).count()
-		XCTAssertEqual(count, 0)
+			let count = try await Graph.query(on: app.db).filter(\.$id == graphId)
+				.count()
+			#expect(count == 0)
+		}
 	}
 
+	@Test("Delete invalid graph")
 	func testDeleteInvalidGraph() async throws {
-		let app = try getApp()
+		try await withApp { app in
+			let invalidGraphId = UUID()
+			let testData = try await createGroupsAndUsers(app: app)
 
-		let invalidGraphId = UUID()
+			let apiTester = try app.testing()
+			let headers = try await apiTester.headers(
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				)
+			)
 
-		let headers = try await app.getHeaders(
-			forUser: .init(
-				username: testUser.username, password: "test-password"))
+			let response = try await apiTester.sendRequest(
+				.DELETE, "/api/graphs/\(invalidGraphId)", headers: headers)
 
-		let response = try await app.sendRequest(
-			.DELETE, "/api/graphs/\(invalidGraphId)", headers: headers)
+			#expect(response.status == .notFound)
 
-		XCTAssertEqual(response.status, .notFound)
+			let data = try response.content.decode(Components.Schemas._Error.self)
 
-		let data = try response.content.decode(Components.Schemas._Error.self)
-
-		XCTAssertEqual(data.code, "API10010")
+			#expect(data.code == "API10010")
+		}
 	}
 
+	@Test("Delete graph not owned")
 	func testDeleteGraphNotOwned() async throws {
-		let app = try getApp()
+		try await withApp { app in
+			let testData = try await createGroupsAndUsers(app: app)
+			let labels = try await createTestLabels(app: app, testData: testData)
+			let (_, _, graph3) = try await generateGraphs(
+				app: app, data: testData, labels: labels)
+			let notOwnedGraphId = try graph3.requireID()
 
-		// Generate test graphs
-		try await generateGraphs()
+			let apiTester = try app.testing()
+			let headers = try await apiTester.headers(
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				)
+			)
 
-		let notOwnedGraphId = testIds["otherOwnerGraph"]!
+			let response = try await apiTester.sendRequest(
+				.DELETE, "/api/graphs/\(notOwnedGraphId)", headers: headers)
 
-		let headers = try await app.getHeaders(
-			forUser: .init(
-				username: testUser.username, password: "test-password"))
+			#expect(response.status == .notFound)
 
-		let response = try await app.sendRequest(
-			.DELETE, "/api/graphs/\(notOwnedGraphId)", headers: headers)
+			let data = try response.content.decode(Components.Schemas._Error.self)
 
-		XCTAssertEqual(response.status, .notFound)
-
-		let data = try response.content.decode(Components.Schemas._Error.self)
-
-		XCTAssertEqual(data.code, "API10010")
+			#expect(data.code == "API10010")
+		}
 	}
 
 }

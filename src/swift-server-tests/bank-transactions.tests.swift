@@ -60,7 +60,9 @@ final class BankTransactionTests: BaseWithFactories {
 
 			let apiTester = try app.testing()
 			let headers = try await apiTester.headers(
-				forUser: .init(username: "test-user", password: "test-password"))
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				))
 
 			let response = try await apiTester.sendRequest(
 				.GET, "/api/bank-transactions?limit=5", headers: headers)
@@ -100,7 +102,9 @@ final class BankTransactionTests: BaseWithFactories {
 
 			let apiTester = try app.testing()
 			let headers = try await apiTester.headers(
-				forUser: .init(username: "test-user", password: "test-password"))
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				))
 
 			let cursor = try await getCursor(
 				apiTester, headers: headers, groupId: testData.group.requireID())
@@ -146,7 +150,9 @@ final class BankTransactionTests: BaseWithFactories {
 
 			let apiTester = try app.testing()
 			let headers = try await apiTester.headers(
-				forUser: .init(username: "test-user", password: "test-password"))
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				))
 
 			let response = try await apiTester.sendRequest(
 				.GET,
@@ -188,7 +194,9 @@ final class BankTransactionTests: BaseWithFactories {
 
 			let apiTester = try app.testing()
 			let headers = try await apiTester.headers(
-				forUser: .init(username: "test-user", password: "test-password"))
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				))
 
 			let createResponse = try await apiTester.sendRequest(
 				.POST,
@@ -241,7 +249,9 @@ final class BankTransactionTests: BaseWithFactories {
 
 			let apiTester = try app.testing()
 			let headers = try await apiTester.headers(
-				forUser: .init(username: "test-user", password: "test-password"))
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				))
 
 			let createResponse = try await apiTester.sendRequest(
 				.DELETE,
@@ -286,7 +296,9 @@ final class BankTransactionTests: BaseWithFactories {
 
 			let apiTester = try app.testing()
 			let headers = try await apiTester.headers(
-				forUser: .init(username: "test-user", password: "test-password"))
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				))
 
 			let comment = Operations.ApiBankTransactions_comment.Input.Body.jsonPayload(
 				comment: "EXTERMINATE!")
@@ -335,7 +347,9 @@ final class BankTransactionTests: BaseWithFactories {
 
 			let apiTester = try app.testing()
 			let headers = try await apiTester.headers(
-				forUser: .init(username: "test-user", password: "test-password"))
+				forUser: .init(
+					username: testData.user.username, password: testData.userPwd
+				))
 
 			let comment = Operations.ApiBankTransactions_comment.Input.Body.jsonPayload(
 				comment: nil)

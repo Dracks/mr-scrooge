@@ -3,6 +3,13 @@ import VaporTesting
 
 @testable import MrScroogeServer
 
+class BaseWithFactories {
+	let ruleFactory = RuleFactory()
+	let conditionFactory = RuleConditionFactory()
+	let transactionFactory = BankTransactionFactory()
+	let labelFactory = LabelFactory()
+}
+
 extension TestingApplicationTester {
 	public func sendRequest(
 		_ method: HTTPMethod,
