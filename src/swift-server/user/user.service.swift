@@ -119,29 +119,6 @@ final class UserGroupService: ServiceWithDb, @unchecked Sendable {
 		return existsRelation > 0
 	}
 
-	private func getOrphanedGroupsIds() async throws -> [UUID] {
-		guard let sqlDb = db as? any SQLDatabase else {
-			return []
-		}
-		let groupsIds = try await sqlDb.select()
-			.column(SQLColumn("id", table: UserGroup.schema))
-			.from(UserGroup.schema)
-			.join(
-				UserGroupPivot.schema,
-				method: SQLJoinMethod.left,
-				on: SQLColumn("id", table: UserGroup.schema), .equal,
-				SQLColumn("group_id", table: UserGroupPivot.schema)
-			)
-			.where(
-				SQLColumn("user_id", table: UserGroupPivot.schema), .is,
-				SQLLiteral.null
-			)
-			.all()
-		return try groupsIds.map {
-			try $0.decode(column: "id", as: UUID.self)
-		}
-	}
-
 	func getAll(user: User, pageQuery: PageQuery, orphaned: Bool) async throws
 		-> ListWithCursor<
 			UserGroup
@@ -151,8 +128,11 @@ final class UserGroupService: ServiceWithDb, @unchecked Sendable {
 		if !user.isAdmin {
 			try groupsQuery.filter(\.$id ~~ user.groups.map { try $0.requireID() })
 		} else if orphaned {
-			let orphanedIds = try await getOrphanedGroupsIds()
-			groupsQuery.filter(\.$id ~~ orphanedIds)
+			groupsQuery.join(
+				UserGroupPivot.self,
+				on: \UserGroup.$id == \UserGroupPivot.$id.$group.$id, method: .left
+			)
+			.filter(UserGroupPivot.self, \.$id.$group.$id == .null)
 		}
 
 		if let cursor = pageQuery.cursor {
