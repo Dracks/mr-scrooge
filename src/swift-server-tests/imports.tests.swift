@@ -108,15 +108,14 @@ final class ImportTests: BaseWithFactories {
 			let data = try response.content.decode(
 				Operations.ApiImports_list.Output.Ok.Body.jsonPayload.self)
 
-			#expect(data.results.count > 0)
+			#expect(data.results.count == 1)
 
-			/*for importData in data.results {
-				#expect(importData.id != "")
-				#expect(importData.description != "")
-				#expect(importData.status != .error)
-				#expect(importData.rows != "")
-				#expect(importData.rows.count > 0)
-			}*/
+			guard let first = data.results.first else {
+				return
+			}
+			#expect(first.description == "")
+			#expect(first.status == .ok)
+			#expect(first.rows.count == 12)
 		}
 	}
 
