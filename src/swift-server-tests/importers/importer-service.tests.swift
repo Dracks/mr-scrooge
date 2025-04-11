@@ -1,204 +1,263 @@
 import Fluent
+import Queues
+import Testing
 import Vapor
-import XCTVapor
-import XCTest
+import VaporTesting
 
 @testable import MrScroogeServer
 
-final class ImporterServiceTests: BaseImporterTests {
-	override func getParsers() throws -> [any ParserFactory] {
-		return [
-			TestBasicImporter(),
-			TestBasicImporter(key: "test-invalid-data", data: [["a": "b"]]),
-		]
-	}
+@Suite("Importer Service Tests")
+final class ImporterServiceTests: BaseImporterTesting {
 
+	@Test("Import everything fine")
 	func testImportEverythingFine() async throws {
-		let groupOwnerId = try self.group.requireID()
-		let db = try getDb()
-		let _ = try await importerService.importFromFile(
-			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
-			key: "test-account",
-			fileName: "test-file.csv", filePath: "whatever")
+		try await withApp { app in
+			let services = ImporterTestServices(
+				app: app,
+				parsers: [
+					TestBasicImporter(),
+					TestBasicImporter(
+						key: "test-invalid-data", data: [["a": "b"]]),
+				])
 
-		let reports = try await statusReportsService.getAll(
-			groupIds: [groupOwnerId])
-		XCTAssertEqual(reports.list.count, 1)
-		XCTAssertEqual(reports.list.first?.status, .ok)
-		XCTAssertEqual(reports.list.first?.description, "")
-		XCTAssertEqual(reports.list.first?.context, nil)
+			let testData = try await createGroupsAndUsers(app: app)
+			let groupOwnerId = try testData.group.requireID()
 
-		let (transactions, _) = try await bankTransactionService.getAll(
-			groupIds: [groupOwnerId])
-		XCTAssertEqual(transactions.list.count, 4)
+			let _ = try await services.importerService.importFromFile(
+				on: app.db, withQueue: app.queues.queue,
+				groupOwnerId: groupOwnerId,
+				key: "test-account",
+				fileName: "test-file.csv", filePath: "whatever")
+
+			let reports = try await services.statusReportsService.getAll(
+				groupIds: [groupOwnerId])
+			#expect(reports.list.count == 1)
+			#expect(reports.list.first?.status == .ok)
+			#expect(reports.list.first?.description == "")
+			#expect(reports.list.first?.context == nil)
+
+			let (transactions, _) = try await services.bankTransactionService.getAll(
+				groupIds: [groupOwnerId])
+			#expect(transactions.list.count == 4)
+		}
 	}
 
+	@Test("Import with invalid parser key")
 	func testImportInvalidParserKey() async throws {
-		let groupOwnerId = try self.group.requireID()
-		let db = try getDb()
+		try await withApp { app in
+			let services = ImporterTestServices(
+				app: app,
+				parsers: [
+					TestBasicImporter(),
+					TestBasicImporter(
+						key: "test-invalid-data", data: [["a": "b"]]),
+				])
 
-		let _ = try await importerService.importFromFile(
-			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
-			key: "invalid-key",
-			fileName: "some-file", filePath: "someother")
+			let testData = try await createGroupsAndUsers(app: app)
+			let groupOwnerId = try testData.group.requireID()
 
-		let reports = try await statusReportsService.getAll(
-			groupIds: [groupOwnerId])
-		XCTAssertEqual(reports.list.count, 1)
-		let importReport = reports.list.first
-		XCTAssertEqual(importReport?.status, .error)
-		XCTAssertContains(importReport?.description, "E10000: Parser not found")
-		XCTAssertEqual(importReport?.context, "{\"parserKey\":\"invalid-key\"}")
+			let _ = try await services.importerService.importFromFile(
+				on: app.db, withQueue: app.queues.queue,
+				groupOwnerId: groupOwnerId,
+				key: "invalid-key",
+				fileName: "some-file", filePath: "someother")
+
+			let reports = try await services.statusReportsService.getAll(
+				groupIds: [groupOwnerId])
+			#expect(reports.list.count == 1)
+			guard let importReport = reports.list.first else {
+				return
+			}
+			#expect(importReport.status == .error)
+			#expect(importReport.description.contains("E10000: Parser not found"))
+			#expect(importReport.context == "{\"parserKey\":\"invalid-key\"}")
+		}
 	}
 
+	@Test("Import with one duplicated")
 	func testImportWithOneDuplicated() async throws {
-		let groupOwnerId = try self.group.requireID()
-		let db = try getDb()
+		try await withApp { app in
+			let services = ImporterTestServices(
+				app: app,
+				parsers: [
+					TestBasicImporter(),
+					TestBasicImporter(
+						key: "test-invalid-data", data: [["a": "b"]]),
+				])
 
-		// Create a repeated transaction
-		let repeatedInfo = SAMPLE_DATA[1]
-		let repeatedTransaction = try TestBasicImporter().transformHelper.map(repeatedInfo)
+			let testData = try await createGroupsAndUsers(app: app)
+			let groupOwnerId = try testData.group.requireID()
+
+			// Create a repeated transaction
+			let repeatedInfo = SAMPLE_DATA[1]
+			let repeatedTransaction = try TestBasicImporter().transformHelper.map(
+				repeatedInfo
+			)
 			.toBankTransaction(kind: "test-account", groupOwnerId: groupOwnerId)
-		let _ = try await bankTransactionService.addTransaction(
-			transaction: repeatedTransaction)
+			let _ = try await services.bankTransactionService.addTransaction(
+				transaction: repeatedTransaction)
 
-		// Import the file
-		let _ = try await importerService.importFromFile(
-			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
-			key: "test-account",
-			fileName: "something", filePath: "some-more")
+			let _ = try await services.importerService.importFromFile(
+				on: app.db, withQueue: app.queues.queue,
+				groupOwnerId: groupOwnerId,
+				key: "test-account",
+				fileName: "something", filePath: "some-more")
 
-		// Check import status
-		let reports = try await statusReportsService.getAll(
-			groupIds: [groupOwnerId])
-		XCTAssertEqual(reports.list.count, 1)
-		XCTAssertEqual(reports.list.first?.status, .ok)
+			let reports = try await services.statusReportsService.getAll(
+				groupIds: [groupOwnerId])
+			#expect(reports.list.count == 1)
+			#expect(reports.list.first?.status == .ok)
 
-		// Check transactions
-		let (transactions, _) = try await bankTransactionService.getAll(
-			groupIds: [groupOwnerId])
-		XCTAssertEqual(transactions.list.count, 5)
+			let (transactions, _) = try await services.bankTransactionService.getAll(
+				groupIds: [groupOwnerId])
+			#expect(transactions.list.count == 5)
 
-		// Check status report rows
-		let statusRows = try await FileImportRow.query(on: db).all()
-		XCTAssertEqual(statusRows.count, 4)
+			let statusRows = try await FileImportRow.query(on: app.db).all()
+			#expect(statusRows.count == 4)
 
-		let repeatedRow = try await FileImportRow.query(on: db)
-			.filter(\.$movementName == repeatedTransaction.movementName)
-			.first()
-		XCTAssertEqual(repeatedRow?.message, "Repeated row, but inserted")
+			let repeatedRow = try await FileImportRow.query(on: app.db)
+				.filter(\.$movementName == repeatedTransaction.movementName)
+				.first()
+			#expect(repeatedRow?.message == "Repeated row, but inserted")
+		}
 	}
 
+	@Test("Import with multiple duplicates")
 	func testImportWithMultipleDuplicatesDuplicated() async throws {
-		let groupOwnerId = try self.group.requireID()
-		let db = try getDb()
+		try await withApp { app in
+			let services = ImporterTestServices(
+				app: app,
+				parsers: [
+					TestBasicImporter(),
+					TestBasicImporter(
+						key: "test-invalid-data", data: [["a": "b"]]),
+				])
 
-		// Create a repeated transaction
-		let repeatedTransaction = try TestBasicImporter().transformHelper.map(
-			SAMPLE_DATA[1]
-		)
-		.toBankTransaction(kind: "test-account", groupOwnerId: groupOwnerId)
-		let repeatedTransaction2 = try TestBasicImporter().transformHelper.map(
-			SAMPLE_DATA[2]
-		).toBankTransaction(kind: "test-account", groupOwnerId: groupOwnerId)
-		let _ = try await bankTransactionService.addTransaction(
-			transaction: repeatedTransaction)
-		let _ = try await bankTransactionService.addTransaction(
-			transaction: repeatedTransaction2)
+			let testData = try await createGroupsAndUsers(app: app)
+			let groupOwnerId = try testData.group.requireID()
 
-		// Import the file
-		let _ = try await importerService.importFromFile(
-			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
-			key: "test-account",
-			fileName: "something", filePath: "some-more")
+			let repeatedTransaction = try TestBasicImporter().transformHelper.map(
+				SAMPLE_DATA[1]
+			)
+			.toBankTransaction(kind: "test-account", groupOwnerId: groupOwnerId)
+			let repeatedTransaction2 = try TestBasicImporter().transformHelper.map(
+				SAMPLE_DATA[2]
+			).toBankTransaction(kind: "test-account", groupOwnerId: groupOwnerId)
+			let _ = try await services.bankTransactionService.addTransaction(
+				transaction: repeatedTransaction)
+			let _ = try await services.bankTransactionService.addTransaction(
+				transaction: repeatedTransaction2)
 
-		// Check import status
-		let reports = try await statusReportsService.getAll(
-			groupIds: [groupOwnerId])
-		XCTAssertEqual(reports.list.count, 1)
-		XCTAssertEqual(reports.list.first?.status, .warn)
+			let _ = try await services.importerService.importFromFile(
+				on: app.db, withQueue: app.queues.queue,
+				groupOwnerId: groupOwnerId,
+				key: "test-account",
+				fileName: "something", filePath: "some-more")
 
-		// Check transactions
-		let (transactions, _) = try await bankTransactionService.getAll(
-			groupIds: [groupOwnerId])
-		XCTAssertEqual(transactions.list.count, 4)
+			let reports = try await services.statusReportsService.getAll(
+				groupIds: [groupOwnerId])
+			#expect(reports.list.count == 1)
+			#expect(reports.list.first?.status == .warn)
 
-		// Check status report rows
-		let statusRows = try await FileImportRow.query(on: db).all()
-		XCTAssertEqual(statusRows.count, 4)
+			let (transactions, _) = try await services.bankTransactionService.getAll(
+				groupIds: [groupOwnerId])
+			#expect(transactions.list.count == 4)
 
-		let repeatedRow = try await FileImportRow.query(on: db)
-			.filter(\.$movementName == repeatedTransaction.movementName)
-			.first()
-		XCTAssertEqual(repeatedRow?.message, "Repeated row, not inserted")
+			let statusRows = try await FileImportRow.query(on: app.db).all()
+			#expect(statusRows.count == 4)
+
+			let repeatedRow = try await FileImportRow.query(on: app.db)
+				.filter(\.$movementName == repeatedTransaction.movementName)
+				.first()
+			#expect(repeatedRow?.message == "Repeated row, not inserted")
+		}
 	}
 
+	@Test("Do not insert multiple duplicates")
 	func testDoNotInsertMultipleDuplicates() async throws {
-		let groupOwnerId = try self.group.requireID()
-		let db = try getDb()
+		try await withApp { app in
+			let services = ImporterTestServices(
+				app: app,
+				parsers: [
+					TestBasicImporter(),
+					TestBasicImporter(
+						key: "test-invalid-data", data: [["a": "b"]]),
+				])
 
-		// Import the file twice
-		let _ = try await importerService.importFromFile(
-			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
-			key: "test-account",
-			fileName: "some-file", filePath: "someother")
+			let testData = try await createGroupsAndUsers(app: app)
+			let groupOwnerId = try testData.group.requireID()
 
-		let _ = try await importerService.importFromFile(
-			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
-			key: "test-account",
-			fileName: "some-file", filePath: "someother")
+			let _ = try await services.importerService.importFromFile(
+				on: app.db, withQueue: app.queues.queue,
+				groupOwnerId: groupOwnerId,
+				key: "test-account",
+				fileName: "some-file", filePath: "someother")
 
-		// Check import status
-		let reports = try await statusReportsService.getAll(
-			groupIds: [groupOwnerId])
-		XCTAssertEqual(reports.list.count, 2)
-		XCTAssertEqual(reports.list[1].status, .ok)
-		XCTAssertEqual(reports.list[1].description, "")
-		XCTAssertEqual(reports.list[0].status, .warn)
-		XCTAssertEqual(reports.list[0].description, "")
+			let _ = try await services.importerService.importFromFile(
+				on: app.db, withQueue: app.queues.queue,
+				groupOwnerId: groupOwnerId,
+				key: "test-account",
+				fileName: "some-file", filePath: "someother")
 
-		// Check transactions
-		let (transactions, _) = try await bankTransactionService.getAll(
-			groupIds: [groupOwnerId])
-		XCTAssertEqual(transactions.list.count, 4)
+			let reports = try await services.statusReportsService.getAll(
+				groupIds: [groupOwnerId])
+			#expect(reports.list.count == 2)
+			#expect(reports.list[1].status == .ok)
+			#expect(reports.list[1].description == "")
+			#expect(reports.list[0].status == .warn)
+			#expect(reports.list[0].description == "")
 
-		// Check status report rows
-		let statusRows = try await FileImportRow.query(on: db).all()
-		XCTAssertEqual(statusRows.count, 8)
+			let (transactions, _) = try await services.bankTransactionService.getAll(
+				groupIds: [groupOwnerId])
+			#expect(transactions.list.count == 4)
+
+			let statusRows = try await FileImportRow.query(on: app.db).all()
+			#expect(statusRows.count == 8)
+		}
 	}
 
+	@Test("Invalid data import")
 	func testInvalidDataImport() async throws {
-		let groupOwnerId = try self.group.requireID()
-		let db = try getDb()
+		try await withApp { app in
+			let services = ImporterTestServices(
+				app: app,
+				parsers: [
+					TestBasicImporter(),
+					TestBasicImporter(
+						key: "test-invalid-data", data: [["a": "b"]]),
+				])
 
-		// Attempt to import invalid data
-		let _ = try await importerService.importFromFile(
-			on: db, withQueue: getQueue(), groupOwnerId: groupOwnerId,
-			key: "test-invalid-data",
-			fileName: "invalid-file.csv", filePath: "invalid-data")
+			let testData = try await createGroupsAndUsers(app: app)
+			let groupOwnerId = try testData.group.requireID()
 
-		// Check import status
-		let reports = try await statusReportsService.getAll(
-			groupIds: [groupOwnerId])
-		XCTAssertEqual(reports.list.count, 1)
+			let _ = try await services.importerService.importFromFile(
+				on: app.db, withQueue: app.queues.queue,
+				groupOwnerId: groupOwnerId,
+				key: "test-invalid-data",
+				fileName: "invalid-file.csv", filePath: "invalid-data")
 
-		let report = reports.list.first
+			let reports = try await services.statusReportsService.getAll(
+				groupIds: [groupOwnerId])
+			#expect(reports.list.count == 1)
 
-		XCTAssertEqual(report?.status, .error)
-		XCTAssertNotNil(report?.description)
-		XCTAssertTrue(report?.description.contains("E10004") ?? false)
-		XCTAssertEqual(
-			report?.context, "{\"invalidFields\":[\"movementName\",\"date\",\"value\"]}"
-		)
+			guard let report = reports.list.first else {
+				return
+			}
 
-		// Check that no transactions were imported
-		let (transactions, _) = try await bankTransactionService.getAll(
-			groupIds: [groupOwnerId])
-		XCTAssertEqual(transactions.list.count, 0)
+			#expect(report.status == .error)
+			#expect(report.description != "")
+			#expect(report.description.contains("E10004"))
+			#expect(
+				report.context
+					== "{\"invalidFields\":[\"movementName\",\"date\",\"value\"]}"
+			)
 
-		// Check status report rows
-		let statusRows = try await FileImportRow.query(on: db).all()
-		XCTAssertEqual(statusRows.count, 0)
+			let (transactions, _) = try await services.bankTransactionService.getAll(
+				groupIds: [groupOwnerId])
+			#expect(transactions.list.count == 0)
+
+			let statusRows = try await FileImportRow.query(on: app.db).all()
+			#expect(statusRows.count == 0)
+		}
 	}
-
 }

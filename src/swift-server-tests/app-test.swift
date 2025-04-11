@@ -2,8 +2,6 @@ import Fluent
 import Testing
 import Vapor
 import XCTQueues
-import XCTVapor
-import XCTest
 
 @testable import MrScroogeServer
 
@@ -116,117 +114,15 @@ func createTestLabels(app: Application, testData: GroupsAndUsers) async throws -
 	return labels
 }
 
-class AbstractBaseTestsClass: XCTestCase {
-	var app: Application?
-
-	var testUser: User!
-	var testAdmin: User!
-	var testGroup: UserGroup!
-	var testGroup2: UserGroup!
-	var testGroup3: UserGroup!
-	var labels: [Label]!
-
-	var testIds: [String: UUID]!
-
-	let ruleFactory = RuleFactory()
-	let conditionFactory = RuleConditionFactory()
-	let transactionFactory = BankTransactionFactory()
-	let labelFactory = LabelFactory()
-
-	func getApp() throws -> Application {
-		guard let app = app else {
-			throw TestError()
-		}
-		return app
-	}
-
-	override func setUp() async throws {
-		do {
-			testIds = [:]
-			let app = try await Application.make(.testing)
-			try await configure(app)
-
-			// Override the driver being used for testing
-			app.queues.use(.asyncTest)
-			//app.queues.add(NewTransactionJob())
-
-			let testUsersAndGroups = try await createGroupsAndUsers(app: app)
-
-			testGroup2 = testUsersAndGroups.group2
-			testGroup = testUsersAndGroups.group
-			testGroup3 = testUsersAndGroups.group3
-
-			testUser = testUsersAndGroups.user
-			testAdmin = testUsersAndGroups.admin
-
-			// Create labels
-			labels = try await createTestLabels(app: app, testData: testUsersAndGroups)
-
-			self.app = app
-		} catch {
-			print(error)
-			throw error
-		}
-	}
-
-	override func tearDown() async throws {
-		try await self.app?.asyncShutdown()
-		self.app = nil
-	}
-
-}
-
-final class MrScroogeServerTest: AbstractBaseTestsClass {
+@Suite("MrScrooge Generic tests")
+final class MrScroogeServerTest {
+	@Test("Process invalid data correctly")
 	func testInvalidData() async throws {
-		let app = try getApp()
-		let res = try await app.sendRequest(.POST, "/api/session", body: "")
-		XCTAssertEqual(res.status, .badRequest)
-	}
-}
+		try await withApp { app in
+			let res = try await app.testing().sendRequest(
+				.POST, "/api/session", body: "")
+			#expect(res.status == .badRequest)
+		}
 
-extension Application {
-
-	func sendRequest(
-		_ method: HTTPMethod,
-		_ path: String,
-		body: any Codable,
-		headers immutableHeaders: HTTPHeaders = [:],
-		file: StaticString = #filePath,
-		line: UInt = #line,
-		beforeRequest: (inout XCTHTTPRequest) async throws -> Void = { _ in }
-	) async throws -> XCTHTTPResponse {
-		var headers = immutableHeaders
-		headers.add(name: "content-type", value: "application/json")
-		return try await self.sendRequest(
-			method, path, headers: headers,
-			body: ByteBuffer(data: try JSONEncoder().encode(body)),
-			file: file, line: line,
-			beforeRequest: beforeRequest
-		)
-	}
-
-	func getHeaders(forUser credentials: Components.Schemas.UserCredentials) async throws
-		-> HTTPHeaders
-	{
-		var headers: HTTPHeaders = [:]
-		let cookie = try await loginWithUser(credentials: credentials)
-		headers.add(name: "cookie", value: cookie)
-		return headers
-	}
-
-	func loginWithUser(user: String, password: String) async throws -> String {
-		return try await loginWithUser(
-			credentials: Components.Schemas.UserCredentials(
-				username: user, password: password))
-	}
-
-	func loginWithUser(credentials: Components.Schemas.UserCredentials) async throws -> String {
-		let res = try await self.sendRequest(.POST, "/api/session", body: credentials)
-		XCTAssertEqual(res.headers.contains(name: "set-cookie"), true)
-		let cookiesList: [String] = res.headers["set-cookie"]
-		let cookie: String = cookiesList[0]
-		XCTAssertContains(cookie, "vapor-session=")
-
-		return cookie
 	}
 }

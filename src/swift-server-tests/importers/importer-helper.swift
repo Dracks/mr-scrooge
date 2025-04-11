@@ -1,7 +1,7 @@
 import Fluent
 import Queues
-import XCTVapor
-import XCTest
+import Testing
+import VaporTesting
 
 @testable import MrScroogeServer
 
@@ -72,63 +72,25 @@ class TestDynamicImporter: ParserFactory {
 	}
 }
 
-class BaseImporterTests: XCTestCase {
-	var importerService: NewImportService!
-	var bankTransactionService: BankTransactionService!
-	var statusReportsService: FileImportService!
-	var group: UserGroup!
-	var app: Application?
+struct ImporterTestServices {
+	var importerService: NewImportService
+	var bankTransactionService: BankTransactionService
+	var statusReportsService: FileImportService
 
-	/*func getTestFile(file: String) -> String {
-		let pwd = URL(fileURLWithPath: #file).pathComponents
-			.prefix(while: { $0 != "app-tests" }).joined(separator: "/").dropFirst()
-		return "\(pwd)/\(file)"
-	}*/
-
-	func getParsers() throws -> [ParserFactory] {
-		throw TestError(message: "A class must overwrite getParsers")
-	}
-
-	func checkMovement(
-		transactions: [BankTransaction], date: DateOnly, value: Double, movementName: String
-	) {
-		let queryTest = transactions.first(where: { $0.date == date })
-		XCTAssertNotNil(queryTest)
-		XCTAssertEqual(queryTest?.value, value)
-		XCTAssertEqual(queryTest?.movementName, movementName)
-	}
-
-	override func setUp() async throws {
-		let app = try await Application.make(.testing)
-		try await configure(app)
-		self.app = app
-
-		self.group = UserGroup(name: "Test User Group")
-		try await self.group.save(on: app.db)
-
-		let testParsers: [ParserFactory] = try getParsers()
+	init(app: Application, parsers testParsers: [ParserFactory]) {
 		importerService = NewImportService(parsers: testParsers, withApp: app)
 		bankTransactionService = app.bankTransactionService
 		statusReportsService = app.fileImportService
 	}
+}
 
-	override func tearDown() async throws {
-		try await self.app?.asyncShutdown()
-		self.app = nil
+class BaseImporterTesting {
+	func checkMovement(
+		transactions: [BankTransaction], date: DateOnly, value: Double, movementName: String
+	) {
+		let queryTest = transactions.first(where: { $0.date == date })
+		#expect(queryTest != nil)
+		#expect(queryTest?.value == value)
+		#expect(queryTest?.movementName == movementName)
 	}
-
-	func getDb() throws -> Database {
-		guard let app = app else {
-			throw TestError()
-		}
-		return app.db
-	}
-
-	func getQueue() throws -> Queue {
-		guard let app = app else {
-			throw TestError()
-		}
-		return app.queues.queue
-	}
-
 }
