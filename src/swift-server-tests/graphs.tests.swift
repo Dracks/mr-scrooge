@@ -501,9 +501,9 @@ final class GraphTests: BaseWithFactories {
 
 			#expect(data == true)
 
-			let count = try await Graph.query(on: app.db).filter(\.$id == graphId)
+			let totalGraphs = try await Graph.query(on: app.db).filter(\.$id == graphId)
 				.count()
-			#expect(count == 0)
+			#expect(totalGraphs == 0)
 		}
 	}
 
