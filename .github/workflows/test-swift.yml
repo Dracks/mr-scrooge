@@ -14,7 +14,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-24.04-arm
-    container: swift:6.0
+    container: swift:6.1
     outputs:
         md5: ${{ steps.md5.outputs.value }}
     steps:
@@ -40,7 +40,7 @@ jobs:
     name: Test
     needs: build
     runs-on: ubuntu-24.04-arm
-    container: swift:6.0
+    container: swift:6.1
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -53,7 +53,7 @@ jobs:
             path: .build
             key:  ${{ runner.os }}-spm-${{ needs.build.outputs.md5 }}
       - name: Run tests
-        run: swift test --parallel --skip-build --enable-code-coverage
+        run: swift test --no-parallel --skip-build --enable-code-coverage
       - name: Prepare Coverage
         run:
             llvm-cov export -format="lcov" .build/debug/mr-scroogePackageTests.xctest -instr-profile .build/debug/codecov/default.profdata > info.lcov
