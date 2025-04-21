@@ -22,8 +22,8 @@ let package = Package(
 		// fluent
 		.package(url: "https://github.com/vapor/fluent.git", from: "4.12.0"),
 		.package(
-			url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.10.0"),
-		.package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.8.0"),
+			url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.10.1"),
+		.package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.8.1"),
 		.package(
 			url: "https://github.com/vapor-community/vapor-queues-fluent-driver",
 			branch: "3.0.0"),
