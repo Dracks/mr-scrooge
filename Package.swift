@@ -33,7 +33,7 @@ let package = Package(
 		.package(url: "https://github.com/yaslab/CSV.swift.git", from: "2.5.2"),
 
 		// dependency injection
-		.package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.9.1"),
+		.package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.9.2"),
 		.package(
 			url: "https://github.com/swiftlang/swift-syntax.git", from: "601.0.1"
 		),
