@@ -1,5 +1,5 @@
 {
-  "originHash" : "04d36961ef381528d1a4f4561f741fc8f55c577618f36823be20a819e2456e42",
+  "originHash" : "e8cedd957a3b28994924163a08d0ce95a55ac7c0cf008c6a1d00ab054d545d7c",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -267,8 +267,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-dependencies",
       "state" : {
-        "revision" : "fee6aa29908a75437506ddcbe7434c460605b7e6",
-        "version" : "1.9.1"
+        "revision" : "4c90d6b2b9bf0911af87b103bb40f41771891596",
+        "version" : "1.9.2"
       }
     },
     {
