@@ -112,9 +112,21 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request'
     steps:
-        - uses: Noelware/docker-manifest-action@v1
+        - name: Log into registry ${{ env.REGISTRY }}
+          uses: docker/login-action@v3
           with:
-              inputs: ${{ env.IMAGE_NAME }}:latest,${{ env.IMAGE_NAME }}:${{needs.preBuild.tag}}
-              images: ${{ env.IMAGE_NAME }}:${{needs.preBuild.tag}}-amd64,${{ env.IMAGE_NAME }}:image/${{needs.preBuild.tag}}-arm64
-              push: true
+            registry: ${{ env.REGISTRY }}
+            username: dracks
+            password: ${{ secrets.DOCKER_TOKEN }}
+
+        - name: Create and push manifest
+          run: |
+            docker manifest create ${{ env.IMAGE_NAME }}:${{ needs.preBuild.tag }} \
+              --amend ${{ env.IMAGE_NAME }}:${{ needs.preBuild.tag }}-amd64 \
+              --amend ${{ env.IMAGE_NAME }}:${{ needs.preBuild.tag }}-arm64
+            docker manifest create ${{ env.IMAGE_NAME }}:latest \
+              --amend ${{ env.IMAGE_NAME }}:${{ needs.preBuild.tag }}-amd64 \
+              --amend ${{ env.IMAGE_NAME }}:${{ needs.preBuild.tag }}-arm64
+            docker manifest push ${{ env.IMAGE_NAME }}:${{ needs.preBuild.tag }}
+            docker manifest push ${{ env.IMAGE_NAME }}:latest
     
