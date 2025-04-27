@@ -1,6 +1,6 @@
 # Mr Scrooge
-This is the base repository, to clone and start it using docker.
-
+[![Build Status](https://github.com/Dracks/mr-scrooge/actions/workflows/docker-publish.yml/badge.svg?branch=main)](https://github.com/Dracks/mr-scrooge/actions/workflows/docker-publish.yml)
+[![codecov](https://codecov.io/gh/Dracks/mr-scrooge/branch/main/graph/badge.svg)](https://codecov.io/gh/Dracks/mr-scrooge)
 [![CodeFactor](https://www.codefactor.io/repository/github/dracks/mr-scrooge/badge)](https://www.codefactor.io/repository/github/dracks/mr-scrooge)
 
 ## File formats suported
