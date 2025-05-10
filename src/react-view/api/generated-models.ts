@@ -1046,10 +1046,10 @@ export interface operations {
     };
     ApiGroup_list: {
         parameters: {
-            query: {
+            query?: {
                 cursor?: string;
                 limit?: number;
-                orphaned: boolean;
+                orphaned?: boolean;
             };
             header?: never;
             path?: never;
@@ -1063,7 +1063,10 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserGroup"][];
+                    "application/json": {
+                        results: components["schemas"]["UserGroup"][];
+                        next?: string;
+                    };
                 };
             };
         };
@@ -1081,8 +1084,8 @@ export interface operations {
             };
         };
         responses: {
-            /** @description The request has succeeded. */
-            200: {
+            /** @description The request has succeeded and a new resource has been created as a result. */
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };
