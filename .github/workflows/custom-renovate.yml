@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 env:
-  NODE_VERSION: 20
-  PNPM_VERSION: 10.7.0
+  NODE_VERSION: 22
+  PNPM_VERSION: 10.10.0
 
 jobs:
   renovate:
