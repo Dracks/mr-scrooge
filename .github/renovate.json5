@@ -1,50 +1,91 @@
 {
-    $schema: "https://docs.renovatebot.com/renovate-schema.json",
+    $schema: 'https://docs.renovatebot.com/renovate-schema.json',
     configMigration: true,
-    baseBranches: ["main"],
-    extends: ["config:recommended", "group:monorepos"],
+    baseBranches: [
+        'main',
+    ],
+    extends: [
+        'config:recommended',
+        'group:monorepos',
+    ],
     npm: {
-        fileMatch: ["(^|/)package\\.yaml$"],
+        managerFilePatterns: [
+            '/(^|/)package\\.yaml$/',
+        ],
     },
     packageRules: [
         {
-            groupName: "Swift",
-            matchPackageNames: ["swift"],
-            matchUpdateTypes: ["digest", "patch", "minor", "major"],
-        },
-        {
-            groupName: "Typespec",
-            groupSlug: "typespec",
-            matchUpdateTypes: ["digest", "patch", "minor", "major"],
-            matchPackageNames: ["@typespec/*"],
-        },
-        {
-            groupName: "eslint packages",
-            groupSlug: "eslint",
-            matchPackageNames: ["@eslint/js", "@typescript-eslint/*", "eslint{/,}**"],
-            matchUpdateTypes: ["digest", "patch", "minor", "major"],
-        },
-        {
-            groupName: "react packages",
-            groupSlug: "react",
-            matchPackageNames: ["@types/react*", "react*"],
-            matchUpdateTypes: ["digest", "patch", "minor", "major"],
-        },
-        {
-            groupName: "all non-major dependencies",
-            groupSlug: "all-minor-patch",
-            matchUpdateTypes: ["minor", "patch", "digest"],
+            groupName: 'Swift',
             matchPackageNames: [
-                "*",
-                "!@typespec/*",
-                "!@eslint/js",
-                "!@typescript-eslint/*",
-                "!eslint{/,}**",
-                "!@types/react*",
-                "!react*",
-                "!swift",
+                'swift',
+            ],
+            matchUpdateTypes: [
+                'digest',
+                'patch',
+                'minor',
+                'major',
+            ],
+        },
+        {
+            groupName: 'Typespec',
+            groupSlug: 'typespec',
+            matchUpdateTypes: [
+                'digest',
+                'patch',
+                'minor',
+                'major',
+            ],
+            matchPackageNames: [
+                '@typespec/*',
+            ],
+        },
+        {
+            groupName: 'eslint packages',
+            groupSlug: 'eslint',
+            matchPackageNames: [
+                '@eslint/js',
+                '@typescript-eslint/*',
+                'eslint{/,}**',
+            ],
+            matchUpdateTypes: [
+                'digest',
+                'patch',
+                'minor',
+                'major',
+            ],
+        },
+        {
+            groupName: 'react packages',
+            groupSlug: 'react',
+            matchPackageNames: [
+                '@types/react*',
+                'react*',
+            ],
+            matchUpdateTypes: [
+                'digest',
+                'patch',
+                'minor',
+                'major',
+            ],
+        },
+        {
+            groupName: 'all non-major dependencies',
+            groupSlug: 'all-minor-patch',
+            matchUpdateTypes: [
+                'minor',
+                'patch',
+                'digest',
+            ],
+            matchPackageNames: [
+                '*',
+                '!@typespec/*',
+                '!@eslint/js',
+                '!@typescript-eslint/*',
+                '!eslint{/,}**',
+                '!@types/react*',
+                '!react*',
+                '!swift',
             ],
         },
     ],
 }
-
