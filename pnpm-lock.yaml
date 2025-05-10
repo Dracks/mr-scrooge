@@ -54,11 +54,11 @@ importers:
         specifier: 15.5.1
         version: 15.5.1(i18next@23.15.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
       react-router:
-        specifier: 7.5.3
-        version: 7.5.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 7.6.0
+        version: 7.6.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-router-dom:
-        specifier: 7.5.3
-        version: 7.5.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 7.6.0
+        version: 7.6.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       recharts:
         specifier: 2.15.3
         version: 2.15.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -71,7 +71,7 @@ importers:
         version: 9.26.0
       '@testing-library/react':
         specifier: 16.3.0
-        version: 16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.3(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.3(@types/react@19.1.3))(@types/react@19.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@types/jest':
         specifier: 29.5.14
         version: 29.5.14
@@ -79,11 +79,11 @@ importers:
         specifier: 22.15.3
         version: 22.15.3
       '@types/react':
-        specifier: 19.1.2
-        version: 19.1.2
+        specifier: 19.1.3
+        version: 19.1.3
       '@types/react-dom':
         specifier: 19.1.3
-        version: 19.1.3(@types/react@19.1.2)
+        version: 19.1.3(@types/react@19.1.3)
       '@typespec/compiler':
         specifier: 1.0.0-rc.1
         version: 1.0.0-rc.1(@types/node@22.15.3)
@@ -973,8 +973,8 @@ packages:
     peerDependencies:
       '@types/react': ^19.0.0
 
-  '@types/react@19.1.2':
-    resolution: {integrity: sha512-oxLPMytKchWGbnQM9O7D67uPa9paTNxO7jVoNMXgkkErULBPhPARCfkKL9ytcIJJRGjbsVwW4ugJzyFFvm/Tiw==}
+  '@types/react@19.1.3':
+    resolution: {integrity: sha512-dLWQ+Z0CkIvK1J8+wrDPwGxEYFA4RAyHoZPxHVGspYmFVnwGSNT24cGIhFJrtfRnWVuW8X7NO52gCXmhkVUWGQ==}
 
   '@types/semver@7.5.8':
     resolution: {integrity: sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==}
@@ -3778,15 +3778,15 @@ packages:
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
 
-  react-router-dom@7.5.3:
-    resolution: {integrity: sha512-cK0jSaTyW4jV9SRKAItMIQfWZ/D6WEZafgHuuCb9g+SjhLolY78qc+De4w/Cz9ybjvLzShAmaIMEXt8iF1Cm+A==}
+  react-router-dom@7.6.0:
+    resolution: {integrity: sha512-DYgm6RDEuKdopSyGOWZGtDfSm7Aofb8CCzgkliTjtu/eDuB0gcsv6qdFhhi8HdtmA+KHkt5MfZ5K2PdzjugYsA==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
 
-  react-router@7.5.3:
-    resolution: {integrity: sha512-3iUDM4/fZCQ89SXlDa+Ph3MevBrozBAI655OAfWQlTm9nBR0IKlrmNwFow5lPHttbwvITZfkeeeZFP6zt3F7pw==}
+  react-router@7.6.0:
+    resolution: {integrity: sha512-GGufuHIVCJDbnIAXP3P9Sxzq3UUsddG3rrI3ut1q6m0FI6vxVBF3JoPQ38+W/blslLH4a5Yutp8drkEpXoddGQ==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react: '>=18'
@@ -4418,9 +4418,6 @@ packages:
 
   tty-browserify@0.0.1:
     resolution: {integrity: sha512-C3TaO7K81YvjCgQH9Q1S3R3P3BtN3RIM8n+OvX4il1K1zgE8ZhI0op7kClgkxtutIE8hQrcrHBXvIheqKUUCxw==}
-
-  turbo-stream@2.4.0:
-    resolution: {integrity: sha512-FHncC10WpBd2eOmGwpmQsWLDoK4cqsA/UT/GqNoaKOQnT8uzhtCbg3EoUDMvqpOSAI0S26mr0rkjzbOO6S3v1g==}
 
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
@@ -5581,15 +5578,15 @@ snapshots:
       lz-string: 1.5.0
       pretty-format: 27.5.1
 
-  '@testing-library/react@16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.3(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@testing-library/react@16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.3(@types/react@19.1.3))(@types/react@19.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@babel/runtime': 7.27.0
       '@testing-library/dom': 10.4.0
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
     optionalDependencies:
-      '@types/react': 19.1.2
-      '@types/react-dom': 19.1.3(@types/react@19.1.2)
+      '@types/react': 19.1.3
+      '@types/react-dom': 19.1.3(@types/react@19.1.3)
 
   '@tootallnate/once@1.1.2':
     optional: true
@@ -5706,11 +5703,11 @@ snapshots:
   '@types/normalize-package-data@2.4.4':
     optional: true
 
-  '@types/react-dom@19.1.3(@types/react@19.1.2)':
+  '@types/react-dom@19.1.3(@types/react@19.1.3)':
     dependencies:
-      '@types/react': 19.1.2
+      '@types/react': 19.1.3
 
-  '@types/react@19.1.2':
+  '@types/react@19.1.3':
     dependencies:
       csstype: 3.1.3
 
@@ -9174,18 +9171,17 @@ snapshots:
 
   react-is@18.3.1: {}
 
-  react-router-dom@7.5.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  react-router-dom@7.6.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
-      react-router: 7.5.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react-router: 7.6.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
 
-  react-router@7.5.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  react-router@7.6.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       cookie: 1.0.2
       react: 19.1.0
       set-cookie-parser: 2.7.1
-      turbo-stream: 2.4.0
     optionalDependencies:
       react-dom: 19.1.0(react@19.1.0)
 
@@ -9919,8 +9915,6 @@ snapshots:
       typescript: 5.8.3
 
   tty-browserify@0.0.1: {}
-
-  turbo-stream@2.4.0: {}
 
   type-check@0.4.0:
     dependencies:
