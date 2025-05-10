@@ -8,8 +8,8 @@ import "./graphs.tsp";
 import "./imports.tsp";
 import "./rules.tsp";
 
-using TypeSpec.Http;
+using Http;
 
-@service(#{ title: "Mr Scrooge API", version: "3.0.0" })
+@service(#{ title: "Mr Scrooge API" })
 @server("/api", "Development")
 namespace MrScrooge;
