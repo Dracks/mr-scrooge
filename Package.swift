@@ -15,7 +15,7 @@ let package = Package(
 		.package(url: "https://github.com/apple/swift-openapi-runtime", from: "1.8.2"),
 		.package(url: "https://github.com/swift-server/swift-openapi-vapor", from: "1.0.1"),
 		// Vapor
-		.package(url: "https://github.com/vapor/vapor.git", from: "4.114.1"),
+		.package(url: "https://github.com/vapor/vapor.git", from: "4.115.0"),
 		.package(url: "https://github.com/vapor/leaf.git", from: "4.5.0"),
 		.package(url: "https://github.com/vapor/queues.git", from: "1.17.2"),
 
