@@ -25,6 +25,7 @@ jobs:
                 - type-check
                 - lint
                 - test
+                - build
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
