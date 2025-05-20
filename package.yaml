@@ -71,5 +71,5 @@ dependencies:
   react-router: 7.6.0
   react-router-dom: 7.6.0
   recharts: 2.15.3
-  zod: 3.24.4
+  zod: 3.25.7
 packageManager: pnpm@10.11.0
