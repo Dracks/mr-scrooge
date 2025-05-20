@@ -51,8 +51,8 @@ const config: Configuration = {
     },
     devtool: "source-map",
     stats:{
-    errorDetails: true
-}
+        errorDetails: true
+    }
 };
 
 export default config;

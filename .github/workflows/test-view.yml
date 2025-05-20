@@ -17,14 +17,24 @@ env:
 
 jobs:
   checks:
-    name: ${{ matrix.action }}
+    name: ${{ matrix.name }}
     runs-on: ubuntu-latest
     strategy:
         matrix:
-            action:
+            name:
                 - type-check
                 - lint
                 - test
+                - build
+            include:
+                - name: type-check
+                  cmd: type-check
+                - name: lint
+                  cmd: lint
+                - name: test
+                  cmd: test --coverage
+                - name: build
+                  cmd: build:view
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -40,11 +50,13 @@ jobs:
           cache: 'pnpm'
 
       - run: pnpm install
-      - if: matrix.action != 'test'
-        run: pnpm run ${{ matrix.action }}
-      - if: matrix.action == 'test'
-        run: pnpm run ${{ matrix.action }} --coverage
-      - if: matrix.action == 'test'
+        name: Install pnpm dependencies
+      - run: pnpm run build:typespec
+        name: Update openapi from typespec
+      - run: pnpm run build:api-models
+        name: Update api models
+      - run: pnpm run ${{ matrix.cmd }}
+      - if: matrix.name == 'test'
         name: Upload results to Codecov
         uses: codecov/codecov-action@v5
         with:
