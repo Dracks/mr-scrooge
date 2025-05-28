@@ -19,7 +19,7 @@ devDependencies:
   '@testing-library/react': 16.3.0
   '@types/jest': 29.5.14
   '@types/node': 22.15.19
-  '@types/react': 19.1.4
+  '@types/react': 19.1.6
   '@types/react-dom': 19.1.5
   '@typespec/compiler': 1.0.0
   '@typespec/http': 1.0.1
@@ -67,9 +67,9 @@ dependencies:
   react-async-hook: 4.0.0
   react-dom: 19.1.0
   react-error-boundary: 6.0.0
-  react-i18next: 15.5.1
-  react-router: 7.6.0
-  react-router-dom: 7.6.0
+  react-i18next: 15.5.2
+  react-router: 7.6.1
+  react-router-dom: 7.6.1
   recharts: 2.15.3
   zod: 3.25.7
 packageManager: pnpm@10.11.0
