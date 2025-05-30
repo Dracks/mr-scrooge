@@ -30,7 +30,7 @@ devDependencies:
   '@typespec/versioning': ^0.70.0
   eslint: 9.27.0
   eslint-config-prettier: 10.1.5
-  eslint-plugin-prettier: 5.4.0
+  eslint-plugin-prettier: 5.4.1
   eslint-plugin-react: 7.37.5
   eslint-plugin-simple-import-sort: 12.1.1
   eslint-plugin-typescript-sort-keys: 3.3.0

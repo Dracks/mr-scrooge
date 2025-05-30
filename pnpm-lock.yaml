@@ -112,8 +112,8 @@ importers:
         specifier: 10.1.5
         version: 10.1.5(eslint@9.27.0)
       eslint-plugin-prettier:
-        specifier: 5.4.0
-        version: 5.4.0(@types/eslint@9.6.1)(eslint-config-prettier@10.1.5(eslint@9.27.0))(eslint@9.27.0)(prettier@3.5.3)
+        specifier: 5.4.1
+        version: 5.4.1(@types/eslint@9.6.1)(eslint-config-prettier@10.1.5(eslint@9.27.0))(eslint@9.27.0)(prettier@3.5.3)
       eslint-plugin-react:
         specifier: 7.37.5
         version: 7.37.5(eslint@9.27.0)
@@ -822,8 +822,8 @@ packages:
     resolution: {integrity: sha512-dfUnCxiN9H4ap84DvD2ubjw+3vUNpstxa0TneY/Paat8a3R4uQZDLSvWjmznAY/DoahqTHl9V46HF/Zs3F29pg==}
     engines: {node: '>= 10.0.0'}
 
-  '@pkgr/core@0.2.0':
-    resolution: {integrity: sha512-vsJDAkYR6qCPu+ioGScGiMYR7LvZYIXh/dlQeviqoTWNCVfKTLYD/LkNWH4Mxsv2a5vpIRc77FN5DnmK1eBggQ==}
+  '@pkgr/core@0.2.4':
+    resolution: {integrity: sha512-ROFF39F6ZrnzSUEmQQZUar0Jt4xVoP9WnDRdWwF4NNcXs3xBTLgBUDoOwW141y1jP+S8nahIbdxbFC7IShw9Iw==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
   '@redocly/ajv@8.11.2':
@@ -2050,8 +2050,8 @@ packages:
     peerDependencies:
       eslint: '>=7.0.0'
 
-  eslint-plugin-prettier@5.4.0:
-    resolution: {integrity: sha512-BvQOvUhkVQM1i63iMETK9Hjud9QhqBnbtT1Zc642p9ynzBuCe5pybkOnvqZIBypXmMlsGcnU4HZ8sCTPfpAexA==}
+  eslint-plugin-prettier@5.4.1:
+    resolution: {integrity: sha512-9dF+KuU/Ilkq27A8idRP7N2DH8iUR6qXcjF3FR2wETY21PZdBrIjwCau8oboyGj9b7etWmTGEeM8e7oOed6ZWg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       '@types/eslint': '>=8.0.0'
@@ -4127,8 +4127,8 @@ packages:
   symbol-tree@3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
 
-  synckit@0.11.2:
-    resolution: {integrity: sha512-1IUffI8zZ8qUMB3NUJIjk0RpLroG/8NkQDAWH1NbB2iJ0/5pn3M8rxfNzMz4GH9OnYaGYn31LEDSXJp/qIlxgA==}
+  synckit@0.11.8:
+    resolution: {integrity: sha512-+XZ+r1XGIJGeQk3VvXhT6xx/VpbHsRzsTkGgF6E5RX9TTXD0118l87puaEBZ566FhqblC6U0d4XnubznJDm30A==}
     engines: {node: ^14.18.0 || >=16.0.0}
 
   tapable@2.2.1:
@@ -5369,7 +5369,7 @@ snapshots:
       '@parcel/watcher-win32-x64': 2.5.1
     optional: true
 
-  '@pkgr/core@0.2.0': {}
+  '@pkgr/core@0.2.4': {}
 
   '@redocly/ajv@8.11.2':
     dependencies:
@@ -6840,12 +6840,12 @@ snapshots:
     dependencies:
       eslint: 9.27.0
 
-  eslint-plugin-prettier@5.4.0(@types/eslint@9.6.1)(eslint-config-prettier@10.1.5(eslint@9.27.0))(eslint@9.27.0)(prettier@3.5.3):
+  eslint-plugin-prettier@5.4.1(@types/eslint@9.6.1)(eslint-config-prettier@10.1.5(eslint@9.27.0))(eslint@9.27.0)(prettier@3.5.3):
     dependencies:
       eslint: 9.27.0
       prettier: 3.5.3
       prettier-linter-helpers: 1.0.0
-      synckit: 0.11.2
+      synckit: 0.11.8
     optionalDependencies:
       '@types/eslint': 9.6.1
       eslint-config-prettier: 10.1.5(eslint@9.27.0)
@@ -9411,10 +9411,9 @@ snapshots:
 
   symbol-tree@3.2.4: {}
 
-  synckit@0.11.2:
+  synckit@0.11.8:
     dependencies:
-      '@pkgr/core': 0.2.0
-      tslib: 2.8.1
+      '@pkgr/core': 0.2.4
 
   tapable@2.2.1: {}
 
