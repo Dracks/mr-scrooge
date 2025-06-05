@@ -55,6 +55,20 @@
             ],
         },
         {
+            groupName: 'msw packages',
+            groupSlug: 'msw',
+            matchPackageNames: [
+                'msw',
+                'openapi-msw',
+            ],
+            matchUpdateTypes: [
+                'digest',
+                'patch',
+                'minor',
+                'major',
+            ],
+        },
+        {
             groupName: 'react packages',
             groupSlug: 'react',
             matchPackageNames: [
@@ -85,6 +99,8 @@
                 '!@types/react*',
                 '!react*',
                 '!swift',
+                '!msw',
+                '!openapi-msw',
             ],
         },
     ],
