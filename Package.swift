@@ -11,7 +11,7 @@ let package = Package(
 	],
 	dependencies: [
 		// OpenAPI
-		.package(url: "https://github.com/apple/swift-openapi-generator", from: "1.8.0"),
+		.package(url: "https://github.com/apple/swift-openapi-generator", from: "1.9.0"),
 		.package(url: "https://github.com/apple/swift-openapi-runtime", from: "1.8.2"),
 		.package(url: "https://github.com/swift-server/swift-openapi-vapor", from: "1.0.1"),
 		// Vapor
@@ -29,7 +29,7 @@ let package = Package(
 			branch: "3.0.0"),
 
 		// Parser libs
-		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.8.7"),
+		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.8.8"),
 		.package(url: "https://github.com/yaslab/CSV.swift.git", from: "2.5.2"),
 
 		// dependency injection
