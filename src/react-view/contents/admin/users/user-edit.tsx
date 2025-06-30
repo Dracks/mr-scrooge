@@ -57,12 +57,7 @@ export const EditUser: React.FC<EditUserParams> = ({ user }) => {
                     newActive="User will be enabled"
                     newDisabled="User will be disabled"
                 />
-                <Button
-                    primary
-                    label="Save"
-                    type="submit"
-                    disabled={!userData.username || saveUser.loading}
-                />
+                <Button primary label="Save" type="submit" disabled={!userData.username || saveUser.loading} />
             </Form>
         </Box>
     );

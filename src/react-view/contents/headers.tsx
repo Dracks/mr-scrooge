@@ -10,7 +10,7 @@ import { AnchorLink } from '../utils/ui/anchor-link';
 
 const Headers: React.FC = () => {
     const { session, logout } = useSession();
-    const logger = useLogger("Headers")
+    const logger = useLogger('Headers');
     if (session.user === 'anonymous') {
         throw Error('User should not be anonymous');
     }
@@ -28,14 +28,14 @@ const Headers: React.FC = () => {
                 {
                     label: <Box>Users</Box>,
                     onClick: () => {
-                        catchAndLog(Promise.resolve(navigate('/admin/users')), "Navigate to admin users", logger);
+                        catchAndLog(Promise.resolve(navigate('/admin/users')), 'Navigate to admin users', logger);
                     },
                     icon: <User />,
                 },
                 {
                     label: <Box>Groups</Box>,
                     onClick: () => {
-                        catchAndLog(Promise.resolve(navigate('/admin/groups')), "Navigate to admin groups", logger);
+                        catchAndLog(Promise.resolve(navigate('/admin/groups')), 'Navigate to admin groups', logger);
                     },
                     icon: <Group />,
                 },
@@ -60,7 +60,7 @@ const Headers: React.FC = () => {
                     {
                         label: userInfo.firstName ?? userInfo.email,
                         onClick: () => {
-                            catchAndLog(Promise.resolve(navigate('/profile')), "navigate to profile", logger);
+                            catchAndLog(Promise.resolve(navigate('/profile')), 'navigate to profile', logger);
                         },
                         icon: <Edit />,
                     },

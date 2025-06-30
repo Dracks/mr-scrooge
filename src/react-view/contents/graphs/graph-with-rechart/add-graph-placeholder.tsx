@@ -8,7 +8,7 @@ import { catchAndLog } from '../../../utils/promises';
 
 export const AddGraphPlaceholder = () => {
     const navigate = useNavigate();
-    const logger = useLogger("Add Graph Placeholder")
+    const logger = useLogger('Add Graph Placeholder');
     return (
         <Box direction="column" pad="small" data-testid="add-graph-placeholder">
             <Heading level={3}>Add a new graph</Heading>
@@ -16,7 +16,7 @@ export const AddGraphPlaceholder = () => {
                 <Button
                     icon={<Add size="large" />}
                     onClick={() => {
-                        catchAndLog(Promise.resolve(navigate(`/graph/new-graph`)), "Navigate to new graph", logger);
+                        catchAndLog(Promise.resolve(navigate(`/graph/new-graph`)), 'Navigate to new graph', logger);
                     }}
                 />
             </Box>
