@@ -12,7 +12,7 @@ import { LoggerUi } from '../logger/logger-ui';
 import { SessionProvider } from '../session/session-context';
 import { ProvideEventEmitter } from './event-emitter.provider';
 
-const AllProviders: React.FC<PropsWithChildren &{server?: string}> = ({ children, server }) => {
+const AllProviders: React.FC<PropsWithChildren & { server?: string }> = ({ children, server }) => {
     return (
         <Router basename="/">
             <Grommet theme={MyTheme}>

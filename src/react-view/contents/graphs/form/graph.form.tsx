@@ -60,7 +60,7 @@ export const GraphForm: <T extends GraphInput>(p: GraphFormProps<T>) => React.Re
     save,
 }: GraphFormProps<T>) => {
     const { labels: allLabels, labelsMap } = useLabelsContext();
-    const logger = useLogger("GraphForm")
+    const logger = useLogger('GraphForm');
     const labels = allLabels.filter(({ groupOwnerId }) => graphData.groupOwnerId === groupOwnerId);
     const labelsPair = labels.map(({ id, name }) => ({ id, name }));
     const navigate = useNavigate();
@@ -220,7 +220,7 @@ export const GraphForm: <T extends GraphInput>(p: GraphFormProps<T>) => React.Re
                             color="accent-4"
                             label="discard"
                             onConfirm={() => {
-                                catchAndLog(Promise.resolve(navigate('/')), "Navigate to home", logger);
+                                catchAndLog(Promise.resolve(navigate('/')), 'Navigate to home', logger);
                             }}
                         />
                     </Box>

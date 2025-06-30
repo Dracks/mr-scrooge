@@ -27,11 +27,11 @@ const TransactionsContext = React.createContext<BankTransactionsContextType>({
 
 export const useTransactionsData = (): BankTransactionsContextType => useContext(TransactionsContext);
 
-export const useThrottledTransactionsData = ():BankTransactionEnriched[] => {
-    const {data} = useContext(TransactionsContext)
-    
-    return  useThrottledData(data, TRANSACTION_REFRESH_RATE);
-}
+export const useThrottledTransactionsData = (): BankTransactionEnriched[] => {
+    const { data } = useContext(TransactionsContext);
+
+    return useThrottledData(data, TRANSACTION_REFRESH_RATE);
+};
 
 export const ProvideTransactionsData: React.FC<PropsWithChildren> = ({ children }) => {
     const client = useApiClient();

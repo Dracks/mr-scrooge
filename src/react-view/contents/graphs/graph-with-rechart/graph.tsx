@@ -51,7 +51,7 @@ export const GraphWrapperWithRechart: React.FC<GraphWrapperArgs> = ({ graph, rel
                 <Button
                     icon={<Edit />}
                     onClick={() => {
-                        catchAndLog(Promise.resolve(navigate(`graph/${graph.id}`)), "Navigate to edit graph", logger);
+                        catchAndLog(Promise.resolve(navigate(`graph/${graph.id}`)), 'Navigate to edit graph', logger);
                     }}
                 />
                 <ConfirmationButton

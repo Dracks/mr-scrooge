@@ -16,7 +16,7 @@ import {
     YAxis,
 } from 'recharts';
 
-import { ApiUUID, GraphInput,GraphKind } from '../../../api/models';
+import { ApiUUID, GraphInput, GraphKind } from '../../../api/models';
 import { DECIMAL_COUNT } from '../../../constants';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { DSDoubleGroup } from '../data-transform/types';
@@ -141,7 +141,7 @@ const PieGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
                     nameKey="label"
                     cx="50%"
                     cy="50%"
-                    label={({ value }: {value?: number}) => value?.toFixed(DECIMAL_COUNT) ?? ''}
+                    label={({ value }: { value?: number }) => value?.toFixed(DECIMAL_COUNT) ?? ''}
                 >
                     {keys.map((_, index) => (
                         <Cell key={`cell-${String(index)}`} fill={schemeTableau10[index]} />

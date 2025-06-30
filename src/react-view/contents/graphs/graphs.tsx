@@ -40,7 +40,7 @@ export const Graphs: React.FC = () => {
         });
         return (
             <Grid columns={'450px'} gap="small">
-                {enrichedGraphs.map((graph) => (
+                {enrichedGraphs.map(graph => (
                     <GraphWrapperWithRechart
                         key={graph.id}
                         graph={graph}
