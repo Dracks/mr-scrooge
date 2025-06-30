@@ -141,7 +141,7 @@ const PieGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
                     nameKey="label"
                     cx="50%"
                     cy="50%"
-                    label={({ value }: { value: number }) => value.toFixed(DECIMAL_COUNT)}
+                    label={({ value }: {value?: number}) => value?.toFixed(DECIMAL_COUNT) ?? ''}
                 >
                     {keys.map((_, index) => (
                         <Cell key={`cell-${String(index)}`} fill={schemeTableau10[index]} />
