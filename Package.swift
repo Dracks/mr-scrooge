@@ -29,7 +29,7 @@ let package = Package(
 			branch: "3.0.0"),
 
 		// Parser libs
-		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.8.8"),
+		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.9.5"),
 		.package(url: "https://github.com/yaslab/CSV.swift.git", from: "2.5.2"),
 
 		// dependency injection
