@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const getDataFromScript = <T>(scriptName: string, schema: z.Schema<T>): T => {
+export const getDataFromScript = <T>(scriptName: string, schema: z.ZodType<T>): T => {
     const element: { textContent?: string | null } = document.getElementById(scriptName) ?? {};
     const obj = JSON.parse(element.textContent ?? '{}') as unknown;
 
