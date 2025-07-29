@@ -21,13 +21,13 @@ devDependencies:
   '@types/react': 19.1.8
   '@types/node': 22.16.5
   '@types/react-dom': 19.1.6
-  '@typespec/compiler': 1.1.0
-  '@typespec/http': 1.1.0
-  '@typespec/json-schema': 1.1.0
-  '@typespec/openapi': 1.1.0
-  '@typespec/openapi3': 1.1.0
-  '@typespec/rest': 0.71.0
-  '@typespec/versioning': ^0.71.0
+  '@typespec/compiler': 1.2.1
+  '@typespec/http': 1.2.1
+  '@typespec/json-schema': 1.2.1
+  '@typespec/openapi': 1.2.1
+  '@typespec/openapi3': 1.2.1
+  '@typespec/rest': 0.72.1
+  '@typespec/versioning': ^0.72.0
   eslint: 9.32.0
   eslint-config-prettier: 10.1.8
   eslint-plugin-prettier: 5.5.3
@@ -63,13 +63,13 @@ dependencies:
   grommet-icons: 4.14.0
   openapi-fetch: 0.14.0
   openapi-typescript-fetch: 2.2.1
-  react: 19.1.0
+  react: 19.1.1
   react-async-hook: 4.0.0
-  react-dom: 19.1.0
+  react-dom: 19.1.1
   react-error-boundary: 6.0.0
-  react-i18next: 15.6.0
-  react-router: 7.6.3
-  react-router-dom: 7.6.3
+  react-i18next: 15.6.1
+  react-router: 7.7.1
+  react-router-dom: 7.7.1
   recharts: 3.1.0
   zod: 4.0.11
 packageManager: pnpm@10.13.1
