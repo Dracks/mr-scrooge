@@ -1,5 +1,5 @@
 {
-  "originHash" : "4948e3c5eaaf3eb592fcb0ade1600bd4a08f02a5a80afd4028f314ec2acfa47e",
+  "originHash" : "5e5f9ed1e5b911ccaf8e9e5cf6a3096499aa769cc6c8ac266a8f311647ba0b7f",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -375,8 +375,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-openapi-generator",
       "state" : {
-        "revision" : "ea291f05436363665ee67c453f4a72a895f18e75",
-        "version" : "1.9.0"
+        "revision" : "f4f6f9b7c5859158c65de9805fd32e46bf4229f1",
+        "version" : "1.10.1"
       }
     },
     {
@@ -438,8 +438,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/scinfu/SwiftSoup.git",
       "state" : {
-        "revision" : "d1d6add8f277bd76992a0f7e72961a896609b707",
-        "version" : "2.9.5"
+        "revision" : "dee225a3da7b68d34936abc4dc8f34f2264db647",
+        "version" : "2.9.6"
       }
     },
     {
@@ -447,8 +447,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/vapor.git",
       "state" : {
-        "revision" : "4014016aad591a120f244f9b9e8a57252b7e62b4",
-        "version" : "4.115.0"
+        "revision" : "3636f443474769147828a5863e81a31f6f30e92c",
+        "version" : "4.115.1"
       }
     },
     {
