@@ -82,6 +82,10 @@ let package = Package(
 				)
 			]
 		),
+		.executableTarget(
+			name: "gcl-cli",
+			dependencies: [],
+			path: "src/swift-gocardless"),
 		.testTarget(
 			name: "MrScroogeServerTests",
 			dependencies: [
