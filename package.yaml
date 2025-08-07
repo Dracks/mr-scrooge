@@ -43,13 +43,13 @@ devDependencies:
   node-polyfill-webpack-plugin: 4.1.0
   openapi-msw: 1.2.0
   openapi-typescript: 7.8.0
-  sass: 1.89.2
+  sass: 1.90.0
   sass-loader: 16.0.5
-  ts-jest: 29.4.0
+  ts-jest: 29.4.1
   ts-loader: 9.5.2
   ts-node: 10.9.2
   typescript: 5.9.2
-  typescript-eslint: 8.38.0
+  typescript-eslint: 8.39.0
   webpack: 5.101.0
   webpack-cli: 6.0.1
 dependencies:
@@ -70,6 +70,6 @@ dependencies:
   react-i18next: 15.6.1
   react-router: 7.7.1
   react-router-dom: 7.7.1
-  recharts: 3.1.0
-  zod: 4.0.14
+  recharts: 3.1.2
+  zod: 4.0.15
 packageManager: pnpm@10.14.0
