@@ -11,12 +11,12 @@ let package = Package(
 	],
 	dependencies: [
 		// OpenAPI
-		.package(url: "https://github.com/apple/swift-openapi-generator", from: "1.9.0"),
+		.package(url: "https://github.com/apple/swift-openapi-generator", from: "1.10.2"),
 		.package(url: "https://github.com/apple/swift-openapi-runtime", from: "1.8.2"),
 		.package(url: "https://github.com/swift-server/swift-openapi-vapor", from: "1.0.1"),
 		// Vapor
-		.package(url: "https://github.com/vapor/vapor.git", from: "4.115.0"),
-		.package(url: "https://github.com/vapor/leaf.git", from: "4.5.0"),
+		.package(url: "https://github.com/vapor/vapor.git", from: "4.115.1"),
+		.package(url: "https://github.com/vapor/leaf.git", from: "4.5.1"),
 		.package(url: "https://github.com/vapor/queues.git", from: "1.17.2"),
 
 		// fluent
@@ -29,11 +29,11 @@ let package = Package(
 			branch: "3.0.0"),
 
 		// Parser libs
-		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.9.5"),
+		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.9.6"),
 		.package(url: "https://github.com/yaslab/CSV.swift.git", from: "2.5.2"),
 
 		// dependency injection
-		.package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.9.2"),
+		.package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.9.3"),
 		.package(
 			url: "https://github.com/swiftlang/swift-syntax.git", from: "601.0.1"
 		),
