@@ -4,43 +4,12 @@ on:
   schedule:
     - cron: '14 3 * * *'
   workflow_dispatch:
-on:
-  schedule:
-    - cron: '14 3 * * *'
-  workflow_dispatch:
   pull_request:
     branches:
       - main
     paths:
-      - '.github/workflows/renovate.yml'
       - '.github/workflows/custom-renovate.yml'
-      - '.github/workflows/renovate.yaml'
 
-jobs:
-  renovate:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-      issues: write
-      actions: read
-    concurrency:
-      group: renovate-${{ github.ref || github.run_id }}
-      cancel-in-progress: true
-    timeout-minutes: 60
-    steps:
-      - name: Validate Renovate (PRs, dry-run)
-        if: ${{ github.event_name == 'pull_request' }}
-        env:
-          RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RENOVATE_DRY_RUN: full
-        run: pnpm start Dracks/mr-scrooge
-
-      - name: Run Renovate (non-PRs)
-        if: ${{ github.event_name != 'pull_request' }}
-        env:
-          RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
-        run: pnpm start Dracks/mr-scrooge
 
 env:
   NODE_VERSION: 22
@@ -71,7 +40,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Run Renovate
+      - name: Validate Renovate (PRs, dry-run)
+        if: ${{ github.event_name == 'pull_request' }}
         env:
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RENOVATE_DRY_RUN: full
+        run: pnpm start Dracks/mr-scrooge
+
+      - name: Run Renovate (non-PRs)
+        if: ${{ github.event_name != 'pull_request' }}
+        env:
+          RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
         run: pnpm start Dracks/mr-scrooge
