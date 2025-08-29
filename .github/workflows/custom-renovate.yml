@@ -7,7 +7,7 @@ on:
 
 env:
   NODE_VERSION: 22
-  PNPM_VERSION: 10.10.0
+  PNPM_VERSION: 10.14.0
 
 jobs:
   renovate:
