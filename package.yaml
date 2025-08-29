@@ -39,9 +39,9 @@ devDependencies:
   jest: 30.0.5
   jest-environment-jsdom: 30.0.5
   jest-fixed-jsdom: 0.0.9
-  msw: 2.7.4
+  msw: 2.10.5
   node-polyfill-webpack-plugin: 4.1.0
-  openapi-msw: 1.2.0
+  openapi-msw: 1.3.0
   openapi-typescript: 7.8.0
   sass: 1.89.2
   sass-loader: 16.0.5
