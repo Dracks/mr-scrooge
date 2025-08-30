@@ -50,5 +50,5 @@ jobs:
       - name: Run Renovate (non-PRs)
         if: ${{ github.event_name != 'pull_request' }}
         env:
-          RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
+          RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm start Dracks/mr-scrooge
