@@ -22,18 +22,18 @@ let package = Package(
 		// fluent
 		.package(url: "https://github.com/vapor/fluent.git", from: "4.12.0"),
 		.package(
-			url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.10.1"),
+			url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.11.0"),
 		.package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.8.1"),
 		.package(
 			url: "https://github.com/vapor-community/vapor-queues-fluent-driver",
 			branch: "3.0.0"),
 
 		// Parser libs
-		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.9.6"),
+		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.10.3"),
 		.package(url: "https://github.com/yaslab/CSV.swift.git", from: "2.5.2"),
 
 		// dependency injection
-		.package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.9.3"),
+		.package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.9.4"),
 		.package(
 			url: "https://github.com/swiftlang/swift-syntax.git", from: "601.0.1"
 		),
