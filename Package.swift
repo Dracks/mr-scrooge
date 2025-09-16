@@ -35,7 +35,7 @@ let package = Package(
 		// dependency injection
 		.package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.10.0"),
 		.package(
-			url: "https://github.com/swiftlang/swift-syntax.git", from: "601.0.1"
+			url: "https://github.com/swiftlang/swift-syntax.git", from: "602.0.0"
 		),
 	],
 	targets: [
