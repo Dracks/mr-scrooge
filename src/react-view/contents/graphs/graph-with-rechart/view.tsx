@@ -129,7 +129,6 @@ const PieGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
     logger.info('Pie Graph Render', { graphData });
     const [firstGroup] = graphData;
     const keys = firstGroup?.value.map(pair => pair.label) ?? [];
-
     return (
         <ResponsiveContainer width="100%" height={400}>
             <PieChart>

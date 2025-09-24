@@ -19,7 +19,7 @@ const loggerContext = React.createContext<LoggerContext>({
     eventEmitter: loggerEmitter,
 });
 
-export const useLogger = (ctx?: string) => {
+export const useLogger = (ctx?: string): Logger => {
     const context = React.useContext(loggerContext);
     if (ctx) {
         return new Logger(context.eventEmitter, ctx);
