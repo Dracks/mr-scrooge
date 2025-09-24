@@ -37,7 +37,7 @@ const ImportsList: React.FC<{ importsList: FileImport[] }> = ({ importsList }) =
                 return (
                     <Box pad="small" key={impFile.id} direction="row" align="center">
                         <StatusIcon color={iconColor} />
-                        <AnchorLink to={impFile.id} style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        <AnchorLink to={`/import/${impFile.id}`} style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
                             {impFile.fileName}
                         </AnchorLink>
                     </Box>
