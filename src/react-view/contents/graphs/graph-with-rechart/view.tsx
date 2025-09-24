@@ -129,19 +129,18 @@ const PieGraphRender: React.FC<GraphRenderArgs> = ({ graphData }) => {
     logger.info('Pie Graph Render', { graphData });
     const [firstGroup] = graphData;
     const keys = firstGroup?.value.map(pair => pair.label) ?? [];
-
     return (
         <ResponsiveContainer width="100%" height={400}>
             <PieChart>
                 <Legend />
                 <Tooltip formatter={value => (value as number).toFixed(DECIMAL_COUNT)} />
                 <Pie
-                    data={firstGroup?.value}
+                    data={firstGroup?.value.map(({ label, value }) => ({ label, value }))}
                     dataKey="value"
                     nameKey="label"
                     cx="50%"
                     cy="50%"
-                    label={({ value }: { value?: number }) => value?.toFixed(DECIMAL_COUNT) ?? ''}
+                    label={({ value }) => typeof value === "number" ? value.toFixed(DECIMAL_COUNT) : ''}
                 >
                     {keys.map((_, index) => (
                         <Cell key={`cell-${String(index)}`} fill={schemeTableau10[index]} />
