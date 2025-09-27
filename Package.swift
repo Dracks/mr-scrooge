@@ -20,7 +20,7 @@ let package = Package(
 		.package(url: "https://github.com/vapor/queues.git", from: "1.17.2"),
 
 		// fluent
-		.package(url: "https://github.com/vapor/fluent.git", from: "4.12.0"),
+		.package(url: "https://github.com/vapor/fluent.git", from: "4.13.0"),
 		.package(
 			url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.11.0"),
 		.package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.8.1"),
