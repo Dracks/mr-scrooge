@@ -28,6 +28,7 @@ jobs:
       - name: Generate token
         id: generate_token
         uses: tibdex/github-app-token@v2
+        if: ${{ github.event_name != 'pull_request' }}
         with:
           app_id: ${{ secrets.RENOVATE_APP_ID }}
           private_key: ${{ secrets.RENOVATE_CLIENT_SECRET }}
