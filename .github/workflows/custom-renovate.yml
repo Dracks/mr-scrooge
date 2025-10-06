@@ -24,6 +24,7 @@ jobs:
         with:
           repository: dracks/renovate
           ref: feat/adding-package-yaml-support
+          persist-credentials: false
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
