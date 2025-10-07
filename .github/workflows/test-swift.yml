@@ -19,7 +19,7 @@ jobs:
         md5: ${{ steps.md5.outputs.value }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install zstd
         run: |
             apt-get update -y
@@ -43,7 +43,7 @@ jobs:
     container: swift:6.1
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install zstd
         run: |
             apt-get update -y
