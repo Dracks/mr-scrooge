@@ -13,7 +13,7 @@ on:
 
 env:
   NODE_VERSION: 22
-  PNPM_VERSION: 10.15.0
+  PNPM_VERSION: 10.17.0
 
 jobs:
   renovate:
@@ -24,6 +24,14 @@ jobs:
         with:
           repository: dracks/renovate
           ref: feat/adding-package-yaml-support
+          persist-credentials: false
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@v2
+        if: ${{ github.event_name != 'pull_request' }}
+        with:
+          app_id: ${{ secrets.RENOVATE_APP_ID }}
+          private_key: ${{ secrets.RENOVATE_CLIENT_SECRET }}
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -50,5 +58,5 @@ jobs:
       - name: Run Renovate (non-PRs)
         if: ${{ github.event_name != 'pull_request' }}
         env:
-          RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RENOVATE_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: pnpm start Dracks/mr-scrooge
