@@ -59,4 +59,5 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         env:
           RENOVATE_TOKEN: ${{ steps.generate_token.outputs.token }}
+          LOG_LEVEL: debug
         run: pnpm start Dracks/mr-scrooge
