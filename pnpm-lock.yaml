@@ -85,26 +85,26 @@ importers:
         specifier: 19.2.1
         version: 19.2.1(@types/react@19.2.2)
       '@typespec/compiler':
-        specifier: 1.4.0
-        version: 1.4.0(@types/node@22.18.8)
+        specifier: 1.5.0
+        version: 1.5.0(@types/node@22.18.8)
       '@typespec/http':
-        specifier: 1.4.0
-        version: 1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8))
+        specifier: 1.5.0
+        version: 1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8))
       '@typespec/json-schema':
-        specifier: 1.4.0
-        version: 1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8))
+        specifier: 1.5.0
+        version: 1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8))
       '@typespec/openapi':
-        specifier: 1.4.0
-        version: 1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8))(@typespec/http@1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8)))
+        specifier: 1.5.0
+        version: 1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8))(@typespec/http@1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8)))
       '@typespec/openapi3':
-        specifier: 1.4.0
-        version: 1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8))(@typespec/http@1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8)))(@typespec/json-schema@1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8)))(@typespec/openapi@1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8))(@typespec/http@1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8))))(@typespec/versioning@0.74.0(@typespec/compiler@1.4.0(@types/node@22.18.8)))
+        specifier: 1.5.0
+        version: 1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8))(@typespec/http@1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8)))(@typespec/json-schema@1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8)))(@typespec/openapi@1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8))(@typespec/http@1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8))))(@typespec/versioning@0.75.0(@typespec/compiler@1.5.0(@types/node@22.18.8)))
       '@typespec/rest':
-        specifier: 0.74.0
-        version: 0.74.0(@typespec/compiler@1.4.0(@types/node@22.18.8))(@typespec/http@1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8)))
+        specifier: 0.75.0
+        version: 0.75.0(@typespec/compiler@1.5.0(@types/node@22.18.8))(@typespec/http@1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8)))
       '@typespec/versioning':
-        specifier: ^0.74.0
-        version: 0.74.0(@typespec/compiler@1.4.0(@types/node@22.18.8))
+        specifier: ^0.75.0
+        version: 0.75.0(@typespec/compiler@1.5.0(@types/node@22.18.8))
       eslint:
         specifier: 9.37.0
         version: 9.37.0
@@ -1213,43 +1213,43 @@ packages:
     resolution: {integrity: sha512-FrvMpAK+hTbFy7vH5j1+tMYHMSKLE6RzluFJlkFNKD0p9YsUT75JlBSmr5so3QRzvMwU5/bIEdeNrxm8du8l3Q==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@typespec/asset-emitter@0.74.0':
-    resolution: {integrity: sha512-DWIdlSNhRgBeZ8exfqubfUn0H6mRg4gr0s7zLTdBMUEDHL3Yh0ljnRPkd8AXTZhoW3maTFT69loWTrqx09T5oQ==}
+  '@typespec/asset-emitter@0.75.0':
+    resolution: {integrity: sha512-Kh5FmTPPU2Vc7nNI3iijsyfybhCZhOvkPpDuGYLYT4nxKXQeTY6h1RNZDR/y4DDRhT7oioEvlPaN2JR2C6HaYw==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
-      '@typespec/compiler': ^1.4.0
+      '@typespec/compiler': ^1.5.0
 
-  '@typespec/compiler@1.4.0':
-    resolution: {integrity: sha512-/AFiU3ImuhH/vHKzSGv7I2peewdJ7YLhgMCfFDNk6Ae0a5Ylrc8R1GOATVilisEPBFG9lnjHn3uUcyaZs5VWRw==}
+  '@typespec/compiler@1.5.0':
+    resolution: {integrity: sha512-REJgZOEZ9g9CC72GGT0+nLbjW+5WVlCfm1d6w18N5RsUo7vLXs8IPXwq7xZJzoqU99Q9B4keqzPuTU4OrDUTrA==}
     engines: {node: '>=20.0.0'}
     hasBin: true
 
-  '@typespec/http@1.4.0':
-    resolution: {integrity: sha512-Y0PDDtBu+oZnwivfhbL0lN6Mk3QiCxZ66DgB5kFjcgKNpnXf0u440PPyaL42a8lbchzz5lVwz+cinyIMI89FIQ==}
+  '@typespec/http@1.5.0':
+    resolution: {integrity: sha512-52XLXwqSY2SY6nSvfkiTsNiJzlMeIAZ6MFIVJ5YkoibA21TNAP4DtjTZgC2GieZLY2NNN/rqDCqBX+DyWqTrfQ==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
-      '@typespec/compiler': ^1.4.0
-      '@typespec/streams': ^0.74.0
+      '@typespec/compiler': ^1.5.0
+      '@typespec/streams': ^0.75.0
     peerDependenciesMeta:
       '@typespec/streams':
         optional: true
 
-  '@typespec/json-schema@1.4.0':
-    resolution: {integrity: sha512-0Hay3//LZEHRAs/oUZuY9AM63tZguuneD0KRaN93r+XKZ1iKdBxL8q2XfqS+Ie5TGvN/C/iRSu0AhYwGyzTY9w==}
+  '@typespec/json-schema@1.5.0':
+    resolution: {integrity: sha512-3RQlMSZM0SqrjKafxpIXa0SxPucPGHTRkJTB4JcDJxaTvBGNYZF0JFDC5CxkkDW4RfjA1Jb10aanBqOIgKbE9A==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
-      '@typespec/compiler': ^1.4.0
+      '@typespec/compiler': ^1.5.0
 
-  '@typespec/openapi3@1.4.0':
-    resolution: {integrity: sha512-krMSBe23NU42qXiLTmkr7T2NRfsIVv70pp3w/+uyWbrxdwdLEdb8PpbHeYV417D/YU+JLj00fQ7uYzEQGZX82w==}
+  '@typespec/openapi3@1.5.0':
+    resolution: {integrity: sha512-Fu4RBk19a+Nma7N0LzP8DjwRcTc3zWCl/ne3R6m6l5Pc6jVN7EXGQNz68f3AOorWCuE+BxONViTN6og/pukXNw==}
     engines: {node: '>=20.0.0'}
     hasBin: true
     peerDependencies:
-      '@typespec/compiler': ^1.4.0
-      '@typespec/http': ^1.4.0
-      '@typespec/json-schema': ^1.4.0
-      '@typespec/openapi': ^1.4.0
-      '@typespec/versioning': ^0.74.0
+      '@typespec/compiler': ^1.5.0
+      '@typespec/http': ^1.5.0
+      '@typespec/json-schema': ^1.5.0
+      '@typespec/openapi': ^1.5.0
+      '@typespec/versioning': ^0.75.0
       '@typespec/xml': '*'
     peerDependenciesMeta:
       '@typespec/json-schema':
@@ -1259,25 +1259,25 @@ packages:
       '@typespec/xml':
         optional: true
 
-  '@typespec/openapi@1.4.0':
-    resolution: {integrity: sha512-ZfrCsmZG/Zt1laLaWC0pKvnZr4jqrm/YS/YuZe/gVrSYKBxGLopXle7H0wrSSMYkIVCNCLiC68/HqRxV6XTfoA==}
+  '@typespec/openapi@1.5.0':
+    resolution: {integrity: sha512-27sXkSK2r1sAmVMLv+pwlN/Cm+yg9nEK8iuGyJRuEkBk7hcsJDbTnBlsEvlRTI8DqljtzA7YECDHBLK88zZHeg==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
-      '@typespec/compiler': ^1.4.0
-      '@typespec/http': ^1.4.0
+      '@typespec/compiler': ^1.5.0
+      '@typespec/http': ^1.5.0
 
-  '@typespec/rest@0.74.0':
-    resolution: {integrity: sha512-dE+Xmv01AQ7m8jUvEbGsUQLSVo3sLzMpnHRbQEOnJX42oDqtIsz/2GEOXKQpNm1AKBISK66E2FFB5boz999Ziw==}
+  '@typespec/rest@0.75.0':
+    resolution: {integrity: sha512-rQ+RP0kcrKWjbpCIkBd8hpxYSNc3CfQxl0MLP1+MYGRHlHL8ss4xbwdANIYZXZZ2i2Hqt19B7cEUGD4MLoCHvw==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
-      '@typespec/compiler': ^1.4.0
-      '@typespec/http': ^1.4.0
+      '@typespec/compiler': ^1.5.0
+      '@typespec/http': ^1.5.0
 
-  '@typespec/versioning@0.74.0':
-    resolution: {integrity: sha512-eFIa23tycWJgv3Lxyu6jUlRi02dhtQE4Jjx3Ui5vEbwHW8pMEzuyF7ALt1c+V9HOLkfDkS4dJkiOVIoikZHPvQ==}
+  '@typespec/versioning@0.75.0':
+    resolution: {integrity: sha512-wdLcVx5UW4WRks/OXfqLiaDTtWfAWgv/nj69u99gRJU6iY9ExEvK5x9NQszZQKYnu6tM7nkoYMg4zu+7YBUBaw==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
-      '@typespec/compiler': ^1.4.0
+      '@typespec/compiler': ^1.5.0
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
@@ -4135,11 +4135,6 @@ packages:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
     hasBin: true
 
-  semver@7.7.1:
-    resolution: {integrity: sha512-hlq8tAfn0m/61p4BVRcPzIGr6LKiMwo4VM6dGi6pt4qcRkmNzTcWq6eCEjEh+qXjkMDvPlOFFSGwQjoEa6gyMA==}
-    engines: {node: '>=10'}
-    hasBin: true
-
   semver@7.7.2:
     resolution: {integrity: sha512-RF0Fw+rO5AMf9MAyaRXI4AV0Ulj5lMHqVxxdSgiVbixSCXoEmmX/jk0CuJw4+3SqroYO9VoUh+HcuJivvtJemA==}
     engines: {node: '>=10'}
@@ -6133,7 +6128,7 @@ snapshots:
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.9.3)
       eslint: 9.37.0
       eslint-scope: 5.1.1
-      semver: 7.7.1
+      semver: 7.7.2
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -6159,11 +6154,11 @@ snapshots:
       '@typescript-eslint/types': 8.46.0
       eslint-visitor-keys: 4.2.1
 
-  '@typespec/asset-emitter@0.74.0(@typespec/compiler@1.4.0(@types/node@22.18.8))':
+  '@typespec/asset-emitter@0.75.0(@typespec/compiler@1.5.0(@types/node@22.18.8))':
     dependencies:
-      '@typespec/compiler': 1.4.0(@types/node@22.18.8)
+      '@typespec/compiler': 1.5.0(@types/node@22.18.8)
 
-  '@typespec/compiler@1.4.0(@types/node@22.18.8)':
+  '@typespec/compiler@1.5.0(@types/node@22.18.8)':
     dependencies:
       '@babel/code-frame': 7.27.1
       '@inquirer/prompts': 7.4.1(@types/node@22.18.8)
@@ -6185,42 +6180,42 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@typespec/http@1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8))':
+  '@typespec/http@1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8))':
     dependencies:
-      '@typespec/compiler': 1.4.0(@types/node@22.18.8)
+      '@typespec/compiler': 1.5.0(@types/node@22.18.8)
 
-  '@typespec/json-schema@1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8))':
+  '@typespec/json-schema@1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8))':
     dependencies:
-      '@typespec/asset-emitter': 0.74.0(@typespec/compiler@1.4.0(@types/node@22.18.8))
-      '@typespec/compiler': 1.4.0(@types/node@22.18.8)
+      '@typespec/asset-emitter': 0.75.0(@typespec/compiler@1.5.0(@types/node@22.18.8))
+      '@typespec/compiler': 1.5.0(@types/node@22.18.8)
       yaml: 2.8.0
 
-  '@typespec/openapi3@1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8))(@typespec/http@1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8)))(@typespec/json-schema@1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8)))(@typespec/openapi@1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8))(@typespec/http@1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8))))(@typespec/versioning@0.74.0(@typespec/compiler@1.4.0(@types/node@22.18.8)))':
+  '@typespec/openapi3@1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8))(@typespec/http@1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8)))(@typespec/json-schema@1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8)))(@typespec/openapi@1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8))(@typespec/http@1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8))))(@typespec/versioning@0.75.0(@typespec/compiler@1.5.0(@types/node@22.18.8)))':
     dependencies:
       '@apidevtools/swagger-parser': 12.0.0(openapi-types@12.1.3)
-      '@typespec/asset-emitter': 0.74.0(@typespec/compiler@1.4.0(@types/node@22.18.8))
-      '@typespec/compiler': 1.4.0(@types/node@22.18.8)
-      '@typespec/http': 1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8))
-      '@typespec/openapi': 1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8))(@typespec/http@1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8)))
+      '@typespec/asset-emitter': 0.75.0(@typespec/compiler@1.5.0(@types/node@22.18.8))
+      '@typespec/compiler': 1.5.0(@types/node@22.18.8)
+      '@typespec/http': 1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8))
+      '@typespec/openapi': 1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8))(@typespec/http@1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8)))
       openapi-types: 12.1.3
       yaml: 2.8.0
     optionalDependencies:
-      '@typespec/json-schema': 1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8))
-      '@typespec/versioning': 0.74.0(@typespec/compiler@1.4.0(@types/node@22.18.8))
+      '@typespec/json-schema': 1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8))
+      '@typespec/versioning': 0.75.0(@typespec/compiler@1.5.0(@types/node@22.18.8))
 
-  '@typespec/openapi@1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8))(@typespec/http@1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8)))':
+  '@typespec/openapi@1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8))(@typespec/http@1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8)))':
     dependencies:
-      '@typespec/compiler': 1.4.0(@types/node@22.18.8)
-      '@typespec/http': 1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8))
+      '@typespec/compiler': 1.5.0(@types/node@22.18.8)
+      '@typespec/http': 1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8))
 
-  '@typespec/rest@0.74.0(@typespec/compiler@1.4.0(@types/node@22.18.8))(@typespec/http@1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8)))':
+  '@typespec/rest@0.75.0(@typespec/compiler@1.5.0(@types/node@22.18.8))(@typespec/http@1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8)))':
     dependencies:
-      '@typespec/compiler': 1.4.0(@types/node@22.18.8)
-      '@typespec/http': 1.4.0(@typespec/compiler@1.4.0(@types/node@22.18.8))
+      '@typespec/compiler': 1.5.0(@types/node@22.18.8)
+      '@typespec/http': 1.5.0(@typespec/compiler@1.5.0(@types/node@22.18.8))
 
-  '@typespec/versioning@0.74.0(@typespec/compiler@1.4.0(@types/node@22.18.8))':
+  '@typespec/versioning@0.75.0(@typespec/compiler@1.5.0(@types/node@22.18.8))':
     dependencies:
-      '@typespec/compiler': 1.4.0(@types/node@22.18.8)
+      '@typespec/compiler': 1.5.0(@types/node@22.18.8)
 
   '@ungap/structured-clone@1.3.0': {}
 
@@ -9672,8 +9667,6 @@ snapshots:
     optional: true
 
   semver@6.3.1: {}
-
-  semver@7.7.1: {}
 
   semver@7.7.2: {}
 

@@ -21,13 +21,13 @@ devDependencies:
   '@types/react': 19.2.2
   '@types/node': 22.18.8
   '@types/react-dom': 19.2.1
-  '@typespec/compiler': 1.4.0
-  '@typespec/http': 1.4.0
-  '@typespec/json-schema': 1.4.0
-  '@typespec/openapi': 1.4.0
-  '@typespec/openapi3': 1.4.0
-  '@typespec/rest': 0.74.0
-  '@typespec/versioning': ^0.74.0
+  '@typespec/compiler': 1.5.0
+  '@typespec/http': 1.5.0
+  '@typespec/json-schema': 1.5.0
+  '@typespec/openapi': 1.5.0
+  '@typespec/openapi3': 1.5.0
+  '@typespec/rest': 0.75.0
+  '@typespec/versioning': ^0.75.0
   eslint: 9.37.0
   eslint-config-prettier: 10.1.8
   eslint-plugin-prettier: 5.5.4
