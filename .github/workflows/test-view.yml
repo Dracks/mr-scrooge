@@ -36,7 +36,7 @@ jobs:
                 - name: build
                   cmd: build:view
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
