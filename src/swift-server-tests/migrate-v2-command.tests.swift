@@ -163,7 +163,15 @@ final class MigrateV2Test {
 			#expect(testPie != nil)
 
 			if let testPie {
-				try #expect(
+			    let labels = try ["With parent", "Expenses"]
+								.map {
+									try
+										getLabelIdByName(
+											$0)?
+										.uuidString
+										?? ""
+								}
+				#expect(
 					testPie
 						== .init(
 							id: testPie.id,
@@ -173,14 +181,7 @@ final class MigrateV2Test {
 							group: .init(
 								group: .labels,
 								hideOthers: true,
-								labels: ["With parent", "Expenses"]
-									.map {
-										try
-											getLabelIdByName(
-												$0)?
-											.uuidString
-											?? ""
-									}
+								labels: labels
 							),
 							order: 3
 						), "Test pie graph correctly transformed")
