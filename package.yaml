@@ -43,7 +43,7 @@ devDependencies:
   node-polyfill-webpack-plugin: 4.1.0
   openapi-msw: 1.2.0
   openapi-typescript: 7.10.1
-  sass: 1.93.2
+  sass: 1.93.3
   sass-loader: 16.0.6
   ts-jest: 29.4.5
   ts-loader: 9.5.4
@@ -72,4 +72,4 @@ dependencies:
   react-router-dom: 7.9.5
   recharts: 3.3.0
   zod: 4.1.12
-packageManager: pnpm@10.19.0
+packageManager: pnpm@10.20.0
