@@ -13,7 +13,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN npx pnpm run build:view
 
 
-FROM swift:6.2.0-noble AS server-build
+FROM swift:6.2.1-noble AS server-build
 
 ARG VERSION
 ARG GIT_COMMIT
