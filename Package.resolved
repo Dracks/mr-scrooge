@@ -1,5 +1,5 @@
 {
-  "originHash" : "d6382fcccadf084de708d6960a5998765244ec3563a8d3cc259407724c87b50c",
+  "originHash" : "beda2a994f09659b497a325608aeff9090633f6f96aac1dbbd6a079893e2fefb",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -236,6 +236,15 @@
       }
     },
     {
+      "identity" : "swift-certificates",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-certificates.git",
+      "state" : {
+        "revision" : "c399f90e7bbe8874f6cbfda1d5f9023d1f5ce122",
+        "version" : "1.15.1"
+      }
+    },
+    {
       "identity" : "swift-clocks",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-clocks",
@@ -357,8 +366,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio-ssl.git",
       "state" : {
-        "revision" : "0cc3528ff48129d64ab9cab0b1cd621634edfc6b",
-        "version" : "2.29.3"
+        "revision" : "173cc69a058623525a58ae6710e2f5727c663793",
+        "version" : "2.36.0"
       }
     },
     {
@@ -456,8 +465,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/vapor.git",
       "state" : {
-        "revision" : "a69c0eabde9fd757e04b2d2db3fc41fbbea97ab5",
-        "version" : "4.118.0"
+        "revision" : "c84ffd383814bf510240f269596a271221fc8964",
+        "version" : "4.119.0"
       }
     },
     {
