@@ -72,4 +72,4 @@ dependencies:
   react-router-dom: 7.9.6
   recharts: 3.4.1
   zod: 4.1.12
-packageManager: pnpm@10.22.0
+packageManager: pnpm@10.23.0
