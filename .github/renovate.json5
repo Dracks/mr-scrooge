@@ -1,7 +1,7 @@
 {
     $schema: 'https://docs.renovatebot.com/renovate-schema.json',
     configMigration: true,
-    minimumReleaseDays: 10,
+    minimumReleaseAge: "10 days",
     baseBranchPatterns: [
         'main',
     ],
