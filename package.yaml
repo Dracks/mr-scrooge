@@ -28,6 +28,7 @@ devDependencies:
   '@typespec/openapi3': 1.6.0
   '@typespec/rest': 0.76.0
   '@typespec/versioning': ^0.76.0
+  '@vitest/coverage-v8': ^4.0.16
   '@vitest/eslint-plugin': ^1.4.3
   '@vitest/ui': ^4.0.12
   eslint: 9.39.1
