@@ -1,19 +1,15 @@
 import { act, render, screen } from '@testing-library/react';
 import { setupServer, SetupServerApi } from 'msw/node';
 import React from 'react';
-import { BrowserRouter } from 'react-router';
 
 import App from './app';
 import AllProviders from './utils/providers';
 import { http } from './utils/test/set-up-server';
 
 const Subject = ()=> 
-    // Fix: All Providers should apply the browserRoute, but it doesn't seem to work for some reason
-    <BrowserRouter>
-        <AllProviders server="http://localhost">
-            <App />
-        </AllProviders>
-    </BrowserRouter>
+    <AllProviders server="http://localhost">
+        <App />
+    </AllProviders>
 
 describe(`[${App.name}]`, () => {
     let server: SetupServerApi;
