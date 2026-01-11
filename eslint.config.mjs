@@ -48,7 +48,7 @@ export default [
       ignores: ["**/generated-models.ts"]
     },
     {
-      files: ['srv/**/*.spec.ts'], // or any other pattern
+      files: ['src/**/*.spec.ts'], // or any other pattern
       plugins: {
         vitest,
       },
