@@ -3,7 +3,7 @@ import { act, renderHook } from '@testing-library/react';
 import { useThrottledData } from './use-throttle-data';
 
 describe('useThrottledData', () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
 
     it('Should only process the first element until delay happened', () => {
         const { result, rerender } = renderHook(({ data }) => useThrottledData(data, 1000), {
@@ -23,14 +23,14 @@ describe('useThrottledData', () => {
 
         rerender({ data: [2, 3] });
         act(() => {
-            jest.advanceTimersByTime(255);
+            vi.advanceTimersByTime(255);
         });
         expect(result.current).toEqual([1, 2, 3]);
         rerender({ data: [5, 6] });
 
         // Fast forward past delay
         act(() => {
-            jest.advanceTimersByTime(255);
+            vi.advanceTimersByTime(255);
         });
 
         expect(result.current).toEqual([5, 6]);
@@ -41,7 +41,7 @@ describe('useThrottledData', () => {
         unmount();
 
         act(() => {
-            jest.advanceTimersByTime(1000);
+            vi.advanceTimersByTime(1000);
         });
     });
 });
