@@ -3,6 +3,8 @@
 import { act, fireEvent, queries, render, screen } from '@testing-library/react';
 import { setupServer, SetupServerApi } from 'msw/node';
 import React from 'react';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
 import { ProvideApi } from '../../api/client';
 import { OperationDouble, OperationString, Rule, RuleCondition } from '../../api/models';
@@ -16,8 +18,8 @@ import { RuleContext, RulesDataContext } from './rule-loaded';
 
 describe(`[${EditRule.name}]`, () => {
     let server: SetupServerApi;
-    let refresh: vi.Mock;
-    let updateRaw: vi.Mock;
+    let refresh: Mock;
+    let updateRaw: Mock;
 
     beforeEach(() => {
         server = setupServer();
@@ -93,7 +95,7 @@ describe(`[${EditRule.name}]`, () => {
     };
 
     describe('New condition', () => {
-        let newConditionRequest: vi.Mock;
+        let newConditionRequest: Mock;
         let rules: RuleEnriched[];
         beforeEach(() => {
             rules = [
@@ -183,7 +185,7 @@ describe(`[${EditRule.name}]`, () => {
     });
 
     describe('Edit condition', () => {
-        let updateConditionRequest: vi.Mock;
+        let updateConditionRequest: Mock;
         let rules: RuleEnriched[];
         beforeEach(() => {
             rules = [
@@ -255,7 +257,7 @@ describe(`[${EditRule.name}]`, () => {
     });
 
     describe('Delete condition', () => {
-        let deleteConditionRequest: vi.Mock;
+        let deleteConditionRequest: Mock;
         let rules: RuleEnriched[];
         beforeEach(() => {
             rules = [
