@@ -18,8 +18,8 @@ scripts:
 devDependencies:
   '@eslint/js': 9.39.1
   '@testing-library/react': 16.3.0
-  '@types/react': 19.2.7
   '@types/node': 24.10.3
+  '@types/react': 19.2.7
   '@types/react-dom': 19.2.3
   '@typespec/compiler': 1.6.0
   '@typespec/http': 1.6.0
@@ -39,7 +39,7 @@ devDependencies:
   eslint-plugin-unicorn: 62.0.0
   html-webpack-plugin: 5.6.5
   jsdom: ^27.2.0
-  msw: 2.7.4
+  msw: 2.10.5
   node-polyfill-webpack-plugin: 4.1.0
   openapi-msw: 2.0.0
   openapi-typescript: 7.10.1
@@ -61,6 +61,7 @@ dependencies:
   factory.ts: 1.4.2
   grommet: 2.52.0
   grommet-icons: 4.14.0
+  i18next: ^25.7.4
   openapi-fetch: 0.15.0
   openapi-typescript-fetch: 2.2.1
   react: 19.2.0

@@ -5,6 +5,15 @@ import React from 'react';
 import App from './app';
 import AllProviders from './utils/providers';
 import { http } from './utils/test/set-up-server';
+import { BrowserRouter } from 'react-router';
+
+const Subject = ()=> 
+    // Fix: All Providers should apply the browserRoute, but it doesn't seem to work for some reason
+    <BrowserRouter>
+        <AllProviders server="http://localhost">
+            <App />
+        </AllProviders>
+    </BrowserRouter>
 
 describe(`[${App.name}]`, () => {
     let server: SetupServerApi;
@@ -29,9 +38,7 @@ describe(`[${App.name}]`, () => {
 
             await act(async () => {
                 render(
-                    <AllProviders server="http://localhost">
-                        <App />
-                    </AllProviders>,
+                    <Subject />,
                 );
                 await Promise.resolve({});
             });
@@ -84,9 +91,7 @@ describe(`[${App.name}]`, () => {
         it(' does show the graphs view ', async () => {
             await act(async () => {
                 render(
-                    <AllProviders server="http://localhost">
-                        <App />
-                    </AllProviders>,
+                    <Subject/>,
                 );
                 await Promise.resolve({});
             });
