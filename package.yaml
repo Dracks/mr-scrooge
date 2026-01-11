@@ -6,8 +6,8 @@ scripts:
     openapi-typescript src/@typespec/openapi3/openapi.yaml --output
     src/react-view/api/generated-models.ts
   build:typespec: tsp compile src/typespec --output-dir src
-  build:view: NODE_ENV=production webpack --config config/webpack5.config.ts
-  start:dev: DEBUG=true ts-node src/main.ts
+  build:view: NODE_ENV=production vite build --config config/vite.ts
+  start:dev: DEBUG=true vite build --watch --config config/vite.ts
   lint: eslint 'src/react-view/**/*.{ts,tsx}' --no-warn-ignored
   lint:fix: eslint --fix 'src/react-view/**/*.{ts,tsx}'
   format:fix: prettier --config config/prettierrc --write 'src/react-view/**/*.{ts,tsx}'
@@ -28,6 +28,7 @@ devDependencies:
   '@typespec/openapi3': 1.6.0
   '@typespec/rest': 0.76.0
   '@typespec/versioning': ^0.76.0
+  '@vitejs/plugin-react': ^5.1.2
   '@vitest/coverage-v8': ^4.0.16
   '@vitest/eslint-plugin': ^1.4.3
   '@vitest/ui': ^4.0.12
@@ -50,6 +51,8 @@ devDependencies:
   ts-node: 10.9.2
   typescript: 5.9.3
   typescript-eslint: 8.46.4
+  vite: ^7.3.1
+  vite-plugin-html: ^3.2.2
   vitest: ^4.0.12
   webpack: 5.102.1
   webpack-cli: 6.0.1

@@ -13,10 +13,6 @@
         <meta name="msapplication-config" content="#(staticPath)favicon/browserconfig.xml">
         <meta name="theme-color" content="#ffffff">
 
-        <!-- Load scss (css) files -->
-        <% for (item of htmlWebpackPlugin.files.css) { %>
-            <link href="{{ static }}<%= item %>" rel='stylesheet'></link>
-        <% } %>
     </head>
 
     <!-- React config -->
@@ -28,16 +24,7 @@
         "debug": #if(debug): true #else: false #endif
     }</script>
 
-    <!-- WIP: Webpack -->
-    <script>
-        __webpack_public_path__ = "#(staticPath)";
-        window.__webpack_public_path__ = __webpack_public_path__;
-    </script>
-
-    <!-- Load javascript files -->
-    <% for (item of htmlWebpackPlugin.files.js) { %>
-        <script src="#(static)<%= item %>" type='text/javascript'></script>
-    <% } %>
+    <script type="module" src="/index.tsx"></script>
     <style>
         body {
             margin: 0;
@@ -49,7 +36,3 @@
 </body>
 </html>
 
-<!--
-
-    <%= JSON.stringify(htmlWebpackPlugin.files, undefined, 4) %>
--->
