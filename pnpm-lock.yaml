@@ -145,8 +145,8 @@ importers:
         specifier: 4.1.0
         version: 4.1.0(webpack@5.103.0)
       openapi-msw:
-        specifier: 1.2.0
-        version: 1.2.0(msw@2.7.4(@types/node@24.10.3)(typescript@5.9.3))
+        specifier: 2.0.0
+        version: 2.0.0(msw@2.7.4(@types/node@24.10.3)(typescript@5.9.3))
       openapi-typescript:
         specifier: 7.10.1
         version: 7.10.1(typescript@5.9.3)
@@ -3629,10 +3629,10 @@ packages:
   openapi-fetch@0.15.0:
     resolution: {integrity: sha512-OjQUdi61WO4HYhr9+byCPMj0+bgste/LtSBEcV6FzDdONTs7x0fWn8/ndoYwzqCsKWIxEZwo4FN/TG1c1rI8IQ==}
 
-  openapi-msw@1.2.0:
-    resolution: {integrity: sha512-Ksm8xG8Lm8O9IU0rC7d1rQ0kcqYf5+qW+iz94G5fuZ/tfinjzSPnhBEwRj7dStvlqCMFQEriVWt7rplbvg0zqA==}
+  openapi-msw@2.0.0:
+    resolution: {integrity: sha512-FXALpJ5uVGB9P+TmgbuIedPLTWEBxAi6uMvmkkWl5+lSldOBeJZNVZbfYlSw+xBbP2jFm16MKZfGvBHLFm4VNg==}
     peerDependencies:
-      msw: ^2.7.0
+      msw: ^2.10.5
 
   openapi-typescript-fetch@2.2.1:
     resolution: {integrity: sha512-aBp1cR5FTNxp4HA8bb2ST53aIqEiJgoOMyXiyzKi6YF7vogW8KkyyUQ1FeDz8D05uspxFrKvFbkVU2YiiKkULA==}
@@ -4428,6 +4428,10 @@ packages:
   synckit@0.11.8:
     resolution: {integrity: sha512-+XZ+r1XGIJGeQk3VvXhT6xx/VpbHsRzsTkGgF6E5RX9TTXD0118l87puaEBZ566FhqblC6U0d4XnubznJDm30A==}
     engines: {node: ^14.18.0 || >=16.0.0}
+
+  tapable@2.2.1:
+    resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
+    engines: {node: '>=6'}
 
   tapable@2.3.0:
     resolution: {integrity: sha512-g9ljZiwki/LfxmQADO3dEY1CbpmXT5Hm2fJ+QaGKwSXUylMybePR7/67YW7jOrrvjEgL1Fmz5kzyAjWVWLlucg==}
@@ -7241,7 +7245,7 @@ snapshots:
   enhanced-resolve@5.18.1:
     dependencies:
       graceful-fs: 4.2.11
-      tapable: 2.3.0
+      tapable: 2.2.1
 
   entities@2.2.0: {}
 
@@ -9179,7 +9183,7 @@ snapshots:
     dependencies:
       openapi-typescript-helpers: 0.0.15
 
-  openapi-msw@1.2.0(msw@2.7.4(@types/node@24.10.3)(typescript@5.9.3)):
+  openapi-msw@2.0.0(msw@2.7.4(@types/node@24.10.3)(typescript@5.9.3)):
     dependencies:
       msw: 2.7.4(@types/node@24.10.3)(typescript@5.9.3)
 
@@ -10040,6 +10044,8 @@ snapshots:
   synckit@0.11.8:
     dependencies:
       '@pkgr/core': 0.2.4
+
+  tapable@2.2.1: {}
 
   tapable@2.3.0: {}
 
