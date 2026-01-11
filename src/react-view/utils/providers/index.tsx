@@ -1,6 +1,6 @@
 import { Grommet } from 'grommet';
 import React, { PropsWithChildren } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 
 import { ProvideApi } from '../../api/client';
 import { DEBUG } from '../../constants';
@@ -14,7 +14,7 @@ import { ProvideEventEmitter } from './event-emitter.provider';
 
 const AllProviders: React.FC<PropsWithChildren & { server?: string }> = ({ children, server }) => {
     return (
-        <Router basename="/">
+        <BrowserRouter basename="/">
             <Grommet theme={MyTheme}>
                 <ProvideEventEmitter>
                     <ProvideLogger>
@@ -30,7 +30,7 @@ const AllProviders: React.FC<PropsWithChildren & { server?: string }> = ({ child
                     </ProvideLogger>
                 </ProvideEventEmitter>
             </Grommet>
-        </Router>
+        </BrowserRouter>
     );
 };
 

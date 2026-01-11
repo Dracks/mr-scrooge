@@ -6,6 +6,11 @@ import App from './app';
 import AllProviders from './utils/providers';
 import { http } from './utils/test/set-up-server';
 
+const Subject = ()=> 
+    <AllProviders server="http://localhost">
+        <App />
+    </AllProviders>
+
 describe(`[${App.name}]`, () => {
     let server: SetupServerApi;
     beforeEach(() => {
@@ -29,9 +34,7 @@ describe(`[${App.name}]`, () => {
 
             await act(async () => {
                 render(
-                    <AllProviders server="http://localhost">
-                        <App />
-                    </AllProviders>,
+                    <Subject />,
                 );
                 await Promise.resolve({});
             });
@@ -84,9 +87,7 @@ describe(`[${App.name}]`, () => {
         it(' does show the graphs view ', async () => {
             await act(async () => {
                 render(
-                    <AllProviders server="http://localhost">
-                        <App />
-                    </AllProviders>,
+                    <Subject/>,
                 );
                 await Promise.resolve({});
             });

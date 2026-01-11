@@ -1,6 +1,7 @@
 /** eslint-disable @typescript-eslint/require-await */
 import { fireEvent, render, screen } from '@testing-library/react';
 import React, { act } from 'react';
+import { vi } from 'vitest';
 
 import { PaginationLoadOptions, RequestedPage, usePagination } from './pagination';
 
@@ -45,7 +46,7 @@ const DemoPagination: React.FC<DemoPaginationProps> = ({ cb, options }) => {
 
 describe('usePagination', () => {
     it('Test the reset', async () => {
-        const cb = jest.fn();
+        const cb = vi.fn();
         cb.mockResolvedValueOnce({ results: [1, 2], next: '12' });
         cb.mockResolvedValueOnce({ results: [3] });
         cb.mockResolvedValueOnce({ results: [5, 6] });
@@ -68,7 +69,7 @@ describe('usePagination', () => {
     });
 
     it('Basic query with multiple pages', async () => {
-        const cb = jest.fn();
+        const cb = vi.fn();
         cb.mockResolvedValueOnce({ results: [1, 2], next: '12' });
         cb.mockResolvedValueOnce({ results: [3] });
         await act(async () => {
@@ -83,7 +84,7 @@ describe('usePagination', () => {
     });
 
     it('Basic query with multiple pages and repeated', async () => {
-        const cb = jest.fn();
+        const cb = vi.fn();
         cb.mockResolvedValueOnce({ results: [1, 2], next: '12' });
         cb.mockResolvedValueOnce({ results: [3] });
         await act(async () => {

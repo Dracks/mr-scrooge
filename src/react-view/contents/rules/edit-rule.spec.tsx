@@ -3,6 +3,8 @@
 import { act, fireEvent, queries, render, screen } from '@testing-library/react';
 import { setupServer, SetupServerApi } from 'msw/node';
 import React from 'react';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
 import { ProvideApi } from '../../api/client';
 import { OperationDouble, OperationString, Rule, RuleCondition } from '../../api/models';
@@ -16,15 +18,15 @@ import { RuleContext, RulesDataContext } from './rule-loaded';
 
 describe(`[${EditRule.name}]`, () => {
     let server: SetupServerApi;
-    let refresh: jest.Mock;
-    let updateRaw: jest.Mock;
+    let refresh: Mock;
+    let updateRaw: Mock;
 
     beforeEach(() => {
         server = setupServer();
         server.listen();
-        refresh = jest.fn();
-        updateRaw = jest.fn();
-        window.scrollTo = jest.fn();
+        refresh = vi.fn();
+        updateRaw = vi.fn();
+        window.scrollTo = vi.fn();
     });
 
     afterEach(() => {
@@ -93,7 +95,7 @@ describe(`[${EditRule.name}]`, () => {
     };
 
     describe('New condition', () => {
-        let newConditionRequest: jest.Mock;
+        let newConditionRequest: Mock;
         let rules: RuleEnriched[];
         beforeEach(() => {
             rules = [
@@ -103,7 +105,7 @@ describe(`[${EditRule.name}]`, () => {
                     conditions: conditionFactory.buildList(3),
                 }),
             ];
-            newConditionRequest = jest.fn();
+            newConditionRequest = vi.fn();
             server.use(
                 http.post('/rules/{ruleId}/condition', async ({ request, params, response }) => {
                     const ruleId = params.ruleId;
@@ -183,7 +185,7 @@ describe(`[${EditRule.name}]`, () => {
     });
 
     describe('Edit condition', () => {
-        let updateConditionRequest: jest.Mock;
+        let updateConditionRequest: Mock;
         let rules: RuleEnriched[];
         beforeEach(() => {
             rules = [
@@ -193,7 +195,7 @@ describe(`[${EditRule.name}]`, () => {
                     conditions: [conditionFactory.build({ id: 'cond-id-32' })],
                 }),
             ];
-            updateConditionRequest = jest.fn();
+            updateConditionRequest = vi.fn();
             server.use(
                 http.put('/rules/{ruleId}/condition/{condId}', async ({ request, params, response }) => {
                     const { ruleId, condId } = params;
@@ -255,7 +257,7 @@ describe(`[${EditRule.name}]`, () => {
     });
 
     describe('Delete condition', () => {
-        let deleteConditionRequest: jest.Mock;
+        let deleteConditionRequest: Mock;
         let rules: RuleEnriched[];
         beforeEach(() => {
             rules = [
@@ -265,7 +267,7 @@ describe(`[${EditRule.name}]`, () => {
                     conditions: [conditionFactory.build({ id: 'cond-id-42' })],
                 }),
             ];
-            deleteConditionRequest = jest.fn();
+            deleteConditionRequest = vi.fn();
             server.use(
                 http.delete('/rules/{ruleId}/condition/{condId}', ({ params, response }) => {
                     const { ruleId, condId } = params;
