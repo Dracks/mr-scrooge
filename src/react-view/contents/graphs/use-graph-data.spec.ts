@@ -9,7 +9,7 @@ import { enrichGraph } from './graph-with-rechart/enrich-graph';
 import { GraphBar, GraphLine, GraphPie } from './mocks/graph.mocks';
 import { useGraphDataGenerator } from './use-graph-data';
 
-jest.useFakeTimers().setSystemTime(new Date('2022-10-16'));
+vi.useFakeTimers().setSystemTime(new Date('2022-10-16'));
 
 const getData = (): BankTransactionEnriched[] =>
     [
@@ -37,12 +37,12 @@ const getData = (): BankTransactionEnriched[] =>
         value: idx + 1,
     }));
 
-jest.mock('../common/transaction.context', () => ({
+vi.mock('../common/transaction.context', () => ({
     __esModule: true,
-    useTransactionsData: jest.fn().mockImplementation(() => ({
+    useTransactionsData: vi.fn().mockImplementation(() => ({
         data: getData(),
     })),
-    useThrottledTransactionsData: jest.fn().mockImplementation(() => getData()),
+    useThrottledTransactionsData: vi.fn().mockImplementation(() => getData()),
 }));
 
 describe('useGraphData', () => {
