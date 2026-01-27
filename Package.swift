@@ -11,11 +11,11 @@ let package = Package(
 	],
 	dependencies: [
 		// OpenAPI
-		.package(url: "https://github.com/apple/swift-openapi-generator", from: "1.10.3"),
+		.package(url: "https://github.com/apple/swift-openapi-generator", from: "1.10.4"),
 		.package(url: "https://github.com/apple/swift-openapi-runtime", from: "1.9.0"),
 		.package(url: "https://github.com/swift-server/swift-openapi-vapor", from: "1.0.1"),
 		// Vapor
-		.package(url: "https://github.com/vapor/vapor.git", from: "4.120.0"),
+		.package(url: "https://github.com/vapor/vapor.git", from: "4.121.1"),
 		.package(url: "https://github.com/vapor/leaf.git", from: "4.5.1"),
 		.package(url: "https://github.com/vapor/queues.git", from: "1.17.2"),
 
@@ -33,7 +33,7 @@ let package = Package(
 		.package(url: "https://github.com/yaslab/CSV.swift.git", from: "2.5.2"),
 
 		// dependency injection
-		.package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.10.0"),
+		.package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.10.1"),
 		.package(
 			url: "https://github.com/swiftlang/swift-syntax.git", from: "602.0.0"
 		),
