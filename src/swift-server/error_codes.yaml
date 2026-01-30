@@ -1,0 +1,98 @@
+E10000:
+  message: "Parser not found"
+
+E10001:
+  message: "Graph doesn't contain any group"
+  additional_info: "This can mean the database was corrupted"
+
+E10002:
+  message: "TransformHelper was created with missing fields in the mapping"
+
+E10003:
+  message: "Invalid DB_URL format"
+
+E10004:
+  message: "Invalid format converting data"
+
+E10005:
+  message: "Parsing CaixaEnginyers we found an invalid row"
+
+E10006:
+  message: "File cannot be found for caixa Enginyers"
+
+E10007:
+  message: "File seems to be wrong"
+
+E10008:
+  message: "Input Stream cannot be created for CSV parsing"
+
+E10009:
+  message: "Csv row seems cannot be processed for N26"
+
+E10010:
+  message: "Csv cannot be parsed"
+
+E10011:
+  message: "Csv row seems cannot be processed for Commerz Bank En"
+
+E10012:
+  message: "Csv is invalid and doesn't contain the original movement row"
+
+E10013:
+  message: "Csv is invalid and doesn't contain the original value row"
+
+E10014:
+  message: "Retrieving an String from a condition when it doesn't have it"
+
+E10015:
+  message: "Retrieving the Double from a condition when it doesn't have it"
+
+E10016:
+  message: "Rule parent cannot be found by the ID"
+  additional_info: "this can be because the parent rule is with another groupOwnerId"
+
+E10017:
+  message: "Import from file returned an ID that was not found in the DB"
+
+E10018:
+  message: "Commerz Bank  Date Regex was invalid and was not able to be generated correctly"
+  additional_info: "the regex is defined in the code, which means a big bug in the code"
+
+E10019:
+  message: "Database url not supported"
+
+E10020:
+  message: "Old database is not an sql"
+
+E10021:
+  message: "Old tag Id was not found in the labels relations"
+
+E10022:
+  message: "Transforming the old Filters, we found a value in the database that we don't know"
+
+E10023:
+  message: "Transforming the filter conditional to a double, conditional was not a double"
+
+E10024:
+  message: "Label not found for the old tagId"
+
+E10025:
+  message: "Transforming the tags to rules, we get a tag with a parentId that we didn't found"
+
+E10026:
+  message: "Transforming the group type from the old database, get an invalid case"
+
+E10027:
+  message: "Transforming the graph kind from the old database, get get an invalid case"
+
+E10028:
+  message: "Transforming the graph date range from the old database, get get an invalid case"
+
+E10029:
+  message: "Retrieving the groups of a graph, we get multiple groups"
+
+E10030:
+  message: "We didn't found the group related to a graph in the old database"
+
+E10031:
+  message: "This app requires a SQL database (e.g., PostgreSQL, MySQL). Non-SQL databases are not supported."

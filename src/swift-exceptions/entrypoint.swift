@@ -1,0 +1,1 @@
+// Empty entrypoint for the generic Exceptions module

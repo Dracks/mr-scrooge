@@ -14,6 +14,9 @@ let package = Package(
 		.package(url: "https://github.com/apple/swift-openapi-generator", from: "1.10.3"),
 		.package(url: "https://github.com/apple/swift-openapi-runtime", from: "1.9.0"),
 		.package(url: "https://github.com/swift-server/swift-openapi-vapor", from: "1.0.1"),
+		.package(
+			url: "https://github.com/swift-server/swift-openapi-async-http-client",
+			from: "1.0.0"),
 		// Vapor
 		.package(url: "https://github.com/vapor/vapor.git", from: "4.120.0"),
 		.package(url: "https://github.com/vapor/leaf.git", from: "4.5.1"),
@@ -39,6 +42,10 @@ let package = Package(
 		),
 	],
 	targets: [
+		.target(
+			name: "Exceptions",
+			dependencies: [],
+			path: "src/swift-exceptions"),
 		.macro(
 			name: "swift-macrosMacros",
 			dependencies: [
@@ -50,6 +57,44 @@ let package = Package(
 		.target(
 			name: "swift-macros", dependencies: ["swift-macrosMacros"],
 			path: "src/swift-server-macros"),
+		.executableTarget(
+			name: "GenerateErrorCodes",
+			dependencies: [],
+			path: "src/codegen"
+		),
+		.plugin(
+			name: "GenerateErrorCodesPlugin",
+			capability: .buildTool(),
+			path: "src/plugins/GenerateErrorCodes"
+		),
+		.executableTarget(
+			name: "MrSGocardless",
+			dependencies: [
+				.product(
+					name: "OpenAPIAsyncHTTPClient",
+					package: "swift-openapi-async-http-client"),
+				.product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
+				.product(name: "Vapor", package: "vapor"),
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				.product(name: "Fluent", package: "fluent"),
+				.product(name: "Leaf", package: "leaf"),
+				.product(
+					name: "FluentPostgresDriver",
+					package: "fluent-postgres-driver"),
+				.product(
+					name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
+				"Exceptions",
+			],
+			path: "src/swift-gocardless",
+			resources: [
+			    //.process("../../Resources/importer"),
+				//.copy("../../Resources/importer/Views"), // Copy Views to standard location
+				.copy("error_codes.yaml"),
+			],
+			plugins: [
+				.plugin(name: "GenerateErrorCodesPlugin"),
+			]
+		),
 		.executableTarget(
 			name: "MrScroogeServer",
 			dependencies: [
@@ -75,6 +120,7 @@ let package = Package(
 			resources: [
 				.process("openapi-generator-config.yaml"),
 				.process("openapi.yaml"),
+				.copy("../../Resources/mr-scrooge"),
 			],
 			plugins: [
 				.plugin(
