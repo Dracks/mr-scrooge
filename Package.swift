@@ -40,12 +40,26 @@ let package = Package(
 		.package(
 			url: "https://github.com/swiftlang/swift-syntax.git", from: "602.0.0"
 		),
+
+		// Other
+		.package(url: "https://github.com/jpsim/Yams.git", from: "6.0.1"),
 	],
 	targets: [
 		.target(
 			name: "Exceptions",
 			dependencies: [],
 			path: "src/swift-exceptions"),
+		.plugin(
+			name: "GenerateErrorCodesPlugin",
+			capability: .buildTool(),
+			dependencies: ["ErrorCodesGenerator"],
+			path: "src/GenerateErrorCodes"
+		),
+		.executableTarget(
+			name: "ErrorCodesGenerator",
+			dependencies: [.product(name: "Yams", package: "Yams")],
+			path: "src/error-codes-generator"
+		),
 		.macro(
 			name: "swift-macrosMacros",
 			dependencies: [
@@ -57,16 +71,6 @@ let package = Package(
 		.target(
 			name: "swift-macros", dependencies: ["swift-macrosMacros"],
 			path: "src/swift-server-macros"),
-		.executableTarget(
-			name: "GenerateErrorCodes",
-			dependencies: [],
-			path: "src/codegen"
-		),
-		.plugin(
-			name: "GenerateErrorCodesPlugin",
-			capability: .buildTool(),
-			path: "src/plugins/GenerateErrorCodes"
-		),
 		.executableTarget(
 			name: "MrSGocardless",
 			dependencies: [
@@ -87,12 +91,12 @@ let package = Package(
 			],
 			path: "src/swift-gocardless",
 			resources: [
-			    //.process("../../Resources/importer"),
+				//.process("../../Resources/importer"),
 				//.copy("../../Resources/importer/Views"), // Copy Views to standard location
-				.copy("error_codes.yaml"),
+				.copy("error_codes.yaml")
 			],
 			plugins: [
-				.plugin(name: "GenerateErrorCodesPlugin"),
+				.plugin(name: "GenerateErrorCodesPlugin")
 			]
 		),
 		.executableTarget(
@@ -127,7 +131,7 @@ let package = Package(
 				.plugin(
 					name: "OpenAPIGenerator", package: "swift-openapi-generator"
 				),
-				.plugin(name: "GenerateErrorCodesPlugin")
+				.plugin(name: "GenerateErrorCodesPlugin"),
 			]
 		),
 		.testTarget(
