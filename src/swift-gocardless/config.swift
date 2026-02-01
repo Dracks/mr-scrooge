@@ -19,7 +19,7 @@ final class EnvConfig: Sendable {
 	let maxLoginAttemptsTimePeriod: TimeInterval
 
 	private init() {
-		dbUrl = Environment.get("DB_URL") ?? "sqlite://db.sqlite3"
+		dbUrl = Environment.get("DB_URL") ?? "sqlite://importer.sqlite3"
 		environment = Environment.get("ENVIRONMENT") ?? "development"
 
 		if let envDebug = Environment.get("APP_DEBUG") {

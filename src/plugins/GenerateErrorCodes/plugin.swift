@@ -14,8 +14,8 @@ struct GenerateErrorCodesPlugin: BuildToolPlugin {
         // Use the generate_errors.swift script in the codegen directory
         let scriptPath = context.package.directory.appending(subpath: "src/codegen/main.swift")
 
-        // Look for error_codes.yaml in the swift-gocardless directory
-        let inputPath = context.package.directory.appending(subpath: "src/swift-gocardless/error_codes.yaml")
+        // Look for error_codes.yaml in the target's directory first, fallback to swift-gocardless
+        let inputPath = context.package.directory.appending(subpath: "src/swift-server/error_codes.yaml")
 
         // Check if the error_codes.yaml file exists before creating the build command
         guard FileManager.default.fileExists(atPath: inputPath.string) else {

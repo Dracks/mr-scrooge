@@ -7,6 +7,7 @@ import "./profile.tsp";
 import "./graphs.tsp";
 import "./imports.tsp";
 import "./rules.tsp";
+import "./oauth.tsp";
 
 using Http;
 

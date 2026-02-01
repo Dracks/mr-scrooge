@@ -5,10 +5,11 @@ import Leaf
 import NIOSSL
 import QueuesFluentDriver
 import Vapor
+import Exceptions
 
 func getDbConfig(url dbUrl: String) throws -> (DatabaseConfigurationFactory, DatabaseID) {
 	if !dbUrl.starts(with: "sqlite://") && !dbUrl.starts(with: "postgres://") {
-		throw Exception(.E10019, context: ["dbUrl": dbUrl])
+		throw Exception<ErrorCodes>(.E10019, context: ["dbUrl": dbUrl])
 	}
 
 	let components = dbUrl.split(separator: ":", maxSplits: 1)
@@ -36,7 +37,7 @@ func getDbConfig(url dbUrl: String) throws -> (DatabaseConfigurationFactory, Dat
 			)
 		}
 	default:
-		throw Exception(.E10003, context: ["db_url": dbUrl])
+		throw Exception<ErrorCodes>(.E10003, context: ["db_url": dbUrl])
 	}
 }
 

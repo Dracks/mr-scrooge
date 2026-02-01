@@ -117,16 +117,16 @@ struct TransactionAmount: Codable, Content {
 }
 
 struct GoCardlessTransactionsResponse: Codable, Content {
-    let transactions: BankTransaction
+    let transactions: GoCardlessBankTransaction
     let lastUpdated: String
-    
+
     enum CodingKeys: String, CodingKey {
         case transactions
         case lastUpdated = "last_updated"
     }
 }
 
-struct BankTransaction: Codable, Content {
+struct GoCardlessBankTransaction: Codable, Content {
     let booked: [GoCardlessTransaction]
     let pending: [GoCardlessTransaction]
 }

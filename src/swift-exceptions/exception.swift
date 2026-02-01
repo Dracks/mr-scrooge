@@ -20,7 +20,7 @@ final public class Exception<ErrorCode: RawRepresentable & Sendable & ErrorMsg>:
 
 	public let errorCode: ErrorCode
 	public let context: [String: any Sendable]
-	var allContext: [String: any Sendable] {
+	public var allContext: [String: any Sendable] {
 		var context: [String: any Sendable] = [:]
 		if let cause = cause as? Exception {
 			for (key, value) in cause.allContext {

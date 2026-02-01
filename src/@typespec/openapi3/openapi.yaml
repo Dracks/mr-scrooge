@@ -10,6 +10,7 @@ tags:
   - name: graphs
   - name: imports
   - name: rule
+  - name: oauth
 paths:
   /bank-transactions:
     get:
@@ -708,6 +709,198 @@ paths:
                 $ref: '#/components/schemas/LabelInUse'
       tags:
         - labels
+  /oauth/authorize:
+    get:
+      operationId: ApiOAuth_authorize
+      description: Initiate OAuth authorization flow
+      parameters:
+        - name: request
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/OAuthAuthorizeRequest'
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    anyOf:
+                      - type: object
+                        properties:
+                          authorization_code:
+                            type: string
+                          state:
+                            type: string
+                        required:
+                          - authorization_code
+                      - $ref: '#/components/schemas/OAuthErrorResponse'
+                required:
+                  - body
+      tags:
+        - oauth
+  /oauth/clients:
+    post:
+      operationId: ApiOAuth_registerClient
+      description: Register a new OAuth client
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    $ref: '#/components/schemas/OAuthClient'
+                required:
+                  - body
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    $ref: '#/components/schemas/OAuthErrorResponse'
+                required:
+                  - body
+      tags:
+        - oauth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                redirect_uris:
+                  type: array
+                  items:
+                    type: string
+                scopes:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - name
+                - redirect_uris
+                - scopes
+  /oauth/clients/{clientId}:
+    get:
+      operationId: ApiOAuth_getClient
+      description: Get OAuth client details
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    $ref: '#/components/schemas/OAuthClient'
+                required:
+                  - body
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    $ref: '#/components/schemas/OAuthErrorResponse'
+                required:
+                  - body
+      tags:
+        - oauth
+    delete:
+      operationId: ApiOAuth_deleteClient
+      description: Delete an OAuth client
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    $ref: '#/components/schemas/OAuthErrorResponse'
+                required:
+                  - body
+      tags:
+        - oauth
+  /oauth/token:
+    post:
+      operationId: ApiOAuth_token
+      description: Exchange authorization code for access token or refresh access token
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    $ref: '#/components/schemas/OAuthTokenResponse'
+                required:
+                  - body
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    $ref: '#/components/schemas/OAuthErrorResponse'
+                required:
+                  - body
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    $ref: '#/components/schemas/OAuthErrorResponse'
+                required:
+                  - body
+      tags:
+        - oauth
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OAuthTokenRequest'
   /rules:
     get:
       operationId: ApiRule_list
@@ -1896,6 +2089,202 @@ components:
           type: string
           enum:
             - anonymous
+    OAuthAccessToken:
+      type: object
+      required:
+        - access_token
+        - client_id
+        - user_id
+        - scopes
+        - expires_at
+      properties:
+        access_token:
+          type: string
+          description: Access token
+        refresh_token:
+          type: string
+          description: Refresh token
+        client_id:
+          allOf:
+            - $ref: '#/components/schemas/UUID'
+          description: Client identifier
+        user_id:
+          allOf:
+            - $ref: '#/components/schemas/UUID'
+          description: User identifier
+        scopes:
+          type: array
+          items:
+            type: string
+          description: Scopes granted
+        expires_at:
+          type: string
+          format: date-time
+          description: Expiration time
+    OAuthAuthorizationCode:
+      type: object
+      required:
+        - code
+        - client_id
+        - user_id
+        - scopes
+        - redirect_uri
+        - expires_at
+      properties:
+        code:
+          type: string
+          description: Authorization code
+        client_id:
+          allOf:
+            - $ref: '#/components/schemas/UUID'
+          description: Client identifier
+        user_id:
+          allOf:
+            - $ref: '#/components/schemas/UUID'
+          description: User identifier
+        scopes:
+          type: array
+          items:
+            type: string
+          description: Scopes granted
+        redirect_uri:
+          type: string
+          description: Redirection URI
+        expires_at:
+          type: string
+          format: date-time
+          description: Expiration time
+    OAuthAuthorizeRequest:
+      type: object
+      required:
+        - client_id
+        - redirect_uri
+      properties:
+        client_id:
+          type: string
+          description: Client identifier
+        redirect_uri:
+          type: string
+          description: Redirection URI to which the response will be sent
+        scope:
+          type: string
+          description: Scope of the access request
+        state:
+          type: string
+          description: Value used to associate a client session with an ID token
+        prompt:
+          type: string
+          enum:
+            - none
+            - login
+            - consent
+          description: Indicates whether the user should be prompted for re-authentication
+    OAuthClient:
+      type: object
+      required:
+        - id
+        - name
+        - secret
+        - redirect_uris
+        - scopes
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          allOf:
+            - $ref: '#/components/schemas/UUID'
+          description: Unique identifier for the OAuth client
+        name:
+          type: string
+          description: Name of the OAuth client
+        secret:
+          type: string
+          format: password
+          description: Secret for the OAuth client
+        redirect_uris:
+          type: array
+          items:
+            type: string
+          description: Redirect URIs for the OAuth client
+        scopes:
+          type: array
+          items:
+            type: string
+          description: Scopes allowed for the OAuth client
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last updated timestamp
+    OAuthErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Error code
+        error_description:
+          type: string
+          description: Human-readable text providing additional information about the error
+        error_uri:
+          type: string
+          description: URI identifying a human-readable web page with information about the error
+    OAuthTokenRequest:
+      type: object
+      required:
+        - grant_type
+      properties:
+        grant_type:
+          type: string
+          enum:
+            - authorization_code
+            - refresh_token
+            - client_credentials
+          description: OAuth grant type
+        code:
+          type: string
+          description: Authorization code received from authorization server
+        redirect_uri:
+          type: string
+          description: Redirect URI used in the authorization request
+        refresh_token:
+          type: string
+          description: Refresh token for refreshing access tokens
+        client_id:
+          type: string
+          description: Client identifier
+        client_secret:
+          type: string
+          format: password
+          description: Client secret
+    OAuthTokenResponse:
+      type: object
+      required:
+        - access_token
+        - token_type
+      properties:
+        access_token:
+          type: string
+          description: Access token to access protected resources
+        token_type:
+          type: string
+          enum:
+            - Bearer
+          description: Type of the access token
+        expires_in:
+          type: integer
+          format: int32
+          description: Lifetime of the access token in seconds
+        refresh_token:
+          type: string
+          description: Refresh token to obtain new access tokens
+        scope:
+          type: string
+          description: Scope of the access token
     OperationDouble:
       type: string
       enum:

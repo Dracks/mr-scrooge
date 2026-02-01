@@ -1,6 +1,7 @@
 import CSV
 import Foundation
 import Vapor
+import Exceptions
 
 final class N26Importer: ParserFactory, Sendable {
 	let transformHelper: TransformHelper<[String]>
@@ -32,7 +33,7 @@ final class N26Importer: ParserFactory, Sendable {
 								.map(row)
 							continuation.yield(transaction)
 						} catch {
-							throw Exception(
+							throw Exception<ErrorCodes>(
 								.E10009,
 								context: ["line": lineCounter],
 								cause: error)

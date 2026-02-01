@@ -1,5 +1,6 @@
 import Foundation
 import Vapor
+import Exceptions
 
 struct HTMLRowData {
 	var line: Int
@@ -55,7 +56,7 @@ class CaixaEnginyersAbstractImporter: ParserFactory, @unchecked Sendable {
 								continuation.yield(transaction)
 
 							} catch {
-								throw Exception(
+								throw Exception<ErrorCodes>(
 									.E10005,
 									context: ["line": row.line],
 									cause: error)

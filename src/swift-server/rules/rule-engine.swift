@@ -1,5 +1,6 @@
 import Fluent
 import Foundation
+import Exceptions
 
 class CompiledRule {
 	let id: UUID
@@ -47,7 +48,7 @@ class RuleEngine {
 			// We are already filtering for rules with parent
 			let parentId = rule.parent!
 			guard let parent = rulesHash[parentId] else {
-				throw Exception(
+				throw Exception<ErrorCodes>(
 					.E10016, context: ["id": rule.id, "parentId": parentId])
 			}
 

@@ -1,6 +1,7 @@
 import Fluent
 import Queues
 import Vapor
+import Exceptions
 
 final class FileImportService: ServiceWithQueueAndDb, @unchecked Sendable {
 	private let cursorHandler = CursorHandler<FileImportReport, String>(["created", "id"])
@@ -31,7 +32,7 @@ final class FileImportService: ServiceWithQueueAndDb, @unchecked Sendable {
 			\.$id == importId
 		).with(\.$rows).first()
 		guard let importReport else {
-			throw Exception(
+			throw Exception<ErrorCodes>(
 				.E10017,
 				context: [
 					"importId": importId, "groupOwnerId": groupOwnerId,

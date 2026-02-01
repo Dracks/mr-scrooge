@@ -46,9 +46,6 @@ func configureDb(_ app: Application) async throws {
 
 public func registerMigrations(_ app: Application) async throws {
 	app.migrations.add(SessionRecord.migration)
-	app.migrations.add(CreateUser())
-	app.migrations.add(CreateBankConnection())
-	app.migrations.add(CreateBankAccount())
 }
 
 // configures your application
@@ -72,9 +69,9 @@ public func configure(_ app: Application) async throws {
 
 		app.sessions.use(.fluent)
 		app.views.use(.leaf)
-		
+
 		//let customViewsPath = Environment.get("VIEWS_DIRECTORY") ?? app.directory.resourcesDirectory + "Views/GoCardlessApp/"
-	    //app.leaf.renderer.configuration.rootDirectory=customViewsPath 
+		//app.leaf.renderer.configuration.rootDirectory=customViewsPath
 		// register routes
 		try routes(app)
 

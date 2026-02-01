@@ -1,6 +1,7 @@
 import Fluent
 import SQLKit
 import Vapor
+import Exceptions
 
 struct InvalidArgument: Error {
 	var argument: String
@@ -44,7 +45,7 @@ struct V2MigrateCommand: AsyncCommand {
 			let oldDb = application.db(oldDbId)
 
 			guard let sql = oldDb as? SQLDatabase else {
-				throw Exception(.E10020, context: ["oldDbUrl": signature.oldDbUrl])
+				throw Exception<ErrorCodes>(.E10020, context: ["oldDbUrl": signature.oldDbUrl])
 			}
 
 			guard
@@ -79,7 +80,7 @@ struct V2MigrateCommand: AsyncCommand {
 
 			// When not executed, the group attach seems to not work
 			try await Task.sleep(nanoseconds: 2_000_000)
-		} catch let error as Exception {
+		} catch let error as Exception<ErrorCodes> {
 			context.console.error(String(describing: error))
 		} catch let error as InvalidArgument {
 			context.console.error("Invalid argument: \(error.argument)")

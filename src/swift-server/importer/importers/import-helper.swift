@@ -1,4 +1,5 @@
 import Foundation
+import Exceptions
 
 struct FieldsMap<T: Hashable>: @unchecked Sendable {
 	var movementName: T
@@ -77,7 +78,7 @@ final class TransformHelper<D: IndexedCollection>: @unchecked Sendable {
 		}
 
 		if !errorFields.isEmpty {
-			throw Exception(.E10004, context: ["invalidFields": errorFields])
+			throw Exception<ErrorCodes>(.E10004, context: ["invalidFields": errorFields])
 		}
 		return PartialBankTransaction(
 			movementName: movementName!,

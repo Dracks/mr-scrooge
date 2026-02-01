@@ -10,12 +10,14 @@ struct ErrorConfig {
     let errors: [String: ErrorDefinition]
 }
 
-// Basic YAML parsing function for our new structure where root keys are error codes
+// Basic YAML parsing function for our structure where root keys are error codes
 func parseYAML(yamlString: String) -> ErrorConfig {
     var errors: [String: ErrorDefinition] = [:]
-
+    
     let lines = yamlString.components(separatedBy: .newlines)
     var currentError: String?
+    var currentMessage: String?
+    var currentAdditionalInfo: String?
 
     for line in lines {
         let trimmedLine = line.trimmingCharacters(in: .whitespaces)
@@ -25,39 +27,45 @@ func parseYAML(yamlString: String) -> ErrorConfig {
             continue
         }
 
-        // Look for error code sections (root level keys that don't have message/additional_info)
+        // Look for error code sections (root level keys)
         if !line.hasPrefix(" ") && trimmedLine.contains(":") && !trimmedLine.contains("message:") && !trimmedLine.contains("additional_info:") {
-            let parts = trimmedLine.components(separatedBy: ":")
-            if parts.count > 0 {
-                currentError = parts[0].trimmingCharacters(in: .whitespaces)
+            // If we were processing a previous error, save it
+            if let prevError = currentError, let prevMessage = currentMessage {
+                errors[prevError] = ErrorDefinition(message: prevMessage, additionalInfo: currentAdditionalInfo)
             }
+            
+            // Start a new error
+            currentError = trimmedLine.replacingOccurrences(of: ":", with: "").trimmingCharacters(in: .whitespaces)
+            currentMessage = nil
+            currentAdditionalInfo = nil
         }
         // Look for message lines (2 spaces indent)
-        else if line.hasPrefix("  message:") && line.count >= 2 {
+        else if line.hasPrefix("  message:") {
             if let errorName = currentError {
                 let messagePart = line.replacingOccurrences(of: "  message:", with: "").trimmingCharacters(in: .whitespaces)
                 var message = messagePart
                 if message.hasPrefix("\"") && message.hasSuffix("\"") {
                     message = String(message.dropFirst().dropLast())
                 }
-                // Get any existing additional info if we already have this error
-                let existingAdditionalInfo = errors[errorName]?.additionalInfo
-                errors[errorName] = ErrorDefinition(message: message, additionalInfo: existingAdditionalInfo)
+                currentMessage = message
             }
         }
         // Look for additional_info lines (2 spaces indent)
-        else if line.hasPrefix("  additional_info:") && line.count >= 2 {
+        else if line.hasPrefix("  additional_info:") {
             if let errorName = currentError {
                 let additionalInfoPart = line.replacingOccurrences(of: "  additional_info:", with: "").trimmingCharacters(in: .whitespaces)
                 var additionalInfo = additionalInfoPart
                 if additionalInfo.hasPrefix("\"") && additionalInfo.hasSuffix("\"") {
                     additionalInfo = String(additionalInfo.dropFirst().dropLast())
                 }
-                // Get any existing message if we already have this error
-                let existingMessage = errors[errorName]?.message
-                errors[errorName] = ErrorDefinition(message: existingMessage ?? "", additionalInfo: additionalInfo)
+                currentAdditionalInfo = additionalInfo
             }
         }
+    }
+    
+    // Don't forget the last error
+    if let prevError = currentError, let prevMessage = currentMessage {
+        errors[prevError] = ErrorDefinition(message: prevMessage, additionalInfo: currentAdditionalInfo)
     }
 
     return ErrorConfig(errors: errors)
@@ -68,27 +76,42 @@ func generateErrorCodes(from config: ErrorConfig) -> String {
     // Generated file - do not edit manually
     // This file was auto-generated from error_codes.yaml
 
-    import swift_exceptions
+    import Exceptions
 
     public enum ErrorCodes: String, CaseIterable, Sendable, ErrorMsg {
     """
-    
-    for (codeName, _) in config.errors {
+
+    for (codeName, _) in config.errors.sorted(by: { $0.key < $1.key }) {
         code += "\n    case \(codeName)"
     }
-    
+
     code += "\n\n    public var message: String {"
     code += "\n        switch self {"
-    
-    for (codeName, definition) in config.errors {
+
+    for (codeName, definition) in config.errors.sorted(by: { $0.key < $1.key }) {
         code += "\n        case .\(codeName):"
         code += "\n            return \"\(definition.message.replacingOccurrences(of: "\"", with: "\\\""))\""
+    }
+
+    code += "\n        }"
+    code += "\n    }"
+    
+    code += "\n\n    public var additionalInfo: String? {"
+    code += "\n        switch self {"
+    
+    for (codeName, definition) in config.errors.sorted(by: { $0.key < $1.key }) {
+        code += "\n        case .\(codeName):"
+        if let additionalInfo = definition.additionalInfo {
+            code += "\n            return \"\(additionalInfo.replacingOccurrences(of: "\"", with: "\\\""))\""
+        } else {
+            code += "\n            return nil"
+        }
     }
     
     code += "\n        }"
     code += "\n    }"
     code += "\n}"
-    
+
     return code
 }
 
@@ -100,11 +123,11 @@ let outputFile = args.count > 2 ? args[2] : "./generated/ErrorCodes.generated.sw
 do {
     let yamlString = try String(contentsOfFile: inputFile, encoding: .utf8)
     let config = parseYAML(yamlString: yamlString)
-    
+
     // Create directory if it doesn't exist
     let outputDir = URL(fileURLWithPath: outputFile).deletingLastPathComponent().path
     try FileManager.default.createDirectory(atPath: outputDir, withIntermediateDirectories: true)
-    
+
     let generatedCode = generateErrorCodes(from: config)
     try generatedCode.write(toFile: outputFile, atomically: true, encoding: .utf8)
     print("Successfully generated error codes to \(outputFile)")

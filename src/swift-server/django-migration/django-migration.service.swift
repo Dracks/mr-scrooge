@@ -1,6 +1,7 @@
 import Fluent
 import SQLKit
 import Vapor
+import Exceptions
 
 class DjangoMigrationService {
 	class OldDb {
@@ -74,7 +75,7 @@ extension DjangoMigrationService.OldDb {
 			{
 				return d
 			}
-			throw Exception(
+			throw Exception<ErrorCodes>(
 				.E10023, context: ["filterId": id as Sendable, "tagId": tagId])
 		}
 		func toBaseCondition() throws -> Rule.BaseCondition {
@@ -96,7 +97,7 @@ extension DjangoMigrationService.OldDb {
 			case "r":
 				return .init(.regularExpression, valueStr: conditional)
 			default:
-				throw Exception(
+				throw Exception<ErrorCodes>(
 					.E10022,
 					context: [
 						"filterId": id as Sendable, "tagId": tagId,
@@ -112,14 +113,14 @@ extension DjangoMigrationService {
 
 	func getLabelId(_ tagId: Int64) throws -> UUID {
 		guard let labelId = tagIdToLabelId.get(tagId) else {
-			throw Exception(.E10021, context: ["oldTag": tagId])
+			throw Exception<ErrorCodes>(.E10021, context: ["oldTag": tagId])
 		}
 		return labelId
 	}
 
 	func getLabel(_ tagId: Int64) throws -> Label {
 		guard let label = tagIdToLabel[tagId] else {
-			throw Exception(.E10024, context: ["tagId": tagId])
+			throw Exception<ErrorCodes>(.E10024, context: ["tagId": tagId])
 		}
 		return label
 	}
@@ -168,7 +169,7 @@ extension DjangoMigrationService {
 				conditionsRelation: tag.negateConditional ? .notAnd : .or)
 			if let tagParentId = tag.$parent.id {
 				guard let parentRuleId = tagToRuleDictId[tagParentId] else {
-					throw Exception(
+					throw Exception<ErrorCodes>(
 						.E10025,
 						context: ["tagId": tagId, "parentId": tagParentId])
 				}
@@ -364,7 +365,7 @@ extension DjangoMigrationService.OldDb {
 			case "line":
 				return .line
 			default:
-				throw Exception(
+				throw Exception<ErrorCodes>(
 					.E10027, context: ["graphId": id as Sendable, "kind": kind])
 			}
 		}
@@ -384,7 +385,7 @@ extension DjangoMigrationService.OldDb {
 			case "twoYears":
 				return .twoYears
 			default:
-				throw Exception(
+				throw Exception<ErrorCodes>(
 					.E10028,
 					context: [
 						"graphId": id as Sendable, "dateRange": dateRange,
@@ -424,7 +425,7 @@ extension DjangoMigrationService.OldDb {
 			case "sign":
 				return .sign
 			default:
-				throw Exception(.E10026, context: ["group": group])
+				throw Exception<ErrorCodes>(.E10026, context: ["group": group])
 			}
 		}
 
@@ -443,7 +444,7 @@ extension DjangoMigrationService.OldDb {
 				SQLLiteral.numeric("\(graphId)")
 			).all()
 			if groupsList.count > 1 {
-				throw Exception(
+				throw Exception<ErrorCodes>(
 					.E10029,
 					context: [
 						"graphId": graphId,
@@ -514,7 +515,7 @@ extension DjangoMigrationService {
 		let oldGroup = try await OldDb.GraphGroup.query(
 			table: .graphGroup, for: oldGraphId, on: oldSqlDb)
 		guard let oldGroup else {
-			throw Exception(.E10030, context: ["oldGraphId": oldGraphId])
+			throw Exception<ErrorCodes>(.E10030, context: ["oldGraphId": oldGraphId])
 		}
 		let group = try GraphGroup(
 			graphId: graphId, group: oldGroup.getGroupType(),

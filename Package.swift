@@ -115,6 +115,7 @@ let package = Package(
 				"SwiftSoup",
 				.product(name: "CSV", package: "CSV.swift"),
 				"swift-macros",
+				"Exceptions",
 			],
 			path: "src/swift-server",
 			resources: [
@@ -125,7 +126,8 @@ let package = Package(
 			plugins: [
 				.plugin(
 					name: "OpenAPIGenerator", package: "swift-openapi-generator"
-				)
+				),
+				.plugin(name: "GenerateErrorCodesPlugin")
 			]
 		),
 		.testTarget(
