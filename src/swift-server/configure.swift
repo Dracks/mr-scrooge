@@ -51,6 +51,7 @@ public func registerMigrations(_ app: Application) async throws {
 	app.migrations.add(JobModelMigration())
 	app.migrations.add(InitialMigration())
 	app.migrations.add(LoginSafetyMigration())
+	app.migrations.add(OAuthAppsMigration())
 }
 
 // configures your application

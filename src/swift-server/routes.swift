@@ -1,9 +1,9 @@
 import Dependencies
+import Exceptions
 import Fluent
 import OpenAPIRuntime
 import OpenAPIVapor
 import Vapor
-import Exceptions
 
 struct ErrorHandlerMiddleware: AsyncMiddleware {
 	func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response
@@ -53,53 +53,6 @@ struct MrScroogeAPIImpl {
 	func ApiImports_applyRow(_ input: Operations.ApiImports_applyRow.Input) async throws
 		-> Operations.ApiImports_applyRow.Output
 	{
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	// MARK: - OAuth Methods
-
-	func ApiOAuth_authorize(_ input: Operations.ApiOAuth_authorize.Input) async throws
-		-> Operations.ApiOAuth_authorize.Output
-	{
-		// TODO: Implement OAuth authorization flow
-		// This should handle the OAuth authorization request and return either:
-		// - A redirect to the authorization page
-		// - An authorization code if auto-approval is enabled
-		// - An error response
-
-		// For now, return a placeholder response
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiOAuth_registerClient(_ input: Operations.ApiOAuth_registerClient.Input) async throws
-		-> Operations.ApiOAuth_registerClient.Output
-	{
-		// TODO: Implement OAuth client registration
-		// This should register a new OAuth client in the database
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiOAuth_getClient(_ input: Operations.ApiOAuth_getClient.Input) async throws
-		-> Operations.ApiOAuth_getClient.Output
-	{
-		// TODO: Implement getting OAuth client details
-		// This should retrieve an existing OAuth client from the database
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiOAuth_deleteClient(_ input: Operations.ApiOAuth_deleteClient.Input) async throws
-		-> Operations.ApiOAuth_deleteClient.Output
-	{
-		// TODO: Implement deleting an OAuth client
-		// This should remove an OAuth client from the database
-		return .undocumented(statusCode: 501, UndocumentedPayload())
-	}
-
-	func ApiOAuth_token(_ input: Operations.ApiOAuth_token.Input) async throws
-		-> Operations.ApiOAuth_token.Output
-	{
-		// TODO: Implement OAuth token exchange
-		// This should handle exchanging authorization codes for access tokens
 		return .undocumented(statusCode: 501, UndocumentedPayload())
 	}
 }

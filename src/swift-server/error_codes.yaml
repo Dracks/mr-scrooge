@@ -96,3 +96,17 @@ E10030:
 
 E10031:
   message: "This app requires a SQL database (e.g., PostgreSQL, MySQL). Non-SQL databases are not supported."
+E10032:
+  message: "Scopes invalid processing the oauth token"
+E10033:
+  message: "Scopes invalid on client app"
+E10034:
+  message: "Invalid OAuth client ID"
+E10035:
+  message: "Invalid OAuth authorization request"
+E10062:
+  message: "Invalid OAuth authorization scopes"
+E10063:
+  message: "Invalid OAuth client ID"
+E10064:
+  message: "Invalid OAuth redirect URI"

@@ -13,17 +13,17 @@ enum ConditionalRelation {
 }
 
 model RuleInput {
-  parentRuleId?: UUID;
-  groupOwnerId: UUID;
+  parentRuleId?: UUIDString;
+  groupOwnerId: UUIDString;
   name: string;
   relations: ConditionalRelation;
 }
 
 model Rule {
-  id: UUID;
+  id: UUIDString;
   ...RuleInput;
   conditions: Condition[];
-  labelIds: UUID[];
+  labelIds: UUIDString[];
 }
 
 enum OperationString {
@@ -41,13 +41,13 @@ enum OperationDouble {
 }
 
 model ConditionString {
-  id: UUID;
+  id: UUIDString;
   operation: OperationString;
   value: string;
 }
 
 model ConditionDouble {
-  id: UUID;
+  id: UUIDString;
   operation: OperationDouble;
   value: float64;
 }
@@ -74,7 +74,7 @@ union ConditionInput {
 }
 
 model SetLabelAction {
-  label: UUID;
+  label: UUIDString;
 }
 
 @doc("Unprocessable entity, assigning as parent a direct or indirect child")
@@ -86,7 +86,7 @@ model ItsOwnParent {
 model HasChildren {
   @statusCode _: 422;
   ...Error;
-  childrenIds: UUID[];
+  childrenIds: UUIDString[];
 }
 
 @route("/rules")
@@ -101,19 +101,19 @@ interface ApiRule {
     | InvalidGroupOwnerId
     | InvalidUUID
     | NotFound;
-  @put @route("{ruleId}") update(@path ruleId: UUID, ...RuleInput):
+  @put @route("{ruleId}") update(@path ruleId: UUIDString, ...RuleInput):
     | Rule
     | InvalidGroupOwnerId
     | InvalidUUID
     | NotFound
     | ItsOwnParent;
-  @post @route("{ruleId}/apply") apply(@path ruleId: UUID):
+  @post @route("{ruleId}/apply") apply(@path ruleId: UUIDString):
     | NotFound
     | InvalidGroupOwnerId
     | InvalidUUID
     | NotFound
     | Date;
-  @delete @route("{ruleId}") delete(@path ruleId: UUID):
+  @delete @route("{ruleId}") delete(@path ruleId: UUIDString):
     | boolean
     | NotFound
     | HasChildren
@@ -121,26 +121,26 @@ interface ApiRule {
 
   // Here is the conditions
   @post @route("{ruleId}/condition") addCondition(
-    @path ruleId: UUID,
+    @path ruleId: UUIDString,
     condition: ConditionInput,
   ): Rule | NotFound | InvalidUUID;
   @put @route("{ruleId}/condition/{condId}") updateCondition(
-    @path ruleId: UUID,
-    @path condId: UUID,
+    @path ruleId: UUIDString,
+    @path condId: UUIDString,
     condition: ConditionInput,
   ): Rule | NotFound | InvalidUUID;
   @delete @route("{ruleId}/condition/{condId}") removeCondition(
-    @path ruleId: UUID,
-    @path condId: UUID,
+    @path ruleId: UUIDString,
+    @path condId: UUIDString,
   ): Rule | NotFound | InvalidUUID;
 
   // Here is the labels actions
   @put @route("{ruleId}/label/{labelId}") addLabel(
-    @path ruleId: UUID,
-    @path labelId: UUID,
+    @path ruleId: UUIDString,
+    @path labelId: UUIDString,
   ): Rule | NotFound | InvalidUUID | LabelGroupIdMismatch;
   @delete @route("{ruleId}/label/{labelId}") removeLabel(
-    @path ruleId: UUID,
-    @path labelId: UUID,
+    @path ruleId: UUIDString,
+    @path labelId: UUIDString,
   ): Rule | NotFound | InvalidUUID;
 }

@@ -1,1 +1,0 @@
-// Empty file - no macro implementation needed since we're using code generation from YAML

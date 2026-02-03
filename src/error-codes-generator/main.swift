@@ -5,6 +5,11 @@ import Yams
 struct ErrorDefinition: Decodable {
 	let message: String
 	let additionalInfo: String?
+
+	enum CodingKeys: String, CodingKey {
+		case message = "message"
+		case additionalInfo = "additional_info"
+	}
 }
 
 struct Exception: Error {
@@ -68,7 +73,8 @@ do {
 
 	let yamlString = try String(contentsOfFile: inputFile, encoding: .utf8)
 	let decoder = YAMLDecoder()
-	let decoded = try decoder.decode([String: ErrorDefinition].self, from: yamlString)
+	let decoded = try decoder.decode(
+		[String: ErrorDefinition].self, from: yamlString)
 
 	// Create directory if it doesn't exist
 	let outputDir = URL(fileURLWithPath: outputFile).deletingLastPathComponent().path

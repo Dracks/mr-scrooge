@@ -1,1 +1,0 @@
-// Empty entrypoint - no macros needed
