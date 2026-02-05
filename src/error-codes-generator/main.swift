@@ -66,7 +66,7 @@ do {
 	// Main execution
 	let args = CommandLine.arguments
 	guard args.count >= 3 else {
-		throw Exception(message: "Invalid call")
+		throw Exception(message: "Usage: \(args[0]) <source.yaml> <dest.swift>")
 	}
 	let inputFile = args[1]
 	let outputFile = args[2]
