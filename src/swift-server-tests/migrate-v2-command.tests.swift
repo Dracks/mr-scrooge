@@ -163,14 +163,13 @@ final class MigrateV2Test {
 			#expect(testPie != nil)
 
 			if let testPie {
-			    let labels = try ["With parent", "Expenses"]
-								.map {
-									try
-										getLabelIdByName(
-											$0)?
-										.uuidString
-										?? ""
-								}
+				let labels = try ["With parent", "Expenses"]
+					.map {
+						try getLabelIdByName(
+							$0)?
+							.uuidString
+							?? ""
+					}
 				#expect(
 					testPie
 						== .init(

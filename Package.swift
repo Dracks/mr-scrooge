@@ -39,6 +39,16 @@ let package = Package(
 		),
 	],
 	targets: [
+		.target(
+			name: "Exceptions",
+			dependencies: [],
+			path: "src/swift-exceptions"),
+		.plugin(
+			name: "GenerateErrorCodesPlugin",
+			capability: .buildTool(),
+			dependencies: ["ErrorCodesGenerator"],
+			path: "src/GenerateErrorCodes"
+		),
 		.macro(
 			name: "swift-macrosMacros",
 			dependencies: [
