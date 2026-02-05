@@ -92,12 +92,26 @@ public struct GenericErrorReturn: ExpressionMacro {
 			responseArg.as(StringLiteralExprSyntax.self)?.representedLiteralValue
 			?? responseArg.description.trimmingCharacters(in: .whitespacesAndNewlines)
 
+		// Normalize responseValue to strip leading dots and type qualifiers
+		// This prevents double-dots when responseArg is a member access like ".badRequest" or "Response.badRequest"
+		var normalizedResponseValue = responseValue
+		// Remove leading dot if present
+		if normalizedResponseValue.hasPrefix(".") {
+			normalizedResponseValue = String(normalizedResponseValue.dropFirst())
+		}
+		// Remove type qualifier prefix like "Response." (identifier followed by dot)
+		// Split by the last dot to get the type qualifier and the actual member name
+		if let lastDotIndex = normalizedResponseValue.lastIndex(of: ".") {
+			// Keep only the part after the last dot (the actual member name)
+			normalizedResponseValue = String(normalizedResponseValue.suffix(from: normalizedResponseValue.index(after: lastDotIndex)))
+		}
+
 		// Handle message parameter - check if it's a string literal or variable
 		if let messageLiteral = messageArg.as(StringLiteralExprSyntax.self) {
 			// If it's a string literal, use it with quotes
 			let messageText = messageLiteral.representedLiteralValue ?? ""
 			return """
-						.\(raw: responseValue)(
+						.\(raw: normalizedResponseValue)(
 							.init(
 								body: .json(
 									.init(
@@ -107,7 +121,7 @@ public struct GenericErrorReturn: ExpressionMacro {
 		} else {
 			// If it's a variable/expression, use it directly
 			return """
-						.\(raw: responseValue)(
+						.\(raw: normalizedResponseValue)(
 							.init(
 								body: .json(
 									.init(
