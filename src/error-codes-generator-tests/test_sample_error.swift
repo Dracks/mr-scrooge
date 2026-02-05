@@ -67,4 +67,20 @@ final class DefaultData {
 			#expect(e1002Idx < e1003Idx)
 		}
 	}
+
+	@Test("Escape special characters properly")
+	func testEscapeSpecialCharacters() {
+		let output = generateErrorCodes(from: [
+			"E1004": .init(message: "Error with \"quote\", newline\nand tab\tand \\backslash", additionalInfo: "Info with \"quote\"\nand\\backslash"),
+			"E1005": .init(message: "Simple message", additionalInfo: nil)
+		])
+
+		// Check that special characters are properly escaped in messages
+		#expect(output.contains("return \"Error with \\\"quote\\\", newline\\nand tab\\tand \\\\backslash\""))
+		#expect(output.contains("return \"Info with \\\"quote\\\"\\nand\\\\backslash\""))
+		#expect(output.contains("return nil")) // for E1005 which has no additional info
+
+		// Print output for debugging purposes
+		print(output)
+	}
 }

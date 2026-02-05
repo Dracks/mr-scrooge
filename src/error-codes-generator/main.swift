@@ -16,6 +16,22 @@ struct Exception: Error {
 	let message: String
 }
 
+/// Escapes special characters in a string for use in a Swift string literal
+func escapeForSwiftString(_ str: String) -> String {
+	var escaped = str
+	// Escape backslashes first to avoid double-escaping
+	escaped = escaped.replacingOccurrences(of: "\\", with: "\\\\")
+	// Escape quotes
+	escaped = escaped.replacingOccurrences(of: "\"", with: "\\\"")
+	// Escape newlines
+	escaped = escaped.replacingOccurrences(of: "\n", with: "\\n")
+	// Escape carriage returns
+	escaped = escaped.replacingOccurrences(of: "\r", with: "\\r")
+	// Escape tabs
+	escaped = escaped.replacingOccurrences(of: "\t", with: "\\t")
+	return escaped
+}
+
 func generateErrorCodes(from errors: [String: ErrorDefinition]) -> String {
 	var code = """
 		// Generated file - do not edit manually
@@ -37,7 +53,7 @@ func generateErrorCodes(from errors: [String: ErrorDefinition]) -> String {
 	for (codeName, definition) in errors {
 		code += "\n        case .\(codeName):"
 		code +=
-			"\n            return \"\(definition.message.replacingOccurrences(of: "\"", with: "\\\""))\""
+			"\n            return \"\(escapeForSwiftString(definition.message))\""
 	}
 
 	code += "\n        }"
@@ -50,7 +66,7 @@ func generateErrorCodes(from errors: [String: ErrorDefinition]) -> String {
 		code += "\n        case .\(codeName):"
 		if let additionalInfo = definition.additionalInfo {
 			code +=
-				"\n            return \"\(additionalInfo.replacingOccurrences(of: "\"", with: "\\\""))\""
+				"\n            return \"\(escapeForSwiftString(additionalInfo))\""
 		} else {
 			code += "\n            return nil"
 		}
