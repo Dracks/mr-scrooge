@@ -25,7 +25,7 @@ func generateErrorCodes(from errors: [String: ErrorDefinition]) -> String {
 
 		public enum ErrorCodes: String, CaseIterable, Sendable, ErrorMsg {
 		"""
-	let errors = errors.enumerated().map { $1 }.sorted(by: { $0.key < $1.key })
+	let errors = errors.sorted(by: { $0.key < $1.key })
 
 	for (codeName, _) in errors {
 		code += "\n    case \(codeName)"
