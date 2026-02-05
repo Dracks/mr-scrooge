@@ -77,22 +77,50 @@ E10024:
   message: "Label not found for the old tagId"
 
 E10025:
-  message: "Transforming the tags to rules, we get a tag with a parentId that we didn't found"
+  message: "Transforming the tags to rules, we get a tag with a parentId that we didn't find"
 
 E10026:
   message: "Transforming the group type from the old database, get an invalid case"
 
 E10027:
-  message: "Transforming the graph kind from the old database, get get an invalid case"
+  message: "Transforming the graph kind from the old database, get an invalid case"
 
 E10028:
-  message: "Transforming the graph date range from the old database, get get an invalid case"
+  message: "Transforming the graph date range from the old database, get an invalid case"
 
 E10029:
   message: "Retrieving the groups of a graph, we get multiple groups"
 
 E10030:
-  message: "We didn't found the group related to a graph in the old database"
+  message: "We didn't find the group related to a graph in the old database"
 
 E10031:
   message: "This app requires a SQL database (e.g., PostgreSQL, MySQL). Non-SQL databases are not supported."
+E10032:
+  message: "Scopes invalid processing the oauth token"
+E10033:
+  message: "Scopes invalid on client app"
+E10034:
+  message: "Invalid OAuth client ID"
+E10035:
+  message: "Invalid OAuth authorization request"
+E10062:
+  message: "Invalid OAuth authorization scopes"
+E10063:
+  message: "Invalid OAuth client ID"
+E10064:
+  message: "Invalid OAuth redirect URI"
+E10065:
+  message: "Client authentication required"
+E10066:
+  message: "Invalid client credentials format"
+E10067:
+  message: "Invalid client ID format"
+E10068:
+  message: "Invalid OAuth request"
+E10069:
+  message: "Invalid OAuth client credentials"
+E10070:
+  message: "Invalid OAuth grant"
+E10071:
+  message: "Unsupported OAuth grant type"

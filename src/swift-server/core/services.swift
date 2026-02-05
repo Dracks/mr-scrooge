@@ -47,6 +47,14 @@ extension GraphService: StorageKey {
 	typealias Value = GraphService
 }
 
+extension OAuthService: StorageKey {
+	typealias Value = OAuthService
+}
+
+extension OAuthClientService: StorageKey {
+	typealias Value = OAuthClientService
+}
+
 extension Application {
 	@ServiceDependency()
 	var userService: UserService
@@ -68,4 +76,10 @@ extension Application {
 
 	@ServiceDependency()
 	var labelService: LabelService
+
+	@ServiceDependency()
+	var oauthService: OAuthService
+
+	@ServiceDependency()
+	var oauthClientService: OAuthClientService
 }

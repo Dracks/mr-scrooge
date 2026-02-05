@@ -1,4 +1,5 @@
 import CSV
+import Exceptions
 import Foundation
 import Vapor
 
@@ -32,7 +33,7 @@ final class N26Importer: ParserFactory, Sendable {
 								.map(row)
 							continuation.yield(transaction)
 						} catch {
-							throw Exception(
+							throw Exception<ErrorCodes>(
 								.E10009,
 								context: ["line": lineCounter],
 								cause: error)

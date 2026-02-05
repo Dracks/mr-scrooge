@@ -2,10 +2,10 @@ import "@typespec/http";
 
 using TypeSpec.Http;
 
-@doc("something")
+@doc("Base error code")
 scalar ErrorCode extends string;
 @format("uuid")
-scalar UUID extends string;
+scalar UUIDString extends string;
 @format("date")
 scalar DateOnly extends string;
 @format("date-time")
@@ -22,7 +22,7 @@ model Error {
 model InvalidGroupOwnerId {
   @statusCode _: 403;
   ...Error;
-  validGroupOwners: UUID[];
+  validGroupOwners: UUIDString[];
 }
 
 @error

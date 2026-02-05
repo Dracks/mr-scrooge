@@ -1,3 +1,4 @@
+import Exceptions
 import Fluent
 import Queues
 import Vapor
@@ -31,7 +32,7 @@ final class FileImportService: ServiceWithQueueAndDb, @unchecked Sendable {
 			\.$id == importId
 		).with(\.$rows).first()
 		guard let importReport else {
-			throw Exception(
+			throw Exception<ErrorCodes>(
 				.E10017,
 				context: [
 					"importId": importId, "groupOwnerId": groupOwnerId,

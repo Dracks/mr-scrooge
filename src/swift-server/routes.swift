@@ -1,4 +1,5 @@
 import Dependencies
+import Exceptions
 import Fluent
 import OpenAPIRuntime
 import OpenAPIVapor
@@ -11,7 +12,7 @@ struct ErrorHandlerMiddleware: AsyncMiddleware {
 			return try await next.respond(to: request)
 		} catch {
 			switch error {
-			case let exception as Exception:
+			case let exception as Exception<ErrorCodes>:
 				print(exception.toJSON())
 				throw error
 			case let error as ServerError:
@@ -63,6 +64,7 @@ func routes(_ app: Application) throws {
 	app.middleware.use(ErrorHandlerMiddleware())
 	app.middleware.use(SessionsMiddleware(session: app.sessions.driver))
 	app.middleware.use(UserSessionAuthenticator())
+	app.middleware.use(OAuthAppAuthenticator())
 
 	app.routes.defaultMaxBodySize = 5_000_000
 

@@ -17,26 +17,26 @@ model UpdateLabel {
 
 model CreateLabel {
   ...UpdateLabel;
-  groupOwnerId: UUID;
+  groupOwnerId: UUIDString;
 }
 
 model Label {
-  id: UUID;
+  id: UUIDString;
   ...CreateLabel;
 }
 
 model NotFoundLabel {
   ...NotFound;
-  labelSuplied: UUID;
+  labelSuplied: UUIDString;
 }
 
 model LabelInUse {
   @statusCode _: 409;
-  graphs: UUID[];
-  graphsGroup: UUID[];
-  graphHorizontalGroup: UUID[];
-  rules: UUID[];
-  transactions: UUID[];
+  graphs: UUIDString[];
+  graphsGroup: UUIDString[];
+  graphHorizontalGroup: UUIDString[];
+  rules: UUIDString[];
+  transactions: UUIDString[];
 }
 
 @route("/labels")
@@ -48,11 +48,11 @@ interface ApiLabels {
     ...Label;
   } | InvalidGroupOwnerId | InvalidUUID;
   @put @route("{labelId}") update(
-    @path labelId: UUID,
+    @path labelId: UUIDString,
     ...UpdateLabel,
   ): Label | NotFound | InvalidUUID;
   @delete @route("{labelId}") delete(
-    @path labelId: UUID,
+    @path labelId: UUIDString,
 
     @doc("When true, forcefully deletes the label and removes it from all relations. Use with caution as this will modify dependent entities.")
     @query

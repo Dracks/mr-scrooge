@@ -12,7 +12,7 @@ model UserGroupInput {
 }
 
 model UserGroup {
-  id: UUID;
+  id: UUIDString;
   ...UserGroupInput;
 }
 
@@ -36,16 +36,16 @@ model CreateUserInput {
 model UpdateUserData {
   ...BaseModifyUserData;
   password?: string;
-  defaultGroupId: UUID;
+  defaultGroupId: UUIDString;
 }
 
 model UserProfile {
-  id: UUID;
+  id: UUIDString;
   ...BaseUserData;
   isAdmin: boolean;
   isActive: boolean;
   groups: UserGroup[];
-  defaultGroupId: UUID;
+  defaultGroupId: UUIDString;
 }
 
 @route("/users")
@@ -59,20 +59,20 @@ interface ApiUser {
     @query cursor?: string,
     @query limit?: int16,
   ): PageList<UserProfile> | Unauthorized;
-  @route("{id}") @put update(@path id: UUID, ...UpdateUserData):
+  @route("{id}") @put update(@path id: UUIDString, ...UpdateUserData):
     | UserProfile
     | Unauthorized
     | NotFound
     | InvalidUUID;
   @route("{id}/group/{groupId}") @delete deleteGroup(
-    @path id: UUID,
-    @path groupId: UUID,
+    @path id: UUIDString,
+    @path groupId: UUIDString,
   ): UserProfile | Unauthorized;
   @route("{id}/group/{groupId}") @post addGroup(
-    @path id: UUID,
-    @path groupId: UUID,
+    @path id: UUIDString,
+    @path groupId: UUIDString,
   ): UserProfile | Unauthorized;
-  @route("{id}") @delete delete(@path id: UUID): boolean | Unauthorized;
+  @route("{id}") @delete delete(@path id: UUIDString): boolean | Unauthorized;
 }
 
 @route("/groups")
@@ -88,8 +88,8 @@ interface ApiGroup {
     @query orphaned?: boolean,
   ): PageList<UserGroup>;
   @route("{id}") @put updateGroup(
-    @path id: UUID,
+    @path id: UUIDString,
     ...UserGroupInput,
   ): UserGroup | NotFound;
-  @route("{id}") @delete delete(@path id: UUID): void | Unauthorized;
+  @route("{id}") @delete delete(@path id: UUIDString): void | Unauthorized;
 }

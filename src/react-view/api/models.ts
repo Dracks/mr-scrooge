@@ -1,6 +1,6 @@
 import { components } from './generated-models';
 
-export type ApiUUID = components['schemas']['UUID'];
+export type ApiUUID = components['schemas']['UUIDString'];
 export type BankTransaction = components['schemas']['BankTransaction'];
 export type CreateUserInput = components['schemas']['CreateUserInput'];
 export type FileImport = components['schemas']['FileImport'];

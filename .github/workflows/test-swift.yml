@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-24.04-arm
     container: swift:6.2
     outputs:
-        md5: ${{ steps.md5.outputs.value }}
+        cache_key: ${{ steps.cache-key.outputs.value }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -24,13 +24,20 @@ jobs:
         run: |
             apt-get update -y
             apt-get install -y zstd curl
-      - name: Md5
-        id: md5
-        run: echo "value=$(md5sum Package.resolved)" >> "$GITHUB_OUTPUT"
+      - name: Generate cache key
+        id: cache-key
+        run: |
+          # Create a composite hash including Package.resolved and source files
+          {
+            cat Package.resolved
+            sha256sum Package.swift
+            find src -name "*.swift" -exec sha256sum {} \; 2>/dev/null || true
+          } | sha256sum | cut -d' ' -f1 | tee /tmp/cache_key
+          echo "value=$(cat /tmp/cache_key)" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@v4
         with:
             path: .build
-            key: ${{ runner.os }}-spm-${{ steps.md5.outputs.value }}
+            key: ${{ runner.os }}-spm-${{ steps.cache-key.outputs.value }}
             restore-keys: |
               ${{ runner.os }}-spm-
       - name: Resolve dependencies
@@ -42,7 +49,7 @@ jobs:
         if: always()
         with:
           path: .build
-          key: ${{ runner.os }}-spm-${{ steps.md5.outputs.value }}
+          key: ${{ runner.os }}-spm-${{ steps.cache-key.outputs.value }}
 
   test:
     name: Test
@@ -57,12 +64,10 @@ jobs:
             apt-get update -y
             apt-get install -y zstd curl
       # Restore the build cache but use a different key to prevent updating the original cache
-      - uses: actions/cache@v4
+      - uses: actions/cache/restore@v4
         with:
             path: .build
-            key: ${{ runner.os }}-spm-test-${{ needs.build.outputs.md5 }}
-            restore-keys: |
-              ${{ runner.os }}-spm-${{ needs.build.outputs.md5 }}
+            key: ${{ runner.os }}-spm-${{ needs.build.outputs.cache_key }}
       - name: Run tests
         run: swift test --no-parallel --skip-build --enable-code-coverage
       - name: Prepare Coverage

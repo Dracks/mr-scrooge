@@ -1,0 +1,20 @@
+[
+    {
+        "label": "Run Swift test",
+        "command": "swift",
+        "args": [
+            "test",
+            "--filter",
+            "{selected_text}"
+        ],
+        "tags": ["swift-test"]
+    },
+    {
+        "label": "Run all Swift tests",
+        "command": "swift",
+        "args": [
+            "test"
+        ],
+        "tags": ["swift-all-tests"]
+    }
+]

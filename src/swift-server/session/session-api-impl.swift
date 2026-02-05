@@ -9,7 +9,7 @@ extension MrScroogeAPIImpl {
 	{
 		var credentials: Components.Schemas.UserCredentials
 		switch input.body {
-		case let .json(body):
+		case .json(let body):
 			credentials = body
 		}
 		let cleanupDate = Date(
@@ -58,7 +58,8 @@ extension MrScroogeAPIImpl {
 	{
 		do {
 			let req = request
-			let user = try await getUser(fromRequest: req)
+			let user = try await getUser(
+				fromRequest: req, authentication: .WebAndOauth(scope: .user))
 			try await user.$groups.load(on: req.db)
 			try await user.$defaultGroup.load(on: req.db)
 

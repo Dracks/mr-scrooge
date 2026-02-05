@@ -1,4 +1,5 @@
 import CSV
+import Exceptions
 import Foundation
 import Vapor
 
@@ -22,7 +23,7 @@ final class CommerzBankEnImporter: ParserFactory, Sendable {
 
 	func splitMessage(_ msg: String) throws -> (String, String?, String?) {
 		guard let dateRegex = CommerzBankEnImporter.DATE_REGEX else {
-			throw Exception(.E10018)
+			throw Exception<ErrorCodes>(.E10018)
 		}
 		var message = msg
 
@@ -45,7 +46,7 @@ final class CommerzBankEnImporter: ParserFactory, Sendable {
 		if let dateMatch {
 			let range = Range(dateMatch.range(at: 0), in: message)
 			guard let range = range else {
-				throw Exception(.E10000)
+				throw Exception<ErrorCodes>(.E10000)
 			}
 			var movementName = String(message[..<range.lowerBound])
 			let dayRange = Range(dateMatch.range(withName: "day"), in: message)
@@ -83,11 +84,11 @@ final class CommerzBankEnImporter: ParserFactory, Sendable {
 							var mappedData: [String?] = row
 							guard let originalMovement = row.get(3)
 							else {
-								throw Exception(.E10012)
+								throw Exception<ErrorCodes>(.E10012)
 							}
 
 							guard let originalValue = row.get(4) else {
-								throw Exception(.E10013)
+								throw Exception<ErrorCodes>(.E10013)
 							}
 
 							mappedData[4] =
@@ -111,7 +112,7 @@ final class CommerzBankEnImporter: ParserFactory, Sendable {
 							continuation.yield(transaction)
 						} catch {
 							throw Exception(
-								.E10011,
+								ErrorCodes.E10011,
 								context: ["line": lineCounter],
 								cause: error)
 						}

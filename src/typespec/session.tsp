@@ -35,7 +35,7 @@ model NotIdentified {
 
 model UpdateMyProfile {
   ...BaseUserData;
-  defaultGroupId: UUID;
+  defaultGroupId: UUIDString;
   newPassword?: string;
   password?: string;
 }

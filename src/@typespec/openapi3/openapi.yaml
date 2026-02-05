@@ -10,6 +10,7 @@ tags:
   - name: graphs
   - name: imports
   - name: rule
+  - name: oauth
 paths:
   /bank-transactions:
     get:
@@ -21,7 +22,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/UUID'
+              $ref: '#/components/schemas/UUIDString'
           explode: false
         - name: cursor
           in: query
@@ -64,7 +65,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -98,12 +99,12 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
         - name: labelId
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -135,12 +136,12 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
         - name: labelId
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -198,7 +199,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/UUID'
+              $ref: '#/components/schemas/UUIDString'
           explode: false
         - name: cursor
           in: query
@@ -240,7 +241,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -277,7 +278,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -302,7 +303,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -409,7 +410,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -438,7 +439,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '204':
           description: 'There is no content to send for this request, but the headers may be useful. '
@@ -506,7 +507,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -525,12 +526,12 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
         - name: rowId
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -549,12 +550,12 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
         - name: rowId
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -637,7 +638,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -672,7 +673,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
         - name: force
           in: query
           required: false
@@ -708,6 +709,250 @@ paths:
                 $ref: '#/components/schemas/LabelInUse'
       tags:
         - labels
+  /oauth/authorize:
+    get:
+      operationId: ApiOAuth_authorize
+      description: Initiate OAuth authorization flow
+      parameters:
+        - name: request
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/OAuthAuthorizeRequest'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authorization_code:
+                    type: string
+                  state:
+                    type: string
+                required:
+                  - authorization_code
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - oauth
+  /oauth/clients:
+    post:
+      operationId: ApiOAuth_registerClient
+      description: Register a new OAuth client
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthClientWithSecret'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - oauth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                redirect_uris:
+                  type: array
+                  items:
+                    type: string
+                scopes:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/OAuthScope'
+              required:
+                - name
+                - redirect_uris
+                - scopes
+    get:
+      operationId: ApiOAuth_listClients
+      description: List OAuth clients
+      parameters:
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint16
+            default: 100
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OAuthClient'
+                  next:
+                    type: string
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - oauth
+  /oauth/clients/{clientId}:
+    get:
+      operationId: ApiOAuth_getClient
+      description: Get OAuth client details
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthClient'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - oauth
+    delete:
+      operationId: ApiOAuth_deleteClient
+      description: Delete an OAuth client
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - oauth
+  /oauth/token:
+    post:
+      operationId: ApiOAuth_token
+      description: Exchange authorization code for access token or refresh access token
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthTokenResponse'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - oauth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuthTokenRequest'
+      security:
+        - BasicAuth: []
   /rules:
     get:
       operationId: ApiRule_list
@@ -787,7 +1032,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -834,7 +1079,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -870,7 +1115,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -908,7 +1153,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -949,12 +1194,12 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
         - name: condId
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -994,12 +1239,12 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
         - name: condId
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -1029,12 +1274,12 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
         - name: labelId
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -1069,12 +1314,12 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
         - name: labelId
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -1252,7 +1497,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -1293,7 +1538,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -1317,12 +1562,12 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
         - name: groupId
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -1345,12 +1590,12 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
         - name: groupId
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       responses:
         '200':
           description: The request has succeeded.
@@ -1368,6 +1613,25 @@ paths:
         - user
 components:
   schemas:
+    AuthorizationCodeGrantParams:
+      type: object
+      required:
+        - grant_type
+        - code
+        - redirect_uri
+      properties:
+        grant_type:
+          type: string
+          enum:
+            - authorization_code
+          description: OAuth grant type
+        code:
+          type: string
+          description: Authorization code received from authorization server
+        redirect_uri:
+          type: string
+          description: Redirect URI used in the authorization request
+      description: Parameters for authorization code grant
     BankTransaction:
       type: object
       required:
@@ -1380,9 +1644,9 @@ components:
         - labelIds
       properties:
         id:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         groupOwnerId:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         movementName:
           type: string
         date:
@@ -1401,7 +1665,7 @@ components:
         labelIds:
           type: array
           items:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
     BaseModifyUserData:
       type: object
       required:
@@ -1446,6 +1710,17 @@ components:
         mapping:
           identified: '#/components/schemas/GetMyProfile'
           anonymous: '#/components/schemas/NotIdentified'
+    ClientCredentialsGrantParams:
+      type: object
+      required:
+        - grant_type
+      properties:
+        grant_type:
+          type: string
+          enum:
+            - client_credentials
+          description: OAuth grant type
+      description: Parameters for client credentials grant
     Condition:
       oneOf:
         - $ref: '#/components/schemas/ConditionDouble'
@@ -1458,7 +1733,7 @@ components:
         - value
       properties:
         id:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         operation:
           $ref: '#/components/schemas/OperationDouble'
         value:
@@ -1487,7 +1762,7 @@ components:
         - value
       properties:
         id:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         operation:
           $ref: '#/components/schemas/OperationString'
         value:
@@ -1516,7 +1791,7 @@ components:
         name:
           type: string
         groupOwnerId:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
     CreateUserInput:
       type: object
       required:
@@ -1558,7 +1833,7 @@ components:
           $ref: '#/components/schemas/ErrorCode'
     ErrorCode:
       type: string
-      description: something
+      description: Base error code
     FileImport:
       type: object
       required:
@@ -1572,7 +1847,7 @@ components:
         - rows
       properties:
         id:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         createdAt:
           $ref: '#/components/schemas/Date'
         description:
@@ -1580,7 +1855,7 @@ components:
         fileName:
           type: string
         groupOwnerId:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         kind:
           type: string
         status:
@@ -1614,7 +1889,7 @@ components:
         message:
           type: string
         transactionId:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
     FileParserType:
       type: object
       required:
@@ -1649,15 +1924,15 @@ components:
         - order
       properties:
         id:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         groupOwnerId:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         name:
           type: string
         kind:
           $ref: '#/components/schemas/GraphKind'
         labelFilterId:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         dateRange:
           $ref: '#/components/schemas/GraphDateRange'
         group:
@@ -1694,13 +1969,13 @@ components:
         - group
       properties:
         groupOwnerId:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         name:
           type: string
         kind:
           $ref: '#/components/schemas/GraphKind'
         labelFilterId:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         dateRange:
           $ref: '#/components/schemas/GraphDateRange'
         group:
@@ -1725,7 +2000,7 @@ components:
         labels:
           type: array
           items:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
     HasChildren:
       type: object
       required:
@@ -1740,7 +2015,7 @@ components:
         childrenIds:
           type: array
           items:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
     HorizontalGroup:
       type: object
       required:
@@ -1753,7 +2028,7 @@ components:
         labels:
           type: array
           items:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
         accumulate:
           type: boolean
     ImportStatus:
@@ -1783,7 +2058,7 @@ components:
         validGroupOwners:
           type: array
           items:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
       description: Forbidden, usually when using a group that the user doesn't have access to
     Label:
       type: object
@@ -1793,11 +2068,11 @@ components:
         - groupOwnerId
       properties:
         id:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         name:
           type: string
         groupOwnerId:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
     LabelInUse:
       type: object
       required:
@@ -1810,23 +2085,23 @@ components:
         graphs:
           type: array
           items:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
         graphsGroup:
           type: array
           items:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
         graphHorizontalGroup:
           type: array
           items:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
         rules:
           type: array
           items:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
         transactions:
           type: array
           items:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
     ListFileParsers:
       type: object
       required:
@@ -1853,7 +2128,7 @@ components:
         code:
           $ref: '#/components/schemas/ErrorCode'
         bankTransactionSuplied:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
     NotFoundLabel:
       type: object
       required:
@@ -1866,7 +2141,7 @@ components:
         code:
           $ref: '#/components/schemas/ErrorCode'
         labelSuplied:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
     NotFoundLabels:
       type: object
       required:
@@ -1882,11 +2157,11 @@ components:
         validLabels:
           type: array
           items:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
         invalidLabels:
           type: array
           items:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
     NotIdentified:
       type: object
       required:
@@ -1896,6 +2171,196 @@ components:
           type: string
           enum:
             - anonymous
+    OAuthAccessToken:
+      type: object
+      required:
+        - access_token
+        - client_id
+        - scopes
+        - expires_at
+      properties:
+        access_token:
+          type: string
+          description: Access token
+        refresh_token:
+          type: string
+          description: Refresh token
+        client_id:
+          $ref: '#/components/schemas/UUIDString'
+        user_id:
+          $ref: '#/components/schemas/UUIDString'
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuthScope'
+          description: Scopes granted
+        expires_at:
+          type: string
+          format: date-time
+          description: Expiration time
+    OAuthAuthorizationCode:
+      type: object
+      required:
+        - code
+        - client_id
+        - user_id
+        - scopes
+        - redirect_uri
+        - expires_at
+      properties:
+        code:
+          type: string
+          description: Authorization code
+        client_id:
+          $ref: '#/components/schemas/UUIDString'
+        user_id:
+          $ref: '#/components/schemas/UUIDString'
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuthScope'
+          description: Scopes granted
+        redirect_uri:
+          type: string
+          description: Redirection URI
+        expires_at:
+          type: string
+          format: date-time
+          description: Expiration time
+    OAuthAuthorizeRequest:
+      type: object
+      required:
+        - client_id
+        - response_type
+        - redirect_uri
+      properties:
+        client_id:
+          $ref: '#/components/schemas/UUIDString'
+        response_type:
+          type: string
+          enum:
+            - code
+          description: OAuth response type, must be 'code' for authorization code flow
+        redirect_uri:
+          type: string
+          description: Redirection URI to which the response will be sent
+        scope:
+          type: string
+          description: Space-delimited scopes requested by the client
+        state:
+          type: string
+          description: Value used to associate a client session with an ID token
+    OAuthClient:
+      type: object
+      required:
+        - client_id
+        - name
+        - redirect_uris
+        - scopes
+        - created_at
+        - updated_at
+      properties:
+        client_id:
+          $ref: '#/components/schemas/UUIDString'
+        name:
+          type: string
+          description: Name of the OAuth client
+        description:
+          type: string
+          description: Some description used for the admin of the app
+        redirect_uris:
+          type: array
+          items:
+            type: string
+          description: Redirect URIs for the OAuth client
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuthScope'
+          description: Scopes allowed for the OAuth client
+        created_at:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Last updated timestamp
+    OAuthClientWithSecret:
+      type: object
+      required:
+        - client_id
+        - name
+        - redirect_uris
+        - scopes
+        - created_at
+        - updated_at
+        - secret
+      properties:
+        client_id:
+          $ref: '#/components/schemas/UUIDString'
+        name:
+          type: string
+          description: Name of the OAuth client
+        description:
+          type: string
+          description: Some description used for the admin of the app
+        redirect_uris:
+          type: array
+          items:
+            type: string
+          description: Redirect URIs for the OAuth client
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuthScope'
+          description: Scopes allowed for the OAuth client
+        created_at:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Last updated timestamp
+        secret:
+          type: string
+          format: password
+          description: Secret for the OAuth client
+    OAuthScope:
+      type: string
+      enum:
+        - userInfo
+    OAuthTokenRequest:
+      oneOf:
+        - $ref: '#/components/schemas/AuthorizationCodeGrantParams'
+        - $ref: '#/components/schemas/RefreshTokenGrantParams'
+        - $ref: '#/components/schemas/ClientCredentialsGrantParams'
+      description: OAuth token request with grant-type-specific parameters
+    OAuthTokenResponse:
+      type: object
+      required:
+        - access_token
+        - token_type
+      properties:
+        access_token:
+          type: string
+          description: Access token to access protected resources
+        token_type:
+          type: string
+          enum:
+            - Bearer
+          description: Type of the access token
+        expires_in:
+          type: integer
+          format: int32
+          description: Lifetime of the access token in seconds
+        refresh_token:
+          type: string
+          description: Refresh token to obtain new access tokens
+        scope:
+          type: string
+          description: Space-delimited scopes requested by the client
     OperationDouble:
       type: string
       enum:
@@ -1910,6 +2375,21 @@ components:
         - contains
         - prefix
         - regularExpression
+    RefreshTokenGrantParams:
+      type: object
+      required:
+        - grant_type
+        - refresh_token
+      properties:
+        grant_type:
+          type: string
+          enum:
+            - refresh_token
+          description: OAuth grant type
+        refresh_token:
+          type: string
+          description: Refresh token for refreshing access tokens
+      description: Parameters for refresh token grant
     Rule:
       type: object
       required:
@@ -1921,11 +2401,11 @@ components:
         - labelIds
       properties:
         id:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         parentRuleId:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         groupOwnerId:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         name:
           type: string
         relations:
@@ -1937,7 +2417,7 @@ components:
         labelIds:
           type: array
           items:
-            $ref: '#/components/schemas/UUID'
+            $ref: '#/components/schemas/UUIDString'
     RuleInput:
       type: object
       required:
@@ -1946,9 +2426,9 @@ components:
         - relations
       properties:
         parentRuleId:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         groupOwnerId:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         name:
           type: string
         relations:
@@ -1964,8 +2444,8 @@ components:
         - label
       properties:
         label:
-          $ref: '#/components/schemas/UUID'
-    UUID:
+          $ref: '#/components/schemas/UUIDString'
+    UUIDString:
       type: string
       format: uuid
     UpdateLabel:
@@ -1991,7 +2471,7 @@ components:
         lastName:
           type: string
         defaultGroupId:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         newPassword:
           type: string
         password:
@@ -2020,7 +2500,7 @@ components:
         password:
           type: string
         defaultGroupId:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
     UserCredentials:
       type: object
       required:
@@ -2038,7 +2518,7 @@ components:
         - name
       properties:
         id:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         name:
           type: string
     UserGroupInput:
@@ -2060,7 +2540,7 @@ components:
         - defaultGroupId
       properties:
         id:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
         username:
           type: string
         email:
@@ -2078,7 +2558,11 @@ components:
           items:
             $ref: '#/components/schemas/UserGroup'
         defaultGroupId:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/UUIDString'
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: Basic
 servers:
   - url: /api
     description: Development

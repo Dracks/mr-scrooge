@@ -18,8 +18,9 @@ extension MrScroogeAPIImpl {
 			(TransformerAndValidator.groupOwner(inputLabel, on: request.db, for: user))
 		{
 		case .notUuid:
-			return #BasicBadRequest(
-				msg: "GroupOwner ID is not an UUID", code: ApiError.API10042)
+			return #GenericErrorReturn(
+				response: "badRequest", msg: "GroupOwner ID is not an UUID",
+				code: ApiError.API10042)
 		case .notOwned(let validGroups):
 			return .forbidden(
 				.init(
@@ -70,8 +71,9 @@ extension MrScroogeAPIImpl {
 		}
 
 		guard let labelId = UUID(uuidString: input.path.labelId) else {
-			return #BasicBadRequest(
-				msg: "Label ID should be an UUID", code: ApiError.API10052)
+			return #GenericErrorReturn(
+				response: "badRequest", msg: "Label ID should be an UUID",
+				code: ApiError.API10052)
 		}
 
 		let data = try await request.application.labelService.updateLabel(
@@ -81,8 +83,9 @@ extension MrScroogeAPIImpl {
 		case .ok(let label):
 			return .ok(.init(body: .json(try .init(label: label))))
 		case .notFound:
-			return #BasicNotFound(
-				msg: "Label ID not found for this user", code: ApiError.API10053)
+			return #GenericErrorReturn(
+				response: "notFound", msg: "Label ID not found for this user",
+				code: ApiError.API10053)
 		}
 
 	}
@@ -93,8 +96,9 @@ extension MrScroogeAPIImpl {
 		let user = try await getUser(fromRequest: request)
 
 		guard let labelId = UUID(uuidString: input.path.labelId) else {
-			return #BasicBadRequest(
-				msg: "Label ID should be an UUID", code: ApiError.API10054)
+			return #GenericErrorReturn(
+				response: "badRequest", msg: "Label ID should be an UUID",
+				code: ApiError.API10054)
 		}
 
 		let force = input.query.force ?? false
@@ -106,8 +110,9 @@ extension MrScroogeAPIImpl {
 		case .ok:
 			return .ok(.init(body: .plainText("true")))
 		case .notFound:
-			return #BasicNotFound(
-				msg: "Label ID not found for this user", code: ApiError.API10055)
+			return #GenericErrorReturn(
+				response: "notFound", msg: "Label ID not found for this user",
+				code: ApiError.API10055)
 		case .inUse(
 			let transactions, let graphs, let graphGroups, let graphHorizontalGroups,
 			let rules):

@@ -1,5 +1,4 @@
 import Foundation
-// swift-tools-version: 5.9
 import PackagePlugin
 
 @main
@@ -7,14 +6,15 @@ struct GenerateErrorCodes: BuildToolPlugin {
 	func createBuildCommands(context: PackagePlugin.PluginContext, target: PackagePlugin.Target)
 		async throws -> [PackagePlugin.Command]
 	{
+		// Usar URL en lloc de Path
+		let inputJSON = target.directoryURL.appending(path: "error_codes.yaml")
+		let output = context.pluginWorkDirectoryURL.appending(path: "ErrorCodes.swift")
 
-		let inputJSON = target.directory.appending("error_codes.yaml")
-		let output = context.pluginWorkDirectory.appending("ErrorCodes.swift")
 		return [
 			.buildCommand(
 				displayName: "Generate Error Codes",
-				executable: try context.tool(named: "ErrorCodesGenerator").path,
-				arguments: [inputJSON, output],
+				executable: try context.tool(named: "ErrorCodesGenerator").url,
+				arguments: [inputJSON.path(), output.path()],
 				environment: [:],
 				inputFiles: [inputJSON],
 				outputFiles: [output])

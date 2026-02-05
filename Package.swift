@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.1
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import CompilerPluginSupport
@@ -11,19 +11,19 @@ let package = Package(
 	],
 	dependencies: [
 		// OpenAPI
-		.package(url: "https://github.com/apple/swift-openapi-generator", from: "1.10.3"),
-		.package(url: "https://github.com/apple/swift-openapi-runtime", from: "1.9.0"),
+		.package(url: "https://github.com/apple/swift-openapi-generator", from: "1.11.1"),
+		.package(url: "https://github.com/apple/swift-openapi-runtime", from: "1.11.0"),
 		.package(url: "https://github.com/swift-server/swift-openapi-vapor", from: "1.0.1"),
 		// Vapor
-		.package(url: "https://github.com/vapor/vapor.git", from: "4.120.0"),
+		.package(url: "https://github.com/vapor/vapor.git", from: "4.121.4"),
 		.package(url: "https://github.com/vapor/leaf.git", from: "4.5.1"),
-		.package(url: "https://github.com/vapor/queues.git", from: "1.17.2"),
+		.package(url: "https://github.com/vapor/queues.git", from: "1.18.0"),
 
 		// fluent
 		.package(url: "https://github.com/vapor/fluent.git", from: "4.13.0"),
 		.package(
 			url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.12.0"),
-		.package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.8.1"),
+		.package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.9.0"),
 		.package(
 			url: "https://github.com/vapor-community/vapor-queues-fluent-driver",
 			branch: "3.0.0"),
@@ -62,7 +62,7 @@ let package = Package(
 		.testTarget(
 			name: "ErrorCodesGeneratorTests",
 			dependencies: [
-				.target(name: "ErrorCodesGenerator"),
+				.target(name: "ErrorCodesGenerator")
 			],
 			path: "src/error-codes-generator-tests"
 		),
@@ -97,6 +97,7 @@ let package = Package(
 				"SwiftSoup",
 				.product(name: "CSV", package: "CSV.swift"),
 				"swift-macros",
+				"Exceptions",
 			],
 			path: "src/swift-server",
 			resources: [
@@ -106,7 +107,8 @@ let package = Package(
 			plugins: [
 				.plugin(
 					name: "OpenAPIGenerator", package: "swift-openapi-generator"
-				)
+				),
+				.plugin(name: "GenerateErrorCodesPlugin"),
 			]
 		),
 		.testTarget(
