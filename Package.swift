@@ -37,8 +37,35 @@ let package = Package(
 		.package(
 			url: "https://github.com/swiftlang/swift-syntax.git", from: "602.0.0"
 		),
+
+		// Other
+		.package(url: "https://github.com/jpsim/Yams.git", from: "6.0.1"),
 	],
 	targets: [
+		.target(
+			name: "Exceptions",
+			dependencies: [],
+			path: "src/swift-exceptions"),
+		.plugin(
+			name: "GenerateErrorCodesPlugin",
+			capability: .buildTool(),
+			dependencies: [
+				"ErrorCodesGenerator"
+			],
+			path: "src/generate-error-codes"
+		),
+		.executableTarget(
+			name: "ErrorCodesGenerator",
+			dependencies: [.product(name: "Yams", package: "Yams")],
+			path: "src/error-codes-generator"
+		),
+		.testTarget(
+			name: "ErrorCodesGeneratorTests",
+			dependencies: [
+				.target(name: "ErrorCodesGenerator"),
+			],
+			path: "src/error-codes-generator-tests"
+		),
 		.macro(
 			name: "swift-macrosMacros",
 			dependencies: [
