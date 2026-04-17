@@ -13,16 +13,16 @@
         <meta name="msapplication-config" content="#(staticPath)favicon/browserconfig.xml">
         <meta name="theme-color" content="#ffffff">
 
+            <!-- React config -->
+            <script id='js-constants' type="application/json">{
+                "environment": "#(environment)",
+                "version": "#(version)",
+                "commit": "#(commit)",
+                "decimalCount": "#(decimalCount)",
+                "debug": #if(debug): true #else: false #endif
+            }</script>
+            
     </head>
-
-    <!-- React config -->
-    <script id='js-constants' type="application/json">{
-        "environment": "#(environment)",
-        "version": "#(version)",
-        "commit": "#(commit)",
-        "decimalCount": "#(decimalCount)",
-        "debug": #if(debug): true #else: false #endif
-    }</script>
 
     <script type="module" src="/index.tsx"></script>
     <style>

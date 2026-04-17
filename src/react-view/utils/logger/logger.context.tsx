@@ -1,15 +1,15 @@
-import EventEmitter from 'events';
 import React, { PropsWithChildren } from 'react';
 
 import { Logger } from './logger.class';
 import { ILogger } from './logger.types';
+import { EventEmitterClass } from '../events.browser';
 
 interface LoggerContext {
-    eventEmitter: EventEmitter;
+    eventEmitter: EventEmitterClass;
     logger: ILogger;
 }
 
-const loggerEmitter = new EventEmitter();
+const loggerEmitter = new EventEmitterClass();
 loggerEmitter.on('error', (...data) => {
     console.error('Error on event emitter', data);
 });

@@ -1,7 +1,9 @@
 import { z } from 'zod';
 
 export const getDataFromScript = <T>(scriptName: string, schema: z.ZodType<T>): T => {
+    console.log(document.getElementById(scriptName))
     const element: { textContent?: string | null } = document.getElementById(scriptName) ?? {};
+    console.log(element)
     const obj = JSON.parse(element.textContent ?? '{}') as unknown;
 
     return schema.parse(obj);

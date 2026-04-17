@@ -1,4 +1,3 @@
-import EventEmitter from 'events';
 import React, { PropsWithChildren } from 'react';
 
 export enum EventTypes {
@@ -6,8 +5,10 @@ export enum EventTypes {
     OnQueueUploadFinish = 'on-queue-upload-finish',
 }
 
+console.log("Daleks everywhere")
+
 class TypedEventEmitter {
-    private readonly eventEmitter = new EventEmitter();
+    private readonly eventEmitter = new EventTarget();
 
     subscribe(event: EventTypes, callback: () => Promise<void> | void): () => void {
         const _callback = () => {
@@ -15,14 +16,14 @@ class TypedEventEmitter {
                 console.error(error);
             });
         };
-        this.eventEmitter.addListener(event, _callback);
+        this.eventEmitter.addEventListener(event, _callback);
         return () => {
-            this.eventEmitter.removeListener(event, _callback);
+            this.eventEmitter.removeEventListener(event, _callback);
         };
     }
 
     emit(event: EventTypes): void {
-        this.eventEmitter.emit(event);
+        this.eventEmitter.dispatchEvent(new Event(event));
     }
 }
 
