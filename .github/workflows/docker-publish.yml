@@ -28,7 +28,7 @@ jobs:
         commit: ${{steps.vars.outputs.commit}}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           submodules: true
       - name: Set output
@@ -57,7 +57,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           submodules: true
 
