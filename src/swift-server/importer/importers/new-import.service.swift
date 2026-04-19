@@ -1,3 +1,4 @@
+import Exceptions
 import Fluent
 import Foundation
 import Logging
@@ -76,7 +77,7 @@ class NewImportService: ServiceWithQueueAndDb {
 
 		do {
 			guard let parser = parsersMap[key] else {
-				throw Exception(.E10000, context: ["parserKey": key])
+				throw Exception<ErrorCodes>(.E10000, context: ["parserKey": key])
 			}
 
 			let source = parser.create(filePath: filePath)
@@ -144,7 +145,7 @@ class NewImportService: ServiceWithQueueAndDb {
 					"report-id": "\(statusId)",
 				])
 			status.description = String(reflecting: error)
-			if let error = error as? Exception {
+			if let error = error as? Exception<ErrorCodes> {
 				status.stack = error.stackTrace.joined(separator: "\n")
 				let jsonData = try JSONSerialization.data(
 					withJSONObject: error.allContext, options: [])

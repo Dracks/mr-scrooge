@@ -166,7 +166,7 @@ extension MrScroogeAPIImpl {
 		}
 		var comment: String?
 		switch input.body {
-		case let .json(body):
+		case .json(let body):
 			comment = body.comment
 		}
 

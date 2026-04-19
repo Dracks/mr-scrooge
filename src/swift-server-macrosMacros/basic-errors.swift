@@ -103,7 +103,9 @@ public struct GenericErrorReturn: ExpressionMacro {
 		// Split by the last dot to get the type qualifier and the actual member name
 		if let lastDotIndex = normalizedResponseValue.lastIndex(of: ".") {
 			// Keep only the part after the last dot (the actual member name)
-			normalizedResponseValue = String(normalizedResponseValue.suffix(from: normalizedResponseValue.index(after: lastDotIndex)))
+			normalizedResponseValue = String(
+				normalizedResponseValue.suffix(
+					from: normalizedResponseValue.index(after: lastDotIndex)))
 		}
 
 		// Handle message parameter - check if it's a string literal or variable

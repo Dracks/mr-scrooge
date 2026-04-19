@@ -21,6 +21,8 @@ final class EnvConfig: Sendable {
 	let maxLoginAttempts: Int
 	// The Time period in minutes on which the user will be lock since first failed attempt
 	let maxLoginAttemptsTimePeriod: TimeInterval
+	// The time in seconds that an authorization code will be valid for
+	let authorizationCodeExpirationSeconds: TimeInterval
 
 	private init() {
 		dbUrl = Environment.get("DB_URL") ?? "sqlite://db.sqlite3"
@@ -56,6 +58,15 @@ final class EnvConfig: Sendable {
 			maxLoginAttemptsTimePeriod = minutes * 60
 		} else {
 			maxLoginAttemptsTimePeriod = 3600
+		}
+
+		if let envAuthCodeExpiration = Environment.get(
+			"AUTHORIZATION_CODE_EXPIRATION_SECONDS")
+		{
+			let parsedValue = TimeInterval(envAuthCodeExpiration) ?? 600  // Default to 10 minutes
+			authorizationCodeExpirationSeconds = parsedValue > 0 ? parsedValue : 600
+		} else {
+			authorizationCodeExpirationSeconds = 600  // Default to 10 minutes
 		}
 	}
 

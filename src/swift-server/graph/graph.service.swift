@@ -1,3 +1,4 @@
+import Exceptions
 import Fluent
 import Vapor
 
@@ -345,7 +346,7 @@ class GraphService: ServiceWithDb, @unchecked Sendable {
 					let graphId = try graph.requireID()
 					guard let graphGroup = graph.group else {
 						//guard let graphGroup = try await GraphGroup.query(on: db).filter(\.$graph.$id == graphId).first() else {
-						throw Exception(
+						throw Exception<ErrorCodes>(
 							.E10001,
 							context: ["graphId": try graph.requireID()])
 					}

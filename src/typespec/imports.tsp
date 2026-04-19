@@ -18,16 +18,16 @@ enum ImportStatus {
 // For the moment this will be disabled, and manually created in Vapor
 /*model UploadData {
   kind: HttpPart<string>;
-  groupOwnerId: HttpPart<UUID>;
+  groupOwnerId: HttpPart<UUIDString>;
   file: HttpPart<File>;
 }*/
 
 model FileImport {
-  id: UUID;
+  id: UUIDString;
   createdAt: Date;
   description: string;
   fileName: string;
-  groupOwnerId: UUID;
+  groupOwnerId: UUIDString;
   kind: string;
   status: ImportStatus;
   context?: string;
@@ -42,7 +42,7 @@ model FileImportTransaction {
   value: decimal;
   description?: string;
   message?: string;
-  transactionId?: UUID;
+  transactionId?: UUIDString;
 }
 
 model FileParserType {
@@ -60,13 +60,13 @@ interface ApiImports {
   // @post upload(@header contentType: "multipart/form-data", @multipartBody body: UploadData): {@statusCode _: 201, ...FileImport} | InvalidGroupOwnerId | NotFound;
   @get list(@query cursor?: string, @query limit?: int16): PageList<FileImport>;
   @route("parsers") @get parserTypes(): ListFileParsers;
-  @delete delete(@path id: UUID): boolean;
+  @delete delete(@path id: UUIDString): boolean;
   @doc("This will allow to delete a transaction using the file-import rowId")
   @route("{id}/rollback/{rowId}")
   @delete
-  rollbackImport(@path id: UUID, @path rowId: UUID): boolean;
+  rollbackImport(@path id: UUIDString, @path rowId: UUIDString): boolean;
   @doc("This will allow to create a transaction from the file-import rowId")
   @route("{id}/apply/{rowId}")
   @post
-  applyRow(@path id: UUID, @path rowId: UUID): boolean;
+  applyRow(@path id: UUIDString, @path rowId: UUIDString): boolean;
 }

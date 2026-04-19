@@ -34,17 +34,17 @@ enum GraphDateRange {
 }
 
 model GraphInput {
-  groupOwnerId: UUID;
+  groupOwnerId: UUIDString;
   name: string;
   kind: GraphKind;
-  labelFilterId?: UUID;
+  labelFilterId?: UUIDString;
   dateRange: GraphDateRange;
   group: Group;
   horizontalGroup?: HorizontalGroup;
 }
 
 model Graph {
-  id: UUID;
+  id: UUIDString;
   ...GraphInput;
   order: uint64;
 }
@@ -52,7 +52,7 @@ model Graph {
 model Group {
   group: GraphGroupType;
   hideOthers?: boolean;
-  labels?: UUID[];
+  labels?: UUIDString[];
 }
 
 model HorizontalGroup {
@@ -62,8 +62,8 @@ model HorizontalGroup {
 
 model NotFoundLabels {
   ...NotFound;
-  validLabels: UUID[];
-  invalidLabels: UUID[];
+  validLabels: UUIDString[];
+  invalidLabels: UUIDString[];
 }
 
 enum MoveDirection {
@@ -79,11 +79,11 @@ interface ApiGraphs {
     ...Graph;
   } | InvalidGroupOwnerId | NotFoundLabels;
   @get list(
-    @query graphIds?: UUID[],
+    @query graphIds?: UUIDString[],
     @query cursor?: string,
     @query limit?: uint16 = 100,
   ): PageList<Graph>;
-  @route("/{id}") @put update(@path id: UUID, ...GraphInput):
+  @route("/{id}") @put update(@path id: UUIDString, ...GraphInput):
     | Graph
     | InvalidGroupOwnerId
     | NotFoundLabels
@@ -92,8 +92,8 @@ interface ApiGraphs {
   @route("/{id}/move")
   @put
   move(
-    @path id: UUID,
+    @path id: UUIDString,
     direction: MoveDirection,
   ): List<Graph> | NotFound | InvalidUUID;
-  @route("/{id}") @delete delete(@path id: UUID): boolean | NotFound;
+  @route("/{id}") @delete delete(@path id: UUIDString): boolean | NotFound;
 }

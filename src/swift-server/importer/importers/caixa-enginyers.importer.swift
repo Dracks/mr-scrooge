@@ -1,3 +1,4 @@
+import Exceptions
 import Foundation
 import Vapor
 
@@ -55,7 +56,7 @@ class CaixaEnginyersAbstractImporter: ParserFactory, @unchecked Sendable {
 								continuation.yield(transaction)
 
 							} catch {
-								throw Exception(
+								throw Exception<ErrorCodes>(
 									.E10005,
 									context: ["line": row.line],
 									cause: error)

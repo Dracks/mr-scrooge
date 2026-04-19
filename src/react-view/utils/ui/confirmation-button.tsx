@@ -1,8 +1,10 @@
 import { Box, Button, DropButton, DropButtonExtendedProps, Text } from 'grommet';
 import React from 'react';
 
-interface ConfirmationButtonArgs
-    extends Omit<DropButtonExtendedProps, 'onOpen' | 'onClose' | 'open' | 'dropContent' | 'dropProps'> {
+interface ConfirmationButtonArgs extends Omit<
+    DropButtonExtendedProps,
+    'onOpen' | 'onClose' | 'open' | 'dropContent' | 'dropProps'
+> {
     confirmationText?: string;
     onConfirm: () => void;
 }

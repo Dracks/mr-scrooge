@@ -32,7 +32,7 @@ extension MrScroogeAPIImpl {
 
 		let data = try await request.application.graphService.createGraph(graphData)
 		switch data {
-		case let .invalidLabels(data: info):
+		case .invalidLabels(data: let info):
 			return .notFound(
 				.init(
 					body: .json(
@@ -41,7 +41,7 @@ extension MrScroogeAPIImpl {
 							code: ApiError.API10005.rawValue,
 							validLabels: info.validLabels,
 							invalidLabels: info.invalidLabels))))
-		case let .ok(data: newGraph):
+		case .ok(data: let newGraph):
 			return .created(.init(body: .json(newGraph)))
 		}
 	}
@@ -107,7 +107,7 @@ extension MrScroogeAPIImpl {
 		let data = try await request.application.graphService.updateGraph(
 			withId: graphId, graph: graphData, forUser: user)
 		switch data {
-		case let .invalidLabels(data: info):
+		case .invalidLabels(data: let info):
 			return .notFound(
 				.init(
 					body: .json(
@@ -118,7 +118,7 @@ extension MrScroogeAPIImpl {
 								validLabels: info.validLabels,
 								invalidLabels: info.invalidLabels)))
 				))
-		case let .notFound(graphId: graphId):
+		case .notFound(let graphId):
 			return .notFound(
 				.init(
 					body: .json(
@@ -128,7 +128,7 @@ extension MrScroogeAPIImpl {
 									"Graph ID(\(graphId)) not found",
 								code: ApiError.API10008.rawValue))))
 			)
-		case let .ok(data: newGraph):
+		case .ok(data: let newGraph):
 			return .ok(.init(body: .json(newGraph)))
 		}
 	}
@@ -139,8 +139,9 @@ extension MrScroogeAPIImpl {
 		let user = try await getUser(fromRequest: request)
 		let validGroupsIds = try user.groups.map { return try $0.requireID() }
 		guard let graphId = UUID(uuidString: input.path.id) else {
-			return #BasicBadRequest(
-				msg: "Graph ID should be an UUID", code: ApiError.API10056
+			return #GenericErrorReturn(
+				response: "badRequest", msg: "Graph ID should be an UUID",
+				code: ApiError.API10056
 			)
 		}
 		let direction: Components.Schemas.MoveDirection
@@ -152,7 +153,9 @@ extension MrScroogeAPIImpl {
 			graphId: graphId, direction: direction, for: validGroupsIds)
 		{
 		case .notFound:
-			return #BasicNotFound(msg: "Graph not found", code: ApiError.API10057)
+			return #GenericErrorReturn(
+				response: "notFound", msg: "Graph not found",
+				code: ApiError.API10057)
 		case .updated(let graphs):
 			return .ok(.init(body: .json(.init(results: graphs))))
 		}
@@ -174,7 +177,7 @@ extension MrScroogeAPIImpl {
 		let data = try await request.application.graphService.deleteGraph(
 			graphId: graphId, forUser: user)
 		switch data {
-		case let .notFound(graphId: graphId):
+		case .notFound(let graphId):
 			return .notFound(
 				.init(
 					body: .json(

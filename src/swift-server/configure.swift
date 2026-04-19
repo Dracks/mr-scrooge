@@ -1,3 +1,4 @@
+import Exceptions
 import Fluent
 import FluentPostgresDriver
 import FluentSQLiteDriver
@@ -8,7 +9,7 @@ import Vapor
 
 func getDbConfig(url dbUrl: String) throws -> (DatabaseConfigurationFactory, DatabaseID) {
 	if !dbUrl.starts(with: "sqlite://") && !dbUrl.starts(with: "postgres://") {
-		throw Exception(.E10019, context: ["dbUrl": dbUrl])
+		throw Exception<ErrorCodes>(.E10019, context: ["dbUrl": dbUrl])
 	}
 
 	let components = dbUrl.split(separator: ":", maxSplits: 1)
@@ -36,7 +37,7 @@ func getDbConfig(url dbUrl: String) throws -> (DatabaseConfigurationFactory, Dat
 			)
 		}
 	default:
-		throw Exception(.E10003, context: ["db_url": dbUrl])
+		throw Exception<ErrorCodes>(.E10003, context: ["db_url": dbUrl])
 	}
 }
 
@@ -50,6 +51,7 @@ public func registerMigrations(_ app: Application) async throws {
 	app.migrations.add(JobModelMigration())
 	app.migrations.add(InitialMigration())
 	app.migrations.add(LoginSafetyMigration())
+	app.migrations.add(OAuthAppsMigration())
 }
 
 // configures your application
@@ -74,6 +76,7 @@ public func configure(_ app: Application) async throws {
 		app.asyncCommands.use(CreateUserCommand(), as: "create_user")
 		app.asyncCommands.use(DemoDataCommand(), as: "demo_data")
 		app.asyncCommands.use(V2MigrateCommand(), as: "v2_migrate")
+        app.asyncCommands.use(CreateOAuthAppCommand(), as: "create_oauth_app")
 
 		// register routes
 		try routes(app)

@@ -1,10 +1,11 @@
+import Exceptions
 import Fluent
 import FluentSQL
 
 struct LoginSafetyMigration: AsyncMigration {
 	func prepare(on db: Database) async throws {
 		guard let sqlDb = db as? SQLDatabase else {
-			throw Exception(.E10031)
+			throw Exception<ErrorCodes>(.E10031)
 		}
 		try await db.schema("user_login_attempt")
 			.id()

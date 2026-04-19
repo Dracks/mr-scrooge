@@ -114,6 +114,13 @@ func createTestLabels(app: Application, testData: GroupsAndUsers) async throws -
 	return labels
 }
 
+extension Components.Schemas.CheckMyProfile {
+	var isIdentified: Bool {
+		if case .identified = self { return true }
+		return false
+	}
+}
+
 @Suite("MrScrooge Generic tests")
 final class MrScroogeServerTest {
 	@Test("Process invalid data correctly")

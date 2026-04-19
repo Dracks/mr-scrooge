@@ -1,10 +1,11 @@
+import Exceptions
 import Fluent
 import FluentSQL
 
 struct InitialMigration: AsyncMigration {
 	func prepare(on database: Database) async throws {
 		guard let sqlDb = database as? SQLDatabase else {
-			throw Exception(.E10031)
+			throw Exception<ErrorCodes>(.E10031)
 		}
 
 		let labelTransactionLinkReasonEnum = try await database.enum(

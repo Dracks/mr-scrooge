@@ -121,6 +121,16 @@ final class SessionTests: BaseWithFactories {
 			let response = try await apiTester.sendRequest(
 				.GET, meEndpoint, headers: headers)
 			#expect(response.status == .ok)
+			let profile = try response.content.decode(
+				Components.Schemas.CheckMyProfile.self)
+			#expect(profile.isIdentified)
+
+			if case .identified(let identifiedProfile) = profile {
+				#expect(
+					identifiedProfile.profile.username == testData.user.username
+				)
+				#expect(identifiedProfile.profile.isAdmin == testData.user.isAdmin)
+			}
 		}
 	}
 
@@ -131,9 +141,9 @@ final class SessionTests: BaseWithFactories {
 			let response = try await apiTester.sendRequest(.GET, meEndpoint)
 			#expect(response.status == .ok)
 
-			let notIdentified = try response.content.decode(
-				Components.Schemas.NotIdentified.self)
-			#expect(notIdentified.user == .anonymous)
+			let profile = try response.content.decode(
+				Components.Schemas.CheckMyProfile.self)
+			#expect(!profile.isIdentified)
 		}
 	}
 

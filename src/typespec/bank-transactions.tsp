@@ -12,8 +12,8 @@ using TypeSpec.Rest;
 namespace MrScrooge;
 
 model BankTransaction {
-  id: UUID;
-  groupOwnerId: UUID;
+  id: UUIDString;
+  groupOwnerId: UUIDString;
   movementName: string;
   date: DateOnly;
   dateValue?: DateOnly;
@@ -21,26 +21,26 @@ model BankTransaction {
   value: decimal;
   kind: string;
   comment?: string;
-  labelIds: UUID[];
+  labelIds: UUIDString[];
 }
 
 model NotFoundBankTransaction {
   ...NotFound;
-  bankTransactionSuplied: UUID;
+  bankTransactionSuplied: UUIDString;
 }
 
 @route("/bank-transactions")
 @tag("bank-transactions")
 interface ApiBankTransactions {
   @get list(
-    @query groupIds?: UUID[],
+    @query groupIds?: UUIDString[],
     @query cursor?: string,
     @query limit?: uint16 = 100,
   ): PageList<BankTransaction>;
   @doc("Link a label to a transaction")
   @route("{transactionId}/label/{labelId}")
   @post
-  linkLabel(@path transactionId: UUID, @path labelId: UUID):
+  linkLabel(@path transactionId: UUIDString, @path labelId: UUIDString):
     | BankTransaction
     | NotFoundLabel
     | NotFoundBankTransaction
@@ -49,14 +49,14 @@ interface ApiBankTransactions {
   @route("{transactionId}/label/{labelId}")
   @delete
   unlinkLabel(
-    @path transactionId: UUID,
-    @path labelId: UUID,
+    @path transactionId: UUIDString,
+    @path labelId: UUIDString,
   ): BankTransaction | NotFound | NotFoundBankTransaction;
   @doc("Set a comment into the transaction")
   @route("{transactionId}")
   @patch(#{implicitOptionality: true})
   comment(
-    @path transactionId: UUID,
+    @path transactionId: UUIDString,
     comment?: string,
   ): BankTransaction | NotFoundBankTransaction;
 }

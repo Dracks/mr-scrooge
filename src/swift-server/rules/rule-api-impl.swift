@@ -186,8 +186,9 @@ extension MrScroogeAPIImpl {
 		let validGroupsIds = try user.groups.map { return try $0.requireID() }
 
 		guard let ruleId = UUID(uuidString: input.path.ruleId) else {
-			return #BasicBadRequest(
-				msg: "Rule ID should be an UUID", code: ApiError.API10033)
+			return #GenericErrorReturn(
+				response: "badRequest", msg: "Rule ID should be an UUID",
+				code: ApiError.API10033)
 		}
 		switch try await request.application.ruleService.deleteRule(
 			withId: ruleId, for: validGroupsIds)
@@ -304,13 +305,15 @@ extension MrScroogeAPIImpl {
 		let validGroupsIds = try user.groups.map { return try $0.requireID() }
 
 		guard let ruleId = UUID(uuidString: input.path.ruleId) else {
-			return #BasicBadRequest(
-				msg: "Rule ID should be an UUID", code: ApiError.API10041)
+			return #GenericErrorReturn(
+				response: "badRequest", msg: "Rule ID should be an UUID",
+				code: ApiError.API10041)
 		}
 
 		guard let conditionId = UUID(uuidString: input.path.condId) else {
-			return #BasicBadRequest(
-				msg: "Condition ID should be an UUID", code: ApiError.API10042)
+			return #GenericErrorReturn(
+				response: "badRequest", msg: "Condition ID should be an UUID",
+				code: ApiError.API10042)
 		}
 		switch try await request.application.ruleService.deleteCondition(
 			conditionId,
@@ -335,12 +338,14 @@ extension MrScroogeAPIImpl {
 		let validGroupsIds = try user.groups.map { return try $0.requireID() }
 
 		guard let ruleId = UUID(uuidString: input.path.ruleId) else {
-			return #BasicBadRequest(
-				msg: "Rule ID should be an UUID", code: ApiError.API10044)
+			return #GenericErrorReturn(
+				response: "badRequest", msg: "Rule ID should be an UUID",
+				code: ApiError.API10044)
 		}
 		guard let labelId = UUID(uuidString: input.path.labelId) else {
-			return #BasicBadRequest(
-				msg: "Label ID should be an UUID", code: ApiError.API10045)
+			return #GenericErrorReturn(
+				response: "badRequest", msg: "Label ID should be an UUID",
+				code: ApiError.API10045)
 		}
 		switch try await request.application.ruleService.addLabel(
 			labelId: labelId, toRule: ruleId, for: validGroupsIds)
@@ -348,8 +353,9 @@ extension MrScroogeAPIImpl {
 		case .ok(let rule):
 			return .ok(.init(body: .json(try .init(rule: rule))))
 		case .notFound:
-			return #BasicNotFound(
-				msg: "Condition or label not found", code: ApiError.API10048)
+			return #GenericErrorReturn(
+				response: "notFound", msg: "Condition or label not found",
+				code: ApiError.API10048)
 
 		case .invalidOwnerId:
 			return .conflict(
@@ -369,12 +375,14 @@ extension MrScroogeAPIImpl {
 		let validGroupsIds = try user.groups.map { return try $0.requireID() }
 
 		guard let ruleId = UUID(uuidString: input.path.ruleId) else {
-			return #BasicBadRequest(
-				msg: "Rule ID should be an UUID", code: ApiError.API10046)
+			return #GenericErrorReturn(
+				response: "badRequest", msg: "Rule ID should be an UUID",
+				code: ApiError.API10046)
 		}
 		guard let labelId = UUID(uuidString: input.path.labelId) else {
-			return #BasicBadRequest(
-				msg: "Label ID should be an UUID", code: ApiError.API10047)
+			return #GenericErrorReturn(
+				response: "badRequest", msg: "Label ID should be an UUID",
+				code: ApiError.API10047)
 		}
 		let removeState = try await request.application.ruleService.removeLabel(
 			labelId: labelId, fromRule: ruleId, for: validGroupsIds)
@@ -382,8 +390,9 @@ extension MrScroogeAPIImpl {
 		case .ok(let rule):
 			return .ok(.init(body: .json(try .init(rule: rule))))
 		case .notFound:
-			return #BasicNotFound(
-				msg: "Rule not found", code: ApiError.API10050)
+			return #GenericErrorReturn(
+				response: "notFound", msg: "Rule not found", code: ApiError.API10050
+			)
 		}
 	}
 }

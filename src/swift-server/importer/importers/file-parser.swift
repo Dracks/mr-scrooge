@@ -1,4 +1,5 @@
 import CSV
+import Exceptions
 import Foundation
 import SwiftSoup
 
@@ -10,7 +11,8 @@ func parserHtml(filePath: String, encoding: String.Encoding) -> AsyncThrowingStr
 			do {
 				guard let fileData = FileManager.default.contents(atPath: filePath)
 				else {
-					throw Exception(.E10006, context: ["fileName": filePath])
+					throw Exception<ErrorCodes>(
+						.E10006, context: ["fileName": filePath])
 				}
 				let fileString: String?
 				switch encoding {
@@ -21,7 +23,7 @@ func parserHtml(filePath: String, encoding: String.Encoding) -> AsyncThrowingStr
 				}
 				guard let fileString
 				else {
-					throw Exception(
+					throw Exception<ErrorCodes>(
 						.E10007,
 						context: [
 							"fileName": filePath,
@@ -54,18 +56,16 @@ func parseCsv(filePath: String, delimiter: UnicodeScalar = ",") throws -> CSVRea
 	do {
 		let stream = InputStream(fileAtPath: filePath)
 		guard let stream = stream else {
-			throw Exception(.E10008, context: ["fileName": filePath])
+			throw Exception<ErrorCodes>(.E10008, context: ["fileName": filePath])
 		}
 
 		return try CSVReader(stream: stream, hasHeaderRow: true, delimiter: delimiter)
 	} catch {
-		if let error = error as? Exception {
-			throw error
-		}
 		if let error = error as? CSVError {
 			switch error {
 			case .cannotOpenFile:
-				throw Exception(.E10010, context: ["fileName": filePath])
+				throw Exception<ErrorCodes>(
+					.E10010, context: ["fileName": filePath])
 			default:
 				throw error
 			}
