@@ -30,7 +30,7 @@ struct CreateOAuthAppCommand: AsyncCommand {
             scopes.append(.user)
         }
 
-        let oauthApp = try await app.oauthClientService.registerClient(name: signature.name, description: nil, redirectUris: [signature.uri], scopes: scopes)
+        let oauthApp = try await app.oauthClientService.registerClient(name: signature.name, description: signature.description, redirectUris: [signature.uri], scopes: scopes)
 
         print("App created with clientId: \(oauthApp.client_id)")
         print("Secret: \(oauthApp.secret)")
