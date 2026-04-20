@@ -5,6 +5,7 @@ import Vapor
 
 enum Scope: String, Codable, CaseIterable {
 	case user = "User"
+    case importFile = "ImportFile"
 }
 
 final class OAuthApp: Model, Content, @unchecked Sendable {

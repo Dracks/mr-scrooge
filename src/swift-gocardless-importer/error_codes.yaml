@@ -1,0 +1,6 @@
+E10000:
+  message: "invalid database schema"
+  additional_info: "Check your database connection and schema"
+E10003:
+  message: "Invalid format converting data"
+  additional_info: "Data format does not match expected structure"

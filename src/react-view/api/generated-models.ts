@@ -503,6 +503,18 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @description Parameters for authorization code grant */
+        AuthorizationCodeGrantParams: {
+            /**
+             * @description OAuth grant type
+             * @enum {string}
+             */
+            grant_type: "authorization_code";
+            /** @description Authorization code received from authorization server */
+            code: string;
+            /** @description Redirect URI used in the authorization request */
+            redirect_uri: string;
+        };
         BankTransaction: {
             id: components["schemas"]["UUIDString"];
             groupOwnerId: components["schemas"]["UUIDString"];
@@ -531,6 +543,14 @@ export interface components {
             lastName?: string;
         };
         CheckMyProfile: components["schemas"]["GetMyProfile"] | components["schemas"]["NotIdentified"];
+        /** @description Parameters for client credentials grant */
+        ClientCredentialsGrantParams: {
+            /**
+             * @description OAuth grant type
+             * @enum {string}
+             */
+            grant_type: "client_credentials";
+        };
         Condition: components["schemas"]["ConditionDouble"] | components["schemas"]["ConditionString"];
         ConditionDouble: {
             id: components["schemas"]["UUIDString"];
@@ -712,7 +732,7 @@ export interface components {
             /** @description Refresh token */
             refresh_token?: string;
             client_id: components["schemas"]["UUIDString"];
-            user_id: components["schemas"]["UUIDString"];
+            user_id?: components["schemas"]["UUIDString"];
             /** @description Scopes granted */
             scopes: components["schemas"]["OAuthScope"][];
             /**
@@ -738,10 +758,15 @@ export interface components {
         };
         OAuthAuthorizeRequest: {
             client_id: components["schemas"]["UUIDString"];
+            /**
+             * @description OAuth response type, must be 'code' for authorization code flow
+             * @enum {string}
+             */
+            response_type: "code";
             /** @description Redirection URI to which the response will be sent */
             redirect_uri: string;
-            /** @description Scope of the access request */
-            scopes?: components["schemas"]["OAuthScope"][];
+            /** @description Space-delimited scopes requested by the client */
+            scope?: string;
             /** @description Value used to associate a client session with an ID token */
             state?: string;
         };
@@ -749,6 +774,8 @@ export interface components {
             client_id: components["schemas"]["UUIDString"];
             /** @description Name of the OAuth client */
             name: string;
+            /** @description Some description used for the admin of the app */
+            description?: string;
             /** @description Redirect URIs for the OAuth client */
             redirect_uris: string[];
             /** @description Scopes allowed for the OAuth client */
@@ -768,6 +795,8 @@ export interface components {
             client_id: components["schemas"]["UUIDString"];
             /** @description Name of the OAuth client */
             name: string;
+            /** @description Some description used for the admin of the app */
+            description?: string;
             /** @description Redirect URIs for the OAuth client */
             redirect_uris: string[];
             /** @description Scopes allowed for the OAuth client */
@@ -789,20 +818,9 @@ export interface components {
             secret: string;
         };
         /** @enum {string} */
-        OAuthScope: "userInfo";
-        OAuthTokenRequest: {
-            /**
-             * @description OAuth grant type
-             * @enum {string}
-             */
-            grant_type: "authorization_code" | "refresh_token" | "client_credentials";
-            /** @description Authorization code received from authorization server */
-            code?: string;
-            /** @description Redirect URI used in the authorization request */
-            redirect_uri?: string;
-            /** @description Refresh token for refreshing access tokens */
-            refresh_token?: string;
-        };
+        OAuthScope: "userInfo" | "uploadFile";
+        /** @description OAuth token request with grant-type-specific parameters */
+        OAuthTokenRequest: components["schemas"]["AuthorizationCodeGrantParams"] | components["schemas"]["RefreshTokenGrantParams"] | components["schemas"]["ClientCredentialsGrantParams"];
         OAuthTokenResponse: {
             /** @description Access token to access protected resources */
             access_token: string;
@@ -818,13 +836,23 @@ export interface components {
             expires_in?: number;
             /** @description Refresh token to obtain new access tokens */
             refresh_token?: string;
-            /** @description Scopes of the access token */
-            scopes?: components["schemas"]["OAuthScope"][];
+            /** @description Space-delimited scopes requested by the client */
+            scope?: string;
         };
         /** @enum {string} */
         OperationDouble: "greater" | "greaterEqual" | "less" | "lessEqual";
         /** @enum {string} */
         OperationString: "suffix" | "contains" | "prefix" | "regularExpression";
+        /** @description Parameters for refresh token grant */
+        RefreshTokenGrantParams: {
+            /**
+             * @description OAuth grant type
+             * @enum {string}
+             */
+            grant_type: "refresh_token";
+            /** @description Refresh token for refreshing access tokens */
+            refresh_token: string;
+        };
         Rule: {
             id: components["schemas"]["UUIDString"];
             parentRuleId?: components["schemas"]["UUIDString"];
@@ -1640,10 +1668,8 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        body: {
-                            authorization_code: string;
-                            state?: string;
-                        };
+                        authorization_code: string;
+                        state?: string;
                     };
                 };
             };
@@ -1722,6 +1748,7 @@ export interface operations {
             content: {
                 "application/json": {
                     name: string;
+                    description?: string;
                     redirect_uris: string[];
                     scopes: components["schemas"]["OAuthScope"][];
                 };
@@ -1734,9 +1761,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        body: components["schemas"]["OAuthClientWithSecret"];
-                    };
+                    "application/json": components["schemas"]["OAuthClientWithSecret"];
                 };
             };
             /** @description The server could not understand the request due to invalid syntax. */
@@ -1745,9 +1770,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        body: components["schemas"]["Error"];
-                    };
+                    "application/json": components["schemas"]["Error"];
                 };
             };
             /** @description Access is unauthorized. */
@@ -1778,9 +1801,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        body: components["schemas"]["OAuthClient"];
-                    };
+                    "application/json": components["schemas"]["OAuthClient"];
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -1830,6 +1851,15 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description Bad request, usually when providing an invalid string as UUID */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
             /** @description Access is unauthorized. */
             401: {
                 headers: {
@@ -1869,9 +1899,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        body: components["schemas"]["OAuthTokenResponse"];
-                    };
+                    "application/json": components["schemas"]["OAuthTokenResponse"];
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */

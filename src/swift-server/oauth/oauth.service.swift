@@ -8,6 +8,8 @@ extension Scope {
 		switch self {
 		case .user:
 			return .userInfo
+        case .importFile:
+            return .uploadFile
 		}
 	}
 }
@@ -17,6 +19,8 @@ extension Components.Schemas.OAuthScope {
 		switch self {
 		case .userInfo:
 			return .user
+        case .uploadFile:
+        return .importFile
 		}
 	}
 }

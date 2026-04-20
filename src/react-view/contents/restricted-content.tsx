@@ -14,6 +14,7 @@ import { LabelsList } from './labels/labels-list';
 import { EditProfile } from './profile/edit-profile';
 import { RulesLoaded } from './rules/rule-loaded';
 import { TransactionList } from './transaction-list/transaction-list';
+import { OAuthAuthorization } from './oauth/authorization';
 
 const RestrictedContent: React.FC = () => (
     <DataProvider>
@@ -28,6 +29,7 @@ const RestrictedContent: React.FC = () => (
                 <Route path="/profile" element={<EditProfile />} />
                 <Route path="/admin/*" element={<AdminContent />} />
                 <Route path="/rule/*" element={<RulesLoaded />} />
+                <Route path="/auth" element={<OAuthAuthorization />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </Main>

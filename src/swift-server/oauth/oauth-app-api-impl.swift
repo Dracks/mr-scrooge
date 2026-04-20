@@ -62,13 +62,7 @@ extension MrScroogeAPIImpl {
 	func ApiOAuth_getClient(_ input: Operations.ApiOAuth_getClient.Input) async throws
 		-> Operations.ApiOAuth_getClient.Output
 	{
-		let user = try await getUser(fromRequest: request)
-		guard user.isAdmin else {
-			return #GenericErrorReturn(
-				response: "unauthorized",
-				msg: "Only admin users can list OAuth clients",
-				code: ApiError.API10074)
-		}
+		let _ = try await getUser(fromRequest: request)
 
 		// Use the service to get the client
 		guard let clientId = UUID(uuidString: input.path.clientId) else {

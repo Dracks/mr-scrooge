@@ -36,7 +36,7 @@ final class OAuthTests: BaseWithFactories {
 
 			// Create an access token with refresh token that has an expired access token
 			// But a valid refresh token (refresh tokens typically have longer expiry)
-			let expiredAccessToken = try OAuthAccessToken(
+			let expiredAccessToken = OAuthAccessToken(
 				clientId: clientId,
 				userId: testData.admin.id!,
 				scopes: [.user],
@@ -282,7 +282,7 @@ final class OAuthTests: BaseWithFactories {
 			try await oauthApp.save(on: app.db)
 
 			// Create an access token with refresh token
-			let accessToken = try OAuthAccessToken(
+			let accessToken = OAuthAccessToken(
 				clientId: clientId,
 				userId: testData.admin.id!,
 				scopes: [.user],
@@ -605,7 +605,7 @@ final class OAuthTests: BaseWithFactories {
 			try await oauthApp.save(on: app.db)
 
 			// Create an EXPIRED access token (expired 1 hour ago)
-			let expiredAccessToken = try OAuthAccessToken(
+			let expiredAccessToken = OAuthAccessToken(
 				clientId: clientId,
 				userId: testData.admin.id!,
 				scopes: [.user],

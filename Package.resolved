@@ -1,5 +1,5 @@
 {
-  "originHash" : "1558e8717412341a9a75f09dd054cbf563eab95735e33f5ef2d0b8c1894be1f9",
+  "originHash" : "23c2f99686c5d8c5d173a484fd5bbbebff5c8b1fe78272adb979305c74ddb31a",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -44,6 +44,15 @@
       "state" : {
         "revision" : "b4371dc833ba22ab6ead90fb63d267c3cf9ce773",
         "version" : "2.5.2"
+      }
+    },
+    {
+      "identity" : "elementary",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/elementary-swift/elementary.git",
+      "state" : {
+        "revision" : "37b26923e73156f524b52e649855277bc7ead2c2",
+        "version" : "0.7.1"
       }
     },
     {
@@ -389,6 +398,15 @@
       }
     },
     {
+      "identity" : "swift-openapi-async-http-client",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swift-server/swift-openapi-async-http-client",
+      "state" : {
+        "revision" : "3681f659d9417652b8119f0adbdf57c04b6cb292",
+        "version" : "1.5.0"
+      }
+    },
+    {
       "identity" : "swift-openapi-generator",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-openapi-generator",
@@ -467,6 +485,15 @@
       "state" : {
         "revision" : "cfd8f434843ac7850e2d97f46c1aa5ddb906cf1c",
         "version" : "4.121.4"
+      }
+    },
+    {
+      "identity" : "vapor-elementary",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor-community/vapor-elementary.git",
+      "state" : {
+        "revision" : "e1326d2439a9d4bd271c24b9765c195f7f793e77",
+        "version" : "0.2.2"
       }
     },
     {

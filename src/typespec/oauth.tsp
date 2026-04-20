@@ -12,6 +12,7 @@ namespace MrScrooge;
 
 enum OAuthScope {
   userInfo,
+  uploadFile,
 }
 
 // Discriminated union for OAuth token request parameters based on grant type

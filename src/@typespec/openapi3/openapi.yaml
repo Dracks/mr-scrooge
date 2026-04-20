@@ -2331,6 +2331,7 @@ components:
       type: string
       enum:
         - userInfo
+        - uploadFile
     OAuthTokenRequest:
       oneOf:
         - $ref: '#/components/schemas/AuthorizationCodeGrantParams'
