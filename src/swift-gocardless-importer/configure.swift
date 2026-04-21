@@ -46,6 +46,8 @@ func configureDb(_ app: Application) async throws {
 
 public func registerMigrations(_ app: Application) async throws {
 	app.migrations.add(SessionRecord.migration)
+	app.migrations.add(CreateOAuthTokens())
+	app.migrations.add(CreateGocardlessUsers())
 }
 
 // configures your application
@@ -54,9 +56,13 @@ public func configure(_ app: Application) async throws {
 
 		app.http.server.configuration.port = 8081
 		// uncomment to serve files from /Public folder
-		app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory.appending("gocardless/")))
-		app.middleware.use(ErrorMiddleware.default(environment: app.environment))
-		app.middleware.use(app.sessions.middleware)
+		app.middleware.use(
+			FileMiddleware(
+				publicDirectory: app.directory.publicDirectory.appending(
+					"gocardless/")))
+
+		app.sessions.configuration.cookieName = "gocardless-importer"
+		app.sessions.use(.fluent)
 
 		try await registerMigrations(app)
 

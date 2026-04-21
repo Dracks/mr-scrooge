@@ -1,6 +1,6 @@
-import Vapor
-import OpenAPIRuntime
 import OpenAPIAsyncHTTPClient
+import OpenAPIRuntime
+import Vapor
 /*
 /// Auto-generated GoCardless service using OpenAPI generator
 struct GoCardlessAutoService {

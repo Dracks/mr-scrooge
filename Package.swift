@@ -13,7 +13,9 @@ let package = Package(
 		// OpenAPI
 		.package(url: "https://github.com/apple/swift-openapi-generator", from: "1.11.1"),
 		.package(url: "https://github.com/apple/swift-openapi-runtime", from: "1.11.0"),
-        .package(url: "https://github.com/swift-server/swift-openapi-async-http-client", from: "1.5.0"),
+		.package(
+			url: "https://github.com/swift-server/swift-openapi-async-http-client",
+			from: "1.5.0"),
 		.package(url: "https://github.com/swift-server/swift-openapi-vapor", from: "1.0.1"),
 		// Vapor
 		.package(url: "https://github.com/vapor/vapor.git", from: "4.121.4"),
@@ -28,8 +30,10 @@ let package = Package(
 		.package(
 			url: "https://github.com/vapor-community/vapor-queues-fluent-driver",
 			branch: "3.0.0"),
-        // elementary
-        .package(url: "https://github.com/vapor-community/vapor-elementary.git", from: "0.1.0"),
+		// elementary
+		.package(
+			url: "https://github.com/vapor-community/vapor-elementary.git",
+			from: "0.1.0"),
 
 		// Parser libs
 		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.11.3"),
@@ -133,18 +137,20 @@ let package = Package(
 		.executableTarget(
 			name: "GoCardlessImporter",
 			dependencies: [
-				// .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
-    //              .product(name: "OpenAPIAsyncHTTPClient", package: "swift-openapi-async-http-client"),
+				.product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
+				.product(
+					name: "OpenAPIAsyncHTTPClient",
+					package: "swift-openapi-async-http-client"),
 				.product(name: "Vapor", package: "vapor"),
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "Fluent", package: "fluent"),
-                .product(name: "VaporElementary", package: "vapor-elementary"),
+				.product(name: "VaporElementary", package: "vapor-elementary"),
 				.product(
 					name: "FluentPostgresDriver",
 					package: "fluent-postgres-driver"),
 				.product(
 					name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
-                
+
 				"Exceptions",
 			],
 			path: "src/swift-gocardless-importer",
@@ -153,9 +159,9 @@ let package = Package(
 				.process("openapi.yaml"),
 			],
 			plugins: [
-				/* .plugin(
+				.plugin(
 					name: "OpenAPIGenerator", package: "swift-openapi-generator"
-				), */
+				),
 				.plugin(name: "GenerateErrorCodesPlugin"),
 			]
 		),

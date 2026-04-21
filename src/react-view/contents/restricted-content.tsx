@@ -11,10 +11,10 @@ import { Graphs } from './graphs/graphs';
 import Headers from './headers';
 import { Imports } from './imports/imports';
 import { LabelsList } from './labels/labels-list';
+import { OAuthAuthorization } from './oauth/authorization';
 import { EditProfile } from './profile/edit-profile';
 import { RulesLoaded } from './rules/rule-loaded';
 import { TransactionList } from './transaction-list/transaction-list';
-import { OAuthAuthorization } from './oauth/authorization';
 
 const RestrictedContent: React.FC = () => (
     <DataProvider>

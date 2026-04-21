@@ -20,10 +20,10 @@ enum OAuthScope {
 model AuthorizationCodeGrantParams {
   @doc("OAuth grant type")
   grant_type: "authorization_code";
-  
+
   @doc("Authorization code received from authorization server")
   code: string;
-  
+
   @doc("Redirect URI used in the authorization request")
   redirect_uri: string;
 }
@@ -48,11 +48,13 @@ model ClientCredentialsGrantParams {
 @oneOf
 union OAuthTokenRequest {
   @doc("Authorization code grant parameters")
-  authorizationCode: AuthorizationCodeGrantParams;
+  authorizationCode: AuthorizationCodeGrantParams,
+
   @doc("Refresh token grant parameters")
-  refreshToken: RefreshTokenGrantParams;
+  refreshToken: RefreshTokenGrantParams,
+
   @doc("Client credentials grant parameters")
-  clientCredentials: ClientCredentialsGrantParams;
+  clientCredentials: ClientCredentialsGrantParams,
 }
 
 model OAuthTokenResponse {
@@ -111,7 +113,8 @@ model OAuthClient {
 }
 
 model OAuthClientWithSecret {
-...OAuthClient;
+  ...OAuthClient;
+
   @doc("Secret for the OAuth client")
   @secret
   secret: string;
@@ -122,7 +125,6 @@ model OAuthAuthorizationCode {
   code: string;
 
   client_id: UUIDString;
-
   user_id: UUIDString;
 
   @doc("Scopes granted")
@@ -143,7 +145,6 @@ model OAuthAccessToken {
   refresh_token?: string;
 
   client_id: UUIDString;
-
   user_id?: UUIDString;
 
   @doc("Scopes granted")
@@ -152,7 +153,19 @@ model OAuthAccessToken {
   @doc("Expiration time")
   expires_at: utcDateTime;
 }
+model OAuthClientUpdate {
+  @doc("Name of the OAuth client")
+  name?: string;
 
+  @doc("Some description used for the admin of the app")
+  description?: string;
+
+  @doc("Redirect URIs for the OAuth client")
+  redirect_uris?: string[];
+
+  @doc("Scopes allowed for the OAuth client")
+  scopes?: OAuthScope[];
+}
 
 @tag("oauth")
 @route("/oauth")
@@ -160,30 +173,40 @@ interface ApiOAuth {
   @doc("Initiate OAuth authorization flow")
   @get
   @route("/authorize")
-  authorize(@query(#{ explode: true }) request: OAuthAuthorizeRequest): {
-    @statusCode _: 200;
-      authorization_code: string;
-      state?: string;
-  } | Unauthorized | InvalidUUID | NotFound;
-  
+  authorize(@query(#{ explode: true }) request: OAuthAuthorizeRequest):
+    | {
+        @statusCode _: 200;
+        authorization_code: string;
+        state?: string;
+      }
+    | Unauthorized
+    | InvalidUUID
+    | NotFound;
+
   @doc("Exchange authorization code for access token or refresh access token")
   @useAuth(BasicAuth)
   @post
   @route("/token")
-  token(
-    @body request: OAuthTokenRequest
-  ): {
-    @statusCode _: 200;
-    ...OAuthTokenResponse;
-  } | Unauthorized | NotFound | InvalidUUID;
-  
+  token(@body request: OAuthTokenRequest):
+    | {
+        @statusCode _: 200;
+        ...OAuthTokenResponse;
+      }
+    | Unauthorized
+    | NotFound
+    | InvalidUUID;
+
   @doc("Get OAuth client details")
   @get
   @route("/clients/{clientId}")
-  getClient(@path clientId: UUIDString): {
-    @statusCode _: 200;
-    ...OAuthClient;
-  } | Unauthorized | NotFound | InvalidUUID;
+  getClient(@path clientId: UUIDString):
+    | {
+        @statusCode _: 200;
+        ...OAuthClient;
+      }
+    | Unauthorized
+    | NotFound
+    | InvalidUUID;
 
   @doc("Register a new OAuth client")
   @post
@@ -194,7 +217,7 @@ interface ApiOAuth {
       description?: string;
       redirect_uris: string[];
       scopes: OAuthScope[];
-    }
+    },
   ): {
     @statusCode _: 201;
     ...OAuthClientWithSecret;
@@ -206,9 +229,25 @@ interface ApiOAuth {
   @doc("Delete an OAuth client")
   @delete
   @route("/clients/{clientId}")
-  deleteClient(@path clientId: UUIDString): {
-    @statusCode _: 204;
-  } | Unauthorized | NotFound | InvalidUUID;
+  deleteClient(@path clientId: UUIDString):
+    | {
+        @statusCode _: 204;
+      }
+    | Unauthorized
+    | NotFound
+    | InvalidUUID;
+
+  @doc("Update an OAuth client")
+  @patch(#{implicitOptionality: false})
+  @route("/clients/{clientId}")
+  updateClient(@path clientId: UUIDString, @body client: OAuthClientUpdate):
+    | {
+        @statusCode _: 200;
+        ...OAuthClient;
+      }
+    | Unauthorized
+    | NotFound
+    | InvalidUUID;
 
   @doc("List OAuth clients")
   @get

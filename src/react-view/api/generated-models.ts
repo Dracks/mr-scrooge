@@ -4,14 +4,14 @@
  */
 
 export interface paths {
-    "/bank-transactions": {
+    '/bank-transactions': {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["ApiBankTransactions_list"];
+        get: operations['ApiBankTransactions_list'];
         put?: never;
         post?: never;
         delete?: never;
@@ -20,7 +20,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/bank-transactions/{transactionId}": {
+    '/bank-transactions/{transactionId}': {
         parameters: {
             query?: never;
             header?: never;
@@ -34,10 +34,10 @@ export interface paths {
         options?: never;
         head?: never;
         /** @description Set a comment into the transaction */
-        patch: operations["ApiBankTransactions_comment"];
+        patch: operations['ApiBankTransactions_comment'];
         trace?: never;
     };
-    "/bank-transactions/{transactionId}/label/{labelId}": {
+    '/bank-transactions/{transactionId}/label/{labelId}': {
         parameters: {
             query?: never;
             header?: never;
@@ -47,31 +47,31 @@ export interface paths {
         get?: never;
         put?: never;
         /** @description Link a label to a transaction */
-        post: operations["ApiBankTransactions_linkLabel"];
+        post: operations['ApiBankTransactions_linkLabel'];
         /** @description Remove a label from a transaction */
-        delete: operations["ApiBankTransactions_unlinkLabel"];
+        delete: operations['ApiBankTransactions_unlinkLabel'];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/graphs": {
+    '/graphs': {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["ApiGraphs_list"];
+        get: operations['ApiGraphs_list'];
         put?: never;
-        post: operations["ApiGraphs_create"];
+        post: operations['ApiGraphs_create'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/graphs/{id}": {
+    '/graphs/{id}': {
         parameters: {
             query?: never;
             header?: never;
@@ -79,15 +79,15 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["ApiGraphs_update"];
+        put: operations['ApiGraphs_update'];
         post?: never;
-        delete: operations["ApiGraphs_delete"];
+        delete: operations['ApiGraphs_delete'];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/graphs/{id}/move": {
+    '/graphs/{id}/move': {
         parameters: {
             query?: never;
             header?: never;
@@ -96,7 +96,7 @@ export interface paths {
         };
         get?: never;
         /** @description Move up or down a graph inside the list of graphs for the same user group */
-        put: operations["ApiGraphs_move"];
+        put: operations['ApiGraphs_move'];
         post?: never;
         delete?: never;
         options?: never;
@@ -104,23 +104,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/groups": {
+    '/groups': {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["ApiGroup_list"];
+        get: operations['ApiGroup_list'];
         put?: never;
-        post: operations["ApiGroup_create"];
+        post: operations['ApiGroup_create'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/groups/{id}": {
+    '/groups/{id}': {
         parameters: {
             query?: never;
             header?: never;
@@ -128,22 +128,22 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["ApiGroup_updateGroup"];
+        put: operations['ApiGroup_updateGroup'];
         post?: never;
-        delete: operations["ApiGroup_delete"];
+        delete: operations['ApiGroup_delete'];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/imports": {
+    '/imports': {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["ApiImports_list"];
+        get: operations['ApiImports_list'];
         put?: never;
         post?: never;
         delete?: never;
@@ -152,14 +152,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/imports/parsers": {
+    '/imports/parsers': {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["ApiImports_parserTypes"];
+        get: operations['ApiImports_parserTypes'];
         put?: never;
         post?: never;
         delete?: never;
@@ -168,7 +168,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/imports/{id}": {
+    '/imports/{id}': {
         parameters: {
             query?: never;
             header?: never;
@@ -178,13 +178,13 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete: operations["ApiImports_delete"];
+        delete: operations['ApiImports_delete'];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/imports/{id}/apply/{rowId}": {
+    '/imports/{id}/apply/{rowId}': {
         parameters: {
             query?: never;
             header?: never;
@@ -194,14 +194,14 @@ export interface paths {
         get?: never;
         put?: never;
         /** @description This will allow to create a transaction from the file-import rowId */
-        post: operations["ApiImports_applyRow"];
+        post: operations['ApiImports_applyRow'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/imports/{id}/rollback/{rowId}": {
+    '/imports/{id}/rollback/{rowId}': {
         parameters: {
             query?: never;
             header?: never;
@@ -212,29 +212,29 @@ export interface paths {
         put?: never;
         post?: never;
         /** @description This will allow to delete a transaction using the file-import rowId */
-        delete: operations["ApiImports_rollbackImport"];
+        delete: operations['ApiImports_rollbackImport'];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/labels": {
+    '/labels': {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["ApiLabels_list"];
+        get: operations['ApiLabels_list'];
         put?: never;
-        post: operations["ApiLabels_create"];
+        post: operations['ApiLabels_create'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/labels/{labelId}": {
+    '/labels/{labelId}': {
         parameters: {
             query?: never;
             header?: never;
@@ -242,15 +242,15 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["ApiLabels_update"];
+        put: operations['ApiLabels_update'];
         post?: never;
-        delete: operations["ApiLabels_delete"];
+        delete: operations['ApiLabels_delete'];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/oauth/authorize": {
+    '/oauth/authorize': {
         parameters: {
             query?: never;
             header?: never;
@@ -258,7 +258,7 @@ export interface paths {
             cookie?: never;
         };
         /** @description Initiate OAuth authorization flow */
-        get: operations["ApiOAuth_authorize"];
+        get: operations['ApiOAuth_authorize'];
         put?: never;
         post?: never;
         delete?: never;
@@ -267,7 +267,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/oauth/clients": {
+    '/oauth/clients': {
         parameters: {
             query?: never;
             header?: never;
@@ -275,17 +275,17 @@ export interface paths {
             cookie?: never;
         };
         /** @description List OAuth clients */
-        get: operations["ApiOAuth_listClients"];
+        get: operations['ApiOAuth_listClients'];
         put?: never;
         /** @description Register a new OAuth client */
-        post: operations["ApiOAuth_registerClient"];
+        post: operations['ApiOAuth_registerClient'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/oauth/clients/{clientId}": {
+    '/oauth/clients/{clientId}': {
         parameters: {
             query?: never;
             header?: never;
@@ -293,17 +293,18 @@ export interface paths {
             cookie?: never;
         };
         /** @description Get OAuth client details */
-        get: operations["ApiOAuth_getClient"];
+        get: operations['ApiOAuth_getClient'];
         put?: never;
         post?: never;
         /** @description Delete an OAuth client */
-        delete: operations["ApiOAuth_deleteClient"];
+        delete: operations['ApiOAuth_deleteClient'];
         options?: never;
         head?: never;
-        patch?: never;
+        /** @description Update an OAuth client */
+        patch: operations['ApiOAuth_updateClient'];
         trace?: never;
     };
-    "/oauth/token": {
+    '/oauth/token': {
         parameters: {
             query?: never;
             header?: never;
@@ -313,30 +314,30 @@ export interface paths {
         get?: never;
         put?: never;
         /** @description Exchange authorization code for access token or refresh access token */
-        post: operations["ApiOAuth_token"];
+        post: operations['ApiOAuth_token'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/rules": {
+    '/rules': {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["ApiRule_list"];
+        get: operations['ApiRule_list'];
         put?: never;
-        post: operations["ApiRule_create"];
+        post: operations['ApiRule_create'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/rules/{ruleId}": {
+    '/rules/{ruleId}': {
         parameters: {
             query?: never;
             header?: never;
@@ -344,31 +345,15 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["ApiRule_update"];
+        put: operations['ApiRule_update'];
         post?: never;
-        delete: operations["ApiRule_delete"];
+        delete: operations['ApiRule_delete'];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/rules/{ruleId}/apply": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ApiRule_apply"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/rules/{ruleId}/condition": {
+    '/rules/{ruleId}/apply': {
         parameters: {
             query?: never;
             header?: never;
@@ -377,14 +362,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["ApiRule_addCondition"];
+        post: operations['ApiRule_apply'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/rules/{ruleId}/condition/{condId}": {
+    '/rules/{ruleId}/condition': {
         parameters: {
             query?: never;
             header?: never;
@@ -392,15 +377,15 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["ApiRule_updateCondition"];
-        post?: never;
-        delete: operations["ApiRule_removeCondition"];
+        put?: never;
+        post: operations['ApiRule_addCondition'];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/rules/{ruleId}/label/{labelId}": {
+    '/rules/{ruleId}/condition/{condId}': {
         parameters: {
             query?: never;
             header?: never;
@@ -408,15 +393,31 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["ApiRule_addLabel"];
+        put: operations['ApiRule_updateCondition'];
         post?: never;
-        delete: operations["ApiRule_removeLabel"];
+        delete: operations['ApiRule_removeCondition'];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/session": {
+    '/rules/{ruleId}/label/{labelId}': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations['ApiRule_addLabel'];
+        post?: never;
+        delete: operations['ApiRule_removeLabel'];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    '/session': {
         parameters: {
             query?: never;
             header?: never;
@@ -424,18 +425,18 @@ export interface paths {
             cookie?: never;
         };
         /** @description Check if the user is logged in */
-        get: operations["ApiSession_me"];
+        get: operations['ApiSession_me'];
         put?: never;
         /** @description Login */
-        post: operations["ApiSession_login"];
+        post: operations['ApiSession_login'];
         /** @description Logout */
-        delete: operations["ApiSession_logout"];
+        delete: operations['ApiSession_logout'];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/session/me": {
+    '/session/me': {
         parameters: {
             query?: never;
             header?: never;
@@ -443,7 +444,7 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["ApiSession_updateMe"];
+        put: operations['ApiSession_updateMe'];
         post?: never;
         delete?: never;
         options?: never;
@@ -451,23 +452,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/users": {
+    '/users': {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["ApiUser_list"];
+        get: operations['ApiUser_list'];
         put?: never;
-        post: operations["ApiUser_create"];
+        post: operations['ApiUser_create'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/users/{id}": {
+    '/users/{id}': {
         parameters: {
             query?: never;
             header?: never;
@@ -475,15 +476,15 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["ApiUser_update"];
+        put: operations['ApiUser_update'];
         post?: never;
-        delete: operations["ApiUser_delete"];
+        delete: operations['ApiUser_delete'];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/users/{id}/group/{groupId}": {
+    '/users/{id}/group/{groupId}': {
         parameters: {
             query?: never;
             header?: never;
@@ -492,8 +493,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["ApiUser_addGroup"];
-        delete: operations["ApiUser_deleteGroup"];
+        post: operations['ApiUser_addGroup'];
+        delete: operations['ApiUser_deleteGroup'];
         options?: never;
         head?: never;
         patch?: never;
@@ -509,24 +510,24 @@ export interface components {
              * @description OAuth grant type
              * @enum {string}
              */
-            grant_type: "authorization_code";
+            grant_type: 'authorization_code';
             /** @description Authorization code received from authorization server */
             code: string;
             /** @description Redirect URI used in the authorization request */
             redirect_uri: string;
         };
         BankTransaction: {
-            id: components["schemas"]["UUIDString"];
-            groupOwnerId: components["schemas"]["UUIDString"];
+            id: components['schemas']['UUIDString'];
+            groupOwnerId: components['schemas']['UUIDString'];
             movementName: string;
-            date: components["schemas"]["DateOnly"];
-            dateValue?: components["schemas"]["DateOnly"];
+            date: components['schemas']['DateOnly'];
+            dateValue?: components['schemas']['DateOnly'];
             details?: string;
             /** Format: decimal */
             value: number;
             kind: string;
             comment?: string;
-            labelIds: components["schemas"]["UUIDString"][];
+            labelIds: components['schemas']['UUIDString'][];
         };
         BaseModifyUserData: {
             username: string;
@@ -542,42 +543,42 @@ export interface components {
             firstName?: string;
             lastName?: string;
         };
-        CheckMyProfile: components["schemas"]["GetMyProfile"] | components["schemas"]["NotIdentified"];
+        CheckMyProfile: components['schemas']['GetMyProfile'] | components['schemas']['NotIdentified'];
         /** @description Parameters for client credentials grant */
         ClientCredentialsGrantParams: {
             /**
              * @description OAuth grant type
              * @enum {string}
              */
-            grant_type: "client_credentials";
+            grant_type: 'client_credentials';
         };
-        Condition: components["schemas"]["ConditionDouble"] | components["schemas"]["ConditionString"];
+        Condition: components['schemas']['ConditionDouble'] | components['schemas']['ConditionString'];
         ConditionDouble: {
-            id: components["schemas"]["UUIDString"];
-            operation: components["schemas"]["OperationDouble"];
+            id: components['schemas']['UUIDString'];
+            operation: components['schemas']['OperationDouble'];
             /** Format: double */
             value: number;
         };
         ConditionDoubleInput: {
-            operation: components["schemas"]["OperationDouble"];
+            operation: components['schemas']['OperationDouble'];
             /** Format: double */
             value: number;
         };
-        ConditionInput: components["schemas"]["ConditionDoubleInput"] | components["schemas"]["ConditionStringInput"];
+        ConditionInput: components['schemas']['ConditionDoubleInput'] | components['schemas']['ConditionStringInput'];
         ConditionString: {
-            id: components["schemas"]["UUIDString"];
-            operation: components["schemas"]["OperationString"];
+            id: components['schemas']['UUIDString'];
+            operation: components['schemas']['OperationString'];
             value: string;
         };
         ConditionStringInput: {
-            operation: components["schemas"]["OperationString"];
+            operation: components['schemas']['OperationString'];
             value: string;
         };
         /** @enum {string} */
-        ConditionalRelation: "or" | "notAnd";
+        ConditionalRelation: 'or' | 'notAnd';
         CreateLabel: {
             name: string;
-            groupOwnerId: components["schemas"]["UUIDString"];
+            groupOwnerId: components['schemas']['UUIDString'];
         };
         CreateUserInput: {
             username: string;
@@ -594,20 +595,20 @@ export interface components {
         DateOnly: string;
         Error: {
             message: string;
-            code: components["schemas"]["ErrorCode"];
+            code: components['schemas']['ErrorCode'];
         };
         /** @description Base error code */
         ErrorCode: string;
         FileImport: {
-            id: components["schemas"]["UUIDString"];
-            createdAt: components["schemas"]["Date"];
+            id: components['schemas']['UUIDString'];
+            createdAt: components['schemas']['Date'];
             description: string;
             fileName: string;
-            groupOwnerId: components["schemas"]["UUIDString"];
+            groupOwnerId: components['schemas']['UUIDString'];
             kind: string;
-            status: components["schemas"]["ImportStatus"];
+            status: components['schemas']['ImportStatus'];
             context?: string;
-            rows: components["schemas"]["FileImportTransaction"][];
+            rows: components['schemas']['FileImportTransaction'][];
         };
         FileImportTransaction: {
             movementName: string;
@@ -618,7 +619,7 @@ export interface components {
             value: number;
             description?: string;
             message?: string;
-            transactionId?: components["schemas"]["UUIDString"];
+            transactionId?: components['schemas']['UUIDString'];
         };
         FileParserType: {
             name: string;
@@ -629,112 +630,112 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            user: "identified";
-            profile: components["schemas"]["UserProfile"];
+            user: 'identified';
+            profile: components['schemas']['UserProfile'];
         };
         Graph: {
-            id: components["schemas"]["UUIDString"];
-            groupOwnerId: components["schemas"]["UUIDString"];
+            id: components['schemas']['UUIDString'];
+            groupOwnerId: components['schemas']['UUIDString'];
             name: string;
-            kind: components["schemas"]["GraphKind"];
-            labelFilterId?: components["schemas"]["UUIDString"];
-            dateRange: components["schemas"]["GraphDateRange"];
-            group: components["schemas"]["Group"];
-            horizontalGroup?: components["schemas"]["HorizontalGroup"];
+            kind: components['schemas']['GraphKind'];
+            labelFilterId?: components['schemas']['UUIDString'];
+            dateRange: components['schemas']['GraphDateRange'];
+            group: components['schemas']['Group'];
+            horizontalGroup?: components['schemas']['HorizontalGroup'];
             /** Format: uint64 */
             order: number;
         };
         /** @enum {string} */
-        GraphDateRange: "all" | "halfYear" | "oneMonth" | "oneYear" | "sixYears" | "twoYears";
+        GraphDateRange: 'all' | 'halfYear' | 'oneMonth' | 'oneYear' | 'sixYears' | 'twoYears';
         /** @enum {string} */
-        GraphGroupType: "day" | "labels" | "month" | "sign" | "year";
+        GraphGroupType: 'day' | 'labels' | 'month' | 'sign' | 'year';
         GraphInput: {
-            groupOwnerId: components["schemas"]["UUIDString"];
+            groupOwnerId: components['schemas']['UUIDString'];
             name: string;
-            kind: components["schemas"]["GraphKind"];
-            labelFilterId?: components["schemas"]["UUIDString"];
-            dateRange: components["schemas"]["GraphDateRange"];
-            group: components["schemas"]["Group"];
-            horizontalGroup?: components["schemas"]["HorizontalGroup"];
+            kind: components['schemas']['GraphKind'];
+            labelFilterId?: components['schemas']['UUIDString'];
+            dateRange: components['schemas']['GraphDateRange'];
+            group: components['schemas']['Group'];
+            horizontalGroup?: components['schemas']['HorizontalGroup'];
         };
         /** @enum {string} */
-        GraphKind: "bar" | "line" | "pie";
+        GraphKind: 'bar' | 'line' | 'pie';
         Group: {
-            group: components["schemas"]["GraphGroupType"];
+            group: components['schemas']['GraphGroupType'];
             hideOthers?: boolean;
-            labels?: components["schemas"]["UUIDString"][];
+            labels?: components['schemas']['UUIDString'][];
         };
         HasChildren: {
             message: string;
-            code: components["schemas"]["ErrorCode"];
-            childrenIds: components["schemas"]["UUIDString"][];
+            code: components['schemas']['ErrorCode'];
+            childrenIds: components['schemas']['UUIDString'][];
         };
         HorizontalGroup: {
-            group: components["schemas"]["GraphGroupType"];
+            group: components['schemas']['GraphGroupType'];
             hideOthers?: boolean;
-            labels?: components["schemas"]["UUIDString"][];
+            labels?: components['schemas']['UUIDString'][];
             accumulate?: boolean;
         };
         /** @enum {string} */
-        ImportStatus: "ok" | "warning" | "error";
+        ImportStatus: 'ok' | 'warning' | 'error';
         InvalidCredentials: {
             details: string;
         };
         /** @description Forbidden, usually when using a group that the user doesn't have access to */
         InvalidGroupOwnerId: {
             message: string;
-            code: components["schemas"]["ErrorCode"];
-            validGroupOwners: components["schemas"]["UUIDString"][];
+            code: components['schemas']['ErrorCode'];
+            validGroupOwners: components['schemas']['UUIDString'][];
         };
         Label: {
-            id: components["schemas"]["UUIDString"];
+            id: components['schemas']['UUIDString'];
             name: string;
-            groupOwnerId: components["schemas"]["UUIDString"];
+            groupOwnerId: components['schemas']['UUIDString'];
         };
         LabelInUse: {
-            graphs: components["schemas"]["UUIDString"][];
-            graphsGroup: components["schemas"]["UUIDString"][];
-            graphHorizontalGroup: components["schemas"]["UUIDString"][];
-            rules: components["schemas"]["UUIDString"][];
-            transactions: components["schemas"]["UUIDString"][];
+            graphs: components['schemas']['UUIDString'][];
+            graphsGroup: components['schemas']['UUIDString'][];
+            graphHorizontalGroup: components['schemas']['UUIDString'][];
+            rules: components['schemas']['UUIDString'][];
+            transactions: components['schemas']['UUIDString'][];
         };
         ListFileParsers: {
-            parsers: components["schemas"]["FileParserType"][];
+            parsers: components['schemas']['FileParserType'][];
         };
         /** @enum {string} */
-        MoveDirection: "up" | "down";
+        MoveDirection: 'up' | 'down';
         NotFoundBankTransaction: {
             message: string;
-            code: components["schemas"]["ErrorCode"];
-            bankTransactionSuplied: components["schemas"]["UUIDString"];
+            code: components['schemas']['ErrorCode'];
+            bankTransactionSuplied: components['schemas']['UUIDString'];
         };
         NotFoundLabel: {
             message: string;
-            code: components["schemas"]["ErrorCode"];
-            labelSuplied: components["schemas"]["UUIDString"];
+            code: components['schemas']['ErrorCode'];
+            labelSuplied: components['schemas']['UUIDString'];
         };
         NotFoundLabels: {
             message: string;
-            code: components["schemas"]["ErrorCode"];
-            validLabels: components["schemas"]["UUIDString"][];
-            invalidLabels: components["schemas"]["UUIDString"][];
+            code: components['schemas']['ErrorCode'];
+            validLabels: components['schemas']['UUIDString'][];
+            invalidLabels: components['schemas']['UUIDString'][];
         };
         NotIdentified: {
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            user: "anonymous";
+            user: 'anonymous';
         };
         OAuthAccessToken: {
             /** @description Access token */
             access_token: string;
             /** @description Refresh token */
             refresh_token?: string;
-            client_id: components["schemas"]["UUIDString"];
-            user_id?: components["schemas"]["UUIDString"];
+            client_id: components['schemas']['UUIDString'];
+            user_id?: components['schemas']['UUIDString'];
             /** @description Scopes granted */
-            scopes: components["schemas"]["OAuthScope"][];
+            scopes: components['schemas']['OAuthScope'][];
             /**
              * Format: date-time
              * @description Expiration time
@@ -744,10 +745,10 @@ export interface components {
         OAuthAuthorizationCode: {
             /** @description Authorization code */
             code: string;
-            client_id: components["schemas"]["UUIDString"];
-            user_id: components["schemas"]["UUIDString"];
+            client_id: components['schemas']['UUIDString'];
+            user_id: components['schemas']['UUIDString'];
             /** @description Scopes granted */
-            scopes: components["schemas"]["OAuthScope"][];
+            scopes: components['schemas']['OAuthScope'][];
             /** @description Redirection URI */
             redirect_uri: string;
             /**
@@ -757,12 +758,12 @@ export interface components {
             expires_at: string;
         };
         OAuthAuthorizeRequest: {
-            client_id: components["schemas"]["UUIDString"];
+            client_id: components['schemas']['UUIDString'];
             /**
              * @description OAuth response type, must be 'code' for authorization code flow
              * @enum {string}
              */
-            response_type: "code";
+            response_type: 'code';
             /** @description Redirection URI to which the response will be sent */
             redirect_uri: string;
             /** @description Space-delimited scopes requested by the client */
@@ -771,7 +772,7 @@ export interface components {
             state?: string;
         };
         OAuthClient: {
-            client_id: components["schemas"]["UUIDString"];
+            client_id: components['schemas']['UUIDString'];
             /** @description Name of the OAuth client */
             name: string;
             /** @description Some description used for the admin of the app */
@@ -779,7 +780,7 @@ export interface components {
             /** @description Redirect URIs for the OAuth client */
             redirect_uris: string[];
             /** @description Scopes allowed for the OAuth client */
-            scopes: components["schemas"]["OAuthScope"][];
+            scopes: components['schemas']['OAuthScope'][];
             /**
              * Format: date-time
              * @description Creation timestamp
@@ -792,7 +793,7 @@ export interface components {
             updated_at: string;
         };
         OAuthClientWithSecret: {
-            client_id: components["schemas"]["UUIDString"];
+            client_id: components['schemas']['UUIDString'];
             /** @description Name of the OAuth client */
             name: string;
             /** @description Some description used for the admin of the app */
@@ -800,7 +801,7 @@ export interface components {
             /** @description Redirect URIs for the OAuth client */
             redirect_uris: string[];
             /** @description Scopes allowed for the OAuth client */
-            scopes: components["schemas"]["OAuthScope"][];
+            scopes: components['schemas']['OAuthScope'][];
             /**
              * Format: date-time
              * @description Creation timestamp
@@ -818,9 +819,12 @@ export interface components {
             secret: string;
         };
         /** @enum {string} */
-        OAuthScope: "userInfo" | "uploadFile";
+        OAuthScope: 'userInfo' | 'uploadFile';
         /** @description OAuth token request with grant-type-specific parameters */
-        OAuthTokenRequest: components["schemas"]["AuthorizationCodeGrantParams"] | components["schemas"]["RefreshTokenGrantParams"] | components["schemas"]["ClientCredentialsGrantParams"];
+        OAuthTokenRequest:
+            | components['schemas']['AuthorizationCodeGrantParams']
+            | components['schemas']['RefreshTokenGrantParams']
+            | components['schemas']['ClientCredentialsGrantParams'];
         OAuthTokenResponse: {
             /** @description Access token to access protected resources */
             access_token: string;
@@ -828,7 +832,7 @@ export interface components {
              * @description Type of the access token
              * @enum {string}
              */
-            token_type: "Bearer";
+            token_type: 'Bearer';
             /**
              * Format: int32
              * @description Lifetime of the access token in seconds
@@ -840,38 +844,38 @@ export interface components {
             scope?: string;
         };
         /** @enum {string} */
-        OperationDouble: "greater" | "greaterEqual" | "less" | "lessEqual";
+        OperationDouble: 'greater' | 'greaterEqual' | 'less' | 'lessEqual';
         /** @enum {string} */
-        OperationString: "suffix" | "contains" | "prefix" | "regularExpression";
+        OperationString: 'suffix' | 'contains' | 'prefix' | 'regularExpression';
         /** @description Parameters for refresh token grant */
         RefreshTokenGrantParams: {
             /**
              * @description OAuth grant type
              * @enum {string}
              */
-            grant_type: "refresh_token";
+            grant_type: 'refresh_token';
             /** @description Refresh token for refreshing access tokens */
             refresh_token: string;
         };
         Rule: {
-            id: components["schemas"]["UUIDString"];
-            parentRuleId?: components["schemas"]["UUIDString"];
-            groupOwnerId: components["schemas"]["UUIDString"];
+            id: components['schemas']['UUIDString'];
+            parentRuleId?: components['schemas']['UUIDString'];
+            groupOwnerId: components['schemas']['UUIDString'];
             name: string;
-            relations: components["schemas"]["ConditionalRelation"];
-            conditions: components["schemas"]["Condition"][];
-            labelIds: components["schemas"]["UUIDString"][];
+            relations: components['schemas']['ConditionalRelation'];
+            conditions: components['schemas']['Condition'][];
+            labelIds: components['schemas']['UUIDString'][];
         };
         RuleInput: {
-            parentRuleId?: components["schemas"]["UUIDString"];
-            groupOwnerId: components["schemas"]["UUIDString"];
+            parentRuleId?: components['schemas']['UUIDString'];
+            groupOwnerId: components['schemas']['UUIDString'];
             name: string;
-            relations: components["schemas"]["ConditionalRelation"];
+            relations: components['schemas']['ConditionalRelation'];
         };
         /** @enum {string} */
-        SessionType: "identified" | "anonymous";
+        SessionType: 'identified' | 'anonymous';
         SetLabelAction: {
-            label: components["schemas"]["UUIDString"];
+            label: components['schemas']['UUIDString'];
         };
         /** Format: uuid */
         UUIDString: string;
@@ -883,7 +887,7 @@ export interface components {
             email: string;
             firstName?: string;
             lastName?: string;
-            defaultGroupId: components["schemas"]["UUIDString"];
+            defaultGroupId: components['schemas']['UUIDString'];
             newPassword?: string;
             password?: string;
         };
@@ -895,29 +899,29 @@ export interface components {
             isActive: boolean;
             isAdmin: boolean;
             password?: string;
-            defaultGroupId: components["schemas"]["UUIDString"];
+            defaultGroupId: components['schemas']['UUIDString'];
         };
         UserCredentials: {
             username: string;
             password: string;
         };
         UserGroup: {
-            id: components["schemas"]["UUIDString"];
+            id: components['schemas']['UUIDString'];
             name: string;
         };
         UserGroupInput: {
             name: string;
         };
         UserProfile: {
-            id: components["schemas"]["UUIDString"];
+            id: components['schemas']['UUIDString'];
             username: string;
             email: string;
             firstName?: string;
             lastName?: string;
             isAdmin: boolean;
             isActive: boolean;
-            groups: components["schemas"]["UserGroup"][];
-            defaultGroupId: components["schemas"]["UUIDString"];
+            groups: components['schemas']['UserGroup'][];
+            defaultGroupId: components['schemas']['UUIDString'];
         };
     };
     responses: never;
@@ -931,7 +935,7 @@ export interface operations {
     ApiBankTransactions_list: {
         parameters: {
             query?: {
-                groupIds?: components["schemas"]["UUIDString"][];
+                groupIds?: components['schemas']['UUIDString'][];
                 cursor?: string;
                 limit?: number;
             };
@@ -947,8 +951,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        results: components["schemas"]["BankTransaction"][];
+                    'application/json': {
+                        results: components['schemas']['BankTransaction'][];
                         next?: string;
                     };
                 };
@@ -960,13 +964,13 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                transactionId: components["schemas"]["UUIDString"];
+                transactionId: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": {
+                'application/json': {
                     comment?: string;
                 };
             };
@@ -978,7 +982,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["BankTransaction"];
+                    'application/json': components['schemas']['BankTransaction'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -987,7 +991,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["NotFoundBankTransaction"];
+                    'application/json': components['schemas']['NotFoundBankTransaction'];
                 };
             };
         };
@@ -997,8 +1001,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                transactionId: components["schemas"]["UUIDString"];
-                labelId: components["schemas"]["UUIDString"];
+                transactionId: components['schemas']['UUIDString'];
+                labelId: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
@@ -1010,7 +1014,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["BankTransaction"];
+                    'application/json': components['schemas']['BankTransaction'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -1019,7 +1023,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["NotFoundLabel"] | components["schemas"]["NotFoundBankTransaction"];
+                    'application/json':
+                        | components['schemas']['NotFoundLabel']
+                        | components['schemas']['NotFoundBankTransaction'];
                 };
             };
             /** @description The request conflicts with the current state of the server. */
@@ -1028,7 +1034,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -1038,8 +1044,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                transactionId: components["schemas"]["UUIDString"];
-                labelId: components["schemas"]["UUIDString"];
+                transactionId: components['schemas']['UUIDString'];
+                labelId: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
@@ -1051,7 +1057,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["BankTransaction"];
+                    'application/json': components['schemas']['BankTransaction'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -1060,7 +1066,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"] | components["schemas"]["NotFoundBankTransaction"];
+                    'application/json':
+                        | components['schemas']['Error']
+                        | components['schemas']['NotFoundBankTransaction'];
                 };
             };
         };
@@ -1068,7 +1076,7 @@ export interface operations {
     ApiGraphs_list: {
         parameters: {
             query?: {
-                graphIds?: components["schemas"]["UUIDString"][];
+                graphIds?: components['schemas']['UUIDString'][];
                 cursor?: string;
                 limit?: number;
             };
@@ -1084,8 +1092,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        results: components["schemas"]["Graph"][];
+                    'application/json': {
+                        results: components['schemas']['Graph'][];
                         next?: string;
                     };
                 };
@@ -1101,7 +1109,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GraphInput"];
+                'application/json': components['schemas']['GraphInput'];
             };
         };
         responses: {
@@ -1111,7 +1119,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Graph"];
+                    'application/json': components['schemas']['Graph'];
                 };
             };
             /** @description Forbidden, usually when using a group that the user doesn't have access to */
@@ -1120,7 +1128,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["InvalidGroupOwnerId"];
+                    'application/json': components['schemas']['InvalidGroupOwnerId'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -1129,7 +1137,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["NotFoundLabels"];
+                    'application/json': components['schemas']['NotFoundLabels'];
                 };
             };
         };
@@ -1139,13 +1147,13 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: components["schemas"]["UUIDString"];
+                id: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GraphInput"];
+                'application/json': components['schemas']['GraphInput'];
             };
         };
         responses: {
@@ -1155,7 +1163,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Graph"];
+                    'application/json': components['schemas']['Graph'];
                 };
             };
             /** @description Forbidden, usually when using a group that the user doesn't have access to */
@@ -1164,7 +1172,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["InvalidGroupOwnerId"];
+                    'application/json': components['schemas']['InvalidGroupOwnerId'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -1173,7 +1181,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["NotFoundLabels"] | components["schemas"]["Error"];
+                    'application/json': components['schemas']['NotFoundLabels'] | components['schemas']['Error'];
                 };
             };
         };
@@ -1183,7 +1191,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: components["schemas"]["UUIDString"];
+                id: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
@@ -1195,7 +1203,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "text/plain": boolean;
+                    'text/plain': boolean;
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -1204,7 +1212,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -1214,14 +1222,14 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: components["schemas"]["UUIDString"];
+                id: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": {
-                    direction: components["schemas"]["MoveDirection"];
+                'application/json': {
+                    direction: components['schemas']['MoveDirection'];
                 };
             };
         };
@@ -1232,8 +1240,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        results: components["schemas"]["Graph"][];
+                    'application/json': {
+                        results: components['schemas']['Graph'][];
                     };
                 };
             };
@@ -1243,7 +1251,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -1252,7 +1260,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -1276,8 +1284,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        results: components["schemas"]["UserGroup"][];
+                    'application/json': {
+                        results: components['schemas']['UserGroup'][];
                         next?: string;
                     };
                 };
@@ -1293,7 +1301,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UserGroupInput"];
+                'application/json': components['schemas']['UserGroupInput'];
             };
         };
         responses: {
@@ -1303,7 +1311,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserGroup"];
+                    'application/json': components['schemas']['UserGroup'];
                 };
             };
         };
@@ -1313,13 +1321,13 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: components["schemas"]["UUIDString"];
+                id: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UserGroupInput"];
+                'application/json': components['schemas']['UserGroupInput'];
             };
         };
         responses: {
@@ -1329,7 +1337,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserGroup"];
+                    'application/json': components['schemas']['UserGroup'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -1338,7 +1346,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -1348,7 +1356,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: components["schemas"]["UUIDString"];
+                id: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
@@ -1367,7 +1375,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -1390,8 +1398,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        results: components["schemas"]["FileImport"][];
+                    'application/json': {
+                        results: components['schemas']['FileImport'][];
                         next?: string;
                     };
                 };
@@ -1413,7 +1421,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ListFileParsers"];
+                    'application/json': components['schemas']['ListFileParsers'];
                 };
             };
         };
@@ -1423,7 +1431,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: components["schemas"]["UUIDString"];
+                id: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
@@ -1435,7 +1443,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "text/plain": boolean;
+                    'text/plain': boolean;
                 };
             };
         };
@@ -1445,8 +1453,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: components["schemas"]["UUIDString"];
-                rowId: components["schemas"]["UUIDString"];
+                id: components['schemas']['UUIDString'];
+                rowId: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
@@ -1458,7 +1466,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "text/plain": boolean;
+                    'text/plain': boolean;
                 };
             };
         };
@@ -1468,8 +1476,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: components["schemas"]["UUIDString"];
-                rowId: components["schemas"]["UUIDString"];
+                id: components['schemas']['UUIDString'];
+                rowId: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
@@ -1481,7 +1489,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "text/plain": boolean;
+                    'text/plain': boolean;
                 };
             };
         };
@@ -1504,8 +1512,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        results: components["schemas"]["Label"][];
+                    'application/json': {
+                        results: components['schemas']['Label'][];
                         next?: string;
                     };
                 };
@@ -1521,7 +1529,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateLabel"];
+                'application/json': components['schemas']['CreateLabel'];
             };
         };
         responses: {
@@ -1531,7 +1539,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Label"];
+                    'application/json': components['schemas']['Label'];
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -1540,7 +1548,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Forbidden, usually when using a group that the user doesn't have access to */
@@ -1549,7 +1557,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["InvalidGroupOwnerId"];
+                    'application/json': components['schemas']['InvalidGroupOwnerId'];
                 };
             };
         };
@@ -1559,13 +1567,13 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                labelId: components["schemas"]["UUIDString"];
+                labelId: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UpdateLabel"];
+                'application/json': components['schemas']['UpdateLabel'];
             };
         };
         responses: {
@@ -1575,7 +1583,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Label"];
+                    'application/json': components['schemas']['Label'];
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -1584,7 +1592,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -1593,7 +1601,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -1606,7 +1614,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                labelId: components["schemas"]["UUIDString"];
+                labelId: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
@@ -1618,7 +1626,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "text/plain": boolean;
+                    'text/plain': boolean;
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -1627,7 +1635,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -1636,7 +1644,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description The request conflicts with the current state of the server. */
@@ -1645,7 +1653,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["LabelInUse"];
+                    'application/json': components['schemas']['LabelInUse'];
                 };
             };
         };
@@ -1653,7 +1661,7 @@ export interface operations {
     ApiOAuth_authorize: {
         parameters: {
             query: {
-                request: components["schemas"]["OAuthAuthorizeRequest"];
+                request: components['schemas']['OAuthAuthorizeRequest'];
             };
             header?: never;
             path?: never;
@@ -1667,7 +1675,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
+                    'application/json': {
                         authorization_code: string;
                         state?: string;
                     };
@@ -1679,7 +1687,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Access is unauthorized. */
@@ -1688,7 +1696,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -1697,7 +1705,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -1720,8 +1728,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        results: components["schemas"]["OAuthClient"][];
+                    'application/json': {
+                        results: components['schemas']['OAuthClient'][];
                         next?: string;
                     };
                 };
@@ -1732,7 +1740,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -1746,11 +1754,11 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
+                'application/json': {
                     name: string;
                     description?: string;
                     redirect_uris: string[];
-                    scopes: components["schemas"]["OAuthScope"][];
+                    scopes: components['schemas']['OAuthScope'][];
                 };
             };
         };
@@ -1761,7 +1769,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["OAuthClientWithSecret"];
+                    'application/json': components['schemas']['OAuthClientWithSecret'];
                 };
             };
             /** @description The server could not understand the request due to invalid syntax. */
@@ -1770,7 +1778,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Access is unauthorized. */
@@ -1779,7 +1787,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -1789,7 +1797,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                clientId: components["schemas"]["UUIDString"];
+                clientId: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
@@ -1801,7 +1809,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["OAuthClient"];
+                    'application/json': components['schemas']['OAuthClient'];
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -1810,7 +1818,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Access is unauthorized. */
@@ -1819,7 +1827,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -1828,7 +1836,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -1838,7 +1846,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                clientId: components["schemas"]["UUIDString"];
+                clientId: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
@@ -1857,7 +1865,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Access is unauthorized. */
@@ -1866,7 +1874,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -1875,7 +1883,69 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    ApiOAuth_updateClient: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                clientId: components['schemas']['UUIDString'];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** @description Name of the OAuth client */
+                    name?: string;
+                    /** @description Some description used for the admin of the app */
+                    description?: string;
+                    /** @description Redirect URIs for the OAuth client */
+                    redirect_uris?: string[];
+                    /** @description Scopes allowed for the OAuth client */
+                    scopes?: components['schemas']['OAuthScope'][];
+                };
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['OAuthClient'];
+                };
+            };
+            /** @description Bad request, usually when providing an invalid string as UUID */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -1889,7 +1959,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["OAuthTokenRequest"];
+                'application/json': components['schemas']['OAuthTokenRequest'];
             };
         };
         responses: {
@@ -1899,7 +1969,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["OAuthTokenResponse"];
+                    'application/json': components['schemas']['OAuthTokenResponse'];
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -1908,7 +1978,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Access is unauthorized. */
@@ -1917,7 +1987,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -1926,7 +1996,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -1949,8 +2019,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        results: components["schemas"]["Rule"][];
+                    'application/json': {
+                        results: components['schemas']['Rule'][];
                         next?: string;
                     };
                 };
@@ -1966,7 +2036,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["RuleInput"];
+                'application/json': components['schemas']['RuleInput'];
             };
         };
         responses: {
@@ -1976,7 +2046,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Rule"];
+                    'application/json': components['schemas']['Rule'];
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -1985,7 +2055,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Forbidden, usually when using a group that the user doesn't have access to */
@@ -1994,7 +2064,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["InvalidGroupOwnerId"];
+                    'application/json': components['schemas']['InvalidGroupOwnerId'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -2003,7 +2073,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -2013,13 +2083,13 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                ruleId: components["schemas"]["UUIDString"];
+                ruleId: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["RuleInput"];
+                'application/json': components['schemas']['RuleInput'];
             };
         };
         responses: {
@@ -2029,7 +2099,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Rule"];
+                    'application/json': components['schemas']['Rule'];
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -2038,7 +2108,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Forbidden, usually when using a group that the user doesn't have access to */
@@ -2047,7 +2117,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["InvalidGroupOwnerId"];
+                    'application/json': components['schemas']['InvalidGroupOwnerId'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -2056,7 +2126,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Unprocessable entity, assigning as parent a direct or indirect child */
@@ -2065,7 +2135,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -2075,7 +2145,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                ruleId: components["schemas"]["UUIDString"];
+                ruleId: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
@@ -2087,7 +2157,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "text/plain": boolean;
+                    'text/plain': boolean;
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -2096,7 +2166,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -2105,7 +2175,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Client error */
@@ -2114,7 +2184,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HasChildren"];
+                    'application/json': components['schemas']['HasChildren'];
                 };
             };
         };
@@ -2124,7 +2194,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                ruleId: components["schemas"]["UUIDString"];
+                ruleId: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
@@ -2136,7 +2206,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "text/plain": components["schemas"]["Date"];
+                    'text/plain': components['schemas']['Date'];
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -2145,7 +2215,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Forbidden, usually when using a group that the user doesn't have access to */
@@ -2154,7 +2224,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["InvalidGroupOwnerId"];
+                    'application/json': components['schemas']['InvalidGroupOwnerId'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -2163,7 +2233,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"] | components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'] | components['schemas']['Error'];
                 };
             };
         };
@@ -2173,14 +2243,14 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                ruleId: components["schemas"]["UUIDString"];
+                ruleId: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": {
-                    condition: components["schemas"]["ConditionInput"];
+                'application/json': {
+                    condition: components['schemas']['ConditionInput'];
                 };
             };
         };
@@ -2191,7 +2261,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Rule"];
+                    'application/json': components['schemas']['Rule'];
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -2200,7 +2270,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -2209,7 +2279,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -2219,15 +2289,15 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                ruleId: components["schemas"]["UUIDString"];
-                condId: components["schemas"]["UUIDString"];
+                ruleId: components['schemas']['UUIDString'];
+                condId: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": {
-                    condition: components["schemas"]["ConditionInput"];
+                'application/json': {
+                    condition: components['schemas']['ConditionInput'];
                 };
             };
         };
@@ -2238,7 +2308,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Rule"];
+                    'application/json': components['schemas']['Rule'];
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -2247,7 +2317,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -2256,7 +2326,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -2266,8 +2336,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                ruleId: components["schemas"]["UUIDString"];
-                condId: components["schemas"]["UUIDString"];
+                ruleId: components['schemas']['UUIDString'];
+                condId: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
@@ -2279,7 +2349,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Rule"];
+                    'application/json': components['schemas']['Rule'];
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -2288,7 +2358,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -2297,7 +2367,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -2307,8 +2377,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                ruleId: components["schemas"]["UUIDString"];
-                labelId: components["schemas"]["UUIDString"];
+                ruleId: components['schemas']['UUIDString'];
+                labelId: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
@@ -2320,7 +2390,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Rule"];
+                    'application/json': components['schemas']['Rule'];
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -2329,7 +2399,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -2338,7 +2408,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description The request conflicts with the current state of the server. */
@@ -2347,7 +2417,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -2357,8 +2427,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                ruleId: components["schemas"]["UUIDString"];
-                labelId: components["schemas"]["UUIDString"];
+                ruleId: components['schemas']['UUIDString'];
+                labelId: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
@@ -2370,7 +2440,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Rule"];
+                    'application/json': components['schemas']['Rule'];
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -2379,7 +2449,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -2388,7 +2458,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -2408,7 +2478,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CheckMyProfile"];
+                    'application/json': components['schemas']['CheckMyProfile'];
                 };
             };
             /** @description An unexpected error response. */
@@ -2417,7 +2487,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -2431,7 +2501,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UserCredentials"];
+                'application/json': components['schemas']['UserCredentials'];
             };
         };
         responses: {
@@ -2441,7 +2511,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserProfile"];
+                    'application/json': components['schemas']['UserProfile'];
                 };
             };
             /** @description Access is unauthorized. */
@@ -2450,7 +2520,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["InvalidCredentials"];
+                    'application/json': components['schemas']['InvalidCredentials'];
                 };
             };
         };
@@ -2470,7 +2540,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "text/plain": boolean;
+                    'text/plain': boolean;
                 };
             };
         };
@@ -2484,7 +2554,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UpdateMyProfile"];
+                'application/json': components['schemas']['UpdateMyProfile'];
             };
         };
         responses: {
@@ -2494,7 +2564,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserProfile"];
+                    'application/json': components['schemas']['UserProfile'];
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -2503,7 +2573,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -2526,8 +2596,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        results: components["schemas"]["UserProfile"][];
+                    'application/json': {
+                        results: components['schemas']['UserProfile'][];
                         next?: string;
                     };
                 };
@@ -2538,7 +2608,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -2552,7 +2622,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateUserInput"];
+                'application/json': components['schemas']['CreateUserInput'];
             };
         };
         responses: {
@@ -2562,7 +2632,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserProfile"];
+                    'application/json': components['schemas']['UserProfile'];
                 };
             };
             /** @description Access is unauthorized. */
@@ -2571,7 +2641,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -2581,13 +2651,13 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: components["schemas"]["UUIDString"];
+                id: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UpdateUserData"];
+                'application/json': components['schemas']['UpdateUserData'];
             };
         };
         responses: {
@@ -2597,7 +2667,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserProfile"];
+                    'application/json': components['schemas']['UserProfile'];
                 };
             };
             /** @description Bad request, usually when providing an invalid string as UUID */
@@ -2606,7 +2676,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Access is unauthorized. */
@@ -2615,7 +2685,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description The server cannot find the requested resource. */
@@ -2624,7 +2694,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -2634,7 +2704,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: components["schemas"]["UUIDString"];
+                id: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
@@ -2646,7 +2716,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "text/plain": boolean;
+                    'text/plain': boolean;
                 };
             };
             /** @description Access is unauthorized. */
@@ -2655,7 +2725,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -2665,8 +2735,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: components["schemas"]["UUIDString"];
-                groupId: components["schemas"]["UUIDString"];
+                id: components['schemas']['UUIDString'];
+                groupId: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
@@ -2678,7 +2748,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserProfile"];
+                    'application/json': components['schemas']['UserProfile'];
                 };
             };
             /** @description Access is unauthorized. */
@@ -2687,7 +2757,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -2697,8 +2767,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: components["schemas"]["UUIDString"];
-                groupId: components["schemas"]["UUIDString"];
+                id: components['schemas']['UUIDString'];
+                groupId: components['schemas']['UUIDString'];
             };
             cookie?: never;
         };
@@ -2710,7 +2780,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserProfile"];
+                    'application/json': components['schemas']['UserProfile'];
                 };
             };
             /** @description Access is unauthorized. */
@@ -2719,7 +2789,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };

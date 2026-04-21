@@ -126,6 +126,72 @@ extension MrScroogeAPIImpl {
 		}
 	}
 
+	func ApiOAuth_updateClient(_ input: Operations.ApiOAuth_updateClient.Input) async throws
+		-> Operations.ApiOAuth_updateClient.Output
+	{
+		// Verify user is admin
+		let user = try await getUser(fromRequest: request)
+		guard user.isAdmin else {
+			return #GenericErrorReturn(
+				response: "unauthorized",
+				msg: "Only admin users can update OAuth clients",
+				code: ApiError.API10076)
+		}
+
+		// Validate redirect URIs if provided
+		let clientData: Components.Schemas.OAuthClientUpdate
+		switch input.body {
+		case .json(let data):
+			clientData = data
+		}
+		if let redirectUris = clientData.redirect_uris {
+			for uri in redirectUris {
+				guard
+					let url = URL(string: uri),
+					let scheme = url.scheme?.lowercased(),
+					scheme == "https"
+						|| (scheme == "http"
+							&& (url.host == "localhost"
+								|| url.host == "127.0.0.1")),
+					url.fragment == nil
+				else {
+					return #GenericErrorReturn(
+						response: "badRequest",
+						msg: "Invalid redirect uris",
+						code: ApiError.API10075)
+				}
+			}
+		}
+
+		// Use the service to update the client
+		guard let clientId = UUID(uuidString: input.path.clientId) else {
+			return #GenericErrorReturn(
+				response: "badRequest", msg: "Client app is not valid",
+				code: ApiError.API10072)
+		}
+
+		let result = try await request.application.oauthClientService.updateClient(
+			clientId: clientId,
+			name: clientData.name,
+			description: clientData.description,
+			redirectUris: clientData.redirect_uris,
+			scopes: clientData.scopes?.map { $0.toInternal() }
+		)
+
+		switch result {
+		case .success(let clientResponse):
+			return .ok(.init(body: .json(clientResponse)))
+		case .notFound:
+			return .notFound(
+				.init(
+					body: .json(
+						.init(
+							message: "Client app is not found",
+							code: ApiError.API10077.rawValue
+						))))
+		}
+	}
+
 	func ApiOAuth_listClients(_ input: Operations.ApiOAuth_listClients.Input) async throws
 		-> Operations.ApiOAuth_listClients.Output
 	{

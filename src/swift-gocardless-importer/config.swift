@@ -18,17 +18,17 @@ final class EnvConfig: Sendable {
 	// The Time period in minutes on which the user will be lock since first failed attempt
 	let maxLoginAttemptsTimePeriod: TimeInterval
 
-    let mrScroogeClientId: String
-    let mrScroogeClientSecret: String
-    let mrScroogeHost: String
-    let hostname: String
+	let mrScroogeClientId: String
+	let mrScroogeClientSecret: String
+	let mrScroogeHost: String
+	let baseHost: String
 
 	private init() {
-        let logger = Logger(label: "Config");
+		let logger = Logger(label: "Config")
 		dbUrl = Environment.get("DB_URL") ?? "sqlite://importer.sqlite3"
 		environment = Environment.get("ENVIRONMENT") ?? "development"
-        mrScroogeHost = Environment.get("MR_SCROOGE_HOST") ?? "http://localhost:8080"
-        hostname = Environment.get("HOSTNAME") ?? "http://localhost:8081"
+		mrScroogeHost = Environment.get("MR_SCROOGE_HOST") ?? "http://localhost:8080"
+		baseHost = Environment.get("BASE_HOST") ?? "http://localhost:8081"
 
 		if let envDebug = Environment.get("APP_DEBUG") {
 			debug = envDebug.lowercased() == "true"
@@ -59,19 +59,19 @@ final class EnvConfig: Sendable {
 		} else {
 			maxLoginAttemptsTimePeriod = 3600
 		}
-        if let clientId = Environment.get("CLIENT_ID"){
-            mrScroogeClientId = clientId
-        } else {
-            logger.error("Client id not defined");
-            mrScroogeClientId = ""
-        }
+		if let clientId = Environment.get("CLIENT_ID") {
+			mrScroogeClientId = clientId
+		} else {
+			logger.error("Client id not defined")
+			mrScroogeClientId = ""
+		}
 
-        if let clientSecret = Environment.get("CLIENT_SECRET"){
-            mrScroogeClientSecret = clientSecret
-        } else {
-            logger.error("Client secret not defined");
-            mrScroogeClientSecret = ""
-        }
+		if let clientSecret = Environment.get("CLIENT_SECRET") {
+			mrScroogeClientSecret = clientSecret
+		} else {
+			logger.error("Client secret not defined")
+			mrScroogeClientSecret = ""
+		}
 	}
 
 	static let shared: EnvConfig = .init()

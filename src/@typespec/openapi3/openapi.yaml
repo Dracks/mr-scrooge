@@ -913,6 +913,48 @@ paths:
                 $ref: '#/components/schemas/Error'
       tags:
         - oauth
+    patch:
+      operationId: ApiOAuth_updateClient
+      description: Update an OAuth client
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthClient'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - oauth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuthClientUpdate'
   /oauth/token:
     post:
       operationId: ApiOAuth_token
@@ -2286,6 +2328,25 @@ components:
           type: string
           format: date-time
           description: Last updated timestamp
+    OAuthClientUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the OAuth client
+        description:
+          type: string
+          description: Some description used for the admin of the app
+        redirect_uris:
+          type: array
+          items:
+            type: string
+          description: Redirect URIs for the OAuth client
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuthScope'
+          description: Scopes allowed for the OAuth client
     OAuthClientWithSecret:
       type: object
       required:

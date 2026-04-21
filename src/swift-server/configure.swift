@@ -76,7 +76,7 @@ public func configure(_ app: Application) async throws {
 		app.asyncCommands.use(CreateUserCommand(), as: "create_user")
 		app.asyncCommands.use(DemoDataCommand(), as: "demo_data")
 		app.asyncCommands.use(V2MigrateCommand(), as: "v2_migrate")
-        app.asyncCommands.use(CreateOAuthAppCommand(), as: "create_oauth_app")
+		app.asyncCommands.use(CreateOAuthAppCommand(), as: "create_oauth_app")
 
 		// register routes
 		try routes(app)
