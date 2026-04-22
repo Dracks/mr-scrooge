@@ -165,6 +165,15 @@ let package = Package(
 				.plugin(name: "GenerateErrorCodesPlugin"),
 			]
 		),
-
+		.testTarget(
+			name: "GoCardlessImporterTests",
+			dependencies: [
+				.target(name: "GoCardlessImporter"),
+				.product(name: "VaporTesting", package: "vapor"),
+				.product(name: "Fluent", package: "fluent"),
+				.product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
+			],
+			path: "src/swift-gocardless-importer-tests"
+		),
 	]
 )

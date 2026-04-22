@@ -2,9 +2,9 @@ E10000:
   message: "invalid database schema"
   additional_info: "Check your database connection and schema"
 E10001:
-    message: "Session endpoint after authorization returned with anonymous user"
+  message: "Session endpoint after authorization returned with anonymous user"
 E10002:
-    message: "Session endpoint after authorization returned an error"
+  message: "Session endpoint after authorization returned an error"
 E10003:
   message: "Invalid format converting data"
   additional_info: "Data format does not match expected structure"
@@ -12,3 +12,6 @@ E10004:
   message: "MrScrooge User Id is not an UUID"
 E10005:
   message: "Response from authorization invalid"
+E10006:
+  message: "OAuth token request failed"
+  additional_info: "The authorization code was invalid or expired"

@@ -27,7 +27,7 @@ __pycache__
 migrations/*.py
 
 
-db.sqlite3
+*.sqlite3
 server/finances/templates/react.html
 server/static/react
 
