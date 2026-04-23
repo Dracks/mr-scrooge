@@ -12,9 +12,7 @@ struct GocardlessCredentialsPage: HTMLDocument {
 	}
 
 	var body: some HTML {
-		header {
-			h1 { "GoCardLess Importer" }
-		}
+		Layout.Unauthenticated.header
 		main(.class("container")) {
 			h2 { "GoCardless API Credentials" }
 

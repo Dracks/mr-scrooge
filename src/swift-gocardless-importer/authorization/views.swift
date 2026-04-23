@@ -14,9 +14,7 @@ struct MainPage: HTMLDocument {
 	}
 
 	var body: some HTML {
-		header {
-			h1 { "GoCardLess Importer" }
-		}
+		Layout.Unauthenticated.header
 		main(.class("container")) {
 			h2 { "Welcome to GoCardLess Importer" }
 			p { "To continue, you need to identify yourself first in MrScrooge" }
@@ -43,10 +41,7 @@ struct AuthenticatedPage: HTMLDocument {
 	}
 
 	var body: some HTML {
-		header {
-			h1 { "GoCardLess Importer" }
-			small { "Logged in as \(username)" }
-		}
+		Layout.Authenticated.header(username: username)
 		main(.class("container")) {
 			h2 { "Dashboard" }
 
@@ -54,33 +49,19 @@ struct AuthenticatedPage: HTMLDocument {
 				article {
 					header { "GoCardless API" }
 					if hasCredentials {
-						p {
-							"Add accounts"
+						p { "Add accounts" }
+						a(.href("/\(GocardlessAccountsController.path)"), .role("button")) {
+							"Add account"
 						}
-						a(
-							.href(
-								"/\(GocardlessAccountsController.path)"
-							),
-							.role("button")
-						) { "Add account" }
-                        p{
-                            "it already has  configured api credentials"
-                        }
-
+						p { "it already has configured api credentials" }
 					} else {
-						p {
-							"Configure your GoCardless API credentials for bank import."
+						p { "Configure your GoCardless API credentials for bank import." }
+						a(.href("/\(GocardlessKeysController.path)"), .role("button")) {
+							"Configure API"
 						}
-						a(
-							.href("/\(GocardlessKeysController.path)"),
-							.role("button")
-						) { "Configure API" }
 					}
 				}
-
 			}
-
-			a(.href("/logout"), .role("button")) { "Logout" }
 		}
 	}
 }
@@ -95,10 +76,7 @@ struct AuthorizedPage: HTMLDocument {
 	}
 
 	var body: some HTML {
-		header {
-			h1 { "GoCardLess Importer" }
-			small { "Logged in as \(username)" }
-		}
+		Layout.Authenticated.header(username: username)
 		main(.class("container")) {
 			h2 { "Successfully Authenticated!" }
 			p { "Welcome, \(username)!" }
