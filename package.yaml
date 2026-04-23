@@ -1,6 +1,7 @@
 name: mr-scrooge
 version: 3.0.0
 scripts:
+  build:gocardless-models: bin/generate-gocardless
   build:api-models: >-
     openapi-typescript src/@typespec/openapi3/openapi.yaml --output
     src/react-view/api/generated-models.ts

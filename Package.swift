@@ -10,6 +10,8 @@ let package = Package(
 		.macOS(.v13)
 	],
 	dependencies: [
+		// Local packages
+		.package(path: "packages/gocardless-client"),
 		// OpenAPI
 		.package(url: "https://github.com/apple/swift-openapi-generator", from: "1.11.1"),
 		.package(url: "https://github.com/apple/swift-openapi-runtime", from: "1.11.0"),
@@ -140,7 +142,7 @@ let package = Package(
 				.product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
 				.product(
 					name: "OpenAPIAsyncHTTPClient",
-					package: "swift-openapi-async-http-client"),
+									package: "swift-openapi-async-http-client"),
 				.product(name: "Vapor", package: "vapor"),
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "Fluent", package: "fluent"),
@@ -152,6 +154,7 @@ let package = Package(
 					name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
 
 				"Exceptions",
+				.product(name: "GoCardlessClient", package: "gocardless-client"),
 			],
 			path: "src/swift-gocardless-importer",
 			resources: [
@@ -172,6 +175,7 @@ let package = Package(
 				.product(name: "VaporTesting", package: "vapor"),
 				.product(name: "Fluent", package: "fluent"),
 				.product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
+				.product(name: "GoCardlessClient", package: "gocardless-client"),
 			],
 			path: "src/swift-gocardless-importer-tests"
 		),

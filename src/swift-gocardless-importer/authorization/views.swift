@@ -33,6 +33,7 @@ struct MainPage: HTMLDocument {
 
 struct AuthenticatedPage: HTMLDocument {
 	let username: String
+	let hasCredentials: Bool
 
 	var title = "GoCardLess - Dashboard"
 
@@ -51,15 +52,32 @@ struct AuthenticatedPage: HTMLDocument {
 
 			div(.class("grid")) {
 				article {
-					header { "Import Files" }
-					p { "Upload bank statements to categorize your transactions." }
-					a(.href("/import"), .role("button")) { "Start Import" }
+					header { "GoCardless API" }
+					if hasCredentials {
+						p {
+							"Add accounts"
+						}
+						a(
+							.href(
+								"/\(GocardlessAccountsController.path)"
+							),
+							.role("button")
+						) { "Add account" }
+                        p{
+                            "it already has  configured api credentials"
+                        }
+
+					} else {
+						p {
+							"Configure your GoCardless API credentials for bank import."
+						}
+						a(
+							.href("/\(GocardlessKeysController.path)"),
+							.role("button")
+						) { "Configure API" }
+					}
 				}
-				article {
-					header { "View Data" }
-					p { "Browse and manage your categorized transactions." }
-					a(.href("/data"), .role("button")) { "View Data" }
-				}
+
 			}
 
 			a(.href("/logout"), .role("button")) { "Logout" }

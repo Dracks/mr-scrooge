@@ -17,6 +17,9 @@ final class User: Model, Content, @unchecked Sendable {
 	@Field(key: "email")
 	var email: String?
 
+    @OptionalChild(for: \.$user)
+    var gclCredentials: GocardlessInstitutionCredentials?
+
 	@Timestamp(key: "created_at", on: .create)
 	var createdAt: Date?
 
@@ -35,11 +38,6 @@ final class User: Model, Content, @unchecked Sendable {
 		self.email = email
 		self.createdAt = createdAt
 		self.updatedAt = updatedAt
-	}
-
-	init(_ sourceId: UUID, username: String) {
-		self.externalId = sourceId
-		self.username = username
 	}
 }
 

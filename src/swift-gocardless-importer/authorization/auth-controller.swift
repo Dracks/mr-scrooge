@@ -8,15 +8,6 @@ import VaporElementary
 
 struct GocardlessAuthController: RouteCollection {
 
-	private func getAuthenticatedUsername(_ req: Request) -> String? {
-		let user = req.auth.get(GoCardlessImporter.User.self)
-
-		return user?.username
-	}
-
-	private func isAuthenticated(_ req: Request) -> Bool {
-		return getAuthenticatedUsername(req) != nil
-	}
 
 	func boot(routes: RoutesBuilder) throws {
 		routes.get(use: index)
@@ -25,12 +16,13 @@ struct GocardlessAuthController: RouteCollection {
 	}
 
 	func index(req: Request) async throws -> HTMLResponse {
-		let authenticated = isAuthenticated(req)
+        let user = getUser(fromRequest: req)
 
-		if authenticated {
-			let username = getAuthenticatedUsername(req) ?? ""
+		if let user {
+            let credentials = try await user.$gclCredentials.get(on: req.db)
+
 			return HTMLResponse {
-				AuthenticatedPage(username: username)
+				AuthenticatedPage(username: user.username, hasCredentials: credentials != nil)
 			}
 		} else {
 			return HTMLResponse {
@@ -126,8 +118,12 @@ struct GocardlessAuthController: RouteCollection {
 
 				req.auth.login(user)
 
-				let tokenRecord = MrScroogeOAuthToken()
-				tokenRecord.userId = try user.requireID()
+				let userId = try user.requireID()
+
+				let tokenRecord =
+					try await MrScroogeOAuthToken.query(on: req.db).filter(
+						\.$userId == userId
+					).first() ?? MrScroogeOAuthToken(userId: userId)
 				tokenRecord.accessToken = accessToken
 				tokenRecord.refreshToken = refreshToken
 				tokenRecord.expiresAt = expiresAt
