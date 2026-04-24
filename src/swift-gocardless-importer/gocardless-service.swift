@@ -21,8 +21,22 @@ struct GoCardlessInstitution: Codable, Content {
 	let id: String
 	let name: String
 	let bic: String
+	let transactionTotalDays: String?
 	let countries: [String]
-	let logo: String
+	let logo: String?
+	let maxAccessValidForDays: String?
+	let maxAccessValidForDaysReconfirmation: String?
+
+	enum CodingKeys: String, CodingKey {
+		case id
+		case name
+		case bic
+		case transactionTotalDays = "transaction_total_days"
+		case countries
+		case logo
+		case maxAccessValidForDays = "max_access_valid_for_days"
+		case maxAccessValidForDaysReconfirmation = "max_access_valid_for_days_reconfirmation"
+	}
 }
 
 struct GoCardlessEndUserAgreement: Codable, Content {

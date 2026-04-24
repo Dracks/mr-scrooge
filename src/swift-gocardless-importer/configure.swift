@@ -49,6 +49,7 @@ public func registerMigrations(_ app: Application) async throws {
 	app.migrations.add(CreateOAuthTokens())
 	app.migrations.add(CreateGocardlessUsers())
 	app.migrations.add(CreateGocardlessInstitutionCredentials())
+	app.migrations.add(CreateUserAgreements())
 }
 
 public func configureImporter(_ app: Application) async throws {

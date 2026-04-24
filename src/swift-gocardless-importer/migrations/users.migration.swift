@@ -20,6 +20,9 @@ final class User: Model, Content, @unchecked Sendable {
     @OptionalChild(for: \.$user)
     var gclCredentials: GocardlessInstitutionCredentials?
 
+    @Children(for: \.$user)
+    var agreements: [UserAgreement]
+
 	@Timestamp(key: "created_at", on: .create)
 	var createdAt: Date?
 
