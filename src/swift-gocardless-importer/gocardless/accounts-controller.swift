@@ -5,13 +5,11 @@ import OpenAPIClient
 import Vapor
 import VaporElementary
 
-struct AccountListResponse: Content {
-	var accounts: [Account]
-}
 
 struct CreateAgreementRequest: Content {
 	var institutionId: String
 }
+
 
 struct GocardlessAccountsController: RouteCollection {
     static let path: PathComponent = "gcl-accounts";
@@ -19,8 +17,10 @@ struct GocardlessAccountsController: RouteCollection {
 	func boot(routes: RoutesBuilder) throws {
 		let accountsGroup = routes.grouped(GocardlessAccountsController.path)
 		accountsGroup.get(use: showAccounts)
+		accountsGroup.get("add", use: showCountrySelection)
+		accountsGroup.get("add", "institutions", use: showInstitutionsForCountry)
 		accountsGroup.post("create", use: createAgreement)
-		accountsGroup.get(use: listAccounts)
+		try accountsGroup.register(collection: UserAgreementsController())
 	}
 
 	func showAccounts(req: Request) async throws -> HTMLResponse {
@@ -39,11 +39,72 @@ struct GocardlessAccountsController: RouteCollection {
 			.filter(\.$user.$id == userId)
 			.all()
 
-		let country = "ES"
-		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(req.eventLoop))
+		var accountDetails: [AccountDetailView] = []
+		if !agreements.isEmpty {
+			let gclService = GoCardlessService(
+				client: req.application.gocardlessHTTPClient,
+				secretId: credentials.secretId,
+				secretKey: credentials.secretKey
+			)
+
+			try await gclService.obtainTokens()
+
+			for agreement in agreements {
+				let requisition = try await gclService.getRequisitionsBy(requisitionId: agreement.requisitionId)
+					for accountId in requisition.accounts {
+						if let account = try? await gclService.getAccountDetails(id: accountId) {
+							accountDetails.append(AccountDetailView(
+								agreementId: agreement.id?.uuidString ?? "",
+								institutionName: agreement.institutionName,
+								iban: account.iban,
+								ownerName: account.ownerName,
+								status: account.status,
+								name: account.name
+							))
+						}
+					}
+			}
+		}
+
+		return HTMLResponse {
+			GocardlessAccountsPage(
+				username: user.username,
+				accounts: accountDetails,
+				agreements: agreements
+			)
+		}
+	}
+
+	func showCountrySelection(req: Request) async throws -> HTMLResponse {
+		guard let user = req.auth.get(GoCardlessImporter.User.self) else {
+			throw Abort(.unauthorized)
+		}
+
+		return HTMLResponse {
+			GocardlessCountrySelectionPage(
+				username: user.username
+			)
+		}
+	}
+
+	func showInstitutionsForCountry(req: Request) async throws -> HTMLResponse {
+		guard let user = req.auth.get(GoCardlessImporter.User.self) else {
+			throw Abort(.unauthorized)
+		}
+		let userId = try user.requireID()
+
+		guard let credentials = try await GocardlessInstitutionCredentials.query(on: req.db)
+			.filter(\.$user.$id == userId)
+			.first() else {
+			throw Abort(.notFound, reason: "No credentials configured")
+		}
+
+		guard let country = req.query[String.self, at: "country"] else {
+			throw Abort(.badRequest, reason: "Country parameter required")
+		}
 
 		let gclService = GoCardlessService(
-			client: httpClient,
+			client: req.application.gocardlessHTTPClient,
 			secretId: credentials.secretId,
 			secretKey: credentials.secretKey
 		)
@@ -54,14 +115,15 @@ struct GocardlessAccountsController: RouteCollection {
 		let institutionViews = institutions.map { institution in
 			InstitutionView(
 				id: institution.id,
-				name: institution.name
+				name: institution.name,
+				bic: institution.bic,
+				countries: institution.countries
 			)
 		}
 
 		return HTMLResponse {
-			GocardlessAccountsPage(
+			GocardlessInstitutionsPage(
 				username: user.username,
-				agreements: agreements,
 				institutions: institutionViews,
 				country: country
 			)
@@ -87,10 +149,8 @@ struct GocardlessAccountsController: RouteCollection {
 			throw Abort(.badRequest, reason: "Please select a bank")
 		}
 
-		let httpClient = HTTPClient(eventLoopGroupProvider: .shared(req.eventLoop))
-
 		let gclService = GoCardlessService(
-			client: httpClient,
+			client: req.application.gocardlessHTTPClient,
 			secretId: credentials.secretId,
 			secretKey: credentials.secretKey
 		)
@@ -101,7 +161,7 @@ struct GocardlessAccountsController: RouteCollection {
 
 		let agreement = try await gclService.createEndUserAgreement(institutionId: institutionId)
 
-		let redirectUrl = "\(EnvConfig.shared.baseHost)/gcl-accounts/created"
+		let redirectUrl = "\(EnvConfig.shared.baseHost)/gcl-accounts/agreements/created"
 
 		let requisition = try await gclService.createRequisition(
 			institutionId: institutionId,
@@ -114,7 +174,8 @@ struct GocardlessAccountsController: RouteCollection {
 			agreementId: agreement.id,
 			institutionId: institutionId,
 			institutionName: institution.name,
-			status: "pending"
+			status: "pending",
+			requisitionId: requisition.id
 		)
 		try await userAgreement.save(on: req.db)
 
@@ -129,57 +190,5 @@ struct GocardlessAccountsController: RouteCollection {
 				redirectUrl: link
 			)
 		}
-	}
-
-	func listAccounts(req: Request) async throws -> AccountListResponse {
-		guard let user = req.auth.get(GoCardlessImporter.User.self) else {
-			throw Abort(.unauthorized)
-		}
-		let userId = try user.requireID()
-
-		guard let credentials = try await GocardlessInstitutionCredentials.query(on: req.db)
-			.filter(\.$user.$id == userId)
-			.first() else {
-			throw Abort(.notFound, reason: "No credentials configured")
-		}
-
-		actor GocardlessServiceActor {
-			private var credentials: GocardlessInstitutionCredentials
-			private let db: Database
-
-			init(credentials: GocardlessInstitutionCredentials, db: Database) {
-				self.credentials = credentials
-				self.db = db
-			}
-
-			private func refreshAccessTokenIfNeeded() async throws {
-				guard credentials.isTokenExpired else { return }
-				guard let refreshToken = credentials.refreshToken else {
-					throw Abort(.unauthorized, reason: "No refresh token available")
-				}
-
-				let response = try await GocardlessService.refreshToken(refreshToken: refreshToken)
-				credentials.setTokens(
-					access: response.access ?? "",
-					refresh: refreshToken,
-					expiresIn: response.accessExpires ?? 86400
-				)
-				try await credentials.update(on: db)
-			}
-
-			func listAccounts() async throws -> [Account] {
-				try await refreshAccessTokenIfNeeded()
-
-				guard let accessToken = credentials.accessToken else {
-					throw Abort(.unauthorized, reason: "No access token available")
-				}
-
-				return try await GocardlessService.listAccounts(accessToken: accessToken)
-			}
-		}
-
-		let actor = GocardlessServiceActor(credentials: credentials, db: req.db)
-		let accounts = try await actor.listAccounts()
-		return AccountListResponse(accounts: accounts)
 	}
 }

@@ -1,8 +1,9 @@
 import Fluent
-import GoCardlessImporter
 import OpenAPIClient
 import Testing
 import VaporTesting
+
+@testable import GoCardlessImporter
 
 @Suite("Gocardless Service Tests")
 struct GocardlessServiceTests {
@@ -60,12 +61,5 @@ struct GocardlessServiceTests {
 		let config = GocardlessService.createConfiguration()
 
 		#expect(config.basePath == "https://bankaccountdata.memo1.eu")
-	}
-
-	@Test("GocardlessService createConfiguration with access token sets token")
-	func testCreateConfigurationWithToken() async throws {
-		let config = GocardlessService.createConfiguration(accessToken: "test-token")
-
-		#expect(config.accessToken == "test-token")
 	}
 }

@@ -26,6 +26,9 @@ final class UserAgreement: Model, Content, @unchecked Sendable {
 	@Field(key: "access_scope")
 	var accessScope: String?
 
+	@Field(key: "requisition_id")
+	var requisitionId: String
+
 	@Timestamp(key: "created_at", on: .create)
 	var createdAt: Date?
 
@@ -42,6 +45,7 @@ final class UserAgreement: Model, Content, @unchecked Sendable {
 		institutionName: String,
 		status: String = "pending",
 		accessScope: String? = nil,
+		requisitionId: String,
 		createdAt: Date? = nil,
 		updatedAt: Date? = nil
 	) {
@@ -52,6 +56,7 @@ final class UserAgreement: Model, Content, @unchecked Sendable {
 		self.institutionName = institutionName
 		self.status = status
 		self.accessScope = accessScope
+		self.requisitionId = requisitionId
 		self.createdAt = createdAt
 		self.updatedAt = updatedAt
 	}
@@ -67,6 +72,7 @@ struct CreateUserAgreements: AsyncMigration {
 			.field("institution_name", .string, .required)
 			.field("status", .string, .required)
 			.field("access_scope", .string)
+			.field("requisition_id", .string, .required)
 			.field("created_at", .datetime, .required)
 			.field("updated_at", .datetime, .required)
 			.create()
@@ -74,5 +80,19 @@ struct CreateUserAgreements: AsyncMigration {
 
 	func revert(on database: Database) async throws {
 		try await database.schema("user_agreements").delete()
+	}
+}
+
+struct AddRequisitionIdToUserAgreements: AsyncMigration {
+	func prepare(on database: Database) async throws {
+		try await database.schema("user_agreements")
+			.field("requisition_id", .string)
+			.update()
+	}
+
+	func revert(on database: Database) async throws {
+		try await database.schema("user_agreements")
+			.deleteField("requisition_id")
+			.update()
 	}
 }

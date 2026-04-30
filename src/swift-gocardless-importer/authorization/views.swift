@@ -53,7 +53,10 @@ struct AuthenticatedPage: HTMLDocument {
 						a(.href("/\(GocardlessAccountsController.path)"), .role("button")) {
 							"Add account"
 						}
-						p { "it already has configured api credentials" }
+						p { "it already has configured api credentials, if you need to change them see the button:" }
+                        a(.href("/\(GocardlessKeysController.path)"), .role("button")) {
+                            "Change keys"
+                        }
 					} else {
 						p { "Configure your GoCardless API credentials for bank import." }
 						a(.href("/\(GocardlessKeysController.path)"), .role("button")) {

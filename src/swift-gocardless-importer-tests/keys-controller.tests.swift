@@ -1,7 +1,8 @@
 import Fluent
-import GoCardlessImporter
 import Testing
 import VaporTesting
+
+@testable import GoCardlessImporter
 
 @Suite("Keys Controller Tests")
 struct KeysControllerTests {
@@ -21,10 +22,10 @@ struct KeysControllerTests {
 			let tester = try app.testing()
 			let body = "secretId=test&secretKey=test"
 			let response = try await tester.sendRequest(
-				.method POST,
+				.POST,
 				"/set_gocardless_credentials",
-				body: body,
-				headers: ["Content-Type": "application/x-www-form-urlencoded"]
+				headers: ["Content-Type": "application/x-www-form-urlencoded"],
+				body: ByteBuffer(string: body)
 			)
 
 			#expect(response.status == .unauthorized)

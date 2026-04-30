@@ -643,6 +643,67 @@ class GoCardlessService {
 		return transactions
 	}
 
+	/// Retrieves all requisitions filtered by institution
+	func getRequisitionsBy(requisitionId: String) async throws -> GoCardlessRequisition {
+		try await ensureValidToken()
+
+		let request = try await createRequest(
+			path: "/requisitions/\(requisitionId)", method: .GET)
+		let response = try await client.execute(request, timeout: .seconds(30))
+        print(response.body)
+
+		guard response.status.code == 200 else {
+			if response.status.code == 401 {
+				throw GoCardlessError.unauthorized
+			} else {
+				let responseBuffer = try await response.body.collect(
+					upTo: 1024 * 1024)  // 1MB limit
+				let responseBody = String(buffer: responseBuffer)
+				throw GoCardlessError.apiError(
+					"HTTP \(response.status.code): \(responseBody)")
+			}
+		}
+				let responseBuffer = try await response.body.collect(
+					upTo: 1024 * 1024)  // 1MB limit
+		let decoder = JSONDecoder()
+		return try decoder.decode(
+			GoCardlessRequisition.self, from: Data(responseBuffer.readableBytesView))
+	}
+
+	func getRequisitionsBy(institutionId: String) async throws -> [GoCardlessRequisition] {
+		try await ensureValidToken()
+
+		let request = try await createRequest(
+			path: "/requisitions/?institutionId=\(institutionId)", method: .GET)
+		let response = try await client.execute(request, timeout: .seconds(30))
+
+		guard response.status.code == 200 else {
+			if response.status.code == 401 {
+				throw GoCardlessError.unauthorized
+			} else {
+				let responseBuffer = try await response.body.collect(
+					upTo: 1024 * 1024)  // 1MB limit
+				let responseBody = String(buffer: responseBuffer)
+				throw GoCardlessError.apiError(
+					"HTTP \(response.status.code): \(responseBody)")
+			}
+		}
+
+		let buffer = try await response.body.collect(upTo: 1024 * 1024)  // 1MB limit
+
+		struct RequisitionsResponse: Codable {
+			let count: Int
+			let next: String?
+			let previous: String?
+			let results: [GoCardlessRequisition]
+		}
+
+		let decoder = JSONDecoder()
+		let requisitionsResponse = try decoder.decode(
+			RequisitionsResponse.self, from: Data(buffer.readableBytesView))
+
+		return requisitionsResponse.results
+	}
 	// MARK: - Private Helper Methods
 
 	private func createRequest(path: String, method: HTTPMethod, body: Data? = nil) async throws

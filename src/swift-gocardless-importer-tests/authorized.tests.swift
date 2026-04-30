@@ -1,7 +1,8 @@
 import Fluent
-import GoCardlessImporter
 import Testing
 import VaporTesting
+
+@testable import GoCardlessImporter
 
 @Suite("Authorization Tests")
 struct AuthorizationTests {
