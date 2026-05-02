@@ -6,10 +6,9 @@
 //
 
 import Foundation
-import Vapor
 
 /** AccountDetailSerializer. */
-public struct AccountDetail: Sendable, Content, Hashable {
+public struct AccountDetail: Sendable, Codable, Hashable {
 
     /** account */
     public var account: DetailSchema

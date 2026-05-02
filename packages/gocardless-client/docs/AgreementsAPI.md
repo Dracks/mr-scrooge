@@ -15,7 +15,7 @@ Method | HTTP request | Description
 
 # **acceptEUA**
 ```swift
-    open class func acceptEUA(id: UUID, enduserAcceptanceDetailsRequest: EnduserAcceptanceDetailsRequest, headers: HTTPHeaders = GoCardlessClientAPIConfiguration.shared.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<AcceptEUA>
+    open class func acceptEUA(id: UUID, enduserAcceptanceDetailsRequest: EnduserAcceptanceDetailsRequest, completion: @escaping (_ data: EndUserAgreement?, _ error: Error?) -> Void)
 ```
 
 
@@ -30,22 +30,14 @@ import GoCardlessClient
 let id = 987 // UUID | A UUID string identifying this end user agreement.
 let enduserAcceptanceDetailsRequest = EnduserAcceptanceDetailsRequest(userAgent: "userAgent_example", ipAddress: "ipAddress_example") // EnduserAcceptanceDetailsRequest | 
 
-AgreementsAPI.acceptEUA(id: id, enduserAcceptanceDetailsRequest: enduserAcceptanceDetailsRequest).whenComplete { result in
-    switch result {
-    case .failure(let error):
-    // process error
-    case .success(let response):
-        switch response {
-        // process decoded response value or raw ClientResponse
-        case .http200(let value, let raw):
-        case .http400(let value, let raw):
-        case .http401(let value, let raw):
-        case .http403(let value, let raw):
-        case .http404(let value, let raw):
-        case .http405(let value, let raw):
-        case .http429(let value, let raw):
-        case .http0(let value, let raw):
-        }
+AgreementsAPI.acceptEUA(id: id, enduserAcceptanceDetailsRequest: enduserAcceptanceDetailsRequest) { (response, error) in
+    guard error == nil else {
+        print(error)
+        return
+    }
+
+    if (response) {
+        dump(response)
     }
 }
 ```
@@ -59,20 +51,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-#### AcceptEUA
-
-```swift
-public enum AcceptEUA {
-    case http200(value: EndUserAgreement?, raw: ClientResponse)
-    case http400(value: ModelErrorResponse?, raw: ClientResponse)
-    case http401(value: ModelErrorResponse?, raw: ClientResponse)
-    case http403(value: ModelErrorResponse?, raw: ClientResponse)
-    case http404(value: ModelErrorResponse?, raw: ClientResponse)
-    case http405(value: ModelErrorResponse?, raw: ClientResponse)
-    case http429(value: ModelErrorResponse?, raw: ClientResponse)
-    case http0(value: EndUserAgreement?, raw: ClientResponse)
-}
-```
+[**EndUserAgreement**](EndUserAgreement.md)
 
 ### Authorization
 
@@ -87,7 +66,7 @@ public enum AcceptEUA {
 
 # **createEUA**
 ```swift
-    open class func createEUA(endUserAgreementRequest: EndUserAgreementRequest, headers: HTTPHeaders = GoCardlessClientAPIConfiguration.shared.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<CreateEUA>
+    open class func createEUA(endUserAgreementRequest: EndUserAgreementRequest, completion: @escaping (_ data: EndUserAgreement?, _ error: Error?) -> Void)
 ```
 
 
@@ -101,21 +80,14 @@ import GoCardlessClient
 
 let endUserAgreementRequest = EndUserAgreementRequest(institutionId: "institutionId_example", maxHistoricalDays: 123, accessValidForDays: 123, accessScope: [123], reconfirmation: false) // EndUserAgreementRequest | 
 
-AgreementsAPI.createEUA(endUserAgreementRequest: endUserAgreementRequest).whenComplete { result in
-    switch result {
-    case .failure(let error):
-    // process error
-    case .success(let response):
-        switch response {
-        // process decoded response value or raw ClientResponse
-        case .http201(let value, let raw):
-        case .http400(let value, let raw):
-        case .http401(let value, let raw):
-        case .http402(let value, let raw):
-        case .http403(let value, let raw):
-        case .http429(let value, let raw):
-        case .http0(let value, let raw):
-        }
+AgreementsAPI.createEUA(endUserAgreementRequest: endUserAgreementRequest) { (response, error) in
+    guard error == nil else {
+        print(error)
+        return
+    }
+
+    if (response) {
+        dump(response)
     }
 }
 ```
@@ -128,19 +100,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-#### CreateEUA
-
-```swift
-public enum CreateEUA {
-    case http201(value: EndUserAgreement?, raw: ClientResponse)
-    case http400(value: ModelErrorResponse?, raw: ClientResponse)
-    case http401(value: ModelErrorResponse?, raw: ClientResponse)
-    case http402(value: ModelErrorResponse?, raw: ClientResponse)
-    case http403(value: ModelErrorResponse?, raw: ClientResponse)
-    case http429(value: ModelErrorResponse?, raw: ClientResponse)
-    case http0(value: EndUserAgreement?, raw: ClientResponse)
-}
-```
+[**EndUserAgreement**](EndUserAgreement.md)
 
 ### Authorization
 
@@ -155,7 +115,7 @@ public enum CreateEUA {
 
 # **createEUAReconfirmation**
 ```swift
-    open class func createEUAReconfirmation(id: UUID, reconfirmationRetrieveRequest: ReconfirmationRetrieveRequest? = nil, headers: HTTPHeaders = GoCardlessClientAPIConfiguration.shared.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<CreateEUAReconfirmation>
+    open class func createEUAReconfirmation(id: UUID, reconfirmationRetrieveRequest: ReconfirmationRetrieveRequest? = nil, completion: @escaping (_ data: ReconfirmationRetrieve?, _ error: Error?) -> Void)
 ```
 
 
@@ -170,21 +130,14 @@ import GoCardlessClient
 let id = 987 // UUID | A UUID string identifying this end user agreement.
 let reconfirmationRetrieveRequest = ReconfirmationRetrieveRequest(redirect: "redirect_example") // ReconfirmationRetrieveRequest |  (optional)
 
-AgreementsAPI.createEUAReconfirmation(id: id, reconfirmationRetrieveRequest: reconfirmationRetrieveRequest).whenComplete { result in
-    switch result {
-    case .failure(let error):
-    // process error
-    case .success(let response):
-        switch response {
-        // process decoded response value or raw ClientResponse
-        case .http201(let value, let raw):
-        case .http400(let value, let raw):
-        case .http401(let value, let raw):
-        case .http403(let value, let raw):
-        case .http404(let value, let raw):
-        case .http429(let value, let raw):
-        case .http0(let value, let raw):
-        }
+AgreementsAPI.createEUAReconfirmation(id: id, reconfirmationRetrieveRequest: reconfirmationRetrieveRequest) { (response, error) in
+    guard error == nil else {
+        print(error)
+        return
+    }
+
+    if (response) {
+        dump(response)
     }
 }
 ```
@@ -198,19 +151,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-#### CreateEUAReconfirmation
-
-```swift
-public enum CreateEUAReconfirmation {
-    case http201(value: ReconfirmationRetrieve?, raw: ClientResponse)
-    case http400(value: ModelErrorResponse?, raw: ClientResponse)
-    case http401(value: ModelErrorResponse?, raw: ClientResponse)
-    case http403(value: ModelErrorResponse?, raw: ClientResponse)
-    case http404(value: ModelErrorResponse?, raw: ClientResponse)
-    case http429(value: ModelErrorResponse?, raw: ClientResponse)
-    case http0(value: ReconfirmationRetrieve?, raw: ClientResponse)
-}
-```
+[**ReconfirmationRetrieve**](ReconfirmationRetrieve.md)
 
 ### Authorization
 
@@ -225,7 +166,7 @@ public enum CreateEUAReconfirmation {
 
 # **deleteEUAById**
 ```swift
-    open class func deleteEUAById(id: UUID, headers: HTTPHeaders = GoCardlessClientAPIConfiguration.shared.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<DeleteEUAById>
+    open class func deleteEUAById(id: UUID, completion: @escaping (_ data: SuccessfulDeleteResponse?, _ error: Error?) -> Void)
 ```
 
 
@@ -239,21 +180,14 @@ import GoCardlessClient
 
 let id = 987 // UUID | A UUID string identifying this end user agreement.
 
-AgreementsAPI.deleteEUAById(id: id).whenComplete { result in
-    switch result {
-    case .failure(let error):
-    // process error
-    case .success(let response):
-        switch response {
-        // process decoded response value or raw ClientResponse
-        case .http200(let value, let raw):
-        case .http400(let value, let raw):
-        case .http401(let value, let raw):
-        case .http403(let value, let raw):
-        case .http404(let value, let raw):
-        case .http429(let value, let raw):
-        case .http0(let value, let raw):
-        }
+AgreementsAPI.deleteEUAById(id: id) { (response, error) in
+    guard error == nil else {
+        print(error)
+        return
+    }
+
+    if (response) {
+        dump(response)
     }
 }
 ```
@@ -266,19 +200,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-#### DeleteEUAById
-
-```swift
-public enum DeleteEUAById {
-    case http200(value: SuccessfulDeleteResponse?, raw: ClientResponse)
-    case http400(value: ModelErrorResponse?, raw: ClientResponse)
-    case http401(value: ModelErrorResponse?, raw: ClientResponse)
-    case http403(value: ModelErrorResponse?, raw: ClientResponse)
-    case http404(value: ModelErrorResponse?, raw: ClientResponse)
-    case http429(value: ModelErrorResponse?, raw: ClientResponse)
-    case http0(value: SuccessfulDeleteResponse?, raw: ClientResponse)
-}
-```
+[**SuccessfulDeleteResponse**](SuccessfulDeleteResponse.md)
 
 ### Authorization
 
@@ -293,7 +215,7 @@ public enum DeleteEUAById {
 
 # **retrieveAllAgreements**
 ```swift
-    open class func retrieveAllAgreements(limit: Int? = nil, offset: Int? = nil, headers: HTTPHeaders = GoCardlessClientAPIConfiguration.shared.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RetrieveAllAgreements>
+    open class func retrieveAllAgreements(limit: Int? = nil, offset: Int? = nil, completion: @escaping (_ data: PaginatedEndUserAgreementList?, _ error: Error?) -> Void)
 ```
 
 
@@ -308,20 +230,14 @@ import GoCardlessClient
 let limit = 987 // Int | Number of results to return per page. (optional) (default to 100)
 let offset = 987 // Int | The initial zero-based index from which to return the results. (optional) (default to 0)
 
-AgreementsAPI.retrieveAllAgreements(limit: limit, offset: offset).whenComplete { result in
-    switch result {
-    case .failure(let error):
-    // process error
-    case .success(let response):
-        switch response {
-        // process decoded response value or raw ClientResponse
-        case .http200(let value, let raw):
-        case .http401(let value, let raw):
-        case .http403(let value, let raw):
-        case .http404(let value, let raw):
-        case .http429(let value, let raw):
-        case .http0(let value, let raw):
-        }
+AgreementsAPI.retrieveAllAgreements(limit: limit, offset: offset) { (response, error) in
+    guard error == nil else {
+        print(error)
+        return
+    }
+
+    if (response) {
+        dump(response)
     }
 }
 ```
@@ -335,18 +251,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-#### RetrieveAllAgreements
-
-```swift
-public enum RetrieveAllAgreements {
-    case http200(value: PaginatedEndUserAgreementList?, raw: ClientResponse)
-    case http401(value: ModelErrorResponse?, raw: ClientResponse)
-    case http403(value: ModelErrorResponse?, raw: ClientResponse)
-    case http404(value: ModelErrorResponse?, raw: ClientResponse)
-    case http429(value: ModelErrorResponse?, raw: ClientResponse)
-    case http0(value: PaginatedEndUserAgreementList?, raw: ClientResponse)
-}
-```
+[**PaginatedEndUserAgreementList**](PaginatedEndUserAgreementList.md)
 
 ### Authorization
 
@@ -361,7 +266,7 @@ public enum RetrieveAllAgreements {
 
 # **retrieveEUAById**
 ```swift
-    open class func retrieveEUAById(id: UUID, headers: HTTPHeaders = GoCardlessClientAPIConfiguration.shared.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RetrieveEUAById>
+    open class func retrieveEUAById(id: UUID, completion: @escaping (_ data: EndUserAgreement?, _ error: Error?) -> Void)
 ```
 
 
@@ -375,21 +280,14 @@ import GoCardlessClient
 
 let id = 987 // UUID | A UUID string identifying this end user agreement.
 
-AgreementsAPI.retrieveEUAById(id: id).whenComplete { result in
-    switch result {
-    case .failure(let error):
-    // process error
-    case .success(let response):
-        switch response {
-        // process decoded response value or raw ClientResponse
-        case .http200(let value, let raw):
-        case .http400(let value, let raw):
-        case .http401(let value, let raw):
-        case .http403(let value, let raw):
-        case .http404(let value, let raw):
-        case .http429(let value, let raw):
-        case .http0(let value, let raw):
-        }
+AgreementsAPI.retrieveEUAById(id: id) { (response, error) in
+    guard error == nil else {
+        print(error)
+        return
+    }
+
+    if (response) {
+        dump(response)
     }
 }
 ```
@@ -402,19 +300,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-#### RetrieveEUAById
-
-```swift
-public enum RetrieveEUAById {
-    case http200(value: EndUserAgreement?, raw: ClientResponse)
-    case http400(value: ModelErrorResponse?, raw: ClientResponse)
-    case http401(value: ModelErrorResponse?, raw: ClientResponse)
-    case http403(value: ModelErrorResponse?, raw: ClientResponse)
-    case http404(value: ModelErrorResponse?, raw: ClientResponse)
-    case http429(value: ModelErrorResponse?, raw: ClientResponse)
-    case http0(value: EndUserAgreement?, raw: ClientResponse)
-}
-```
+[**EndUserAgreement**](EndUserAgreement.md)
 
 ### Authorization
 
@@ -429,7 +315,7 @@ public enum RetrieveEUAById {
 
 # **retrieveEUAReconfirmation**
 ```swift
-    open class func retrieveEUAReconfirmation(id: UUID, headers: HTTPHeaders = GoCardlessClientAPIConfiguration.shared.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RetrieveEUAReconfirmation>
+    open class func retrieveEUAReconfirmation(id: UUID, completion: @escaping (_ data: ReconfirmationRetrieve?, _ error: Error?) -> Void)
 ```
 
 
@@ -443,21 +329,14 @@ import GoCardlessClient
 
 let id = 987 // UUID | A UUID string identifying this end user agreement.
 
-AgreementsAPI.retrieveEUAReconfirmation(id: id).whenComplete { result in
-    switch result {
-    case .failure(let error):
-    // process error
-    case .success(let response):
-        switch response {
-        // process decoded response value or raw ClientResponse
-        case .http200(let value, let raw):
-        case .http400(let value, let raw):
-        case .http401(let value, let raw):
-        case .http403(let value, let raw):
-        case .http404(let value, let raw):
-        case .http429(let value, let raw):
-        case .http0(let value, let raw):
-        }
+AgreementsAPI.retrieveEUAReconfirmation(id: id) { (response, error) in
+    guard error == nil else {
+        print(error)
+        return
+    }
+
+    if (response) {
+        dump(response)
     }
 }
 ```
@@ -470,19 +349,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-#### RetrieveEUAReconfirmation
-
-```swift
-public enum RetrieveEUAReconfirmation {
-    case http200(value: ReconfirmationRetrieve?, raw: ClientResponse)
-    case http400(value: ModelErrorResponse?, raw: ClientResponse)
-    case http401(value: ModelErrorResponse?, raw: ClientResponse)
-    case http403(value: ModelErrorResponse?, raw: ClientResponse)
-    case http404(value: ModelErrorResponse?, raw: ClientResponse)
-    case http429(value: ModelErrorResponse?, raw: ClientResponse)
-    case http0(value: ReconfirmationRetrieve?, raw: ClientResponse)
-}
-```
+[**ReconfirmationRetrieve**](ReconfirmationRetrieve.md)
 
 ### Authorization
 

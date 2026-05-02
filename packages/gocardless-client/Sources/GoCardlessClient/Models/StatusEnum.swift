@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import Vapor
 
-public enum StatusEnum: String, Sendable, Content, Hashable, CaseIterable {
+public enum StatusEnum: String, Sendable, Codable, CaseIterable {
     case cr = "CR"
     case id = "ID"
     case ln = "LN"

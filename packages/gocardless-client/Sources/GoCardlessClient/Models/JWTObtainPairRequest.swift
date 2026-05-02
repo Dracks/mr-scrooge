@@ -6,10 +6,9 @@
 //
 
 import Foundation
-import Vapor
 
 /** Obtain JWT pair. */
-public struct JWTObtainPairRequest: Sendable, Content, Hashable {
+public struct JWTObtainPairRequest: Sendable, Codable, Hashable {
 
     public static let secretIdRule = StringRule(minLength: 1, maxLength: nil, pattern: nil)
     public static let secretKeyRule = StringRule(minLength: 1, maxLength: nil, pattern: nil)

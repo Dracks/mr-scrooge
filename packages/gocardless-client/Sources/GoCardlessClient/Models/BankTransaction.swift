@@ -6,10 +6,9 @@
 //
 
 import Foundation
-import Vapor
 
 /** BankTransactionSerializer. */
-public struct BankTransaction: Sendable, Content, Hashable {
+public struct BankTransaction: Sendable, Codable, Hashable {
 
     public var booked: [TransactionSchema]
     public var pending: [TransactionSchema]?

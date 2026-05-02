@@ -8,7 +8,6 @@ import VaporElementary
 
 struct GocardlessAuthController: RouteCollection {
 
-
 	func boot(routes: RoutesBuilder) throws {
 		routes.get(use: index)
 		routes.get("authorized", use: authorized)
@@ -16,13 +15,14 @@ struct GocardlessAuthController: RouteCollection {
 	}
 
 	func index(req: Request) async throws -> HTMLResponse {
-        let user = getUser(fromRequest: req)
+		let user = try await getUser(fromRequest: req)
 
 		if let user {
-            let credentials = try await user.$gclCredentials.get(on: req.db)
+			let credentials = try await user.$gclCredentials.get(on: req.db)
 
 			return HTMLResponse {
-				AuthenticatedPage(username: user.username, hasCredentials: credentials != nil)
+				AuthenticatedPage(
+					username: user.username, hasCredentials: credentials != nil)
 			}
 		} else {
 			return HTMLResponse {

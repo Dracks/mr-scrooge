@@ -1,11 +1,23 @@
 import Foundation
-#if canImport(FoundationNetworking)
-import FoundationNetworking
-#endif
-import OpenAPIClient
+import GoCardlessClient
 import Vapor
 
-final class JWTAuthInterceptor: OpenAPIInterceptor {
+#if canImport(FoundationNetworking)
+	import FoundationNetworking
+#endif
+
+extension GocardlessInstitutionCredentials {
+	func apiConfig() -> GoCardlessClientAPIConfiguration {
+		if let accessToken {
+			return GoCardlessClientAPIConfiguration(customHeaders: [
+				"Authorization": "Bearer \(accessToken)"
+			])
+		}
+		return GoCardlessClientAPIConfiguration()
+	}
+}
+
+/* final class JWTAuthInterceptor: GoCardlessInterceptor {
 	let accessToken: String
 
 	init(accessToken: String) {
@@ -47,18 +59,20 @@ final class JWTAuthInterceptor: OpenAPIInterceptor {
 		requestBuilder: RequestBuilder<T>, data: Data?, response: URLResponse?,
 		result: Result<T, Error>
 	) {}
-}
+} */
 
 struct GocardlessService {
 	static let baseURL = "https://bankaccountdata.gocardless.com"
 
-	static func createConfiguration(accessToken: String? = nil) -> OpenAPIClientAPIConfiguration {
-		let config = OpenAPIClientAPIConfiguration()
+	static func createConfiguration(accessToken: String? = nil)
+		-> GoCardlessClientAPIConfiguration
+	{
+		let config = GoCardlessClientAPIConfiguration()
 		config.basePath = baseURL
-		if let token = accessToken {
-			let interceptor = JWTAuthInterceptor(accessToken: token)
-			config.interceptor = interceptor
-		}
+		// if let token = accessToken {
+		// 	let interceptor = JWTAuthInterceptor(accessToken: token)
+		// 	config.interceptor = interceptor
+		// }
 		return config
 	}
 

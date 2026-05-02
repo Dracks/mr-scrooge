@@ -17,11 +17,11 @@ final class User: Model, Content, @unchecked Sendable {
 	@Field(key: "email")
 	var email: String?
 
-    @OptionalChild(for: \.$user)
-    var gclCredentials: GocardlessInstitutionCredentials?
+	@OptionalChild(for: \.$user)
+	var gclCredentials: GocardlessInstitutionCredentials?
 
-    @Children(for: \.$user)
-    var agreements: [UserAgreement]
+	@Children(for: \.$user)
+	var agreements: [UserAgreement]
 
 	@Timestamp(key: "created_at", on: .create)
 	var createdAt: Date?

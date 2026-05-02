@@ -40,7 +40,9 @@ struct ErrorPage: HTMLDocument {
 				section {
 					h2 { "Details" }
 					dl {
-						for (key, value) in context.sorted(by: { $0.key < $1.key }) {
+						for (key, value) in context.sorted(by: {
+							$0.key < $1.key
+						}) {
 							dt { key }
 							dd { value }
 						}
@@ -68,7 +70,8 @@ struct JSONErrorResponse: Content {
 
 struct GocardlessErrorMiddleware: AsyncMiddleware {
 
-	func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response {
+	func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response
+	{
 		do {
 			return try await next.respond(to: request)
 		} catch {
@@ -80,22 +83,37 @@ struct GocardlessErrorMiddleware: AsyncMiddleware {
 				if request.prefersJSON() {
 					let response = Response(status: abortError.status)
 					if debug {
-						try response.content.encode(JSONErrorResponse(error: abortError.reason, message: nil, context: nil), as: .json)
+						try response.content.encode(
+							JSONErrorResponse(
+								error: abortError.reason,
+								message: nil, context: nil),
+							as: .json)
 					} else {
-						try response.content.encode(JSONErrorResponse(error: "Request error", message: nil, context: nil), as: .json)
+						try response.content.encode(
+							JSONErrorResponse(
+								error: "Request error",
+								message: nil, context: nil),
+							as: .json)
 					}
 					return response
 				}
 
 				let code = Int(abortError.status.code)
-				let message = debug ? abortError.reason : "An error occurred processing your request"
+				let message =
+					debug
+					? abortError.reason
+					: "An error occurred processing your request"
 				return try await HTMLResponse {
-					ErrorPage(message: message, statusCode: code, errorCode: nil, context: nil, debug: debug)
+					ErrorPage(
+						message: message, statusCode: code, errorCode: nil,
+						context: nil, debug: debug)
 				}.encodeResponse(for: request)
 			}
 
 			let errorString = "\(error)"
-			let isDatabaseError = errorString.contains("database") || errorString.contains("SQL") || errorString.contains("Fluent")
+			let isDatabaseError =
+				errorString.contains("database") || errorString.contains("SQL")
+				|| errorString.contains("Fluent")
 
 			if isDatabaseError {
 				logger.error("Database error: \(error)")
@@ -104,12 +122,16 @@ struct GocardlessErrorMiddleware: AsyncMiddleware {
 					let response = Response(status: .internalServerError)
 					if debug {
 						try response.content.encode(
-							JSONErrorResponse(error: "Database error", message: errorString, context: nil),
+							JSONErrorResponse(
+								error: "Database error",
+								message: errorString, context: nil),
 							as: .json
 						)
 					} else {
 						try response.content.encode(
-							JSONErrorResponse(error: "Database error", message: nil, context: nil),
+							JSONErrorResponse(
+								error: "Database error",
+								message: nil, context: nil),
 							as: .json
 						)
 					}
@@ -118,7 +140,9 @@ struct GocardlessErrorMiddleware: AsyncMiddleware {
 
 				let message = debug ? errorString : "A database error occurred"
 				return try await HTMLResponse {
-					ErrorPage(message: message, statusCode: 500, errorCode: "DB_ERROR", context: nil, debug: debug)
+					ErrorPage(
+						message: message, statusCode: 500,
+						errorCode: "DB_ERROR", context: nil, debug: debug)
 				}.encodeResponse(for: request)
 			}
 
@@ -127,34 +151,49 @@ struct GocardlessErrorMiddleware: AsyncMiddleware {
 				let context = exception.context.mapValues { "\($0)" }
 				let exceptionMessage = exception.errorCode.message
 
-				logger.error("Exception: errorCode=\(errorCodeValue), context=\(exception.allContext)")
+				logger.error(
+					"Exception: errorCode=\(errorCodeValue), context=\(exception.allContext)"
+				)
 
 				if request.prefersJSON() {
 					let response = Response(status: .internalServerError)
 					if debug {
 						try response.content.encode(
-							JSONErrorResponse(error: errorCodeValue, message: exceptionMessage, context: context),
+							JSONErrorResponse(
+								error: errorCodeValue,
+								message: exceptionMessage,
+								context: context),
 							as: .json
 						)
 					} else {
 						try response.content.encode(
-							JSONErrorResponse(error: errorCodeValue, message: nil, context: nil),
+							JSONErrorResponse(
+								error: errorCodeValue, message: nil,
+								context: nil),
 							as: .json
 						)
 					}
 					return response
 				}
 
-				let message = debug ? exceptionMessage : "An error occurred processing your request"
+				let message =
+					debug
+					? exceptionMessage
+					: "An error occurred processing your request"
 				return try await HTMLResponse {
-					ErrorPage(message: message, statusCode: 500, errorCode: errorCodeValue, context: context, debug: debug)
+					ErrorPage(
+						message: message, statusCode: 500,
+						errorCode: errorCodeValue, context: context,
+						debug: debug)
 				}.encodeResponse(for: request)
 			}
 
 			if request.prefersJSON() {
 				let response = Response(status: .internalServerError)
 				try response.content.encode(
-					JSONErrorResponse(error: "Internal server error", message: nil, context: nil),
+					JSONErrorResponse(
+						error: "Internal server error", message: nil,
+						context: nil),
 					as: .json
 				)
 				return response
@@ -162,7 +201,9 @@ struct GocardlessErrorMiddleware: AsyncMiddleware {
 
 			let message = debug ? "Error: \(error)" : "An unexpected error occurred"
 			return try await HTMLResponse {
-				ErrorPage(message: message, statusCode: 500, errorCode: nil, context: nil, debug: debug)
+				ErrorPage(
+					message: message, statusCode: 500, errorCode: nil,
+					context: nil, debug: debug)
 			}.encodeResponse(for: request)
 		}
 	}

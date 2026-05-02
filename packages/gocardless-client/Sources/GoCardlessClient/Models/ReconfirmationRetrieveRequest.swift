@@ -6,10 +6,9 @@
 //
 
 import Foundation
-import Vapor
 
 /** EUA reconfirmation. */
-public struct ReconfirmationRetrieveRequest: Sendable, Content, Hashable {
+public struct ReconfirmationRetrieveRequest: Sendable, Codable, Hashable {
 
     public static let redirectRule = StringRule(minLength: nil, maxLength: 1024, pattern: nil)
     /** Optional redirect URL for reconfirmation to override requisition's redirect. */

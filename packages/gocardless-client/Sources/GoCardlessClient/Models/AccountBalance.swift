@@ -6,10 +6,9 @@
 //
 
 import Foundation
-import Vapor
 
 /** AccountBalanceSerializer. */
-public struct AccountBalance: Sendable, Content, Hashable {
+public struct AccountBalance: Sendable, Codable, Hashable {
 
     public var balances: [BalanceSchema]?
 

@@ -10,7 +10,8 @@ struct KeysControllerTests {
 	func testShowCredentialsUnauthenticated() async throws {
 		try await withImporterApp { app in
 			let tester = try app.testing()
-			let response = try await tester.sendRequest(.GET, "/set_gocardless_credentials")
+			let response = try await tester.sendRequest(
+				.GET, "/set_gocardless_credentials")
 
 			#expect(response.status == .unauthorized)
 		}

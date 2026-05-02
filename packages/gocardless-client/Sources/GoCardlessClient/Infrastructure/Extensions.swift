@@ -8,7 +8,94 @@ import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
-import Vapor
+
+extension Bool: ParameterConvertible {
+    func asParameter(codableHelper: CodableHelper) -> any Sendable { self }
+}
+
+extension Float: ParameterConvertible {
+    func asParameter(codableHelper: CodableHelper) -> any Sendable { self }
+}
+
+extension Int: ParameterConvertible {
+    func asParameter(codableHelper: CodableHelper) -> any Sendable { self }
+}
+
+extension Int32: ParameterConvertible {
+    func asParameter(codableHelper: CodableHelper) -> any Sendable { self }
+}
+
+extension Int64: ParameterConvertible {
+    func asParameter(codableHelper: CodableHelper) -> any Sendable { self }
+}
+
+extension Double: ParameterConvertible {
+    func asParameter(codableHelper: CodableHelper) -> any Sendable { self }
+}
+
+extension Decimal: ParameterConvertible {
+    func asParameter(codableHelper: CodableHelper) -> any Sendable { self }
+}
+
+extension String: ParameterConvertible {
+    func asParameter(codableHelper: CodableHelper) -> any Sendable { self }
+}
+
+extension URL: ParameterConvertible {
+    func asParameter(codableHelper: CodableHelper) -> any Sendable { self }
+}
+
+extension UUID: ParameterConvertible {
+    func asParameter(codableHelper: CodableHelper) -> any Sendable { self }
+}
+
+extension RawRepresentable where RawValue: ParameterConvertible {
+    func asParameter(codableHelper: CodableHelper) -> any Sendable {
+        rawValue.asParameter(codableHelper: codableHelper)
+    }
+}
+
+private func encodeIfPossible<T: Sendable>(_ object: T, codableHelper: CodableHelper) -> any Sendable {
+    if let encodableObject = object as? ParameterConvertible {
+        return encodableObject.asParameter(codableHelper: codableHelper)
+    } else {
+        return object
+    }
+}
+
+extension Array where Element: Sendable {
+    func asParameter(codableHelper: CodableHelper) -> any Sendable {
+        return self.map { encodeIfPossible($0, codableHelper: codableHelper) }
+    }
+}
+
+extension Set where Element: Sendable {
+    func asParameter(codableHelper: CodableHelper) -> any Sendable {
+        return Array(self).asParameter(codableHelper: codableHelper)
+    }
+}
+
+extension Dictionary where Key: Sendable, Value: Sendable {
+    func asParameter(codableHelper: CodableHelper) -> any Sendable {
+        var dictionary = [Key: any Sendable]()
+        for (key, value) in self {
+            dictionary[key] = encodeIfPossible(value, codableHelper: codableHelper)
+        }
+        return dictionary
+    }
+}
+
+extension Data: ParameterConvertible {
+    func asParameter(codableHelper: CodableHelper) -> any Sendable {
+        return self.base64EncodedString(options: Data.Base64EncodingOptions())
+    }
+}
+
+extension Date: ParameterConvertible {
+    func asParameter(codableHelper: CodableHelper) -> any Sendable {
+        return codableHelper.dateFormatter.string(from: self)
+    }
+}
 
 extension String: @retroactive CodingKey {
 
@@ -132,49 +219,3 @@ extension KeyedDecodingContainerProtocol {
     }
 
 }
-
-extension UUID: @retroactive Content { }
-
-extension URL: @retroactive Content { }
-
-extension Set: @retroactive ResponseEncodable where Element: Content {
-    public func encodeResponse(for request: Vapor.Request) -> EventLoopFuture<Vapor.Response> {
-        let response = Vapor.Response()
-        do {
-            try response.content.encode(Array(self))
-        } catch {
-            return request.eventLoop.makeFailedFuture(error)
-        }
-        return request.eventLoop.makeSucceededFuture(response)
-    }
-}
-
-extension Set: @retroactive AsyncResponseEncodable where Element: Content {
-    public func encodeResponse(for request: Vapor.Request) async throws -> Vapor.Response {
-        let response = Vapor.Response()
-        try response.content.encode(Array(self))
-        return response
-    }
-}
-
-extension Set: @retroactive RequestDecodable where Element: Content {
-    public static func decodeRequest(_ request: Vapor.Request) -> EventLoopFuture<Self> {
-        do {
-            let content = try request.content.decode([Element].self)
-            return request.eventLoop.makeSucceededFuture(Set(content))
-        } catch {
-            return request.eventLoop.makeFailedFuture(error)
-        }
-    }
-}
-
-extension Set: @retroactive AsyncRequestDecodable where Element: Content {
-    public static func decodeRequest(_ request: Vapor.Request) async throws -> Self {
-        let content = try request.content.decode([Element].self)
-        return Set(content)
-    }
-}
-
-extension Set: @retroactive Content where Element: Content { }
-
-extension JSONValue: Content {}

@@ -6,10 +6,9 @@
 //
 
 import Foundation
-import Vapor
 
 /** Obtain new JWT pair. */
-public struct SpectacularJWTObtain: Sendable, Content, Hashable {
+public struct SpectacularJWTObtain: Sendable, Codable, Hashable {
 
     /** Your access token */
     public var access: String?

@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import Vapor
 
-public struct PaginatedEndUserAgreementList: Sendable, Content, Hashable {
+public struct PaginatedEndUserAgreementList: Sendable, Codable, Hashable {
 
     public var count: Int
     public var next: String?

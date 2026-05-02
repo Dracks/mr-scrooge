@@ -43,7 +43,8 @@ struct AccountsRootPageTests {
 	@Test("Root accounts page shows empty state when no agreements exist")
 	func testRootAccountsPageEmptyState() async throws {
 		try await withImporterApp(useMockHTTPClient: true) { app in
-			let user = try await TestHelpers.createAuthenticatedUserWithCredentials(app: app)
+			let user = try await TestHelpers.createAuthenticatedUserWithCredentials(
+				app: app)
 			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
 
 			let tester = try app.testing()
@@ -99,7 +100,8 @@ struct AccountsRootPageTests {
 	func testInstitutionsPageUnauthenticated() async throws {
 		try await withImporterApp { app in
 			let tester = try app.testing()
-			let response = try await tester.sendRequest(.GET, "/gcl-accounts/add/institutions?country=ES")
+			let response = try await tester.sendRequest(
+				.GET, "/gcl-accounts/add/institutions?country=ES")
 
 			#expect(response.status == .ok)
 			let body = String(buffer: response.body)
@@ -110,7 +112,8 @@ struct AccountsRootPageTests {
 	@Test("Institutions page returns error without country parameter")
 	func testInstitutionsPageMissingCountry() async throws {
 		try await withImporterApp(useMockHTTPClient: true) { app in
-			let user = try await TestHelpers.createAuthenticatedUserWithCredentials(app: app)
+			let user = try await TestHelpers.createAuthenticatedUserWithCredentials(
+				app: app)
 			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
 
 			let tester = try app.testing()
@@ -133,7 +136,8 @@ struct UserAgreementsControllerTests {
 	func testAgreementsListUnauthenticated() async throws {
 		try await withImporterApp { app in
 			let tester = try app.testing()
-			let response = try await tester.sendRequest(.GET, "/gcl-accounts/agreements")
+			let response = try await tester.sendRequest(
+				.GET, "/gcl-accounts/agreements")
 
 			#expect(response.status == .ok)
 			let body = String(buffer: response.body)
@@ -144,7 +148,8 @@ struct UserAgreementsControllerTests {
 	@Test("Agreements list shows empty state when no agreements exist")
 	func testAgreementsListEmptyState() async throws {
 		try await withImporterApp(useMockHTTPClient: true) { app in
-			let user = try await TestHelpers.createAuthenticatedUserWithCredentials(app: app)
+			let user = try await TestHelpers.createAuthenticatedUserWithCredentials(
+				app: app)
 			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
 
 			let tester = try app.testing()
@@ -163,7 +168,8 @@ struct UserAgreementsControllerTests {
 	@Test("Agreements list shows agreements")
 	func testAgreementsListShowsAgreements() async throws {
 		try await withImporterApp(useMockHTTPClient: true) { app in
-			let user = try await TestHelpers.createAuthenticatedUserWithCredentials(app: app)
+			let user = try await TestHelpers.createAuthenticatedUserWithCredentials(
+				app: app)
 			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
 
 			let agreement = UserAgreement(
@@ -257,11 +263,11 @@ struct UserAgreementsControllerTests {
 				headers: headers
 			)
 
-		#expect(response.status == .ok)
-		let body = String(buffer: response.body)
-		#expect(body.contains("matching-ref"))
-		#expect(body.contains("Test Bank"))
-		#expect(body.contains("has been approved"))
+			#expect(response.status == .ok)
+			let body = String(buffer: response.body)
+			#expect(body.contains("matching-ref"))
+			#expect(body.contains("Test Bank"))
+			#expect(body.contains("has been approved"))
 
 			let updatedAgreement = try await UserAgreement.query(on: app.db)
 				.filter(\.$requisitionId == "matching-ref")
@@ -308,7 +314,8 @@ struct UserAgreementsControllerTests {
 	@Test("Delete agreement removes agreement and redirects")
 	func testDeleteAgreementSuccess() async throws {
 		try await withImporterApp(useMockHTTPClient: true) { app in
-			let user = try await TestHelpers.createAuthenticatedUserWithCredentials(app: app)
+			let user = try await TestHelpers.createAuthenticatedUserWithCredentials(
+				app: app)
 			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
 
 			let agreement = UserAgreement(
@@ -340,7 +347,8 @@ struct UserAgreementsControllerTests {
 	@Test("Delete agreement only removes own agreements")
 	func testDeleteAgreementCannotDeleteOthers() async throws {
 		try await withImporterApp(useMockHTTPClient: true) { app in
-			let user1 = try await TestHelpers.createAuthenticatedUserWithCredentials(app: app)
+			let user1 = try await TestHelpers.createAuthenticatedUserWithCredentials(
+				app: app)
 			let user2 = User(externalId: UUID(), username: "otheruser")
 			try await user2.save(on: app.db)
 
@@ -417,7 +425,8 @@ private func withImporterApp(
 
 	app.routes.get("test-login", ":userId") { req -> Response in
 		guard let userIdString = req.parameters.get("userId"),
-			  let userId = UUID(uuidString: userIdString) else {
+			let userId = UUID(uuidString: userIdString)
+		else {
 			return Response(status: .badRequest)
 		}
 		let user = try await User.find(userId, on: req.db)

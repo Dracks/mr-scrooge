@@ -26,11 +26,11 @@ final class MrScroogeOAuthToken: Model, Content, @unchecked Sendable {
 	@Timestamp(key: "updated_at", on: .update)
 	var updatedAt: Date?
 
-    init(){}
+	init() {}
 
-    init(userId: UUID) {
-        self.userId = userId
-    }
+	init(userId: UUID) {
+		self.userId = userId
+	}
 }
 
 struct CreateOAuthTokens: AsyncMigration {

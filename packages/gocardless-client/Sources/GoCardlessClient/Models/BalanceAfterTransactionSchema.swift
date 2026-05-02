@@ -6,10 +6,9 @@
 //
 
 import Foundation
-import Vapor
 
 /** BalanceAfterTransactionSchema. */
-public struct BalanceAfterTransactionSchema: Sendable, Content, Hashable {
+public struct BalanceAfterTransactionSchema: Sendable, Codable, Hashable {
 
     /** balanceAmount */
     public var balanceAmount: TransactionAmountSchema

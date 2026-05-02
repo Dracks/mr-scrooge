@@ -6,10 +6,9 @@
 //
 
 import Foundation
-import Vapor
 
 /** TransactionSchema. */
-public struct TransactionSchema: Sendable, Content, Hashable {
+public struct TransactionSchema: Sendable, Codable, Hashable {
 
     /** transactionId */
     public var transactionId: String?

@@ -6,10 +6,9 @@
 //
 
 import Foundation
-import Vapor
 
 /** Refresh Access token. */
-public struct SpectacularJWTRefresh: Sendable, Content, Hashable {
+public struct SpectacularJWTRefresh: Sendable, Codable, Hashable {
 
     /** Your access token */
     public var access: String?

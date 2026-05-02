@@ -15,3 +15,11 @@ E10005:
 E10006:
   message: "OAuth token request failed"
   additional_info: "The authorization code was invalid or expired"
+E10007:
+  message: "Some required configurations were not provided"
+
+E10008:
+  message: "Agreement didn't had an id"
+E10009:
+  message: "Requisition didn't had an id"
+  

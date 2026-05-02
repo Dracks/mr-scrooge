@@ -1,6 +1,7 @@
 .gitignore
-.openapi-generator-ignore
 .swiftformat
+Cartfile
+GoCardlessClient.podspec
 Package.swift
 README.md
 Sources/GoCardlessClient/APIs/AccountsAPI.swift
@@ -8,11 +9,18 @@ Sources/GoCardlessClient/APIs/AgreementsAPI.swift
 Sources/GoCardlessClient/APIs/InstitutionsAPI.swift
 Sources/GoCardlessClient/APIs/RequisitionsAPI.swift
 Sources/GoCardlessClient/APIs/TokenAPI.swift
+Sources/GoCardlessClient/Infrastructure/APIHelper.swift
 Sources/GoCardlessClient/Infrastructure/APIs.swift
+Sources/GoCardlessClient/Infrastructure/CodableHelper.swift
 Sources/GoCardlessClient/Infrastructure/Extensions.swift
+Sources/GoCardlessClient/Infrastructure/JSONDataEncoding.swift
+Sources/GoCardlessClient/Infrastructure/JSONEncodingHelper.swift
 Sources/GoCardlessClient/Infrastructure/JSONValue.swift
+Sources/GoCardlessClient/Infrastructure/Models.swift
 Sources/GoCardlessClient/Infrastructure/OpenAPIMutex.swift
 Sources/GoCardlessClient/Infrastructure/OpenISO8601DateFormatter.swift
+Sources/GoCardlessClient/Infrastructure/SynchronizedDictionary.swift
+Sources/GoCardlessClient/Infrastructure/URLSessionImplementations.swift
 Sources/GoCardlessClient/Infrastructure/Validation.swift
 Sources/GoCardlessClient/Models/Account.swift
 Sources/GoCardlessClient/Models/AccountBalance.swift
@@ -87,3 +95,5 @@ docs/SuccessfulDeleteResponse.md
 docs/TokenAPI.md
 docs/TransactionAmountSchema.md
 docs/TransactionSchema.md
+git_push.sh
+project.yml

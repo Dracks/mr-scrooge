@@ -1,5 +1,6 @@
 import Fluent
 import Foundation
+import GoCardlessClient
 import Vapor
 import VaporElementary
 
@@ -45,13 +46,19 @@ struct UserAgreementsController: RouteCollection {
 	}
 
 	func showAvailableAccounts(req: Request) async throws -> HTMLResponse {
-		guard let user = req.auth.get(GoCardlessImporter.User.self) else {
+		guard let user = try await getUser(fromRequest: req) else {
 			throw Abort(.unauthorized)
 		}
 		let userId = try user.requireID()
 
+		guard let credentials = user.gclCredentials else {
+			throw Abort(.notFound, reason: "No credentials configured")
+
+		}
+
 		guard let agreementIdString = req.parameters.get("id"),
-			  let agreementId = UUID(uuidString: agreementIdString) else {
+			let agreementId = UUID(uuidString: agreementIdString)
+		else {
 			throw Abort(.badRequest, reason: "Invalid agreement ID")
 		}
 
@@ -65,16 +72,12 @@ struct UserAgreementsController: RouteCollection {
 		}
 
 		guard agreement.status == "approved" else {
-			throw Abort(.badRequest, reason: "Agreement must be approved before adding accounts")
+			throw Abort(
+				.badRequest,
+				reason: "Agreement must be approved before adding accounts")
 		}
 
-		guard let credentials = try await GocardlessInstitutionCredentials.query(on: req.db)
-			.filter(\.$user.$id == userId)
-			.first() else {
-			throw Abort(.notFound, reason: "No credentials configured")
-		}
-
-		let gclService = GoCardlessService(
+		/* let gclService = GoCardlessService(
 			client: req.application.gocardlessHTTPClient,
 			secretId: credentials.secretId,
 			secretKey: credentials.secretKey
@@ -82,19 +85,28 @@ struct UserAgreementsController: RouteCollection {
 
 		try await gclService.obtainTokens()
 
-		let requisition = try await gclService.getRequisitionsBy(requisitionId: agreement.requisitionId)
+		let requisition = try await gclService.getRequisitionsBy(requisitionId: agreement.requisitionId) */
+
+		let apiConfig = credentials.apiConfig()
+
+		let requisition = try await RequisitionsAPI.requisitionById(
+			id: agreement.requisitionId, apiConfiguration: apiConfig)
 
 		var accountViews: [AvailableAccountView] = []
-			for accountId in requisition.accounts {
-				if let account = try? await gclService.getAccountDetails(id: accountId) {
-					accountViews.append(AvailableAccountView(
-						accountId: account.id,
-						iban: account.iban,
-						ownerName: account.ownerName,
-						name: account.name,
-						status: account.status
-					))
-				}
+		for accountId in requisition.accounts ?? [] {
+			let accountResponse = try await AccountsAPI.retrieveAccountDetails(
+				id: accountId.uuidString, apiConfiguration: apiConfig)
+			let account = accountResponse.account
+			// if let account = try? await gclService.getAccountDetails(id: accountId) {
+			accountViews.append(
+				AvailableAccountView(
+					accountId: accountId.uuidString,
+					iban: account.iban ?? "no-ivan",
+					ownerName: account.ownerName,
+					name: account.name,
+					status: account.status ?? "no-status"
+				))
+			// }
 		}
 
 		let existingAccountIds = Set(
@@ -122,7 +134,8 @@ struct UserAgreementsController: RouteCollection {
 		let userId = try user.requireID()
 
 		guard let agreementIdString = req.parameters.get("id"),
-			  let agreementId = UUID(uuidString: agreementIdString) else {
+			let agreementId = UUID(uuidString: agreementIdString)
+		else {
 			throw Abort(.badRequest, reason: "Invalid agreement ID")
 		}
 
@@ -145,9 +158,13 @@ struct UserAgreementsController: RouteCollection {
 			throw Abort(.badRequest, reason: "No accounts selected")
 		}
 
-		guard let credentials = try await GocardlessInstitutionCredentials.query(on: req.db)
+		guard
+			let credentials = try await GocardlessInstitutionCredentials.query(
+				on: req.db
+			)
 			.filter(\.$user.$id == userId)
-			.first() else {
+			.first()
+		else {
 			throw Abort(.notFound, reason: "No credentials configured")
 		}
 
@@ -186,7 +203,12 @@ struct UserAgreementsController: RouteCollection {
 			}
 		}
 
-		return Vapor.Response(status: .seeOther, headers: ["Location": "/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)"])
+		return Vapor.Response(
+			status: .seeOther,
+			headers: [
+				"Location":
+					"/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)"
+			])
 	}
 
 	func handleCallback(req: Request) async throws -> HTMLResponse {
@@ -195,7 +217,9 @@ struct UserAgreementsController: RouteCollection {
 		}
 		let userId = try user.requireID()
 
-		guard let ref = req.query[String.self, at: "ref"] else {
+		guard let ref = req.query[String.self, at: "ref"],
+			let ref = UUID(uuidString: ref)
+		else {
 			throw Abort(.badRequest, reason: "Missing ref parameter")
 		}
 
@@ -205,11 +229,13 @@ struct UserAgreementsController: RouteCollection {
 			.first()
 
 		guard let agreement else {
-			req.logger.warning("Agreement callback received for unknown ref: \(ref), user: \(userId)")
+			req.logger.warning(
+				"Agreement callback received for unknown ref: \(ref), user: \(userId)"
+			)
 			return HTMLResponse {
 				GocardlessCallbackPage(
 					username: user.username,
-					ref: ref,
+					ref: ref.uuidString,
 					agreementFound: false,
 					institutionName: nil
 				)
@@ -222,7 +248,7 @@ struct UserAgreementsController: RouteCollection {
 		return HTMLResponse {
 			GocardlessCallbackPage(
 				username: user.username,
-				ref: ref,
+				ref: ref.uuidString,
 				agreementFound: true,
 				institutionName: agreement.institutionName
 			)
@@ -235,7 +261,9 @@ struct UserAgreementsController: RouteCollection {
 		}
 		let userId = try user.requireID()
 
-		guard let agreementId = req.parameters.get("id"), let uuid = UUID(uuidString: agreementId) else {
+		guard let agreementId = req.parameters.get("id"),
+			let uuid = UUID(uuidString: agreementId)
+		else {
 			throw Abort(.badRequest, reason: "Invalid agreement ID")
 		}
 
@@ -250,6 +278,11 @@ struct UserAgreementsController: RouteCollection {
 
 		try await agreement.delete(on: req.db)
 
-		return Vapor.Response(status: .seeOther, headers: ["Location": "/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)"])
+		return Vapor.Response(
+			status: .seeOther,
+			headers: [
+				"Location":
+					"/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)"
+			])
 	}
 }

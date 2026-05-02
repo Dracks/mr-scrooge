@@ -6,10 +6,9 @@
 //
 
 import Foundation
-import Vapor
 
 /** AdditionalAccountDataSchema. */
-public struct AdditionalAccountDataSchema: Sendable, Content, Hashable {
+public struct AdditionalAccountDataSchema: Sendable, Codable, Hashable {
 
     /** secondaryIdentification */
     public var secondaryIdentification: String?

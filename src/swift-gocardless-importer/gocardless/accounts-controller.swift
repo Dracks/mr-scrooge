@@ -1,18 +1,17 @@
 import AsyncHTTPClient
+import Exceptions
 import Fluent
 import Foundation
 import GoCardlessClient
 import Vapor
 import VaporElementary
 
-
 struct CreateAgreementRequest: Content {
 	var institutionId: String
 }
 
-
 struct GocardlessAccountsController: RouteCollection {
-    static let path: PathComponent = "gcl-accounts";
+	static let path: PathComponent = "gcl-accounts"
 
 	func boot(routes: RoutesBuilder) throws {
 		let accountsGroup = routes.grouped(GocardlessAccountsController.path)
@@ -29,9 +28,7 @@ struct GocardlessAccountsController: RouteCollection {
 		}
 		let userId = try user.requireID()
 
-		guard let credentials = try await GocardlessInstitutionCredentials.query(on: req.db)
-			.filter(\.$user.$id == userId)
-			.first() else {
+		guard let credentials = try await user.$gclCredentials.get(on: req.db) else {
 			throw Abort(.notFound, reason: "No credentials configured")
 		}
 
@@ -41,28 +38,34 @@ struct GocardlessAccountsController: RouteCollection {
 
 		var accountDetails: [AccountDetailView] = []
 		if !agreements.isEmpty {
-			let gclService = GoCardlessService(
-				client: req.application.gocardlessHTTPClient,
-				secretId: credentials.secretId,
-				secretKey: credentials.secretKey
-			)
 
-			try await gclService.obtainTokens()
+			let apiConfig = credentials.apiConfig()
 
 			for agreement in agreements {
-				let requisition = try await gclService.getRequisitionsBy(requisitionId: agreement.requisitionId)
-					for accountId in requisition.accounts {
-						if let account = try? await gclService.getAccountDetails(id: accountId) {
-							accountDetails.append(AccountDetailView(
-								agreementId: agreement.id?.uuidString ?? "",
-								institutionName: agreement.institutionName,
-								iban: account.iban,
-								ownerName: account.ownerName,
-								status: account.status,
-								name: account.name
-							))
-						}
-					}
+				let requisition =
+					try await RequisitionsAPI.requisitionById(
+						id: agreement.requisitionId,
+						apiConfiguration: apiConfig)
+				for accountId in requisition.accounts ?? [] {
+					let account = try await AccountsAPI.retrieveAccountDetails(
+						id: accountId.uuidString,
+						apiConfiguration: apiConfig)
+					// if let account
+					// {
+					accountDetails.append(
+						AccountDetailView(
+							agreementId: agreement.id?
+								.uuidString ?? "",
+							institutionName: agreement
+								.institutionName,
+							iban: account.account.iban ?? "no-iban",
+							ownerName: account.account.ownerName,
+							status: account.account.status
+								?? "no-status",
+							name: account.account.name
+						))
+					// }
+				}
 			}
 		}
 
@@ -91,11 +94,8 @@ struct GocardlessAccountsController: RouteCollection {
 		guard let user = req.auth.get(GoCardlessImporter.User.self) else {
 			throw Abort(.unauthorized)
 		}
-		let userId = try user.requireID()
 
-		guard let credentials = try await GocardlessInstitutionCredentials.query(on: req.db)
-			.filter(\.$user.$id == userId)
-			.first() else {
+		guard let credentials = try await user.$gclCredentials.get(on: req.db) else {
 			throw Abort(.notFound, reason: "No credentials configured")
 		}
 
@@ -103,20 +103,15 @@ struct GocardlessAccountsController: RouteCollection {
 			throw Abort(.badRequest, reason: "Country parameter required")
 		}
 
-		let gclService = GoCardlessService(
-			client: req.application.gocardlessHTTPClient,
-			secretId: credentials.secretId,
-			secretKey: credentials.secretKey
-		)
-
-		try await gclService.obtainTokens()
-		let institutions = try await gclService.getInstitutions(country: country)
+		let institutions =
+			try await InstitutionsAPI.retrieveAllSupportedInstitutionsInAGivenCountry(
+				country: country, apiConfiguration: credentials.apiConfig())
 
 		let institutionViews = institutions.map { institution in
 			InstitutionView(
 				id: institution.id,
 				name: institution.name,
-				bic: institution.bic,
+				bic: institution.bic ?? "",
 				countries: institution.countries
 			)
 		}
@@ -134,11 +129,8 @@ struct GocardlessAccountsController: RouteCollection {
 		guard let user = req.auth.get(GoCardlessImporter.User.self) else {
 			throw Abort(.unauthorized)
 		}
-		let userId = try user.requireID()
 
-		guard let credentials = try await GocardlessInstitutionCredentials.query(on: req.db)
-			.filter(\.$user.$id == userId)
-			.first() else {
+		guard let credentials = try await user.$gclCredentials.get(on: req.db) else {
 			throw Abort(.notFound, reason: "No credentials configured")
 		}
 
@@ -149,7 +141,7 @@ struct GocardlessAccountsController: RouteCollection {
 			throw Abort(.badRequest, reason: "Please select a bank")
 		}
 
-		let gclService = GoCardlessService(
+		/* let gclService = GoCardlessService(
 			client: req.application.gocardlessHTTPClient,
 			secretId: credentials.secretId,
 			secretKey: credentials.secretKey
@@ -159,23 +151,38 @@ struct GocardlessAccountsController: RouteCollection {
 
 		let institution = try await gclService.getInstitution(id: institutionId)
 
-		let agreement = try await gclService.createEndUserAgreement(institutionId: institutionId)
+		let agreement = try await gclService.createEndUserAgreement(institutionId: institutionId) */
+
+		let apiConfig = credentials.apiConfig()
+		let institution = try await InstitutionsAPI.retrieveInstitution(
+			id: institutionId, apiConfiguration: apiConfig)
+
+		let agreement = try await AgreementsAPI.createEUA(
+			endUserAgreementRequest: .init(institutionId: institutionId),
+			apiConfiguration: apiConfig)
+
+		guard let agreementId = agreement.id else {
+			throw Exception(ErrorCodes.E10008)
+		}
 
 		let redirectUrl = "\(EnvConfig.shared.baseHost)/gcl-accounts/agreements/created"
 
-		let requisition = try await gclService.createRequisition(
-			institutionId: institutionId,
-			redirectUrl: redirectUrl,
-			agreementId: agreement.id
-		)
+		let requisition = try await RequisitionsAPI.createRequisition(
+			requisitionRequest: .init(
+				redirect: redirectUrl, institutionId: institutionId),
+			apiConfiguration: apiConfig)
+
+		guard let requisitionId = requisition.id else {
+			throw Exception(ErrorCodes.E10009)
+		}
 
 		let userAgreement = UserAgreement(
-			userId: userId,
-			agreementId: agreement.id,
+			userId: try user.requireID(),
+			agreementId: agreementId,
 			institutionId: institutionId,
 			institutionName: institution.name,
 			status: "pending",
-			requisitionId: requisition.id
+			requisitionId: requisitionId
 		)
 		try await userAgreement.save(on: req.db)
 

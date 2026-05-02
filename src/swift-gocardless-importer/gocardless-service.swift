@@ -35,7 +35,8 @@ struct GoCardlessInstitution: Codable, Content {
 		case countries
 		case logo
 		case maxAccessValidForDays = "max_access_valid_for_days"
-		case maxAccessValidForDaysReconfirmation = "max_access_valid_for_days_reconfirmation"
+		case maxAccessValidForDaysReconfirmation =
+			"max_access_valid_for_days_reconfirmation"
 	}
 }
 
@@ -650,7 +651,7 @@ class GoCardlessService {
 		let request = try await createRequest(
 			path: "/requisitions/\(requisitionId)", method: .GET)
 		let response = try await client.execute(request, timeout: .seconds(30))
-        print(response.body)
+		print(response.body)
 
 		guard response.status.code == 200 else {
 			if response.status.code == 401 {
@@ -663,8 +664,8 @@ class GoCardlessService {
 					"HTTP \(response.status.code): \(responseBody)")
 			}
 		}
-				let responseBuffer = try await response.body.collect(
-					upTo: 1024 * 1024)  // 1MB limit
+		let responseBuffer = try await response.body.collect(
+			upTo: 1024 * 1024)  // 1MB limit
 		let decoder = JSONDecoder()
 		return try decoder.decode(
 			GoCardlessRequisition.self, from: Data(responseBuffer.readableBytesView))

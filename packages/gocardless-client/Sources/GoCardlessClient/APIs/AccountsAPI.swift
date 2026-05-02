@@ -6,320 +6,178 @@
 //
 
 import Foundation
-import Vapor
 
 open class AccountsAPI {
 
     /**
-     GET /api/v2/accounts/{id}/balances/
-     Access account balances.  Balances will be returned in Berlin Group PSD2 format.
+
+     - parameter id: (path)  
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: AccountBalance
+     */
+    open class func retrieveAccountBalances(id: String, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) async throws(ErrorResponse) -> AccountBalance {
+        return try await retrieveAccountBalancesWithRequestBuilder(id: id, apiConfiguration: apiConfiguration).execute().body
+    }
+
+    /**
+     - GET /api/v2/accounts/{id}/balances/
+     - Access account balances.  Balances will be returned in Berlin Group PSD2 format.
      - Bearer Token:
        - type: http
        - name: jwtAuth
      - parameter id: (path)  
-     - returns: `EventLoopFuture` of `ClientResponse` 
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: RequestBuilder<AccountBalance> 
      */
-    open class func retrieveAccountBalancesRaw(id: String, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
+    open class func retrieveAccountBalancesWithRequestBuilder(id: String, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) -> RequestBuilder<AccountBalance> {
         var localVariablePath = "/api/v2/accounts/{id}/balances/"
-        let idPreEscape = String(describing: id)
+        let idPreEscape = "\(APIHelper.mapValueToPathItem(id))"
         let idPostEscape = idPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         localVariablePath = localVariablePath.replacingOccurrences(of: "{id}", with: idPostEscape, options: .literal, range: nil)
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
+        let localVariableParameters: [String: any Sendable]? = nil
 
-        guard let localVariableApiClient = apiConfiguration.apiClient else {
-            fatalError("apiConfiguration.apiClient is not set.")
-        }
+        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
 
-        return localVariableApiClient.send(.GET, headers: headers ?? apiConfiguration.customHeaders, to: URI(string: localVariableURLString)) { localVariableRequest in
-            try apiConfiguration.apiWrapper(&localVariableRequest)
-            
-            
-            
-            try beforeSend(&localVariableRequest)
-        }
-    }
+        let localVariableNillableHeaders: [String: (any Sendable)?] = [
+            :
+        ]
 
-    public enum RetrieveAccountBalances {
-        case http200(value: AccountBalance, raw: ClientResponse)
-        case http400(value: ModelErrorResponse, raw: ClientResponse)
-        case http401(value: ModelErrorResponse, raw: ClientResponse)
-        case http403(value: ModelErrorResponse, raw: ClientResponse)
-        case http404(value: ModelErrorResponse, raw: ClientResponse)
-        case http409(value: ModelErrorResponse, raw: ClientResponse)
-        case http429(value: ModelErrorResponse, raw: ClientResponse)
-        case http500(value: ModelErrorResponse, raw: ClientResponse)
-        case http503(value: ModelErrorResponse, raw: ClientResponse)
-        case http0(raw: ClientResponse)
+        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
+
+        let localVariableRequestBuilder: RequestBuilder<AccountBalance>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
+
+        return localVariableRequestBuilder.init(method: "GET", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
     }
 
     /**
-     GET /api/v2/accounts/{id}/balances/
-     Access account balances.  Balances will be returned in Berlin Group PSD2 format.
+
+     - parameter id: (path)  
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: AccountDetail
+     */
+    open class func retrieveAccountDetails(id: String, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) async throws(ErrorResponse) -> AccountDetail {
+        return try await retrieveAccountDetailsWithRequestBuilder(id: id, apiConfiguration: apiConfiguration).execute().body
+    }
+
+    /**
+     - GET /api/v2/accounts/{id}/details/
+     - Access account details.  Account details will be returned in Berlin Group PSD2 format.
      - Bearer Token:
        - type: http
        - name: jwtAuth
      - parameter id: (path)  
-     - returns: `EventLoopFuture` of `RetrieveAccountBalances` 
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: RequestBuilder<AccountDetail> 
      */
-    open class func retrieveAccountBalances(id: String, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RetrieveAccountBalances> {
-        return retrieveAccountBalancesRaw(id: id, headers: headers, apiConfiguration: apiConfiguration, beforeSend: beforeSend).flatMapThrowing { response -> RetrieveAccountBalances in
-            switch response.status.code {
-            case 200:
-                return .http200(value: try response.content.decode(AccountBalance.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: AccountBalance.defaultContentType)), raw: response)
-            case 400:
-                return .http400(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 401:
-                return .http401(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 403:
-                return .http403(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 404:
-                return .http404(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 409:
-                return .http409(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 429:
-                return .http429(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 500:
-                return .http500(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 503:
-                return .http503(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            default:
-                return .http0(raw: response)
-            }
-        }
-    }
-
-    /**
-     GET /api/v2/accounts/{id}/details/
-     Access account details.  Account details will be returned in Berlin Group PSD2 format.
-     - Bearer Token:
-       - type: http
-       - name: jwtAuth
-     - parameter id: (path)  
-     - returns: `EventLoopFuture` of `ClientResponse` 
-     */
-    open class func retrieveAccountDetailsRaw(id: String, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
+    open class func retrieveAccountDetailsWithRequestBuilder(id: String, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) -> RequestBuilder<AccountDetail> {
         var localVariablePath = "/api/v2/accounts/{id}/details/"
-        let idPreEscape = String(describing: id)
+        let idPreEscape = "\(APIHelper.mapValueToPathItem(id))"
         let idPostEscape = idPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         localVariablePath = localVariablePath.replacingOccurrences(of: "{id}", with: idPostEscape, options: .literal, range: nil)
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
+        let localVariableParameters: [String: any Sendable]? = nil
 
-        guard let localVariableApiClient = apiConfiguration.apiClient else {
-            fatalError("apiConfiguration.apiClient is not set.")
-        }
+        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
 
-        return localVariableApiClient.send(.GET, headers: headers ?? apiConfiguration.customHeaders, to: URI(string: localVariableURLString)) { localVariableRequest in
-            try apiConfiguration.apiWrapper(&localVariableRequest)
-            
-            
-            
-            try beforeSend(&localVariableRequest)
-        }
-    }
+        let localVariableNillableHeaders: [String: (any Sendable)?] = [
+            :
+        ]
 
-    public enum RetrieveAccountDetails {
-        case http200(value: AccountDetail, raw: ClientResponse)
-        case http400(value: ModelErrorResponse, raw: ClientResponse)
-        case http401(value: ModelErrorResponse, raw: ClientResponse)
-        case http403(value: ModelErrorResponse, raw: ClientResponse)
-        case http404(value: ModelErrorResponse, raw: ClientResponse)
-        case http409(value: ModelErrorResponse, raw: ClientResponse)
-        case http429(value: ModelErrorResponse, raw: ClientResponse)
-        case http500(value: ModelErrorResponse, raw: ClientResponse)
-        case http503(value: ModelErrorResponse, raw: ClientResponse)
-        case http0(raw: ClientResponse)
+        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
+
+        let localVariableRequestBuilder: RequestBuilder<AccountDetail>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
+
+        return localVariableRequestBuilder.init(method: "GET", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
     }
 
     /**
-     GET /api/v2/accounts/{id}/details/
-     Access account details.  Account details will be returned in Berlin Group PSD2 format.
+
+     - parameter id: (path)  
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: Account
+     */
+    open class func retrieveAccountMetadata(id: String, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) async throws(ErrorResponse) -> Account {
+        return try await retrieveAccountMetadataWithRequestBuilder(id: id, apiConfiguration: apiConfiguration).execute().body
+    }
+
+    /**
+     - GET /api/v2/accounts/{id}/
+     - Access account metadata.  Information about the account record, such as the processing status and IBAN.  Account status is recalculated based on the error count in the latest req.
      - Bearer Token:
        - type: http
        - name: jwtAuth
      - parameter id: (path)  
-     - returns: `EventLoopFuture` of `RetrieveAccountDetails` 
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: RequestBuilder<Account> 
      */
-    open class func retrieveAccountDetails(id: String, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RetrieveAccountDetails> {
-        return retrieveAccountDetailsRaw(id: id, headers: headers, apiConfiguration: apiConfiguration, beforeSend: beforeSend).flatMapThrowing { response -> RetrieveAccountDetails in
-            switch response.status.code {
-            case 200:
-                return .http200(value: try response.content.decode(AccountDetail.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: AccountDetail.defaultContentType)), raw: response)
-            case 400:
-                return .http400(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 401:
-                return .http401(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 403:
-                return .http403(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 404:
-                return .http404(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 409:
-                return .http409(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 429:
-                return .http429(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 500:
-                return .http500(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 503:
-                return .http503(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            default:
-                return .http0(raw: response)
-            }
-        }
-    }
-
-    /**
-     GET /api/v2/accounts/{id}/
-     Access account metadata.  Information about the account record, such as the processing status and IBAN.  Account status is recalculated based on the error count in the latest req.
-     - Bearer Token:
-       - type: http
-       - name: jwtAuth
-     - parameter id: (path)  
-     - returns: `EventLoopFuture` of `ClientResponse` 
-     */
-    open class func retrieveAccountMetadataRaw(id: String, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
+    open class func retrieveAccountMetadataWithRequestBuilder(id: String, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) -> RequestBuilder<Account> {
         var localVariablePath = "/api/v2/accounts/{id}/"
-        let idPreEscape = String(describing: id)
+        let idPreEscape = "\(APIHelper.mapValueToPathItem(id))"
         let idPostEscape = idPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         localVariablePath = localVariablePath.replacingOccurrences(of: "{id}", with: idPostEscape, options: .literal, range: nil)
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
+        let localVariableParameters: [String: any Sendable]? = nil
 
-        guard let localVariableApiClient = apiConfiguration.apiClient else {
-            fatalError("apiConfiguration.apiClient is not set.")
-        }
+        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
 
-        return localVariableApiClient.send(.GET, headers: headers ?? apiConfiguration.customHeaders, to: URI(string: localVariableURLString)) { localVariableRequest in
-            try apiConfiguration.apiWrapper(&localVariableRequest)
-            
-            
-            
-            try beforeSend(&localVariableRequest)
-        }
-    }
+        let localVariableNillableHeaders: [String: (any Sendable)?] = [
+            :
+        ]
 
-    public enum RetrieveAccountMetadata {
-        case http200(value: Account, raw: ClientResponse)
-        case http401(value: ModelErrorResponse, raw: ClientResponse)
-        case http403(value: ModelErrorResponse, raw: ClientResponse)
-        case http404(value: ModelErrorResponse, raw: ClientResponse)
-        case http429(value: ModelErrorResponse, raw: ClientResponse)
-        case http0(raw: ClientResponse)
+        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
+
+        let localVariableRequestBuilder: RequestBuilder<Account>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
+
+        return localVariableRequestBuilder.init(method: "GET", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
     }
 
     /**
-     GET /api/v2/accounts/{id}/
-     Access account metadata.  Information about the account record, such as the processing status and IBAN.  Account status is recalculated based on the error count in the latest req.
-     - Bearer Token:
-       - type: http
-       - name: jwtAuth
+
      - parameter id: (path)  
-     - returns: `EventLoopFuture` of `RetrieveAccountMetadata` 
+     - parameter dateFrom: (query)  (optional)
+     - parameter dateTo: (query)  (optional)
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: AccountTransactions
      */
-    open class func retrieveAccountMetadata(id: String, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RetrieveAccountMetadata> {
-        return retrieveAccountMetadataRaw(id: id, headers: headers, apiConfiguration: apiConfiguration, beforeSend: beforeSend).flatMapThrowing { response -> RetrieveAccountMetadata in
-            switch response.status.code {
-            case 200:
-                return .http200(value: try response.content.decode(Account.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: Account.defaultContentType)), raw: response)
-            case 401:
-                return .http401(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 403:
-                return .http403(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 404:
-                return .http404(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 429:
-                return .http429(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            default:
-                return .http0(raw: response)
-            }
-        }
+    open class func retrieveAccountTransactions(id: String, dateFrom: Date? = nil, dateTo: Date? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) async throws(ErrorResponse) -> AccountTransactions {
+        return try await retrieveAccountTransactionsWithRequestBuilder(id: id, dateFrom: dateFrom, dateTo: dateTo, apiConfiguration: apiConfiguration).execute().body
     }
 
     /**
-     GET /api/v2/accounts/{id}/transactions/
-     Access account transactions.  Transactions will be returned in Berlin Group PSD2 format.
+     - GET /api/v2/accounts/{id}/transactions/
+     - Access account transactions.  Transactions will be returned in Berlin Group PSD2 format.
      - Bearer Token:
        - type: http
        - name: jwtAuth
      - parameter id: (path)  
      - parameter dateFrom: (query)  (optional)
      - parameter dateTo: (query)  (optional)
-     - returns: `EventLoopFuture` of `ClientResponse` 
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: RequestBuilder<AccountTransactions> 
      */
-    open class func retrieveAccountTransactionsRaw(id: String, dateFrom: Date? = nil, dateTo: Date? = nil, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
+    open class func retrieveAccountTransactionsWithRequestBuilder(id: String, dateFrom: Date? = nil, dateTo: Date? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) -> RequestBuilder<AccountTransactions> {
         var localVariablePath = "/api/v2/accounts/{id}/transactions/"
-        let idPreEscape = String(describing: id)
+        let idPreEscape = "\(APIHelper.mapValueToPathItem(id))"
         let idPostEscape = idPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         localVariablePath = localVariablePath.replacingOccurrences(of: "{id}", with: idPostEscape, options: .literal, range: nil)
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
+        let localVariableParameters: [String: any Sendable]? = nil
 
-        guard let localVariableApiClient = apiConfiguration.apiClient else {
-            fatalError("apiConfiguration.apiClient is not set.")
-        }
+        var localVariableUrlComponents = URLComponents(string: localVariableURLString)
+        localVariableUrlComponents?.queryItems = APIHelper.mapValuesToQueryItems([
+            "date_from": (wrappedValue: dateFrom?.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
+            "date_to": (wrappedValue: dateTo?.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
+        ])
 
-        return localVariableApiClient.send(.GET, headers: headers ?? apiConfiguration.customHeaders, to: URI(string: localVariableURLString)) { localVariableRequest in
-            try apiConfiguration.apiWrapper(&localVariableRequest)
-            
-            struct QueryParams: Content {
-                var dateFrom: Date?
-                var dateTo: Date?
+        let localVariableNillableHeaders: [String: (any Sendable)?] = [
+            :
+        ]
 
-                enum CodingKeys: String, CodingKey {
-                    case dateFrom = "date_from"
-                    case dateTo = "date_to"
-                }
-            }
-            try localVariableRequest.query.encode(QueryParams(dateFrom: dateFrom, dateTo: dateTo))
-            
-            try beforeSend(&localVariableRequest)
-        }
-    }
+        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
 
-    public enum RetrieveAccountTransactions {
-        case http200(value: AccountTransactions, raw: ClientResponse)
-        case http400(value: ModelErrorResponse, raw: ClientResponse)
-        case http401(value: ModelErrorResponse, raw: ClientResponse)
-        case http403(value: ModelErrorResponse, raw: ClientResponse)
-        case http404(value: ModelErrorResponse, raw: ClientResponse)
-        case http409(value: ModelErrorResponse, raw: ClientResponse)
-        case http429(value: ModelErrorResponse, raw: ClientResponse)
-        case http500(value: ModelErrorResponse, raw: ClientResponse)
-        case http503(value: ModelErrorResponse, raw: ClientResponse)
-        case http0(raw: ClientResponse)
-    }
+        let localVariableRequestBuilder: RequestBuilder<AccountTransactions>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
 
-    /**
-     GET /api/v2/accounts/{id}/transactions/
-     Access account transactions.  Transactions will be returned in Berlin Group PSD2 format.
-     - Bearer Token:
-       - type: http
-       - name: jwtAuth
-     - parameter id: (path)  
-     - parameter dateFrom: (query)  (optional)
-     - parameter dateTo: (query)  (optional)
-     - returns: `EventLoopFuture` of `RetrieveAccountTransactions` 
-     */
-    open class func retrieveAccountTransactions(id: String, dateFrom: Date? = nil, dateTo: Date? = nil, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RetrieveAccountTransactions> {
-        return retrieveAccountTransactionsRaw(id: id, dateFrom: dateFrom, dateTo: dateTo, headers: headers, apiConfiguration: apiConfiguration, beforeSend: beforeSend).flatMapThrowing { response -> RetrieveAccountTransactions in
-            switch response.status.code {
-            case 200:
-                return .http200(value: try response.content.decode(AccountTransactions.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: AccountTransactions.defaultContentType)), raw: response)
-            case 400:
-                return .http400(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 401:
-                return .http401(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 403:
-                return .http403(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 404:
-                return .http404(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 409:
-                return .http409(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 429:
-                return .http429(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 500:
-                return .http500(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 503:
-                return .http503(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            default:
-                return .http0(raw: response)
-            }
-        }
+        return localVariableRequestBuilder.init(method: "GET", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
     }
 }

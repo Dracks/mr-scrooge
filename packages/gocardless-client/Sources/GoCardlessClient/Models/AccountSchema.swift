@@ -6,10 +6,9 @@
 //
 
 import Foundation
-import Vapor
 
 /** AccountSchema. */
-public struct AccountSchema: Sendable, Content, Hashable {
+public struct AccountSchema: Sendable, Codable, Hashable {
 
     /** iban */
     public var iban: String?

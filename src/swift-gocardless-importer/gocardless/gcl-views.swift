@@ -84,7 +84,9 @@ struct GocardlessAccountsPage: HTMLDocument {
 			if accounts.isEmpty {
 				article {
 					header { "No Bank Accounts Connected" }
-					p { "Connect your bank account to start importing transactions." }
+					p {
+						"Connect your bank account to start importing transactions."
+					}
 				}
 			} else {
 				h3 { "Connected Accounts" }
@@ -103,14 +105,24 @@ struct GocardlessAccountsPage: HTMLDocument {
 						footer {
 							"Status: \(account.status)"
 						}
-						form(.method(.post), .action("/\(GocardlessAccountsController.path)/agreement/\(account.agreementId)/delete")) {
-							button(.type(.submit), .class("secondary"), .style("float: right;")) { "Delete" }
+						form(
+							.method(.post),
+							.action(
+								"/\(GocardlessAccountsController.path)/agreement/\(account.agreementId)/delete"
+							)
+						) {
+							button(
+								.type(.submit), .class("secondary"),
+								.style("float: right;")
+							) { "Delete" }
 						}
 					}
 				}
 			}
 
-			a(.href("/\(GocardlessAccountsController.path)/add"), .role("button")) { "Add Account" }
+			a(.href("/\(GocardlessAccountsController.path)/add"), .role("button")) {
+				"Add Account"
+			}
 			a(.href("/"), .role("button"), .class("secondary")) { "Back to Dashboard" }
 		}
 	}
@@ -136,11 +148,16 @@ struct GocardlessCountrySelectionPage: HTMLDocument {
 				p { "Select the country where your bank is located." }
 			}
 
-			form(.method(.get), .action("/\(GocardlessAccountsController.path)/add/institutions")) {
+			form(
+				.method(.get),
+				.action("/\(GocardlessAccountsController.path)/add/institutions")
+			) {
 				label {
 					"Country"
 					select(.name("country"), .required) {
-						option(.value(""), .disabled, .selected) { "-- Select a country --" }
+						option(.value(""), .disabled, .selected) {
+							"-- Select a country --"
+						}
 						option(.value("AT")) { "Austria" }
 						option(.value("BE")) { "Belgium" }
 						option(.value("BG")) { "Bulgaria" }
@@ -176,7 +193,10 @@ struct GocardlessCountrySelectionPage: HTMLDocument {
 				button(.type(.submit)) { "Continue" }
 			}
 
-			a(.href("/\(GocardlessAccountsController.path)"), .role("button"), .class("secondary")) { "Cancel" }
+			a(
+				.href("/\(GocardlessAccountsController.path)"), .role("button"),
+				.class("secondary")
+			) { "Cancel" }
 		}
 	}
 }
@@ -206,13 +226,20 @@ struct GocardlessInstitutionsPage: HTMLDocument {
 					p { "No banks are available for the selected country." }
 				}
 			} else {
-				form(.method(.post), .action("/\(GocardlessAccountsController.path)/create")) {
+				form(
+					.method(.post),
+					.action("/\(GocardlessAccountsController.path)/create")
+				) {
 					label {
 						"Select your bank"
 						select(.name("institutionId"), .required) {
-							option(.value(""), .disabled, .selected) { "-- Select a bank --" }
+							option(.value(""), .disabled, .selected) {
+								"-- Select a bank --"
+							}
 							for institution in institutions {
-								option(.value(institution.id)) { "\(institution.name) (\(institution.bic))" }
+								option(.value(institution.id)) {
+									"\(institution.name) (\(institution.bic))"
+								}
 							}
 						}
 					}
@@ -220,8 +247,14 @@ struct GocardlessInstitutionsPage: HTMLDocument {
 				}
 			}
 
-			a(.href("/\(GocardlessAccountsController.path)/add"), .role("button"), .class("secondary")) { "Back to Country Selection" }
-			a(.href("/\(GocardlessAccountsController.path)"), .role("button"), .class("secondary")) { "Cancel" }
+			a(
+				.href("/\(GocardlessAccountsController.path)/add"), .role("button"),
+				.class("secondary")
+			) { "Back to Country Selection" }
+			a(
+				.href("/\(GocardlessAccountsController.path)"), .role("button"),
+				.class("secondary")
+			) { "Cancel" }
 		}
 	}
 }
@@ -260,8 +293,15 @@ struct GocardlessCallbackPage: HTMLDocument {
 				}
 			}
 
-			a(.href("/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)"), .role("button")) { "View Agreements" }
-			a(.href("/\(GocardlessAccountsController.path)"), .role("button"), .class("secondary")) { "Back to Accounts" }
+			a(
+				.href(
+					"/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)"
+				), .role("button")
+			) { "View Agreements" }
+			a(
+				.href("/\(GocardlessAccountsController.path)"), .role("button"),
+				.class("secondary")
+			) { "Back to Accounts" }
 		}
 	}
 }
@@ -301,23 +341,44 @@ struct UserAgreementsListPage: HTMLDocument {
 					article {
 						header { agreement.institutionName }
 						p { "Agreement ID: \(agreement.agreementId)" }
-							p { "Requisition: \(agreement.requisitionId)" }
+						p { "Requisition: \(agreement.requisitionId)" }
 						footer {
 							"Status: \(agreement.status)"
 						}
-						div(.style("display: flex; gap: 0.5rem; margin-top: 0.5rem;")) {
+						div(
+							.style(
+								"display: flex; gap: 0.5rem; margin-top: 0.5rem;"
+							)
+						) {
 							if agreement.status == "approved" {
-								a(.href("/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)/\(agreement.id?.uuidString ?? "")/add-accounts"), .role("button"), .class("outline")) { "Add Account" }
+								a(
+									.href(
+										"/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)/\(agreement.id?.uuidString ?? "")/add-accounts"
+									), .role("button"),
+									.class("outline")
+								) { "Add Account" }
 							}
-							form(.method(.post), .action("/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)/\(agreement.id?.uuidString ?? "")/delete")) {
-								button(.type(.submit), .class("secondary"), .style("float: right;")) { "Delete" }
+							form(
+								.method(.post),
+								.action(
+									"/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)/\(agreement.id?.uuidString ?? "")/delete"
+								)
+							) {
+								button(
+									.type(.submit),
+									.class("secondary"),
+									.style("float: right;")
+								) { "Delete" }
 							}
 						}
 					}
 				}
 			}
 
-			a(.href("/\(GocardlessAccountsController.path)"), .role("button"), .class("secondary")) { "Back to Accounts" }
+			a(
+				.href("/\(GocardlessAccountsController.path)"), .role("button"),
+				.class("secondary")
+			) { "Back to Accounts" }
 		}
 	}
 }
@@ -351,29 +412,73 @@ struct SelectAccountsPage: HTMLDocument {
 					p { "No accounts are available for this agreement yet." }
 				}
 			} else {
-				form(.method(.post), .action("/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)/\(agreement.id?.uuidString ?? "")/add-accounts")) {
+				form(
+					.method(.post),
+					.action(
+						"/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)/\(agreement.id?.uuidString ?? "")/add-accounts"
+					)
+				) {
 					for account in accounts {
-						let isExisting = existingAccountIds.contains(account.accountId)
-						div(.style("margin: 0.5rem 0; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;")) {
-							label(.style("display: flex; align-items: center; gap: 0.5rem; cursor: \(isExisting ? "not-allowed" : "pointer"); opacity: \(isExisting ? "0.5" : "1");")) {
+						let isExisting = existingAccountIds.contains(
+							account.accountId)
+						div(
+							.style(
+								"margin: 0.5rem 0; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;"
+							)
+						) {
+							label(
+								.style(
+									"display: flex; align-items: center; gap: 0.5rem; cursor: \(isExisting ? "not-allowed" : "pointer"); opacity: \(isExisting ? "0.5" : "1");"
+								)
+							) {
 								if isExisting {
-									input(.type(.checkbox), .name("accountIds"), .value(account.accountId), .disabled)
+									input(
+										.type(.checkbox),
+										.name("accountIds"),
+										.value(
+											account
+												.accountId
+										), .disabled)
 								} else {
-									input(.type(.checkbox), .name("accountIds"), .value(account.accountId), .checked)
+									input(
+										.type(.checkbox),
+										.name("accountIds"),
+										.value(
+											account
+												.accountId
+										), .checked)
 								}
 								div {
 									strong { account.iban }
 									if let name = account.name {
 										br()
-										span(.style("font-size: 0.9em; color: #666;")) { name }
+										span(
+											.style(
+												"font-size: 0.9em; color: #666;"
+											)
+										) { name }
 									}
-									if let owner = account.ownerName {
+									if let owner = account
+										.ownerName
+									{
 										br()
-										span(.style("font-size: 0.9em; color: #666;")) { "Owner: \(owner)" }
+										span(
+											.style(
+												"font-size: 0.9em; color: #666;"
+											)
+										) {
+											"Owner: \(owner)"
+										}
 									}
 									if isExisting {
 										br()
-										span(.style("font-size: 0.85em; color: #2196F3; font-weight: bold;")) { "Already added" }
+										span(
+											.style(
+												"font-size: 0.85em; color: #2196F3; font-weight: bold;"
+											)
+										) {
+											"Already added"
+										}
 									}
 								}
 							}
@@ -383,7 +488,11 @@ struct SelectAccountsPage: HTMLDocument {
 				}
 			}
 
-			a(.href("/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)"), .role("button"), .class("secondary")) { "Back to Agreements" }
+			a(
+				.href(
+					"/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)"
+				), .role("button"), .class("secondary")
+			) { "Back to Agreements" }
 		}
 	}
 }
@@ -415,7 +524,10 @@ struct GocardlessAccountsCreatedPage: HTMLDocument {
 				}
 			}
 
-			a(.href("/\(GocardlessAccountsController.path)"), .role("button"), .class("secondary")) { "Cancel" }
-}
+			a(
+				.href("/\(GocardlessAccountsController.path)"), .role("button"),
+				.class("secondary")
+			) { "Cancel" }
+		}
 	}
 }

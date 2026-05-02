@@ -73,7 +73,10 @@ struct CreateGocardlessBankAccounts: AsyncMigration {
 		try await database.schema("gocardless_bank_accounts")
 			.id()
 			.field("user_id", .uuid, .required, .references("users", "id"))
-			.field("agreement_id", .uuid, .required, .references("user_agreements", "id"))
+			.field(
+				"agreement_id", .uuid, .required,
+				.references("user_agreements", "id")
+			)
 			.field("account_id", .string, .required)
 			.field("institution_id", .string, .required)
 			.field("institution_name", .string, .required)

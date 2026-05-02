@@ -13,7 +13,13 @@ struct SessionAuthenticator: AsyncSessionAuthenticator {
 	}
 }
 
-func getUser(fromRequest req: Request) -> User?{
-    return req.auth.get(User.self)
-    
+func getUser(fromRequest req: Request) async throws -> User? {
+	let user = req.auth.get(User.self)
+
+	if let user {
+		try await user.$gclCredentials.load(on: req.db)
+	}
+
+	return user
+
 }

@@ -6,10 +6,9 @@
 //
 
 import Foundation
-import Vapor
 
 /** CurrencyExchangeSchema. */
-public struct CurrencyExchangeSchema: Sendable, Content, Hashable {
+public struct CurrencyExchangeSchema: Sendable, Codable, Hashable {
 
     /** sourceCurrency */
     public var sourceCurrency: String?

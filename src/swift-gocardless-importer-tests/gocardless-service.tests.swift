@@ -14,7 +14,8 @@ struct GocardlessServiceTests {
 			secretId: "test-secret-id",
 			secretKey: "test-secret-key"
 		)
-		credentials.setTokens(access: "test-access", refresh: "test-refresh", expiresIn: 3600)
+		credentials.setTokens(
+			access: "test-access", refresh: "test-refresh", expiresIn: 3600)
 
 		#expect(credentials.accessToken == "test-access")
 		#expect(credentials.refreshToken == "test-refresh")
@@ -28,7 +29,8 @@ struct GocardlessServiceTests {
 			secretId: "test-secret-id",
 			secretKey: "test-secret-key"
 		)
-		credentials.setTokens(access: "test-access", refresh: "test-refresh", expiresIn: 3600)
+		credentials.setTokens(
+			access: "test-access", refresh: "test-refresh", expiresIn: 3600)
 
 		#expect(credentials.isTokenExpired == false)
 	}
@@ -51,7 +53,8 @@ struct GocardlessServiceTests {
 			secretId: "test-secret-id",
 			secretKey: "test-secret-key"
 		)
-		credentials.setTokens(access: "test-access", refresh: "test-refresh", expiresIn: -3600)
+		credentials.setTokens(
+			access: "test-access", refresh: "test-refresh", expiresIn: -3600)
 
 		#expect(credentials.isTokenExpired == true)
 	}

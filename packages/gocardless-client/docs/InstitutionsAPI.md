@@ -10,7 +10,7 @@ Method | HTTP request | Description
 
 # **retrieveAllSupportedInstitutionsInAGivenCountry**
 ```swift
-    open class func retrieveAllSupportedInstitutionsInAGivenCountry(accessScopesSupported: String? = nil, accountSelectionSupported: String? = nil, businessAccountsSupported: String? = nil, cardAccountsSupported: String? = nil, corporateAccountsSupported: String? = nil, country: String? = nil, pendingTransactionsSupported: String? = nil, privateAccountsSupported: String? = nil, readDebtorAccountSupported: String? = nil, readRefundAccountSupported: String? = nil, separateContinuousHistoryConsentSupported: String? = nil, ssnVerificationSupported: String? = nil, headers: HTTPHeaders = GoCardlessClientAPIConfiguration.shared.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RetrieveAllSupportedInstitutionsInAGivenCountry>
+    open class func retrieveAllSupportedInstitutionsInAGivenCountry(accessScopesSupported: String? = nil, accountSelectionSupported: String? = nil, businessAccountsSupported: String? = nil, cardAccountsSupported: String? = nil, corporateAccountsSupported: String? = nil, country: String? = nil, pendingTransactionsSupported: String? = nil, privateAccountsSupported: String? = nil, readDebtorAccountSupported: String? = nil, readRefundAccountSupported: String? = nil, separateContinuousHistoryConsentSupported: String? = nil, ssnVerificationSupported: String? = nil, completion: @escaping (_ data: [Integration]?, _ error: Error?) -> Void)
 ```
 
 
@@ -35,21 +35,14 @@ let readRefundAccountSupported = "readRefundAccountSupported_example" // String 
 let separateContinuousHistoryConsentSupported = "separateContinuousHistoryConsentSupported_example" // String | Boolean value, indicating if separate consent for continuous history is supported (optional)
 let ssnVerificationSupported = "ssnVerificationSupported_example" // String | Boolean value, indicating if ssn verification is supported (optional)
 
-InstitutionsAPI.retrieveAllSupportedInstitutionsInAGivenCountry(accessScopesSupported: accessScopesSupported, accountSelectionSupported: accountSelectionSupported, businessAccountsSupported: businessAccountsSupported, cardAccountsSupported: cardAccountsSupported, corporateAccountsSupported: corporateAccountsSupported, country: country, pendingTransactionsSupported: pendingTransactionsSupported, privateAccountsSupported: privateAccountsSupported, readDebtorAccountSupported: readDebtorAccountSupported, readRefundAccountSupported: readRefundAccountSupported, separateContinuousHistoryConsentSupported: separateContinuousHistoryConsentSupported, ssnVerificationSupported: ssnVerificationSupported).whenComplete { result in
-    switch result {
-    case .failure(let error):
-    // process error
-    case .success(let response):
-        switch response {
-        // process decoded response value or raw ClientResponse
-        case .http200(let value, let raw):
-        case .http400(let value, let raw):
-        case .http401(let value, let raw):
-        case .http403(let value, let raw):
-        case .http404(let value, let raw):
-        case .http429(let value, let raw):
-        case .http0(let value, let raw):
-        }
+InstitutionsAPI.retrieveAllSupportedInstitutionsInAGivenCountry(accessScopesSupported: accessScopesSupported, accountSelectionSupported: accountSelectionSupported, businessAccountsSupported: businessAccountsSupported, cardAccountsSupported: cardAccountsSupported, corporateAccountsSupported: corporateAccountsSupported, country: country, pendingTransactionsSupported: pendingTransactionsSupported, privateAccountsSupported: privateAccountsSupported, readDebtorAccountSupported: readDebtorAccountSupported, readRefundAccountSupported: readRefundAccountSupported, separateContinuousHistoryConsentSupported: separateContinuousHistoryConsentSupported, ssnVerificationSupported: ssnVerificationSupported) { (response, error) in
+    guard error == nil else {
+        print(error)
+        return
+    }
+
+    if (response) {
+        dump(response)
     }
 }
 ```
@@ -73,19 +66,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-#### RetrieveAllSupportedInstitutionsInAGivenCountry
-
-```swift
-public enum RetrieveAllSupportedInstitutionsInAGivenCountry {
-    case http200(value: [Integration]?, raw: ClientResponse)
-    case http400(value: ModelErrorResponse?, raw: ClientResponse)
-    case http401(value: ModelErrorResponse?, raw: ClientResponse)
-    case http403(value: ModelErrorResponse?, raw: ClientResponse)
-    case http404(value: ModelErrorResponse?, raw: ClientResponse)
-    case http429(value: ModelErrorResponse?, raw: ClientResponse)
-    case http0(value: [Integration]?, raw: ClientResponse)
-}
-```
+[**[Integration]**](Integration.md)
 
 ### Authorization
 
@@ -100,7 +81,7 @@ public enum RetrieveAllSupportedInstitutionsInAGivenCountry {
 
 # **retrieveInstitution**
 ```swift
-    open class func retrieveInstitution(id: String, headers: HTTPHeaders = GoCardlessClientAPIConfiguration.shared.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RetrieveInstitution>
+    open class func retrieveInstitution(id: String, completion: @escaping (_ data: IntegrationRetrieve?, _ error: Error?) -> Void)
 ```
 
 
@@ -114,20 +95,14 @@ import GoCardlessClient
 
 let id = "id_example" // String | 
 
-InstitutionsAPI.retrieveInstitution(id: id).whenComplete { result in
-    switch result {
-    case .failure(let error):
-    // process error
-    case .success(let response):
-        switch response {
-        // process decoded response value or raw ClientResponse
-        case .http200(let value, let raw):
-        case .http401(let value, let raw):
-        case .http403(let value, let raw):
-        case .http404(let value, let raw):
-        case .http429(let value, let raw):
-        case .http0(let value, let raw):
-        }
+InstitutionsAPI.retrieveInstitution(id: id) { (response, error) in
+    guard error == nil else {
+        print(error)
+        return
+    }
+
+    if (response) {
+        dump(response)
     }
 }
 ```
@@ -140,18 +115,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-#### RetrieveInstitution
-
-```swift
-public enum RetrieveInstitution {
-    case http200(value: IntegrationRetrieve?, raw: ClientResponse)
-    case http401(value: ModelErrorResponse?, raw: ClientResponse)
-    case http403(value: ModelErrorResponse?, raw: ClientResponse)
-    case http404(value: ModelErrorResponse?, raw: ClientResponse)
-    case http429(value: ModelErrorResponse?, raw: ClientResponse)
-    case http0(value: IntegrationRetrieve?, raw: ClientResponse)
-}
-```
+[**IntegrationRetrieve**](IntegrationRetrieve.md)
 
 ### Authorization
 

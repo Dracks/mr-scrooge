@@ -1,3 +1,4 @@
+import Exceptions
 import Vapor
 
 final class EnvConfig: Sendable {
@@ -71,6 +72,21 @@ final class EnvConfig: Sendable {
 		} else {
 			logger.error("Client secret not defined")
 			mrScroogeClientSecret = ""
+		}
+	}
+
+	func validate() throws {
+		var invalidFields: [String] = []
+		if mrScroogeClientId == "" {
+			invalidFields.append("mrScroogeClientId")
+		}
+
+		if mrScroogeClientSecret == "" {
+			invalidFields.append("mrScroogeClientSecret")
+		}
+
+		if !invalidFields.isEmpty {
+			throw Exception(ErrorCodes.E10007, context: ["fields": invalidFields])
 		}
 	}
 

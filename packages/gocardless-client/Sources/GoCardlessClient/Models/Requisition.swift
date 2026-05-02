@@ -6,10 +6,9 @@
 //
 
 import Foundation
-import Vapor
 
 /** RequisitionSerializer. */
-public struct Requisition: Sendable, Content, Hashable {
+public struct Requisition: Sendable, Codable, Hashable {
 
     public static let redirectRule = StringRule(minLength: nil, maxLength: 1024, pattern: nil)
     public static let referenceRule = StringRule(minLength: nil, maxLength: 256, pattern: nil)

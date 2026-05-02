@@ -6,292 +6,170 @@
 //
 
 import Foundation
-import Vapor
 
 open class RequisitionsAPI {
 
     /**
-     POST /api/v2/requisitions/
-     Create a new requisition
+
+     - parameter requisitionRequest: (body)  
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: SpectacularRequisition
+     */
+    open class func createRequisition(requisitionRequest: RequisitionRequest, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) async throws(ErrorResponse) -> SpectacularRequisition {
+        return try await createRequisitionWithRequestBuilder(requisitionRequest: requisitionRequest, apiConfiguration: apiConfiguration).execute().body
+    }
+
+    /**
+     - POST /api/v2/requisitions/
+     - Create a new requisition
      - Bearer Token:
        - type: http
        - name: jwtAuth
      - parameter requisitionRequest: (body)  
-     - returns: `EventLoopFuture` of `ClientResponse` 
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: RequestBuilder<SpectacularRequisition> 
      */
-    open class func createRequisitionRaw(requisitionRequest: RequisitionRequest, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
+    open class func createRequisitionWithRequestBuilder(requisitionRequest: RequisitionRequest, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) -> RequestBuilder<SpectacularRequisition> {
         let localVariablePath = "/api/v2/requisitions/"
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
+        let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: requisitionRequest, codableHelper: apiConfiguration.codableHelper)
 
-        guard let localVariableApiClient = apiConfiguration.apiClient else {
-            fatalError("apiConfiguration.apiClient is not set.")
-        }
+        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
 
-        return localVariableApiClient.send(.POST, headers: headers ?? apiConfiguration.customHeaders, to: URI(string: localVariableURLString)) { localVariableRequest in
-            try apiConfiguration.apiWrapper(&localVariableRequest)
-            
-            
-            try localVariableRequest.content.encode(requisitionRequest, using: apiConfiguration.contentConfiguration.requireEncoder(for: RequisitionRequest.defaultContentType))
-            
-            try beforeSend(&localVariableRequest)
-        }
-    }
+        let localVariableNillableHeaders: [String: (any Sendable)?] = [
+            "Content-Type": "application/json",
+        ]
 
-    public enum CreateRequisition {
-        case http201(value: SpectacularRequisition, raw: ClientResponse)
-        case http400(value: ModelErrorResponse, raw: ClientResponse)
-        case http401(value: ModelErrorResponse, raw: ClientResponse)
-        case http402(value: ModelErrorResponse, raw: ClientResponse)
-        case http403(value: ModelErrorResponse, raw: ClientResponse)
-        case http404(value: ModelErrorResponse, raw: ClientResponse)
-        case http429(value: ModelErrorResponse, raw: ClientResponse)
-        case http0(raw: ClientResponse)
+        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
+
+        let localVariableRequestBuilder: RequestBuilder<SpectacularRequisition>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
+
+        return localVariableRequestBuilder.init(method: "POST", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
     }
 
     /**
-     POST /api/v2/requisitions/
-     Create a new requisition
-     - Bearer Token:
-       - type: http
-       - name: jwtAuth
-     - parameter requisitionRequest: (body)  
-     - returns: `EventLoopFuture` of `CreateRequisition` 
+
+     - parameter id: (path) A UUID string identifying this requisition. 
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: SuccessfulDeleteResponse
      */
-    open class func createRequisition(requisitionRequest: RequisitionRequest, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<CreateRequisition> {
-        return createRequisitionRaw(requisitionRequest: requisitionRequest, headers: headers, apiConfiguration: apiConfiguration, beforeSend: beforeSend).flatMapThrowing { response -> CreateRequisition in
-            switch response.status.code {
-            case 201:
-                return .http201(value: try response.content.decode(SpectacularRequisition.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: SpectacularRequisition.defaultContentType)), raw: response)
-            case 400:
-                return .http400(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 401:
-                return .http401(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 402:
-                return .http402(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 403:
-                return .http403(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 404:
-                return .http404(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 429:
-                return .http429(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            default:
-                return .http0(raw: response)
-            }
-        }
+    open class func deleteRequisitionById(id: UUID, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) async throws(ErrorResponse) -> SuccessfulDeleteResponse {
+        return try await deleteRequisitionByIdWithRequestBuilder(id: id, apiConfiguration: apiConfiguration).execute().body
     }
 
     /**
-     DELETE /api/v2/requisitions/{id}/
-     Delete requisition and its end user agreement
+     - DELETE /api/v2/requisitions/{id}/
+     - Delete requisition and its end user agreement
      - Bearer Token:
        - type: http
        - name: jwtAuth
      - parameter id: (path) A UUID string identifying this requisition. 
-     - returns: `EventLoopFuture` of `ClientResponse` 
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: RequestBuilder<SuccessfulDeleteResponse> 
      */
-    open class func deleteRequisitionByIdRaw(id: UUID, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
+    open class func deleteRequisitionByIdWithRequestBuilder(id: UUID, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) -> RequestBuilder<SuccessfulDeleteResponse> {
         var localVariablePath = "/api/v2/requisitions/{id}/"
-        let idPreEscape = String(describing: id)
+        let idPreEscape = "\(APIHelper.mapValueToPathItem(id))"
         let idPostEscape = idPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         localVariablePath = localVariablePath.replacingOccurrences(of: "{id}", with: idPostEscape, options: .literal, range: nil)
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
+        let localVariableParameters: [String: any Sendable]? = nil
 
-        guard let localVariableApiClient = apiConfiguration.apiClient else {
-            fatalError("apiConfiguration.apiClient is not set.")
-        }
+        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
 
-        return localVariableApiClient.send(.DELETE, headers: headers ?? apiConfiguration.customHeaders, to: URI(string: localVariableURLString)) { localVariableRequest in
-            try apiConfiguration.apiWrapper(&localVariableRequest)
-            
-            
-            
-            try beforeSend(&localVariableRequest)
-        }
-    }
+        let localVariableNillableHeaders: [String: (any Sendable)?] = [
+            :
+        ]
 
-    public enum DeleteRequisitionById {
-        case http200(value: SuccessfulDeleteResponse, raw: ClientResponse)
-        case http400(value: ModelErrorResponse, raw: ClientResponse)
-        case http401(value: ModelErrorResponse, raw: ClientResponse)
-        case http403(value: ModelErrorResponse, raw: ClientResponse)
-        case http404(value: ModelErrorResponse, raw: ClientResponse)
-        case http429(value: ModelErrorResponse, raw: ClientResponse)
-        case http0(raw: ClientResponse)
+        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
+
+        let localVariableRequestBuilder: RequestBuilder<SuccessfulDeleteResponse>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
+
+        return localVariableRequestBuilder.init(method: "DELETE", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
     }
 
     /**
-     DELETE /api/v2/requisitions/{id}/
-     Delete requisition and its end user agreement
+
+     - parameter id: (path) A UUID string identifying this requisition. 
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: Requisition
+     */
+    open class func requisitionById(id: UUID, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) async throws(ErrorResponse) -> Requisition {
+        return try await requisitionByIdWithRequestBuilder(id: id, apiConfiguration: apiConfiguration).execute().body
+    }
+
+    /**
+     - GET /api/v2/requisitions/{id}/
+     - Retrieve a requisition by ID
      - Bearer Token:
        - type: http
        - name: jwtAuth
      - parameter id: (path) A UUID string identifying this requisition. 
-     - returns: `EventLoopFuture` of `DeleteRequisitionById` 
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: RequestBuilder<Requisition> 
      */
-    open class func deleteRequisitionById(id: UUID, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<DeleteRequisitionById> {
-        return deleteRequisitionByIdRaw(id: id, headers: headers, apiConfiguration: apiConfiguration, beforeSend: beforeSend).flatMapThrowing { response -> DeleteRequisitionById in
-            switch response.status.code {
-            case 200:
-                return .http200(value: try response.content.decode(SuccessfulDeleteResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: SuccessfulDeleteResponse.defaultContentType)), raw: response)
-            case 400:
-                return .http400(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 401:
-                return .http401(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 403:
-                return .http403(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 404:
-                return .http404(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 429:
-                return .http429(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            default:
-                return .http0(raw: response)
-            }
-        }
-    }
-
-    /**
-     GET /api/v2/requisitions/{id}/
-     Retrieve a requisition by ID
-     - Bearer Token:
-       - type: http
-       - name: jwtAuth
-     - parameter id: (path) A UUID string identifying this requisition. 
-     - returns: `EventLoopFuture` of `ClientResponse` 
-     */
-    open class func requisitionByIdRaw(id: UUID, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
+    open class func requisitionByIdWithRequestBuilder(id: UUID, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) -> RequestBuilder<Requisition> {
         var localVariablePath = "/api/v2/requisitions/{id}/"
-        let idPreEscape = String(describing: id)
+        let idPreEscape = "\(APIHelper.mapValueToPathItem(id))"
         let idPostEscape = idPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         localVariablePath = localVariablePath.replacingOccurrences(of: "{id}", with: idPostEscape, options: .literal, range: nil)
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
+        let localVariableParameters: [String: any Sendable]? = nil
 
-        guard let localVariableApiClient = apiConfiguration.apiClient else {
-            fatalError("apiConfiguration.apiClient is not set.")
-        }
+        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
 
-        return localVariableApiClient.send(.GET, headers: headers ?? apiConfiguration.customHeaders, to: URI(string: localVariableURLString)) { localVariableRequest in
-            try apiConfiguration.apiWrapper(&localVariableRequest)
-            
-            
-            
-            try beforeSend(&localVariableRequest)
-        }
-    }
+        let localVariableNillableHeaders: [String: (any Sendable)?] = [
+            :
+        ]
 
-    public enum RequisitionById {
-        case http200(value: Requisition, raw: ClientResponse)
-        case http400(value: ModelErrorResponse, raw: ClientResponse)
-        case http401(value: ModelErrorResponse, raw: ClientResponse)
-        case http403(value: ModelErrorResponse, raw: ClientResponse)
-        case http404(value: ModelErrorResponse, raw: ClientResponse)
-        case http429(value: ModelErrorResponse, raw: ClientResponse)
-        case http0(raw: ClientResponse)
+        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
+
+        let localVariableRequestBuilder: RequestBuilder<Requisition>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
+
+        return localVariableRequestBuilder.init(method: "GET", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
     }
 
     /**
-     GET /api/v2/requisitions/{id}/
-     Retrieve a requisition by ID
-     - Bearer Token:
-       - type: http
-       - name: jwtAuth
-     - parameter id: (path) A UUID string identifying this requisition. 
-     - returns: `EventLoopFuture` of `RequisitionById` 
+
+     - parameter limit: (query) Number of results to return per page. (optional, default to 100)
+     - parameter offset: (query) The initial zero-based index from which to return the results. (optional, default to 0)
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: PaginatedRequisitionList
      */
-    open class func requisitionById(id: UUID, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RequisitionById> {
-        return requisitionByIdRaw(id: id, headers: headers, apiConfiguration: apiConfiguration, beforeSend: beforeSend).flatMapThrowing { response -> RequisitionById in
-            switch response.status.code {
-            case 200:
-                return .http200(value: try response.content.decode(Requisition.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: Requisition.defaultContentType)), raw: response)
-            case 400:
-                return .http400(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 401:
-                return .http401(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 403:
-                return .http403(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 404:
-                return .http404(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 429:
-                return .http429(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            default:
-                return .http0(raw: response)
-            }
-        }
+    open class func retrieveAllRequisitions(limit: Int? = nil, offset: Int? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) async throws(ErrorResponse) -> PaginatedRequisitionList {
+        return try await retrieveAllRequisitionsWithRequestBuilder(limit: limit, offset: offset, apiConfiguration: apiConfiguration).execute().body
     }
 
     /**
-     GET /api/v2/requisitions/
-     Retrieve all requisitions belonging to the company
+     - GET /api/v2/requisitions/
+     - Retrieve all requisitions belonging to the company
      - Bearer Token:
        - type: http
        - name: jwtAuth
      - parameter limit: (query) Number of results to return per page. (optional, default to 100)
      - parameter offset: (query) The initial zero-based index from which to return the results. (optional, default to 0)
-     - returns: `EventLoopFuture` of `ClientResponse` 
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: RequestBuilder<PaginatedRequisitionList> 
      */
-    open class func retrieveAllRequisitionsRaw(limit: Int? = nil, offset: Int? = nil, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
+    open class func retrieveAllRequisitionsWithRequestBuilder(limit: Int? = nil, offset: Int? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) -> RequestBuilder<PaginatedRequisitionList> {
         let localVariablePath = "/api/v2/requisitions/"
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
+        let localVariableParameters: [String: any Sendable]? = nil
 
-        guard let localVariableApiClient = apiConfiguration.apiClient else {
-            fatalError("apiConfiguration.apiClient is not set.")
-        }
+        var localVariableUrlComponents = URLComponents(string: localVariableURLString)
+        localVariableUrlComponents?.queryItems = APIHelper.mapValuesToQueryItems([
+            "limit": (wrappedValue: limit?.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
+            "offset": (wrappedValue: offset?.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
+        ])
 
-        return localVariableApiClient.send(.GET, headers: headers ?? apiConfiguration.customHeaders, to: URI(string: localVariableURLString)) { localVariableRequest in
-            try apiConfiguration.apiWrapper(&localVariableRequest)
-            
-            struct QueryParams: Content {
-                var limit: Int?
-                var offset: Int?
+        let localVariableNillableHeaders: [String: (any Sendable)?] = [
+            :
+        ]
 
-                enum CodingKeys: String, CodingKey {
-                    case limit = "limit"
-                    case offset = "offset"
-                }
-            }
-            try localVariableRequest.query.encode(QueryParams(limit: limit, offset: offset))
-            
-            try beforeSend(&localVariableRequest)
-        }
-    }
+        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
 
-    public enum RetrieveAllRequisitions {
-        case http200(value: PaginatedRequisitionList, raw: ClientResponse)
-        case http400(value: ModelErrorResponse, raw: ClientResponse)
-        case http401(value: ModelErrorResponse, raw: ClientResponse)
-        case http403(value: ModelErrorResponse, raw: ClientResponse)
-        case http404(value: ModelErrorResponse, raw: ClientResponse)
-        case http429(value: ModelErrorResponse, raw: ClientResponse)
-        case http0(raw: ClientResponse)
-    }
+        let localVariableRequestBuilder: RequestBuilder<PaginatedRequisitionList>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
 
-    /**
-     GET /api/v2/requisitions/
-     Retrieve all requisitions belonging to the company
-     - Bearer Token:
-       - type: http
-       - name: jwtAuth
-     - parameter limit: (query) Number of results to return per page. (optional, default to 100)
-     - parameter offset: (query) The initial zero-based index from which to return the results. (optional, default to 0)
-     - returns: `EventLoopFuture` of `RetrieveAllRequisitions` 
-     */
-    open class func retrieveAllRequisitions(limit: Int? = nil, offset: Int? = nil, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RetrieveAllRequisitions> {
-        return retrieveAllRequisitionsRaw(limit: limit, offset: offset, headers: headers, apiConfiguration: apiConfiguration, beforeSend: beforeSend).flatMapThrowing { response -> RetrieveAllRequisitions in
-            switch response.status.code {
-            case 200:
-                return .http200(value: try response.content.decode(PaginatedRequisitionList.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: PaginatedRequisitionList.defaultContentType)), raw: response)
-            case 400:
-                return .http400(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 401:
-                return .http401(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 403:
-                return .http403(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 404:
-                return .http404(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            case 429:
-                return .http429(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
-            default:
-                return .http0(raw: response)
-            }
-        }
+        return localVariableRequestBuilder.init(method: "GET", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
     }
 }

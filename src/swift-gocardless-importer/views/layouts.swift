@@ -16,7 +16,9 @@ enum Layout {
 				nav {
 					a(.href("/")) { "GoCardLess Importer" }
 					small { username }
-					a(.href("/logout"), .role("button"), .class("secondary")) { "Logout" }
+					a(.href("/logout"), .role("button"), .class("secondary")) {
+						"Logout"
+					}
 				}
 			}
 		}

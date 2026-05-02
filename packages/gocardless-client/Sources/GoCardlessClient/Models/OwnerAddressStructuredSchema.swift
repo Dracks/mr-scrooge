@@ -6,10 +6,9 @@
 //
 
 import Foundation
-import Vapor
 
 /** OwnerAddressStructuredSchema. */
-public struct OwnerAddressStructuredSchema: Sendable, Content, Hashable {
+public struct OwnerAddressStructuredSchema: Sendable, Codable, Hashable {
 
     /** streetName */
     public var streetName: String?

@@ -12,7 +12,7 @@ final class UserAgreement: Model, Content, @unchecked Sendable {
 	var user: User
 
 	@Field(key: "agreement_id")
-	var agreementId: String
+	var agreementId: UUID
 
 	@Field(key: "institution_id")
 	var institutionId: String
@@ -27,7 +27,7 @@ final class UserAgreement: Model, Content, @unchecked Sendable {
 	var accessScope: String?
 
 	@Field(key: "requisition_id")
-	var requisitionId: String
+	var requisitionId: UUID
 
 	@Timestamp(key: "created_at", on: .create)
 	var createdAt: Date?
@@ -40,12 +40,12 @@ final class UserAgreement: Model, Content, @unchecked Sendable {
 	init(
 		id: UUID? = nil,
 		userId: User.IDValue,
-		agreementId: String,
+		agreementId: UUID,
 		institutionId: String,
 		institutionName: String,
 		status: String = "pending",
 		accessScope: String? = nil,
-		requisitionId: String,
+		requisitionId: UUID,
 		createdAt: Date? = nil,
 		updatedAt: Date? = nil
 	) {
@@ -68,11 +68,11 @@ struct CreateUserAgreements: AsyncMigration {
 			.id()
 			.field("user_id", .uuid, .required, .references("users", "id"))
 			.field("agreement_id", .string, .required)
-			.field("institution_id", .string, .required)
+			.field("institution_id", .uuid, .required)
 			.field("institution_name", .string, .required)
 			.field("status", .string, .required)
 			.field("access_scope", .string)
-			.field("requisition_id", .string, .required)
+			.field("requisition_id", .uuid, .required)
 			.field("created_at", .datetime, .required)
 			.field("updated_at", .datetime, .required)
 			.create()
