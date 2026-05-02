@@ -1,7 +1,7 @@
 import AsyncHTTPClient
 import Fluent
 import Foundation
-import OpenAPIClient
+import GoCardlessClient
 import Vapor
 import VaporElementary
 

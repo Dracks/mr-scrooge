@@ -1,6 +1,5 @@
 import Fluent
 import Foundation
-import OpenAPIClient
 import Vapor
 import VaporElementary
 

@@ -7,7 +7,7 @@ import PackageDescription
 let package = Package(
 	name: "mr-scrooge",
 	platforms: [
-		.macOS(.v13)
+		.macOS(.v14)
 	],
 	dependencies: [
 		// Local packages

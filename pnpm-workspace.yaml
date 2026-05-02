@@ -1,4 +1,8 @@
+ignoredBuiltDependencies:
+  - '@nestjs/core'
+
 onlyBuiltDependencies:
+  - '@openapitools/openapi-generator-cli'
   - '@parcel/watcher'
   - msw
   - node-sass

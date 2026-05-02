@@ -1,7 +1,7 @@
 name: mr-scrooge
 version: 3.0.0
 scripts:
-  build:gocardless-models: bin/generate-gocardless
+  build:gocardless-client: bin/generate-gocardless
   build:api-models: >-
     openapi-typescript src/@typespec/openapi3/openapi.yaml --output
     src/react-view/api/generated-models.ts
@@ -17,6 +17,7 @@ scripts:
   type-check: tsc -p tsconfig.json --noEmit
 devDependencies:
   '@eslint/js': 9.39.1
+  '@openapitools/openapi-generator-cli': ^2.32.0
   '@testing-library/react': 16.3.0
   '@types/jest': 30.0.0
   '@types/node': 24.10.3
