@@ -19,7 +19,7 @@ struct GocardlessKeysController: RouteCollection {
 	}
 
 	func setCredentials(req: Request) async throws -> HTMLResponse {
-		guard let user = req.auth.get(GoCardlessImporter.User.self) else {
+		guard let user = try await getUser(fromRequest: req) else {
 			throw Abort(.unauthorized)
 		}
 
@@ -27,9 +27,7 @@ struct GocardlessKeysController: RouteCollection {
 		let userId = try user.requireID()
 
 		let credentials =
-			try await GocardlessInstitutionCredentials.query(on: req.db)
-			.filter(\.$user.$id == userId)
-			.first()
+			user.gclCredentials
 			?? GocardlessInstitutionCredentials(
 				userId: userId,
 				secretId: formData.secretId,
@@ -59,13 +57,11 @@ struct GocardlessKeysController: RouteCollection {
 	}
 
 	func showCredentials(req: Request) async throws -> HTMLResponse {
-		guard let user = req.auth.get(GoCardlessImporter.User.self) else {
+		guard let user = try await getUser(fromRequest: req) else {
 			throw Abort(.unauthorized)
 		}
 
-		let credentials = try await user.$gclCredentials.load(on: req.db)
-
-		let hasCredentials = credentials != nil
+		let hasCredentials = user.gclCredentials != nil
 
 		return HTMLResponse {
 			GocardlessCredentialsPage(hasCredentials: hasCredentials)

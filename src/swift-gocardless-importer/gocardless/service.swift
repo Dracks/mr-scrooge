@@ -61,7 +61,7 @@ extension GocardlessInstitutionCredentials {
 	) {}
 } */
 
-struct GocardlessService {
+/* struct GocardlessService {
 	static let baseURL = "https://bankaccountdata.gocardless.com"
 
 	static func createConfiguration(accessToken: String? = nil)
@@ -117,4 +117,4 @@ struct GocardlessService {
 
 		return allAccounts
 	}
-}
+} */
