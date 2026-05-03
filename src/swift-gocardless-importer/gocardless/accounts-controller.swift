@@ -23,48 +23,31 @@ struct GocardlessAccountsController: RouteCollection {
 	}
 
 	func showAccounts(req: Request) async throws -> HTMLResponse {
-		guard let user = req.auth.get(GoCardlessImporter.User.self) else {
+		guard let user = try await getUser(fromRequest: req) else {
 			throw Abort(.unauthorized)
 		}
 		let userId = try user.requireID()
 
-		guard let credentials = try await user.$gclCredentials.get(on: req.db) else {
-			throw Abort(.notFound, reason: "No credentials configured")
-		}
-
 		let agreements = try await UserAgreement.query(on: req.db)
-			.filter(\.$user.$id == userId)
+			.filter(\.$user.$id == userId).with(\.$bankAccounts)
 			.all()
 
 		var accountDetails: [AccountDetailView] = []
 		if !agreements.isEmpty {
 
-			let apiConfig = credentials.apiConfig()
-
 			for agreement in agreements {
-				let requisition =
-					try await RequisitionsAPI.requisitionById(
-						id: agreement.requisitionId,
-						apiConfiguration: apiConfig)
-				for accountId in requisition.accounts ?? [] {
-					let account = try await AccountsAPI.retrieveAccountDetails(
-						id: accountId.uuidString,
-						apiConfiguration: apiConfig)
-					// if let account
-					// {
+				for account in agreement.bankAccounts {
 					accountDetails.append(
 						AccountDetailView(
 							agreementId: agreement.id?
 								.uuidString ?? "",
 							institutionName: agreement
 								.institutionName,
-							iban: account.account.iban ?? "no-iban",
-							ownerName: account.account.ownerName,
-							status: account.account.status
-								?? "no-status",
-							name: account.account.name
+							iban: account.iban,
+							ownerName: account.ownerName,
+							status: account.status,
+							name: account.name
 						))
-					// }
 				}
 			}
 		}

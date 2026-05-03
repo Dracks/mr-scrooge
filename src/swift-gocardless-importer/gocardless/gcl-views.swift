@@ -11,9 +11,9 @@ struct InstitutionView: Codable {
 struct AccountDetailView: Codable {
 	let agreementId: String
 	let institutionName: String
-	let iban: String
+	let iban: String?
 	let ownerName: String?
-	let status: String
+	let status: String?
 	let name: String?
 }
 
@@ -97,13 +97,17 @@ struct GocardlessAccountsPage: HTMLDocument {
 							if let name = account.name {
 								"\(name) - "
 							}
-							"IBAN: \(account.iban)"
+							if let iban = account.iban {
+								"IBAN: \(iban)"
+							}
 						}
 						if let owner = account.ownerName {
 							p { "Owner: \(owner)" }
 						}
-						footer {
-							"Status: \(account.status)"
+						if let status = account.status {
+							footer {
+								"Status: \(status)"
+							}
 						}
 						form(
 							.method(.post),

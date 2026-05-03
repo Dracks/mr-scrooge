@@ -77,15 +77,6 @@ struct UserAgreementsController: RouteCollection {
 				reason: "Agreement must be approved before adding accounts")
 		}
 
-		/* let gclService = GoCardlessService(
-			client: req.application.gocardlessHTTPClient,
-			secretId: credentials.secretId,
-			secretKey: credentials.secretKey
-		)
-
-		try await gclService.obtainTokens()
-
-		let requisition = try await gclService.getRequisitionsBy(requisitionId: agreement.requisitionId) */
 
 		let apiConfig = credentials.apiConfig()
 

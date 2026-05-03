@@ -24,13 +24,13 @@ final class GocardlessBankAccount: Model, Content, @unchecked Sendable {
 	var institutionName: String
 
 	@Field(key: "iban")
-	var iban: String
+	var iban: String?
 
 	@Field(key: "owner_name")
 	var ownerName: String?
 
 	@Field(key: "status")
-	var status: String
+	var status: String?
 
 	@Field(key: "name")
 	var name: String?
