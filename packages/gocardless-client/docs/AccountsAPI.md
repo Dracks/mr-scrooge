@@ -12,7 +12,7 @@ Method | HTTP request | Description
 
 # **retrieveAccountBalances**
 ```swift
-    open class func retrieveAccountBalances(id: String, completion: @escaping (_ data: AccountBalance?, _ error: Error?) -> Void)
+    open class func retrieveAccountBalances(id: String, headers: HTTPHeaders = GoCardlessClientAPIConfiguration.shared.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RetrieveAccountBalances>
 ```
 
 
@@ -26,14 +26,24 @@ import GoCardlessClient
 
 let id = "id_example" // String | 
 
-AccountsAPI.retrieveAccountBalances(id: id) { (response, error) in
-    guard error == nil else {
-        print(error)
-        return
-    }
-
-    if (response) {
-        dump(response)
+AccountsAPI.retrieveAccountBalances(id: id).whenComplete { result in
+    switch result {
+    case .failure(let error):
+    // process error
+    case .success(let response):
+        switch response {
+        // process decoded response value or raw ClientResponse
+        case .http200(let value, let raw):
+        case .http400(let value, let raw):
+        case .http401(let value, let raw):
+        case .http403(let value, let raw):
+        case .http404(let value, let raw):
+        case .http409(let value, let raw):
+        case .http429(let value, let raw):
+        case .http500(let value, let raw):
+        case .http503(let value, let raw):
+        case .http0(let value, let raw):
+        }
     }
 }
 ```
@@ -46,7 +56,22 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**AccountBalance**](AccountBalance.md)
+#### RetrieveAccountBalances
+
+```swift
+public enum RetrieveAccountBalances {
+    case http200(value: AccountBalance?, raw: ClientResponse)
+    case http400(value: ModelErrorResponse?, raw: ClientResponse)
+    case http401(value: ModelErrorResponse?, raw: ClientResponse)
+    case http403(value: ModelErrorResponse?, raw: ClientResponse)
+    case http404(value: ModelErrorResponse?, raw: ClientResponse)
+    case http409(value: ModelErrorResponse?, raw: ClientResponse)
+    case http429(value: ModelErrorResponse?, raw: ClientResponse)
+    case http500(value: ModelErrorResponse?, raw: ClientResponse)
+    case http503(value: ModelErrorResponse?, raw: ClientResponse)
+    case http0(value: AccountBalance?, raw: ClientResponse)
+}
+```
 
 ### Authorization
 
@@ -61,7 +86,7 @@ Name | Type | Description  | Notes
 
 # **retrieveAccountDetails**
 ```swift
-    open class func retrieveAccountDetails(id: String, completion: @escaping (_ data: AccountDetail?, _ error: Error?) -> Void)
+    open class func retrieveAccountDetails(id: String, headers: HTTPHeaders = GoCardlessClientAPIConfiguration.shared.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RetrieveAccountDetails>
 ```
 
 
@@ -75,14 +100,24 @@ import GoCardlessClient
 
 let id = "id_example" // String | 
 
-AccountsAPI.retrieveAccountDetails(id: id) { (response, error) in
-    guard error == nil else {
-        print(error)
-        return
-    }
-
-    if (response) {
-        dump(response)
+AccountsAPI.retrieveAccountDetails(id: id).whenComplete { result in
+    switch result {
+    case .failure(let error):
+    // process error
+    case .success(let response):
+        switch response {
+        // process decoded response value or raw ClientResponse
+        case .http200(let value, let raw):
+        case .http400(let value, let raw):
+        case .http401(let value, let raw):
+        case .http403(let value, let raw):
+        case .http404(let value, let raw):
+        case .http409(let value, let raw):
+        case .http429(let value, let raw):
+        case .http500(let value, let raw):
+        case .http503(let value, let raw):
+        case .http0(let value, let raw):
+        }
     }
 }
 ```
@@ -95,7 +130,22 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**AccountDetail**](AccountDetail.md)
+#### RetrieveAccountDetails
+
+```swift
+public enum RetrieveAccountDetails {
+    case http200(value: AccountDetail?, raw: ClientResponse)
+    case http400(value: ModelErrorResponse?, raw: ClientResponse)
+    case http401(value: ModelErrorResponse?, raw: ClientResponse)
+    case http403(value: ModelErrorResponse?, raw: ClientResponse)
+    case http404(value: ModelErrorResponse?, raw: ClientResponse)
+    case http409(value: ModelErrorResponse?, raw: ClientResponse)
+    case http429(value: ModelErrorResponse?, raw: ClientResponse)
+    case http500(value: ModelErrorResponse?, raw: ClientResponse)
+    case http503(value: ModelErrorResponse?, raw: ClientResponse)
+    case http0(value: AccountDetail?, raw: ClientResponse)
+}
+```
 
 ### Authorization
 
@@ -110,7 +160,7 @@ Name | Type | Description  | Notes
 
 # **retrieveAccountMetadata**
 ```swift
-    open class func retrieveAccountMetadata(id: String, completion: @escaping (_ data: Account?, _ error: Error?) -> Void)
+    open class func retrieveAccountMetadata(id: String, headers: HTTPHeaders = GoCardlessClientAPIConfiguration.shared.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RetrieveAccountMetadata>
 ```
 
 
@@ -124,14 +174,20 @@ import GoCardlessClient
 
 let id = "id_example" // String | 
 
-AccountsAPI.retrieveAccountMetadata(id: id) { (response, error) in
-    guard error == nil else {
-        print(error)
-        return
-    }
-
-    if (response) {
-        dump(response)
+AccountsAPI.retrieveAccountMetadata(id: id).whenComplete { result in
+    switch result {
+    case .failure(let error):
+    // process error
+    case .success(let response):
+        switch response {
+        // process decoded response value or raw ClientResponse
+        case .http200(let value, let raw):
+        case .http401(let value, let raw):
+        case .http403(let value, let raw):
+        case .http404(let value, let raw):
+        case .http429(let value, let raw):
+        case .http0(let value, let raw):
+        }
     }
 }
 ```
@@ -144,7 +200,18 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Account**](Account.md)
+#### RetrieveAccountMetadata
+
+```swift
+public enum RetrieveAccountMetadata {
+    case http200(value: Account?, raw: ClientResponse)
+    case http401(value: ModelErrorResponse?, raw: ClientResponse)
+    case http403(value: ModelErrorResponse?, raw: ClientResponse)
+    case http404(value: ModelErrorResponse?, raw: ClientResponse)
+    case http429(value: ModelErrorResponse?, raw: ClientResponse)
+    case http0(value: Account?, raw: ClientResponse)
+}
+```
 
 ### Authorization
 
@@ -159,7 +226,7 @@ Name | Type | Description  | Notes
 
 # **retrieveAccountTransactions**
 ```swift
-    open class func retrieveAccountTransactions(id: String, dateFrom: Date? = nil, dateTo: Date? = nil, completion: @escaping (_ data: AccountTransactions?, _ error: Error?) -> Void)
+    open class func retrieveAccountTransactions(id: String, dateFrom: Date? = nil, dateTo: Date? = nil, headers: HTTPHeaders = GoCardlessClientAPIConfiguration.shared.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RetrieveAccountTransactions>
 ```
 
 
@@ -175,14 +242,24 @@ let id = "id_example" // String |
 let dateFrom = Date() // Date |  (optional)
 let dateTo = Date() // Date |  (optional)
 
-AccountsAPI.retrieveAccountTransactions(id: id, dateFrom: dateFrom, dateTo: dateTo) { (response, error) in
-    guard error == nil else {
-        print(error)
-        return
-    }
-
-    if (response) {
-        dump(response)
+AccountsAPI.retrieveAccountTransactions(id: id, dateFrom: dateFrom, dateTo: dateTo).whenComplete { result in
+    switch result {
+    case .failure(let error):
+    // process error
+    case .success(let response):
+        switch response {
+        // process decoded response value or raw ClientResponse
+        case .http200(let value, let raw):
+        case .http400(let value, let raw):
+        case .http401(let value, let raw):
+        case .http403(let value, let raw):
+        case .http404(let value, let raw):
+        case .http409(let value, let raw):
+        case .http429(let value, let raw):
+        case .http500(let value, let raw):
+        case .http503(let value, let raw):
+        case .http0(let value, let raw):
+        }
     }
 }
 ```
@@ -197,7 +274,22 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**AccountTransactions**](AccountTransactions.md)
+#### RetrieveAccountTransactions
+
+```swift
+public enum RetrieveAccountTransactions {
+    case http200(value: AccountTransactions?, raw: ClientResponse)
+    case http400(value: ModelErrorResponse?, raw: ClientResponse)
+    case http401(value: ModelErrorResponse?, raw: ClientResponse)
+    case http403(value: ModelErrorResponse?, raw: ClientResponse)
+    case http404(value: ModelErrorResponse?, raw: ClientResponse)
+    case http409(value: ModelErrorResponse?, raw: ClientResponse)
+    case http429(value: ModelErrorResponse?, raw: ClientResponse)
+    case http500(value: ModelErrorResponse?, raw: ClientResponse)
+    case http503(value: ModelErrorResponse?, raw: ClientResponse)
+    case http0(value: AccountTransactions?, raw: ClientResponse)
+}
+```
 
 ### Authorization
 

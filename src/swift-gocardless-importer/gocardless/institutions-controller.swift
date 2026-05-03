@@ -4,17 +4,87 @@ import GoCardlessClient
 import Vapor
 import VaporElementary
 
-struct UserAgreementsController: RouteCollection {
-	static let path: PathComponent = "agreements"
+struct InstitutionsController: RouteCollection {
+	static let path: PathComponent = "institutions"
 
 	func boot(routes: RoutesBuilder) throws {
-		let agreementsGroup = routes.grouped(UserAgreementsController.path)
-		agreementsGroup.get(use: listAgreements)
-		agreementsGroup.get("created", use: handleCallback)
-		agreementsGroup.get(":id", "add-accounts", use: showAvailableAccounts)
-		agreementsGroup.post(":id", "add-accounts", use: selectAccounts)
-		agreementsGroup.post(":id", "delete") { req -> Vapor.Response in
+		let institutionsGroup = routes.grouped(InstitutionsController.path)
+		institutionsGroup.get(use: listAgreements)
+		institutionsGroup.get("add", use: showAddAccount)
+		institutionsGroup.get("add", "new", use: showCountrySelection)
+		institutionsGroup.get("add", "list", use: showInstitutionsForCountry)
+		institutionsGroup.get("created", use: handleCallback)
+		institutionsGroup.get(":id", "add-accounts", use: showAvailableAccounts)
+		institutionsGroup.post(":id", "add-accounts", use: selectAccounts)
+		institutionsGroup.post(":id", "delete") { req -> Vapor.Response in
 			try await self.deleteAgreement(req: req)
+		}
+	}
+
+	func showAddAccount(req: Request) async throws -> HTMLResponse {
+		guard let user = try await getUser(fromRequest: req) else {
+			throw Abort(.unauthorized)
+		}
+		let userId = try user.requireID()
+
+		let approvedAgreements = try await UserAgreement.query(on: req.db)
+			.filter(\.$user.$id == userId)
+			.filter(\.$status == "approved")
+			.sort(\.$createdAt, .descending)
+			.all()
+
+		return HTMLResponse {
+			GocardlessAddAccountPage(
+				username: user.username,
+				approvedAgreements: approvedAgreements
+			)
+		}
+	}
+
+	func showCountrySelection(req: Request) async throws -> HTMLResponse {
+		guard let user = req.auth.get(GoCardlessImporter.User.self) else {
+			throw Abort(.unauthorized)
+		}
+
+		return HTMLResponse {
+			GocardlessCountrySelectionPage(
+				username: user.username
+			)
+		}
+	}
+
+	func showInstitutionsForCountry(req: Request) async throws -> HTMLResponse {
+		guard let user = req.auth.get(GoCardlessImporter.User.self) else {
+			throw Abort(.unauthorized)
+		}
+
+		guard let credentials = try await user.$gclCredentials.get(on: req.db) else {
+			throw Abort(.notFound, reason: "No credentials configured")
+		}
+
+		guard let country = req.query[String.self, at: "country"] else {
+			throw Abort(.badRequest, reason: "Country parameter required")
+		}
+
+		let institutions =
+			try await InstitutionsAPI.retrieveAllSupportedInstitutionsInAGivenCountry(
+				country: country, apiConfiguration: credentials.apiConfig())
+
+		let institutionViews = institutions.map { institution in
+			InstitutionView(
+				id: institution.id,
+				name: institution.name,
+				bic: institution.bic ?? "",
+				countries: institution.countries
+			)
+		}
+
+		return HTMLResponse {
+			GocardlessInstitutionsPage(
+				username: user.username,
+				institutions: institutionViews,
+				country: country
+			)
 		}
 	}
 
@@ -198,7 +268,7 @@ struct UserAgreementsController: RouteCollection {
 			status: .seeOther,
 			headers: [
 				"Location":
-					"/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)"
+					"/\(InstitutionsController.path)"
 			])
 	}
 
@@ -273,7 +343,7 @@ struct UserAgreementsController: RouteCollection {
 			status: .seeOther,
 			headers: [
 				"Location":
-					"/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)"
+					"/\(InstitutionsController.path)"
 			])
 	}
 }

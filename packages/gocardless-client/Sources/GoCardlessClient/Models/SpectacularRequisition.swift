@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import Vapor
 
 /** Create requisition. */
-public struct SpectacularRequisition: Sendable, Codable, Hashable {
+public struct SpectacularRequisition: Sendable, Content, Hashable {
 
     public static let redirectRule = StringRule(minLength: nil, maxLength: 1024, pattern: nil)
     public static let referenceRule = StringRule(minLength: nil, maxLength: 256, pattern: nil)

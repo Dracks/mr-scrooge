@@ -7,4 +7,5 @@ func routes(_ app: Application) throws {
 	try app.register(collection: GocardlessAuthController())
 	try app.register(collection: GocardlessKeysController())
 	try app.register(collection: GocardlessAccountsController())
+	try app.register(collection: InstitutionsController())
 }

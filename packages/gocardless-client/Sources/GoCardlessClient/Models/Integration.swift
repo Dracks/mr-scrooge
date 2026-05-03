@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import Vapor
 
 /** Represents an Integration. */
-public struct Integration: Sendable, Codable, Hashable {
+public struct Integration: Sendable, Content, Hashable {
 
     public var id: String
     public var name: String

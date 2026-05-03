@@ -6,33 +6,13 @@
 //
 
 import Foundation
+import Vapor
 
 open class InstitutionsAPI {
 
     /**
-
-     - parameter accessScopesSupported: (query) Boolean value, indicating if access scopes are supported (optional)
-     - parameter accountSelectionSupported: (query) Boolean value, indicating if account selection is supported (optional)
-     - parameter businessAccountsSupported: (query) Boolean value, indicating if business accounts are supported (optional)
-     - parameter cardAccountsSupported: (query) Boolean value, indicating if card accounts are supported (optional)
-     - parameter corporateAccountsSupported: (query) Boolean value, indicating if corporate accounts are supported (optional)
-     - parameter country: (query) ISO 3166 two-character country code (optional)
-     - parameter pendingTransactionsSupported: (query) Boolean value, indicating if pending transactions are supported (optional)
-     - parameter privateAccountsSupported: (query) Boolean value, indicating if private accounts are supported (optional)
-     - parameter readDebtorAccountSupported: (query) Boolean value, indicating if debtor account can be read before submitting payment (optional)
-     - parameter readRefundAccountSupported: (query) Boolean value, indicating if read refund account is supported (optional)
-     - parameter separateContinuousHistoryConsentSupported: (query) Boolean value, indicating if separate consent for continuous history is supported (optional)
-     - parameter ssnVerificationSupported: (query) Boolean value, indicating if ssn verification is supported (optional)
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: [Integration]
-     */
-    open class func retrieveAllSupportedInstitutionsInAGivenCountry(accessScopesSupported: String? = nil, accountSelectionSupported: String? = nil, businessAccountsSupported: String? = nil, cardAccountsSupported: String? = nil, corporateAccountsSupported: String? = nil, country: String? = nil, pendingTransactionsSupported: String? = nil, privateAccountsSupported: String? = nil, readDebtorAccountSupported: String? = nil, readRefundAccountSupported: String? = nil, separateContinuousHistoryConsentSupported: String? = nil, ssnVerificationSupported: String? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) async throws(ErrorResponse) -> [Integration] {
-        return try await retrieveAllSupportedInstitutionsInAGivenCountryWithRequestBuilder(accessScopesSupported: accessScopesSupported, accountSelectionSupported: accountSelectionSupported, businessAccountsSupported: businessAccountsSupported, cardAccountsSupported: cardAccountsSupported, corporateAccountsSupported: corporateAccountsSupported, country: country, pendingTransactionsSupported: pendingTransactionsSupported, privateAccountsSupported: privateAccountsSupported, readDebtorAccountSupported: readDebtorAccountSupported, readRefundAccountSupported: readRefundAccountSupported, separateContinuousHistoryConsentSupported: separateContinuousHistoryConsentSupported, ssnVerificationSupported: ssnVerificationSupported, apiConfiguration: apiConfiguration).execute().body
-    }
-
-    /**
-     - GET /api/v2/institutions/
-     - List all available institutions
+     GET /api/v2/institutions/
+     List all available institutions
      - Bearer Token:
        - type: http
        - name: jwtAuth
@@ -48,79 +28,168 @@ open class InstitutionsAPI {
      - parameter readRefundAccountSupported: (query) Boolean value, indicating if read refund account is supported (optional)
      - parameter separateContinuousHistoryConsentSupported: (query) Boolean value, indicating if separate consent for continuous history is supported (optional)
      - parameter ssnVerificationSupported: (query) Boolean value, indicating if ssn verification is supported (optional)
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: RequestBuilder<[Integration]> 
+     - returns: `EventLoopFuture` of `ClientResponse` 
      */
-    open class func retrieveAllSupportedInstitutionsInAGivenCountryWithRequestBuilder(accessScopesSupported: String? = nil, accountSelectionSupported: String? = nil, businessAccountsSupported: String? = nil, cardAccountsSupported: String? = nil, corporateAccountsSupported: String? = nil, country: String? = nil, pendingTransactionsSupported: String? = nil, privateAccountsSupported: String? = nil, readDebtorAccountSupported: String? = nil, readRefundAccountSupported: String? = nil, separateContinuousHistoryConsentSupported: String? = nil, ssnVerificationSupported: String? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) -> RequestBuilder<[Integration]> {
+    open class func retrieveAllSupportedInstitutionsInAGivenCountryRaw(accessScopesSupported: String? = nil, accountSelectionSupported: String? = nil, businessAccountsSupported: String? = nil, cardAccountsSupported: String? = nil, corporateAccountsSupported: String? = nil, country: String? = nil, pendingTransactionsSupported: String? = nil, privateAccountsSupported: String? = nil, readDebtorAccountSupported: String? = nil, readRefundAccountSupported: String? = nil, separateContinuousHistoryConsentSupported: String? = nil, ssnVerificationSupported: String? = nil, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
         let localVariablePath = "/api/v2/institutions/"
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
-        let localVariableParameters: [String: any Sendable]? = nil
 
-        var localVariableUrlComponents = URLComponents(string: localVariableURLString)
-        localVariableUrlComponents?.queryItems = APIHelper.mapValuesToQueryItems([
-            "access_scopes_supported": (wrappedValue: accessScopesSupported?.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
-            "account_selection_supported": (wrappedValue: accountSelectionSupported?.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
-            "business_accounts_supported": (wrappedValue: businessAccountsSupported?.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
-            "card_accounts_supported": (wrappedValue: cardAccountsSupported?.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
-            "corporate_accounts_supported": (wrappedValue: corporateAccountsSupported?.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
-            "country": (wrappedValue: country?.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
-            "pending_transactions_supported": (wrappedValue: pendingTransactionsSupported?.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
-            "private_accounts_supported": (wrappedValue: privateAccountsSupported?.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
-            "read_debtor_account_supported": (wrappedValue: readDebtorAccountSupported?.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
-            "read_refund_account_supported": (wrappedValue: readRefundAccountSupported?.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
-            "separate_continuous_history_consent_supported": (wrappedValue: separateContinuousHistoryConsentSupported?.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
-            "ssn_verification_supported": (wrappedValue: ssnVerificationSupported?.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
-        ])
+        guard let localVariableApiClient = apiConfiguration.apiClient else {
+            fatalError("apiConfiguration.apiClient is not set.")
+        }
 
-        let localVariableNillableHeaders: [String: (any Sendable)?] = [
-            :
-        ]
+        return localVariableApiClient.send(.GET, headers: headers ?? apiConfiguration.customHeaders, to: URI(string: localVariableURLString)) { localVariableRequest in
+            try apiConfiguration.apiWrapper(&localVariableRequest)
+            
+            struct QueryParams: Content {
+                var accessScopesSupported: String?
+                var accountSelectionSupported: String?
+                var businessAccountsSupported: String?
+                var cardAccountsSupported: String?
+                var corporateAccountsSupported: String?
+                var country: String?
+                var pendingTransactionsSupported: String?
+                var privateAccountsSupported: String?
+                var readDebtorAccountSupported: String?
+                var readRefundAccountSupported: String?
+                var separateContinuousHistoryConsentSupported: String?
+                var ssnVerificationSupported: String?
 
-        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
+                enum CodingKeys: String, CodingKey {
+                    case accessScopesSupported = "access_scopes_supported"
+                    case accountSelectionSupported = "account_selection_supported"
+                    case businessAccountsSupported = "business_accounts_supported"
+                    case cardAccountsSupported = "card_accounts_supported"
+                    case corporateAccountsSupported = "corporate_accounts_supported"
+                    case country = "country"
+                    case pendingTransactionsSupported = "pending_transactions_supported"
+                    case privateAccountsSupported = "private_accounts_supported"
+                    case readDebtorAccountSupported = "read_debtor_account_supported"
+                    case readRefundAccountSupported = "read_refund_account_supported"
+                    case separateContinuousHistoryConsentSupported = "separate_continuous_history_consent_supported"
+                    case ssnVerificationSupported = "ssn_verification_supported"
+                }
+            }
+            try localVariableRequest.query.encode(QueryParams(accessScopesSupported: accessScopesSupported, accountSelectionSupported: accountSelectionSupported, businessAccountsSupported: businessAccountsSupported, cardAccountsSupported: cardAccountsSupported, corporateAccountsSupported: corporateAccountsSupported, country: country, pendingTransactionsSupported: pendingTransactionsSupported, privateAccountsSupported: privateAccountsSupported, readDebtorAccountSupported: readDebtorAccountSupported, readRefundAccountSupported: readRefundAccountSupported, separateContinuousHistoryConsentSupported: separateContinuousHistoryConsentSupported, ssnVerificationSupported: ssnVerificationSupported))
+            
+            try beforeSend(&localVariableRequest)
+        }
+    }
 
-        let localVariableRequestBuilder: RequestBuilder<[Integration]>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
-
-        return localVariableRequestBuilder.init(method: "GET", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
+    public enum RetrieveAllSupportedInstitutionsInAGivenCountry {
+        case http200(value: [Integration], raw: ClientResponse)
+        case http400(value: ModelErrorResponse, raw: ClientResponse)
+        case http401(value: ModelErrorResponse, raw: ClientResponse)
+        case http403(value: ModelErrorResponse, raw: ClientResponse)
+        case http404(value: ModelErrorResponse, raw: ClientResponse)
+        case http429(value: ModelErrorResponse, raw: ClientResponse)
+        case http0(raw: ClientResponse)
     }
 
     /**
-
-     - parameter id: (path)  
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: IntegrationRetrieve
+     GET /api/v2/institutions/
+     List all available institutions
+     - Bearer Token:
+       - type: http
+       - name: jwtAuth
+     - parameter accessScopesSupported: (query) Boolean value, indicating if access scopes are supported (optional)
+     - parameter accountSelectionSupported: (query) Boolean value, indicating if account selection is supported (optional)
+     - parameter businessAccountsSupported: (query) Boolean value, indicating if business accounts are supported (optional)
+     - parameter cardAccountsSupported: (query) Boolean value, indicating if card accounts are supported (optional)
+     - parameter corporateAccountsSupported: (query) Boolean value, indicating if corporate accounts are supported (optional)
+     - parameter country: (query) ISO 3166 two-character country code (optional)
+     - parameter pendingTransactionsSupported: (query) Boolean value, indicating if pending transactions are supported (optional)
+     - parameter privateAccountsSupported: (query) Boolean value, indicating if private accounts are supported (optional)
+     - parameter readDebtorAccountSupported: (query) Boolean value, indicating if debtor account can be read before submitting payment (optional)
+     - parameter readRefundAccountSupported: (query) Boolean value, indicating if read refund account is supported (optional)
+     - parameter separateContinuousHistoryConsentSupported: (query) Boolean value, indicating if separate consent for continuous history is supported (optional)
+     - parameter ssnVerificationSupported: (query) Boolean value, indicating if ssn verification is supported (optional)
+     - returns: `EventLoopFuture` of `RetrieveAllSupportedInstitutionsInAGivenCountry` 
      */
-    open class func retrieveInstitution(id: String, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) async throws(ErrorResponse) -> IntegrationRetrieve {
-        return try await retrieveInstitutionWithRequestBuilder(id: id, apiConfiguration: apiConfiguration).execute().body
+    open class func retrieveAllSupportedInstitutionsInAGivenCountry(accessScopesSupported: String? = nil, accountSelectionSupported: String? = nil, businessAccountsSupported: String? = nil, cardAccountsSupported: String? = nil, corporateAccountsSupported: String? = nil, country: String? = nil, pendingTransactionsSupported: String? = nil, privateAccountsSupported: String? = nil, readDebtorAccountSupported: String? = nil, readRefundAccountSupported: String? = nil, separateContinuousHistoryConsentSupported: String? = nil, ssnVerificationSupported: String? = nil, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RetrieveAllSupportedInstitutionsInAGivenCountry> {
+        return retrieveAllSupportedInstitutionsInAGivenCountryRaw(accessScopesSupported: accessScopesSupported, accountSelectionSupported: accountSelectionSupported, businessAccountsSupported: businessAccountsSupported, cardAccountsSupported: cardAccountsSupported, corporateAccountsSupported: corporateAccountsSupported, country: country, pendingTransactionsSupported: pendingTransactionsSupported, privateAccountsSupported: privateAccountsSupported, readDebtorAccountSupported: readDebtorAccountSupported, readRefundAccountSupported: readRefundAccountSupported, separateContinuousHistoryConsentSupported: separateContinuousHistoryConsentSupported, ssnVerificationSupported: ssnVerificationSupported, headers: headers, apiConfiguration: apiConfiguration, beforeSend: beforeSend).flatMapThrowing { response -> RetrieveAllSupportedInstitutionsInAGivenCountry in
+            switch response.status.code {
+            case 200:
+                return .http200(value: try response.content.decode([Integration].self, using: apiConfiguration.contentConfiguration.requireDecoder(for: [Integration].defaultContentType)), raw: response)
+            case 400:
+                return .http400(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 401:
+                return .http401(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 403:
+                return .http403(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 404:
+                return .http404(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 429:
+                return .http429(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            default:
+                return .http0(raw: response)
+            }
+        }
     }
 
     /**
-     - GET /api/v2/institutions/{id}/
-     - Get details about a specific Institution and its supported features
+     GET /api/v2/institutions/{id}/
+     Get details about a specific Institution and its supported features
      - Bearer Token:
        - type: http
        - name: jwtAuth
      - parameter id: (path)  
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: RequestBuilder<IntegrationRetrieve> 
+     - returns: `EventLoopFuture` of `ClientResponse` 
      */
-    open class func retrieveInstitutionWithRequestBuilder(id: String, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) -> RequestBuilder<IntegrationRetrieve> {
+    open class func retrieveInstitutionRaw(id: String, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
         var localVariablePath = "/api/v2/institutions/{id}/"
-        let idPreEscape = "\(APIHelper.mapValueToPathItem(id))"
+        let idPreEscape = String(describing: id)
         let idPostEscape = idPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         localVariablePath = localVariablePath.replacingOccurrences(of: "{id}", with: idPostEscape, options: .literal, range: nil)
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
-        let localVariableParameters: [String: any Sendable]? = nil
 
-        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
+        guard let localVariableApiClient = apiConfiguration.apiClient else {
+            fatalError("apiConfiguration.apiClient is not set.")
+        }
 
-        let localVariableNillableHeaders: [String: (any Sendable)?] = [
-            :
-        ]
+        return localVariableApiClient.send(.GET, headers: headers ?? apiConfiguration.customHeaders, to: URI(string: localVariableURLString)) { localVariableRequest in
+            try apiConfiguration.apiWrapper(&localVariableRequest)
+            
+            
+            
+            try beforeSend(&localVariableRequest)
+        }
+    }
 
-        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
+    public enum RetrieveInstitution {
+        case http200(value: IntegrationRetrieve, raw: ClientResponse)
+        case http401(value: ModelErrorResponse, raw: ClientResponse)
+        case http403(value: ModelErrorResponse, raw: ClientResponse)
+        case http404(value: ModelErrorResponse, raw: ClientResponse)
+        case http429(value: ModelErrorResponse, raw: ClientResponse)
+        case http0(raw: ClientResponse)
+    }
 
-        let localVariableRequestBuilder: RequestBuilder<IntegrationRetrieve>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
-
-        return localVariableRequestBuilder.init(method: "GET", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
+    /**
+     GET /api/v2/institutions/{id}/
+     Get details about a specific Institution and its supported features
+     - Bearer Token:
+       - type: http
+       - name: jwtAuth
+     - parameter id: (path)  
+     - returns: `EventLoopFuture` of `RetrieveInstitution` 
+     */
+    open class func retrieveInstitution(id: String, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RetrieveInstitution> {
+        return retrieveInstitutionRaw(id: id, headers: headers, apiConfiguration: apiConfiguration, beforeSend: beforeSend).flatMapThrowing { response -> RetrieveInstitution in
+            switch response.status.code {
+            case 200:
+                return .http200(value: try response.content.decode(IntegrationRetrieve.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: IntegrationRetrieve.defaultContentType)), raw: response)
+            case 401:
+                return .http401(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 403:
+                return .http403(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 404:
+                return .http404(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 429:
+                return .http429(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            default:
+                return .http0(raw: response)
+            }
+        }
     }
 }

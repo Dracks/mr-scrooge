@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import Vapor
 
 /** AccountSerializer. */
-public struct Account: Sendable, Codable, Hashable {
+public struct Account: Sendable, Content, Hashable {
 
     /** The ID of this Account, used to refer to this account in other API calls. */
     public var id: UUID?

@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import Vapor
 
-public struct SuccessfulDeleteResponse: Sendable, Codable, Hashable {
+public struct SuccessfulDeleteResponse: Sendable, Content, Hashable {
 
     public var summary: String
     public var detail: String

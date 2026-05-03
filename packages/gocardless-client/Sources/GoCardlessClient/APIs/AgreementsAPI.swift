@@ -6,297 +6,504 @@
 //
 
 import Foundation
+import Vapor
 
 open class AgreementsAPI {
 
     /**
-
-     - parameter id: (path) A UUID string identifying this end user agreement. 
-     - parameter enduserAcceptanceDetailsRequest: (body)  
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: EndUserAgreement
-     */
-    open class func acceptEUA(id: UUID, enduserAcceptanceDetailsRequest: EnduserAcceptanceDetailsRequest, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) async throws(ErrorResponse) -> EndUserAgreement {
-        return try await acceptEUAWithRequestBuilder(id: id, enduserAcceptanceDetailsRequest: enduserAcceptanceDetailsRequest, apiConfiguration: apiConfiguration).execute().body
-    }
-
-    /**
-     - PUT /api/v2/agreements/enduser/{id}/accept/
-     - Accept an end-user agreement via the API
+     PUT /api/v2/agreements/enduser/{id}/accept/
+     Accept an end-user agreement via the API
      - Bearer Token:
        - type: http
        - name: jwtAuth
      - parameter id: (path) A UUID string identifying this end user agreement. 
      - parameter enduserAcceptanceDetailsRequest: (body)  
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: RequestBuilder<EndUserAgreement> 
+     - returns: `EventLoopFuture` of `ClientResponse` 
      */
-    open class func acceptEUAWithRequestBuilder(id: UUID, enduserAcceptanceDetailsRequest: EnduserAcceptanceDetailsRequest, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) -> RequestBuilder<EndUserAgreement> {
+    open class func acceptEUARaw(id: UUID, enduserAcceptanceDetailsRequest: EnduserAcceptanceDetailsRequest, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
         var localVariablePath = "/api/v2/agreements/enduser/{id}/accept/"
-        let idPreEscape = "\(APIHelper.mapValueToPathItem(id))"
+        let idPreEscape = String(describing: id)
         let idPostEscape = idPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         localVariablePath = localVariablePath.replacingOccurrences(of: "{id}", with: idPostEscape, options: .literal, range: nil)
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
-        let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: enduserAcceptanceDetailsRequest, codableHelper: apiConfiguration.codableHelper)
 
-        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
+        guard let localVariableApiClient = apiConfiguration.apiClient else {
+            fatalError("apiConfiguration.apiClient is not set.")
+        }
 
-        let localVariableNillableHeaders: [String: (any Sendable)?] = [
-            "Content-Type": "application/json",
-        ]
+        return localVariableApiClient.send(.PUT, headers: headers ?? apiConfiguration.customHeaders, to: URI(string: localVariableURLString)) { localVariableRequest in
+            try apiConfiguration.apiWrapper(&localVariableRequest)
+            
+            
+            try localVariableRequest.content.encode(enduserAcceptanceDetailsRequest, using: apiConfiguration.contentConfiguration.requireEncoder(for: EnduserAcceptanceDetailsRequest.defaultContentType))
+            
+            try beforeSend(&localVariableRequest)
+        }
+    }
 
-        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
-
-        let localVariableRequestBuilder: RequestBuilder<EndUserAgreement>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
-
-        return localVariableRequestBuilder.init(method: "PUT", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
+    public enum AcceptEUA {
+        case http200(value: EndUserAgreement, raw: ClientResponse)
+        case http400(value: ModelErrorResponse, raw: ClientResponse)
+        case http401(value: ModelErrorResponse, raw: ClientResponse)
+        case http403(value: ModelErrorResponse, raw: ClientResponse)
+        case http404(value: ModelErrorResponse, raw: ClientResponse)
+        case http405(value: ModelErrorResponse, raw: ClientResponse)
+        case http429(value: ModelErrorResponse, raw: ClientResponse)
+        case http0(raw: ClientResponse)
     }
 
     /**
-
-     - parameter endUserAgreementRequest: (body)  
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: EndUserAgreement
+     PUT /api/v2/agreements/enduser/{id}/accept/
+     Accept an end-user agreement via the API
+     - Bearer Token:
+       - type: http
+       - name: jwtAuth
+     - parameter id: (path) A UUID string identifying this end user agreement. 
+     - parameter enduserAcceptanceDetailsRequest: (body)  
+     - returns: `EventLoopFuture` of `AcceptEUA` 
      */
-    open class func createEUA(endUserAgreementRequest: EndUserAgreementRequest, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) async throws(ErrorResponse) -> EndUserAgreement {
-        return try await createEUAWithRequestBuilder(endUserAgreementRequest: endUserAgreementRequest, apiConfiguration: apiConfiguration).execute().body
+    open class func acceptEUA(id: UUID, enduserAcceptanceDetailsRequest: EnduserAcceptanceDetailsRequest, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<AcceptEUA> {
+        return acceptEUARaw(id: id, enduserAcceptanceDetailsRequest: enduserAcceptanceDetailsRequest, headers: headers, apiConfiguration: apiConfiguration, beforeSend: beforeSend).flatMapThrowing { response -> AcceptEUA in
+            switch response.status.code {
+            case 200:
+                return .http200(value: try response.content.decode(EndUserAgreement.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: EndUserAgreement.defaultContentType)), raw: response)
+            case 400:
+                return .http400(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 401:
+                return .http401(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 403:
+                return .http403(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 404:
+                return .http404(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 405:
+                return .http405(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 429:
+                return .http429(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            default:
+                return .http0(raw: response)
+            }
+        }
     }
 
     /**
-     - POST /api/v2/agreements/enduser/
-     - API endpoints related to end-user agreements.
+     POST /api/v2/agreements/enduser/
+     API endpoints related to end-user agreements.
      - Bearer Token:
        - type: http
        - name: jwtAuth
      - parameter endUserAgreementRequest: (body)  
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: RequestBuilder<EndUserAgreement> 
+     - returns: `EventLoopFuture` of `ClientResponse` 
      */
-    open class func createEUAWithRequestBuilder(endUserAgreementRequest: EndUserAgreementRequest, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) -> RequestBuilder<EndUserAgreement> {
+    open class func createEUARaw(endUserAgreementRequest: EndUserAgreementRequest, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
         let localVariablePath = "/api/v2/agreements/enduser/"
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
-        let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: endUserAgreementRequest, codableHelper: apiConfiguration.codableHelper)
 
-        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
+        guard let localVariableApiClient = apiConfiguration.apiClient else {
+            fatalError("apiConfiguration.apiClient is not set.")
+        }
 
-        let localVariableNillableHeaders: [String: (any Sendable)?] = [
-            "Content-Type": "application/json",
-        ]
+        return localVariableApiClient.send(.POST, headers: headers ?? apiConfiguration.customHeaders, to: URI(string: localVariableURLString)) { localVariableRequest in
+            try apiConfiguration.apiWrapper(&localVariableRequest)
+            
+            
+            try localVariableRequest.content.encode(endUserAgreementRequest, using: apiConfiguration.contentConfiguration.requireEncoder(for: EndUserAgreementRequest.defaultContentType))
+            
+            try beforeSend(&localVariableRequest)
+        }
+    }
 
-        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
-
-        let localVariableRequestBuilder: RequestBuilder<EndUserAgreement>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
-
-        return localVariableRequestBuilder.init(method: "POST", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
+    public enum CreateEUA {
+        case http201(value: EndUserAgreement, raw: ClientResponse)
+        case http400(value: ModelErrorResponse, raw: ClientResponse)
+        case http401(value: ModelErrorResponse, raw: ClientResponse)
+        case http402(value: ModelErrorResponse, raw: ClientResponse)
+        case http403(value: ModelErrorResponse, raw: ClientResponse)
+        case http429(value: ModelErrorResponse, raw: ClientResponse)
+        case http0(raw: ClientResponse)
     }
 
     /**
-
-     - parameter id: (path) A UUID string identifying this end user agreement. 
-     - parameter reconfirmationRetrieveRequest: (body)  (optional)
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: ReconfirmationRetrieve
+     POST /api/v2/agreements/enduser/
+     API endpoints related to end-user agreements.
+     - Bearer Token:
+       - type: http
+       - name: jwtAuth
+     - parameter endUserAgreementRequest: (body)  
+     - returns: `EventLoopFuture` of `CreateEUA` 
      */
-    open class func createEUAReconfirmation(id: UUID, reconfirmationRetrieveRequest: ReconfirmationRetrieveRequest? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) async throws(ErrorResponse) -> ReconfirmationRetrieve {
-        return try await createEUAReconfirmationWithRequestBuilder(id: id, reconfirmationRetrieveRequest: reconfirmationRetrieveRequest, apiConfiguration: apiConfiguration).execute().body
+    open class func createEUA(endUserAgreementRequest: EndUserAgreementRequest, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<CreateEUA> {
+        return createEUARaw(endUserAgreementRequest: endUserAgreementRequest, headers: headers, apiConfiguration: apiConfiguration, beforeSend: beforeSend).flatMapThrowing { response -> CreateEUA in
+            switch response.status.code {
+            case 201:
+                return .http201(value: try response.content.decode(EndUserAgreement.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: EndUserAgreement.defaultContentType)), raw: response)
+            case 400:
+                return .http400(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 401:
+                return .http401(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 402:
+                return .http402(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 403:
+                return .http403(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 429:
+                return .http429(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            default:
+                return .http0(raw: response)
+            }
+        }
     }
 
     /**
-     - POST /api/v2/agreements/enduser/{id}/reconfirm/
-     - Create EUA reconfirmation
+     POST /api/v2/agreements/enduser/{id}/reconfirm/
+     Create EUA reconfirmation
      - Bearer Token:
        - type: http
        - name: jwtAuth
      - parameter id: (path) A UUID string identifying this end user agreement. 
      - parameter reconfirmationRetrieveRequest: (body)  (optional)
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: RequestBuilder<ReconfirmationRetrieve> 
+     - returns: `EventLoopFuture` of `ClientResponse` 
      */
-    open class func createEUAReconfirmationWithRequestBuilder(id: UUID, reconfirmationRetrieveRequest: ReconfirmationRetrieveRequest? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) -> RequestBuilder<ReconfirmationRetrieve> {
+    open class func createEUAReconfirmationRaw(id: UUID, reconfirmationRetrieveRequest: ReconfirmationRetrieveRequest? = nil, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
         var localVariablePath = "/api/v2/agreements/enduser/{id}/reconfirm/"
-        let idPreEscape = "\(APIHelper.mapValueToPathItem(id))"
+        let idPreEscape = String(describing: id)
         let idPostEscape = idPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         localVariablePath = localVariablePath.replacingOccurrences(of: "{id}", with: idPostEscape, options: .literal, range: nil)
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
-        let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: reconfirmationRetrieveRequest, codableHelper: apiConfiguration.codableHelper)
 
-        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
+        guard let localVariableApiClient = apiConfiguration.apiClient else {
+            fatalError("apiConfiguration.apiClient is not set.")
+        }
 
-        let localVariableNillableHeaders: [String: (any Sendable)?] = [
-            "Content-Type": "application/json",
-        ]
+        return localVariableApiClient.send(.POST, headers: headers ?? apiConfiguration.customHeaders, to: URI(string: localVariableURLString)) { localVariableRequest in
+            try apiConfiguration.apiWrapper(&localVariableRequest)
+            
+            
+            if let localVariableBody = reconfirmationRetrieveRequest {
+                try localVariableRequest.content.encode(localVariableBody, using: apiConfiguration.contentConfiguration.requireEncoder(for: ReconfirmationRetrieveRequest.defaultContentType))
+            }
+            
+            try beforeSend(&localVariableRequest)
+        }
+    }
 
-        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
-
-        let localVariableRequestBuilder: RequestBuilder<ReconfirmationRetrieve>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
-
-        return localVariableRequestBuilder.init(method: "POST", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
+    public enum CreateEUAReconfirmation {
+        case http201(value: ReconfirmationRetrieve, raw: ClientResponse)
+        case http400(value: ModelErrorResponse, raw: ClientResponse)
+        case http401(value: ModelErrorResponse, raw: ClientResponse)
+        case http403(value: ModelErrorResponse, raw: ClientResponse)
+        case http404(value: ModelErrorResponse, raw: ClientResponse)
+        case http429(value: ModelErrorResponse, raw: ClientResponse)
+        case http0(raw: ClientResponse)
     }
 
     /**
-
-     - parameter id: (path) A UUID string identifying this end user agreement. 
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: SuccessfulDeleteResponse
-     */
-    open class func deleteEUAById(id: UUID, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) async throws(ErrorResponse) -> SuccessfulDeleteResponse {
-        return try await deleteEUAByIdWithRequestBuilder(id: id, apiConfiguration: apiConfiguration).execute().body
-    }
-
-    /**
-     - DELETE /api/v2/agreements/enduser/{id}/
-     - Delete an end user agreement
+     POST /api/v2/agreements/enduser/{id}/reconfirm/
+     Create EUA reconfirmation
      - Bearer Token:
        - type: http
        - name: jwtAuth
      - parameter id: (path) A UUID string identifying this end user agreement. 
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: RequestBuilder<SuccessfulDeleteResponse> 
+     - parameter reconfirmationRetrieveRequest: (body)  (optional)
+     - returns: `EventLoopFuture` of `CreateEUAReconfirmation` 
      */
-    open class func deleteEUAByIdWithRequestBuilder(id: UUID, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) -> RequestBuilder<SuccessfulDeleteResponse> {
+    open class func createEUAReconfirmation(id: UUID, reconfirmationRetrieveRequest: ReconfirmationRetrieveRequest? = nil, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<CreateEUAReconfirmation> {
+        return createEUAReconfirmationRaw(id: id, reconfirmationRetrieveRequest: reconfirmationRetrieveRequest, headers: headers, apiConfiguration: apiConfiguration, beforeSend: beforeSend).flatMapThrowing { response -> CreateEUAReconfirmation in
+            switch response.status.code {
+            case 201:
+                return .http201(value: try response.content.decode(ReconfirmationRetrieve.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ReconfirmationRetrieve.defaultContentType)), raw: response)
+            case 400:
+                return .http400(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 401:
+                return .http401(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 403:
+                return .http403(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 404:
+                return .http404(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 429:
+                return .http429(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            default:
+                return .http0(raw: response)
+            }
+        }
+    }
+
+    /**
+     DELETE /api/v2/agreements/enduser/{id}/
+     Delete an end user agreement
+     - Bearer Token:
+       - type: http
+       - name: jwtAuth
+     - parameter id: (path) A UUID string identifying this end user agreement. 
+     - returns: `EventLoopFuture` of `ClientResponse` 
+     */
+    open class func deleteEUAByIdRaw(id: UUID, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
         var localVariablePath = "/api/v2/agreements/enduser/{id}/"
-        let idPreEscape = "\(APIHelper.mapValueToPathItem(id))"
+        let idPreEscape = String(describing: id)
         let idPostEscape = idPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         localVariablePath = localVariablePath.replacingOccurrences(of: "{id}", with: idPostEscape, options: .literal, range: nil)
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
-        let localVariableParameters: [String: any Sendable]? = nil
 
-        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
+        guard let localVariableApiClient = apiConfiguration.apiClient else {
+            fatalError("apiConfiguration.apiClient is not set.")
+        }
 
-        let localVariableNillableHeaders: [String: (any Sendable)?] = [
-            :
-        ]
+        return localVariableApiClient.send(.DELETE, headers: headers ?? apiConfiguration.customHeaders, to: URI(string: localVariableURLString)) { localVariableRequest in
+            try apiConfiguration.apiWrapper(&localVariableRequest)
+            
+            
+            
+            try beforeSend(&localVariableRequest)
+        }
+    }
 
-        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
-
-        let localVariableRequestBuilder: RequestBuilder<SuccessfulDeleteResponse>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
-
-        return localVariableRequestBuilder.init(method: "DELETE", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
+    public enum DeleteEUAById {
+        case http200(value: SuccessfulDeleteResponse, raw: ClientResponse)
+        case http400(value: ModelErrorResponse, raw: ClientResponse)
+        case http401(value: ModelErrorResponse, raw: ClientResponse)
+        case http403(value: ModelErrorResponse, raw: ClientResponse)
+        case http404(value: ModelErrorResponse, raw: ClientResponse)
+        case http429(value: ModelErrorResponse, raw: ClientResponse)
+        case http0(raw: ClientResponse)
     }
 
     /**
-
-     - parameter limit: (query) Number of results to return per page. (optional, default to 100)
-     - parameter offset: (query) The initial zero-based index from which to return the results. (optional, default to 0)
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: PaginatedEndUserAgreementList
+     DELETE /api/v2/agreements/enduser/{id}/
+     Delete an end user agreement
+     - Bearer Token:
+       - type: http
+       - name: jwtAuth
+     - parameter id: (path) A UUID string identifying this end user agreement. 
+     - returns: `EventLoopFuture` of `DeleteEUAById` 
      */
-    open class func retrieveAllAgreements(limit: Int? = nil, offset: Int? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) async throws(ErrorResponse) -> PaginatedEndUserAgreementList {
-        return try await retrieveAllAgreementsWithRequestBuilder(limit: limit, offset: offset, apiConfiguration: apiConfiguration).execute().body
+    open class func deleteEUAById(id: UUID, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<DeleteEUAById> {
+        return deleteEUAByIdRaw(id: id, headers: headers, apiConfiguration: apiConfiguration, beforeSend: beforeSend).flatMapThrowing { response -> DeleteEUAById in
+            switch response.status.code {
+            case 200:
+                return .http200(value: try response.content.decode(SuccessfulDeleteResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: SuccessfulDeleteResponse.defaultContentType)), raw: response)
+            case 400:
+                return .http400(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 401:
+                return .http401(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 403:
+                return .http403(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 404:
+                return .http404(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 429:
+                return .http429(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            default:
+                return .http0(raw: response)
+            }
+        }
     }
 
     /**
-     - GET /api/v2/agreements/enduser/
-     - Retrieve all End User Agreements belonging to the company
+     GET /api/v2/agreements/enduser/
+     Retrieve all End User Agreements belonging to the company
      - Bearer Token:
        - type: http
        - name: jwtAuth
      - parameter limit: (query) Number of results to return per page. (optional, default to 100)
      - parameter offset: (query) The initial zero-based index from which to return the results. (optional, default to 0)
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: RequestBuilder<PaginatedEndUserAgreementList> 
+     - returns: `EventLoopFuture` of `ClientResponse` 
      */
-    open class func retrieveAllAgreementsWithRequestBuilder(limit: Int? = nil, offset: Int? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) -> RequestBuilder<PaginatedEndUserAgreementList> {
+    open class func retrieveAllAgreementsRaw(limit: Int? = nil, offset: Int? = nil, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
         let localVariablePath = "/api/v2/agreements/enduser/"
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
-        let localVariableParameters: [String: any Sendable]? = nil
 
-        var localVariableUrlComponents = URLComponents(string: localVariableURLString)
-        localVariableUrlComponents?.queryItems = APIHelper.mapValuesToQueryItems([
-            "limit": (wrappedValue: limit?.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
-            "offset": (wrappedValue: offset?.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
-        ])
+        guard let localVariableApiClient = apiConfiguration.apiClient else {
+            fatalError("apiConfiguration.apiClient is not set.")
+        }
 
-        let localVariableNillableHeaders: [String: (any Sendable)?] = [
-            :
-        ]
+        return localVariableApiClient.send(.GET, headers: headers ?? apiConfiguration.customHeaders, to: URI(string: localVariableURLString)) { localVariableRequest in
+            try apiConfiguration.apiWrapper(&localVariableRequest)
+            
+            struct QueryParams: Content {
+                var limit: Int?
+                var offset: Int?
 
-        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
+                enum CodingKeys: String, CodingKey {
+                    case limit = "limit"
+                    case offset = "offset"
+                }
+            }
+            try localVariableRequest.query.encode(QueryParams(limit: limit, offset: offset))
+            
+            try beforeSend(&localVariableRequest)
+        }
+    }
 
-        let localVariableRequestBuilder: RequestBuilder<PaginatedEndUserAgreementList>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
-
-        return localVariableRequestBuilder.init(method: "GET", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
+    public enum RetrieveAllAgreements {
+        case http200(value: PaginatedEndUserAgreementList, raw: ClientResponse)
+        case http401(value: ModelErrorResponse, raw: ClientResponse)
+        case http403(value: ModelErrorResponse, raw: ClientResponse)
+        case http404(value: ModelErrorResponse, raw: ClientResponse)
+        case http429(value: ModelErrorResponse, raw: ClientResponse)
+        case http0(raw: ClientResponse)
     }
 
     /**
-
-     - parameter id: (path) A UUID string identifying this end user agreement. 
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: EndUserAgreement
+     GET /api/v2/agreements/enduser/
+     Retrieve all End User Agreements belonging to the company
+     - Bearer Token:
+       - type: http
+       - name: jwtAuth
+     - parameter limit: (query) Number of results to return per page. (optional, default to 100)
+     - parameter offset: (query) The initial zero-based index from which to return the results. (optional, default to 0)
+     - returns: `EventLoopFuture` of `RetrieveAllAgreements` 
      */
-    open class func retrieveEUAById(id: UUID, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) async throws(ErrorResponse) -> EndUserAgreement {
-        return try await retrieveEUAByIdWithRequestBuilder(id: id, apiConfiguration: apiConfiguration).execute().body
+    open class func retrieveAllAgreements(limit: Int? = nil, offset: Int? = nil, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RetrieveAllAgreements> {
+        return retrieveAllAgreementsRaw(limit: limit, offset: offset, headers: headers, apiConfiguration: apiConfiguration, beforeSend: beforeSend).flatMapThrowing { response -> RetrieveAllAgreements in
+            switch response.status.code {
+            case 200:
+                return .http200(value: try response.content.decode(PaginatedEndUserAgreementList.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: PaginatedEndUserAgreementList.defaultContentType)), raw: response)
+            case 401:
+                return .http401(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 403:
+                return .http403(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 404:
+                return .http404(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 429:
+                return .http429(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            default:
+                return .http0(raw: response)
+            }
+        }
     }
 
     /**
-     - GET /api/v2/agreements/enduser/{id}/
-     - Retrieve end user agreement by ID
+     GET /api/v2/agreements/enduser/{id}/
+     Retrieve end user agreement by ID
      - Bearer Token:
        - type: http
        - name: jwtAuth
      - parameter id: (path) A UUID string identifying this end user agreement. 
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: RequestBuilder<EndUserAgreement> 
+     - returns: `EventLoopFuture` of `ClientResponse` 
      */
-    open class func retrieveEUAByIdWithRequestBuilder(id: UUID, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) -> RequestBuilder<EndUserAgreement> {
+    open class func retrieveEUAByIdRaw(id: UUID, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
         var localVariablePath = "/api/v2/agreements/enduser/{id}/"
-        let idPreEscape = "\(APIHelper.mapValueToPathItem(id))"
+        let idPreEscape = String(describing: id)
         let idPostEscape = idPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         localVariablePath = localVariablePath.replacingOccurrences(of: "{id}", with: idPostEscape, options: .literal, range: nil)
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
-        let localVariableParameters: [String: any Sendable]? = nil
 
-        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
+        guard let localVariableApiClient = apiConfiguration.apiClient else {
+            fatalError("apiConfiguration.apiClient is not set.")
+        }
 
-        let localVariableNillableHeaders: [String: (any Sendable)?] = [
-            :
-        ]
+        return localVariableApiClient.send(.GET, headers: headers ?? apiConfiguration.customHeaders, to: URI(string: localVariableURLString)) { localVariableRequest in
+            try apiConfiguration.apiWrapper(&localVariableRequest)
+            
+            
+            
+            try beforeSend(&localVariableRequest)
+        }
+    }
 
-        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
-
-        let localVariableRequestBuilder: RequestBuilder<EndUserAgreement>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
-
-        return localVariableRequestBuilder.init(method: "GET", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
+    public enum RetrieveEUAById {
+        case http200(value: EndUserAgreement, raw: ClientResponse)
+        case http400(value: ModelErrorResponse, raw: ClientResponse)
+        case http401(value: ModelErrorResponse, raw: ClientResponse)
+        case http403(value: ModelErrorResponse, raw: ClientResponse)
+        case http404(value: ModelErrorResponse, raw: ClientResponse)
+        case http429(value: ModelErrorResponse, raw: ClientResponse)
+        case http0(raw: ClientResponse)
     }
 
     /**
-
-     - parameter id: (path) A UUID string identifying this end user agreement. 
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: ReconfirmationRetrieve
-     */
-    open class func retrieveEUAReconfirmation(id: UUID, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) async throws(ErrorResponse) -> ReconfirmationRetrieve {
-        return try await retrieveEUAReconfirmationWithRequestBuilder(id: id, apiConfiguration: apiConfiguration).execute().body
-    }
-
-    /**
-     - GET /api/v2/agreements/enduser/{id}/reconfirm/
-     - Retrieve EUA reconfirmation
+     GET /api/v2/agreements/enduser/{id}/
+     Retrieve end user agreement by ID
      - Bearer Token:
        - type: http
        - name: jwtAuth
      - parameter id: (path) A UUID string identifying this end user agreement. 
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: RequestBuilder<ReconfirmationRetrieve> 
+     - returns: `EventLoopFuture` of `RetrieveEUAById` 
      */
-    open class func retrieveEUAReconfirmationWithRequestBuilder(id: UUID, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) -> RequestBuilder<ReconfirmationRetrieve> {
+    open class func retrieveEUAById(id: UUID, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RetrieveEUAById> {
+        return retrieveEUAByIdRaw(id: id, headers: headers, apiConfiguration: apiConfiguration, beforeSend: beforeSend).flatMapThrowing { response -> RetrieveEUAById in
+            switch response.status.code {
+            case 200:
+                return .http200(value: try response.content.decode(EndUserAgreement.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: EndUserAgreement.defaultContentType)), raw: response)
+            case 400:
+                return .http400(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 401:
+                return .http401(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 403:
+                return .http403(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 404:
+                return .http404(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 429:
+                return .http429(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            default:
+                return .http0(raw: response)
+            }
+        }
+    }
+
+    /**
+     GET /api/v2/agreements/enduser/{id}/reconfirm/
+     Retrieve EUA reconfirmation
+     - Bearer Token:
+       - type: http
+       - name: jwtAuth
+     - parameter id: (path) A UUID string identifying this end user agreement. 
+     - returns: `EventLoopFuture` of `ClientResponse` 
+     */
+    open class func retrieveEUAReconfirmationRaw(id: UUID, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
         var localVariablePath = "/api/v2/agreements/enduser/{id}/reconfirm/"
-        let idPreEscape = "\(APIHelper.mapValueToPathItem(id))"
+        let idPreEscape = String(describing: id)
         let idPostEscape = idPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         localVariablePath = localVariablePath.replacingOccurrences(of: "{id}", with: idPostEscape, options: .literal, range: nil)
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
-        let localVariableParameters: [String: any Sendable]? = nil
 
-        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
+        guard let localVariableApiClient = apiConfiguration.apiClient else {
+            fatalError("apiConfiguration.apiClient is not set.")
+        }
 
-        let localVariableNillableHeaders: [String: (any Sendable)?] = [
-            :
-        ]
+        return localVariableApiClient.send(.GET, headers: headers ?? apiConfiguration.customHeaders, to: URI(string: localVariableURLString)) { localVariableRequest in
+            try apiConfiguration.apiWrapper(&localVariableRequest)
+            
+            
+            
+            try beforeSend(&localVariableRequest)
+        }
+    }
 
-        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
+    public enum RetrieveEUAReconfirmation {
+        case http200(value: ReconfirmationRetrieve, raw: ClientResponse)
+        case http400(value: ModelErrorResponse, raw: ClientResponse)
+        case http401(value: ModelErrorResponse, raw: ClientResponse)
+        case http403(value: ModelErrorResponse, raw: ClientResponse)
+        case http404(value: ModelErrorResponse, raw: ClientResponse)
+        case http429(value: ModelErrorResponse, raw: ClientResponse)
+        case http0(raw: ClientResponse)
+    }
 
-        let localVariableRequestBuilder: RequestBuilder<ReconfirmationRetrieve>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
-
-        return localVariableRequestBuilder.init(method: "GET", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
+    /**
+     GET /api/v2/agreements/enduser/{id}/reconfirm/
+     Retrieve EUA reconfirmation
+     - Bearer Token:
+       - type: http
+       - name: jwtAuth
+     - parameter id: (path) A UUID string identifying this end user agreement. 
+     - returns: `EventLoopFuture` of `RetrieveEUAReconfirmation` 
+     */
+    open class func retrieveEUAReconfirmation(id: UUID, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<RetrieveEUAReconfirmation> {
+        return retrieveEUAReconfirmationRaw(id: id, headers: headers, apiConfiguration: apiConfiguration, beforeSend: beforeSend).flatMapThrowing { response -> RetrieveEUAReconfirmation in
+            switch response.status.code {
+            case 200:
+                return .http200(value: try response.content.decode(ReconfirmationRetrieve.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ReconfirmationRetrieve.defaultContentType)), raw: response)
+            case 400:
+                return .http400(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 401:
+                return .http401(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 403:
+                return .http403(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 404:
+                return .http404(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 429:
+                return .http429(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            default:
+                return .http0(raw: response)
+            }
+        }
     }
 }

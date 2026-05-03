@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import Vapor
 
 /** IntegrationSerializer for Retrieve endpoint. */
-public struct IntegrationRetrieve: Sendable, Codable, Hashable {
+public struct IntegrationRetrieve: Sendable, Content, Hashable {
 
     public var id: String
     public var name: String

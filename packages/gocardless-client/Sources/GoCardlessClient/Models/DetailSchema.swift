@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import Vapor
 
 /** DetailSchema. */
-public struct DetailSchema: Sendable, Codable, Hashable {
+public struct DetailSchema: Sendable, Content, Hashable {
 
     /** resourceId */
     public var resourceId: String?

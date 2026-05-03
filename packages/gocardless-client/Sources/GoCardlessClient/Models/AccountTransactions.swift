@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import Vapor
 
 /** AccountTransactionsSerializer. */
-public struct AccountTransactions: Sendable, Codable, Hashable {
+public struct AccountTransactions: Sendable, Content, Hashable {
 
     /** transactions */
     public var transactions: BankTransaction

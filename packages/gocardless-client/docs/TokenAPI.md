@@ -10,7 +10,7 @@ Method | HTTP request | Description
 
 # **getANewAccessToken**
 ```swift
-    open class func getANewAccessToken(jWTRefreshRequest: JWTRefreshRequest, completion: @escaping (_ data: SpectacularJWTRefresh?, _ error: Error?) -> Void)
+    open class func getANewAccessToken(jWTRefreshRequest: JWTRefreshRequest, headers: HTTPHeaders = GoCardlessClientAPIConfiguration.shared.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<GetANewAccessToken>
 ```
 
 
@@ -24,14 +24,19 @@ import GoCardlessClient
 
 let jWTRefreshRequest = JWTRefreshRequest(refresh: "refresh_example") // JWTRefreshRequest | 
 
-TokenAPI.getANewAccessToken(jWTRefreshRequest: jWTRefreshRequest) { (response, error) in
-    guard error == nil else {
-        print(error)
-        return
-    }
-
-    if (response) {
-        dump(response)
+TokenAPI.getANewAccessToken(jWTRefreshRequest: jWTRefreshRequest).whenComplete { result in
+    switch result {
+    case .failure(let error):
+    // process error
+    case .success(let response):
+        switch response {
+        // process decoded response value or raw ClientResponse
+        case .http200(let value, let raw):
+        case .http401(let value, let raw):
+        case .http403(let value, let raw):
+        case .http429(let value, let raw):
+        case .http0(let value, let raw):
+        }
     }
 }
 ```
@@ -44,7 +49,17 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**SpectacularJWTRefresh**](SpectacularJWTRefresh.md)
+#### GetANewAccessToken
+
+```swift
+public enum GetANewAccessToken {
+    case http200(value: SpectacularJWTRefresh?, raw: ClientResponse)
+    case http401(value: ModelErrorResponse?, raw: ClientResponse)
+    case http403(value: ModelErrorResponse?, raw: ClientResponse)
+    case http429(value: ModelErrorResponse?, raw: ClientResponse)
+    case http0(value: SpectacularJWTRefresh?, raw: ClientResponse)
+}
+```
 
 ### Authorization
 
@@ -59,7 +74,7 @@ Name | Type | Description  | Notes
 
 # **obtainNewAccessRefreshTokenPair**
 ```swift
-    open class func obtainNewAccessRefreshTokenPair(jWTObtainPairRequest: JWTObtainPairRequest, completion: @escaping (_ data: SpectacularJWTObtain?, _ error: Error?) -> Void)
+    open class func obtainNewAccessRefreshTokenPair(jWTObtainPairRequest: JWTObtainPairRequest, headers: HTTPHeaders = GoCardlessClientAPIConfiguration.shared.customHeaders, beforeSend: (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ObtainNewAccessRefreshTokenPair>
 ```
 
 
@@ -73,14 +88,19 @@ import GoCardlessClient
 
 let jWTObtainPairRequest = JWTObtainPairRequest(secretId: "secretId_example", secretKey: "secretKey_example") // JWTObtainPairRequest | 
 
-TokenAPI.obtainNewAccessRefreshTokenPair(jWTObtainPairRequest: jWTObtainPairRequest) { (response, error) in
-    guard error == nil else {
-        print(error)
-        return
-    }
-
-    if (response) {
-        dump(response)
+TokenAPI.obtainNewAccessRefreshTokenPair(jWTObtainPairRequest: jWTObtainPairRequest).whenComplete { result in
+    switch result {
+    case .failure(let error):
+    // process error
+    case .success(let response):
+        switch response {
+        // process decoded response value or raw ClientResponse
+        case .http200(let value, let raw):
+        case .http401(let value, let raw):
+        case .http403(let value, let raw):
+        case .http429(let value, let raw):
+        case .http0(let value, let raw):
+        }
     }
 }
 ```
@@ -93,7 +113,17 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**SpectacularJWTObtain**](SpectacularJWTObtain.md)
+#### ObtainNewAccessRefreshTokenPair
+
+```swift
+public enum ObtainNewAccessRefreshTokenPair {
+    case http200(value: SpectacularJWTObtain?, raw: ClientResponse)
+    case http401(value: ModelErrorResponse?, raw: ClientResponse)
+    case http403(value: ModelErrorResponse?, raw: ClientResponse)
+    case http429(value: ModelErrorResponse?, raw: ClientResponse)
+    case http0(value: SpectacularJWTObtain?, raw: ClientResponse)
+}
+```
 
 ### Authorization
 

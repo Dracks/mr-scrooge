@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import Vapor
 
-public struct ModelErrorResponse: Sendable, Codable, Hashable {
+public struct ModelErrorResponse: Sendable, Content, Hashable {
 
     public var summary: String
     public var detail: String

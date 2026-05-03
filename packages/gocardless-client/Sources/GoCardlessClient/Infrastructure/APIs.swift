@@ -8,6 +8,7 @@ import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
+import Vapor
 
 open class GoCardlessClientAPIConfiguration: @unchecked Sendable {
 
@@ -15,13 +16,10 @@ open class GoCardlessClientAPIConfiguration: @unchecked Sendable {
 
     private struct State {
         var basePath: String
-        var customHeaders: [String: String]
-        var credential: URLCredential?
-        var requestBuilderFactory: RequestBuilderFactory
-        var apiResponseQueue: DispatchQueue
-        var codableHelper: CodableHelper
-        var successfulStatusCodeRange: Range<Int>
-        var interceptor: OpenAPIInterceptor
+        var customHeaders: HTTPHeaders
+        var apiClient: Vapor.Client?
+        var apiWrapper: @Sendable (inout Vapor.ClientRequest) throws -> ()
+        var contentConfiguration: ContentConfiguration
     }
 
     private let _state: OpenAPIMutex<State>
@@ -33,207 +31,43 @@ open class GoCardlessClientAPIConfiguration: @unchecked Sendable {
         set { _state.withValue { $0.basePath = newValue } }
     }
 
-    public var customHeaders: [String: String] {
+    public var customHeaders: HTTPHeaders {
         get { _state.value.customHeaders }
         set { _state.withValue { $0.customHeaders = newValue } }
     }
 
-    public var credential: URLCredential? {
-        get { _state.value.credential }
-        set { _state.withValue { $0.credential = newValue } }
+    public var apiClient: Vapor.Client? {
+        get { _state.value.apiClient }
+        set { _state.withValue { $0.apiClient = newValue } }
     }
 
-    public var requestBuilderFactory: RequestBuilderFactory {
-        get { _state.value.requestBuilderFactory }
-        set { _state.withValue { $0.requestBuilderFactory = newValue } }
+    public var apiWrapper: @Sendable (inout Vapor.ClientRequest) throws -> () {
+        get { _state.value.apiWrapper }
+        set { _state.withValue { $0.apiWrapper = newValue } }
     }
 
-    public var apiResponseQueue: DispatchQueue {
-        get { _state.value.apiResponseQueue }
-        set { _state.withValue { $0.apiResponseQueue = newValue } }
-    }
-
-    public var codableHelper: CodableHelper {
-        get { _state.value.codableHelper }
-        set { _state.withValue { $0.codableHelper = newValue } }
-    }
-
-    /// Configures the range of HTTP status codes that will result in a successful response.
-    ///
-    /// If a HTTP status code is outside of this range the response will be interpreted as failed.
-    public var successfulStatusCodeRange: Range<Int> {
-        get { _state.value.successfulStatusCodeRange }
-        set { _state.withValue { $0.successfulStatusCodeRange = newValue } }
-    }
-
-    public var interceptor: OpenAPIInterceptor {
-        get { _state.value.interceptor }
-        set { _state.withValue { $0.interceptor = newValue } }
+    public var contentConfiguration: ContentConfiguration {
+        get { _state.value.contentConfiguration }
+        set { _state.withValue { $0.contentConfiguration = newValue } }
     }
 
     // MARK: - Init
 
     public init(
         basePath: String = "https://bankaccountdata.gocardless.com",
-        customHeaders: [String: String] = [:],
-        credential: URLCredential? = nil,
-        requestBuilderFactory: RequestBuilderFactory = URLSessionRequestBuilderFactory(),
-        apiResponseQueue: DispatchQueue = .main,
-        codableHelper: CodableHelper = CodableHelper(),
-        successfulStatusCodeRange: Range<Int> = 200..<300,
-        interceptor: OpenAPIInterceptor = DefaultOpenAPIInterceptor()
+        customHeaders: HTTPHeaders = [:],
+        apiClient: Vapor.Client? = nil,
+        apiWrapper: @escaping @Sendable (inout Vapor.ClientRequest) throws -> () = { _ in },
+        contentConfiguration: ContentConfiguration = ContentConfiguration.default()
     ) {
         _state = OpenAPIMutex(State(
             basePath: basePath,
             customHeaders: customHeaders,
-            credential: credential,
-            requestBuilderFactory: requestBuilderFactory,
-            apiResponseQueue: apiResponseQueue,
-            codableHelper: codableHelper,
-            successfulStatusCodeRange: successfulStatusCodeRange,
-            interceptor: interceptor
+            apiClient: apiClient,
+            apiWrapper: apiWrapper,
+            contentConfiguration: contentConfiguration
         ))
     }
 
     public static let shared = GoCardlessClientAPIConfiguration()
-}
-
-open class RequestBuilder<T: Sendable>: @unchecked Sendable, Identifiable {
-
-    // MARK: - Immutable properties
-
-    public let parameters: [String: any Sendable]?
-    public let method: String
-    public let URLString: String
-    public let requestTask: RequestTask = RequestTask()
-    public let requiresAuthentication: Bool
-    public let apiConfiguration: GoCardlessClientAPIConfiguration
-
-    // MARK: - Private mutable state
-
-    private struct MutableState {
-        var credential: URLCredential? = nil
-        var headers: [String: String]
-        var onProgressReady: ((Progress) -> Void)? = nil
-    }
-
-    private let _state: OpenAPIMutex<MutableState>
-
-    // MARK: - Public mutable interface
-
-    public var credential: URLCredential? {
-        get { _state.value.credential }
-        set { _state.withValue { $0.credential = newValue } }
-    }
-
-    public var headers: [String: String] {
-        get { _state.value.headers }
-        set { _state.withValue { $0.headers = newValue } }
-    }
-
-    /// Optional block to obtain a reference to the request's progress instance when available.
-    public var onProgressReady: ((Progress) -> Void)? {
-        get { _state.value.onProgressReady }
-        set { _state.withValue { $0.onProgressReady = newValue } }
-    }
-
-    // MARK: - Init
-
-    required public init(
-        method: String,
-        URLString: String,
-        parameters: [String: any Sendable]?,
-        headers: [String: String] = [:],
-        requiresAuthentication: Bool,
-        apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared
-    ) {
-        self.method = method
-        self.URLString = URLString
-        self.parameters = parameters
-        self.requiresAuthentication = requiresAuthentication
-        self.apiConfiguration = apiConfiguration
-        self._state = OpenAPIMutex(MutableState(headers: headers))
-
-        addHeaders(apiConfiguration.customHeaders)
-        addCredential()
-    }
-
-    // MARK: - Public methods
-
-    open func addHeaders(_ aHeaders: [String: String]) {
-        _state.withValue { state in
-            for (header, value) in aHeaders {
-                state.headers[header] = value
-            }
-        }
-    }
-
-    @discardableResult
-    open func execute(completion: @Sendable @escaping (_ result: Swift.Result<Response<T>, ErrorResponse>) -> Void) -> RequestTask {
-        return requestTask
-    }
-
-    #if compiler(>=6.2)
-    @concurrent
-    @discardableResult
-    open func execute() async throws(ErrorResponse) -> Response<T> {
-        try await _execute()
-    }
-    #else
-    @discardableResult
-    open func execute() async throws(ErrorResponse) -> Response<T> {
-        try await _execute()
-    }
-    #endif
-
-    @discardableResult
-    private func _execute() async throws(ErrorResponse) -> Response<T> {
-        do {
-            let requestTask = self.requestTask
-            return try await withTaskCancellationHandler {
-                try Task.checkCancellation()
-                return try await withCheckedThrowingContinuation { continuation in
-                    guard !Task.isCancelled else {
-                      continuation.resume(throwing: CancellationError())
-                      return
-                    }
-
-                    self.execute { result in
-                        switch result {
-                        case let .success(response):
-                            continuation.resume(returning: response)
-                        case let .failure(error):
-                            continuation.resume(throwing: error)
-                        }
-                    }
-                }
-            } onCancel: {
-                requestTask.cancel()
-            }
-        } catch {
-            if let errorResponse = error as? ErrorResponse {
-                throw errorResponse
-            } else {
-                throw ErrorResponse.error(-3, nil, nil, error)
-            }
-        }
-    }
-
-    public func addHeader(name: String, value: String) -> Self {
-        if !value.isEmpty {
-            _state.withValue { $0.headers[name] = value }
-        }
-        return self
-    }
-
-    open func addCredential() {
-        _state.withValue { [apiConfiguration] state in
-            state.credential = apiConfiguration.credential
-        }
-    }
-}
-
-public protocol RequestBuilderFactory: Sendable {
-    func getNonDecodableBuilder<T>() -> RequestBuilder<T>.Type
-    func getBuilder<T: Decodable>() -> RequestBuilder<T>.Type
 }

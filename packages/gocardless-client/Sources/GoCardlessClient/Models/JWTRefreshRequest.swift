@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import Vapor
 
 /** Refresh access token. */
-public struct JWTRefreshRequest: Sendable, Codable, Hashable {
+public struct JWTRefreshRequest: Sendable, Content, Hashable {
 
     public static let refreshRule = StringRule(minLength: 1, maxLength: nil, pattern: nil)
     public var refresh: String

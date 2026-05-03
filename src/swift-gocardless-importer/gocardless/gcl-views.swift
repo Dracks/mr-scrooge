@@ -112,7 +112,7 @@ struct GocardlessAccountsPage: HTMLDocument {
 						form(
 							.method(.post),
 							.action(
-								"/\(GocardlessAccountsController.path)/agreement/\(account.agreementId)/delete"
+								"/\(InstitutionsController.path)/\(account.agreementId)/delete"
 							)
 						) {
 							button(
@@ -124,7 +124,7 @@ struct GocardlessAccountsPage: HTMLDocument {
 				}
 			}
 
-			a(.href("/\(GocardlessAccountsController.path)/add"), .role("button")) {
+			a(.href("/\(InstitutionsController.path)/add"), .role("button")) {
 				"Add Account"
 			}
 			a(.href("/"), .role("button"), .class("secondary")) { "Back to Dashboard" }
@@ -154,7 +154,7 @@ struct GocardlessCountrySelectionPage: HTMLDocument {
 
 			form(
 				.method(.get),
-				.action("/\(GocardlessAccountsController.path)/add/institutions")
+				.action("/\(InstitutionsController.path)/add/list")
 			) {
 				label {
 					"Country"
@@ -198,110 +198,63 @@ struct GocardlessCountrySelectionPage: HTMLDocument {
 			}
 
 			a(
-				.href("/\(GocardlessAccountsController.path)"), .role("button"),
+				.href("/\(InstitutionsController.path)"), .role("button"),
 				.class("secondary")
-			) { "Cancel" }
+			) { "Back to Accounts" }
 		}
 	}
 }
 
-struct GocardlessInstitutionsPage: HTMLDocument {
+struct GocardlessAddAccountPage: HTMLDocument {
 	let username: String
-	let institutions: [InstitutionView]
-	let country: String
+	let approvedAgreements: [UserAgreement]
 
-	var title = "GoCardLess - Select Bank"
+	var title = "GoCardLess - Add Account"
 
 	var head: some HTML {
-		meta(.name(.description), .content("GoCardLess Select Bank"))
+		meta(.name(.description), .content("GoCardLess Add Account"))
 		link(.rel(.stylesheet), .href("/pico.css"))
 	}
 
 	var body: some HTML {
 		Layout.Authenticated.header(username: username)
 		main(.class("container")) {
-			h2 { "Select Bank" }
+			h2 { "Add Account" }
 
-			p { "Showing banks for country: \(country)" }
-
-			if institutions.isEmpty {
+			if approvedAgreements.isEmpty {
 				article {
-					header { "No Banks Available" }
-					p { "No banks are available for the selected country." }
+					header { "No Active Agreements" }
+					p {
+						"You don't have any active bank agreements. "
+						"Add a new institution to get started."
+					}
 				}
 			} else {
-				form(
-					.method(.post),
-					.action("/\(GocardlessAccountsController.path)/create")
-				) {
-					label {
-						"Select your bank"
-						select(.name("institutionId"), .required) {
-							option(.value(""), .disabled, .selected) {
-								"-- Select a bank --"
-							}
-							for institution in institutions {
-								option(.value(institution.id)) {
-									"\(institution.name) (\(institution.bic))"
-								}
-							}
+				h3 { "Existing Agreements" }
+				p { "Select an institution to add accounts from:" }
+
+				for agreement in approvedAgreements {
+					article {
+						header { agreement.institutionName }
+						footer {
+							"Status: \(agreement.status)"
 						}
-					}
-					button(.type(.submit)) { "Connect Bank" }
-				}
-			}
-
-			a(
-				.href("/\(GocardlessAccountsController.path)/add"), .role("button"),
-				.class("secondary")
-			) { "Back to Country Selection" }
-			a(
-				.href("/\(GocardlessAccountsController.path)"), .role("button"),
-				.class("secondary")
-			) { "Cancel" }
-		}
-	}
-}
-
-struct GocardlessCallbackPage: HTMLDocument {
-	let username: String
-	let ref: String
-	let agreementFound: Bool
-	let institutionName: String?
-
-	var title = "GoCardLess - Bank Connected"
-
-	var head: some HTML {
-		meta(.name(.description), .content("GoCardLess Bank Connected"))
-		link(.rel(.stylesheet), .href("/pico.css"))
-	}
-
-	var body: some HTML {
-		Layout.Authenticated.header(username: username)
-		main(.class("container")) {
-			h2 { "Bank Connection Complete" }
-
-			article {
-				header { "Reference: \(ref)" }
-				p {
-					if agreementFound {
-						if let institutionName {
-							"Your bank agreement for \(institutionName) has been approved and is now active."
-						} else {
-							"Your bank agreement has been approved and is now active."
-						}
-					} else {
-						"Your bank connection has been initiated. "
-						"The agreement will be processed shortly."
+						a(
+							.href(
+								"/\(InstitutionsController.path)/\(agreement.id?.uuidString ?? "")/add-accounts"
+							), .role("button"), .class("outline")
+						) { "Add Accounts" }
 					}
 				}
 			}
 
-			a(
-				.href(
-					"/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)"
-				), .role("button")
-			) { "View Agreements" }
+			hr()
+
+			h3 { "Add New Institution" }
+			a(.href("/\(InstitutionsController.path)/add/new"), .role("button")) {
+				"Connect New Bank"
+			}
+
 			a(
 				.href("/\(GocardlessAccountsController.path)"), .role("button"),
 				.class("secondary")
@@ -357,7 +310,7 @@ struct UserAgreementsListPage: HTMLDocument {
 							if agreement.status == "approved" {
 								a(
 									.href(
-										"/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)/\(agreement.id?.uuidString ?? "")/add-accounts"
+										"/\(InstitutionsController.path)/\(agreement.id?.uuidString ?? "")/add-accounts"
 									), .role("button"),
 									.class("outline")
 								) { "Add Account" }
@@ -365,7 +318,7 @@ struct UserAgreementsListPage: HTMLDocument {
 							form(
 								.method(.post),
 								.action(
-									"/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)/\(agreement.id?.uuidString ?? "")/delete"
+									"/\(InstitutionsController.path)/\(agreement.id?.uuidString ?? "")/delete"
 								)
 							) {
 								button(
@@ -379,6 +332,109 @@ struct UserAgreementsListPage: HTMLDocument {
 				}
 			}
 
+			a(
+				.href("/\(InstitutionsController.path)"), .role("button"),
+				.class("secondary")
+			) { "Back to Accounts" }
+		}
+	}
+}
+
+struct GocardlessInstitutionsPage: HTMLDocument {
+	let username: String
+	let institutions: [InstitutionView]
+	let country: String
+
+	var title = "GoCardLess - Select Bank"
+
+	var head: some HTML {
+		meta(.name(.description), .content("GoCardLess Select Bank"))
+		link(.rel(.stylesheet), .href("/pico.css"))
+	}
+
+	var body: some HTML {
+		Layout.Authenticated.header(username: username)
+		main(.class("container")) {
+			h2 { "Select Bank" }
+
+			p { "Showing banks for country: \(country)" }
+
+			if institutions.isEmpty {
+				article {
+					header { "No Banks Available" }
+					p { "No banks are available for the selected country." }
+				}
+			} else {
+				form(
+					.method(.post),
+					.action("/\(GocardlessAccountsController.path)/create")
+				) {
+					label {
+						"Select your bank"
+						select(.name("institutionId"), .required) {
+							option(.value(""), .disabled, .selected) {
+								"-- Select a bank --"
+							}
+							for institution in institutions {
+								option(.value(institution.id)) {
+									"\(institution.name) (\(institution.bic))"
+								}
+							}
+						}
+					}
+					button(.type(.submit)) { "Connect Bank" }
+				}
+			}
+
+			a(
+				.href("/\(InstitutionsController.path)/add"), .role("button"),
+				.class("secondary")
+			) { "Back to Country Selection" }
+			a(
+				.href("/\(GocardlessAccountsController.path)"), .role("button"),
+				.class("secondary")
+			) { "Cancel" }
+		}
+	}
+}
+
+struct GocardlessCallbackPage: HTMLDocument {
+	let username: String
+	let ref: String
+	let agreementFound: Bool
+	let institutionName: String?
+
+	var title = "GoCardLess - Bank Connected"
+
+	var head: some HTML {
+		meta(.name(.description), .content("GoCardLess Bank Connected"))
+		link(.rel(.stylesheet), .href("/pico.css"))
+	}
+
+	var body: some HTML {
+		Layout.Authenticated.header(username: username)
+		main(.class("container")) {
+			h2 { "Bank Connection Complete" }
+
+			article {
+				header { "Reference: \(ref)" }
+				p {
+					if agreementFound {
+						if let institutionName {
+							"Your bank agreement for \(institutionName) has been approved and is now active."
+						} else {
+							"Your bank agreement has been approved and is now active."
+						}
+					} else {
+						"Your bank connection has been initiated. "
+						"The agreement will be processed shortly."
+					}
+				}
+			}
+
+			a(
+				.href("/\(InstitutionsController.path)"), .role("button")
+			) { "View Agreements" }
 			a(
 				.href("/\(GocardlessAccountsController.path)"), .role("button"),
 				.class("secondary")
@@ -419,7 +475,7 @@ struct SelectAccountsPage: HTMLDocument {
 				form(
 					.method(.post),
 					.action(
-						"/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)/\(agreement.id?.uuidString ?? "")/add-accounts"
+						"/\(InstitutionsController.path)/\(agreement.id?.uuidString ?? "")/add-accounts"
 					)
 				) {
 					for account in accounts {
@@ -494,7 +550,7 @@ struct SelectAccountsPage: HTMLDocument {
 
 			a(
 				.href(
-					"/\(GocardlessAccountsController.path)/\(UserAgreementsController.path)"
+					"/\(InstitutionsController.path)"
 				), .role("button"), .class("secondary")
 			) { "Back to Agreements" }
 		}

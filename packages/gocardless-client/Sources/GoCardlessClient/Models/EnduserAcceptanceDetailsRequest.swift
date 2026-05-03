@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import Vapor
 
 /** Represents end-user details. */
-public struct EnduserAcceptanceDetailsRequest: Sendable, Codable, Hashable {
+public struct EnduserAcceptanceDetailsRequest: Sendable, Content, Hashable {
 
     public static let userAgentRule = StringRule(minLength: 1, maxLength: nil, pattern: nil)
     public static let ipAddressRule = StringRule(minLength: 1, maxLength: nil, pattern: nil)

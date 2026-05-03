@@ -16,10 +16,7 @@ struct GocardlessAccountsController: RouteCollection {
 	func boot(routes: RoutesBuilder) throws {
 		let accountsGroup = routes.grouped(GocardlessAccountsController.path)
 		accountsGroup.get(use: showAccounts)
-		accountsGroup.get("add", use: showCountrySelection)
-		accountsGroup.get("add", "institutions", use: showInstitutionsForCountry)
 		accountsGroup.post("create", use: createAgreement)
-		try accountsGroup.register(collection: UserAgreementsController())
 	}
 
 	func showAccounts(req: Request) async throws -> HTMLResponse {
@@ -57,53 +54,6 @@ struct GocardlessAccountsController: RouteCollection {
 				username: user.username,
 				accounts: accountDetails,
 				agreements: agreements
-			)
-		}
-	}
-
-	func showCountrySelection(req: Request) async throws -> HTMLResponse {
-		guard let user = req.auth.get(GoCardlessImporter.User.self) else {
-			throw Abort(.unauthorized)
-		}
-
-		return HTMLResponse {
-			GocardlessCountrySelectionPage(
-				username: user.username
-			)
-		}
-	}
-
-	func showInstitutionsForCountry(req: Request) async throws -> HTMLResponse {
-		guard let user = req.auth.get(GoCardlessImporter.User.self) else {
-			throw Abort(.unauthorized)
-		}
-
-		guard let credentials = try await user.$gclCredentials.get(on: req.db) else {
-			throw Abort(.notFound, reason: "No credentials configured")
-		}
-
-		guard let country = req.query[String.self, at: "country"] else {
-			throw Abort(.badRequest, reason: "Country parameter required")
-		}
-
-		let institutions =
-			try await InstitutionsAPI.retrieveAllSupportedInstitutionsInAGivenCountry(
-				country: country, apiConfiguration: credentials.apiConfig())
-
-		let institutionViews = institutions.map { institution in
-			InstitutionView(
-				id: institution.id,
-				name: institution.name,
-				bic: institution.bic ?? "",
-				countries: institution.countries
-			)
-		}
-
-		return HTMLResponse {
-			GocardlessInstitutionsPage(
-				username: user.username,
-				institutions: institutionViews,
-				country: country
 			)
 		}
 	}
@@ -148,12 +98,15 @@ struct GocardlessAccountsController: RouteCollection {
 			throw Exception(ErrorCodes.E10008)
 		}
 
-		let redirectUrl = "\(EnvConfig.shared.baseHost)/gcl-accounts/agreements/created"
+		let redirectUrl = "\(EnvConfig.shared.baseHost)/institutions/created"
 
 		let requisition = try await RequisitionsAPI.createRequisition(
 			requisitionRequest: .init(
 				redirect: redirectUrl, institutionId: institutionId),
-			apiConfiguration: apiConfig)
+			apiConfiguration: apiConfig).get()
+        guard case .http201(let requisition, _) = requisition else {
+            throw Exception()
+        }
 
 		guard let requisitionId = requisition.id else {
 			throw Exception(ErrorCodes.E10009)

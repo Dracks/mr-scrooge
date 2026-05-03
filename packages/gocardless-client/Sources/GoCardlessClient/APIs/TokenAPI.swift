@@ -6,82 +6,129 @@
 //
 
 import Foundation
+import Vapor
 
 open class TokenAPI {
 
     /**
-
-     - parameter jWTRefreshRequest: (body)  
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: SpectacularJWTRefresh
-     */
-    open class func getANewAccessToken(jWTRefreshRequest: JWTRefreshRequest, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) async throws(ErrorResponse) -> SpectacularJWTRefresh {
-        return try await getANewAccessTokenWithRequestBuilder(jWTRefreshRequest: jWTRefreshRequest, apiConfiguration: apiConfiguration).execute().body
-    }
-
-    /**
-     - POST /api/v2/token/refresh/
-     - Refresh access token
+     POST /api/v2/token/refresh/
+     Refresh access token
      - Bearer Token:
        - type: http
        - name: jwtAuth
      - parameter jWTRefreshRequest: (body)  
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: RequestBuilder<SpectacularJWTRefresh> 
+     - returns: `EventLoopFuture` of `ClientResponse` 
      */
-    open class func getANewAccessTokenWithRequestBuilder(jWTRefreshRequest: JWTRefreshRequest, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) -> RequestBuilder<SpectacularJWTRefresh> {
+    open class func getANewAccessTokenRaw(jWTRefreshRequest: JWTRefreshRequest, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
         let localVariablePath = "/api/v2/token/refresh/"
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
-        let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: jWTRefreshRequest, codableHelper: apiConfiguration.codableHelper)
 
-        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
+        guard let localVariableApiClient = apiConfiguration.apiClient else {
+            fatalError("apiConfiguration.apiClient is not set.")
+        }
 
-        let localVariableNillableHeaders: [String: (any Sendable)?] = [
-            "Content-Type": "application/json",
-        ]
+        return localVariableApiClient.send(.POST, headers: headers ?? apiConfiguration.customHeaders, to: URI(string: localVariableURLString)) { localVariableRequest in
+            try apiConfiguration.apiWrapper(&localVariableRequest)
+            
+            
+            try localVariableRequest.content.encode(jWTRefreshRequest, using: apiConfiguration.contentConfiguration.requireEncoder(for: JWTRefreshRequest.defaultContentType))
+            
+            try beforeSend(&localVariableRequest)
+        }
+    }
 
-        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
-
-        let localVariableRequestBuilder: RequestBuilder<SpectacularJWTRefresh>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
-
-        return localVariableRequestBuilder.init(method: "POST", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
+    public enum GetANewAccessToken {
+        case http200(value: SpectacularJWTRefresh, raw: ClientResponse)
+        case http401(value: ModelErrorResponse, raw: ClientResponse)
+        case http403(value: ModelErrorResponse, raw: ClientResponse)
+        case http429(value: ModelErrorResponse, raw: ClientResponse)
+        case http0(raw: ClientResponse)
     }
 
     /**
-
-     - parameter jWTObtainPairRequest: (body)  
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: SpectacularJWTObtain
+     POST /api/v2/token/refresh/
+     Refresh access token
+     - Bearer Token:
+       - type: http
+       - name: jwtAuth
+     - parameter jWTRefreshRequest: (body)  
+     - returns: `EventLoopFuture` of `GetANewAccessToken` 
      */
-    open class func obtainNewAccessRefreshTokenPair(jWTObtainPairRequest: JWTObtainPairRequest, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) async throws(ErrorResponse) -> SpectacularJWTObtain {
-        return try await obtainNewAccessRefreshTokenPairWithRequestBuilder(jWTObtainPairRequest: jWTObtainPairRequest, apiConfiguration: apiConfiguration).execute().body
+    open class func getANewAccessToken(jWTRefreshRequest: JWTRefreshRequest, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<GetANewAccessToken> {
+        return getANewAccessTokenRaw(jWTRefreshRequest: jWTRefreshRequest, headers: headers, apiConfiguration: apiConfiguration, beforeSend: beforeSend).flatMapThrowing { response -> GetANewAccessToken in
+            switch response.status.code {
+            case 200:
+                return .http200(value: try response.content.decode(SpectacularJWTRefresh.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: SpectacularJWTRefresh.defaultContentType)), raw: response)
+            case 401:
+                return .http401(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 403:
+                return .http403(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 429:
+                return .http429(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            default:
+                return .http0(raw: response)
+            }
+        }
     }
 
     /**
-     - POST /api/v2/token/new/
-     - Obtain JWT pair
+     POST /api/v2/token/new/
+     Obtain JWT pair
      - Bearer Token:
        - type: http
        - name: jwtAuth
      - parameter jWTObtainPairRequest: (body)  
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: RequestBuilder<SpectacularJWTObtain> 
+     - returns: `EventLoopFuture` of `ClientResponse` 
      */
-    open class func obtainNewAccessRefreshTokenPairWithRequestBuilder(jWTObtainPairRequest: JWTObtainPairRequest, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared) -> RequestBuilder<SpectacularJWTObtain> {
+    open class func obtainNewAccessRefreshTokenPairRaw(jWTObtainPairRequest: JWTObtainPairRequest, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ClientResponse> {
         let localVariablePath = "/api/v2/token/new/"
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
-        let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: jWTObtainPairRequest, codableHelper: apiConfiguration.codableHelper)
 
-        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
+        guard let localVariableApiClient = apiConfiguration.apiClient else {
+            fatalError("apiConfiguration.apiClient is not set.")
+        }
 
-        let localVariableNillableHeaders: [String: (any Sendable)?] = [
-            "Content-Type": "application/json",
-        ]
+        return localVariableApiClient.send(.POST, headers: headers ?? apiConfiguration.customHeaders, to: URI(string: localVariableURLString)) { localVariableRequest in
+            try apiConfiguration.apiWrapper(&localVariableRequest)
+            
+            
+            try localVariableRequest.content.encode(jWTObtainPairRequest, using: apiConfiguration.contentConfiguration.requireEncoder(for: JWTObtainPairRequest.defaultContentType))
+            
+            try beforeSend(&localVariableRequest)
+        }
+    }
 
-        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
+    public enum ObtainNewAccessRefreshTokenPair {
+        case http200(value: SpectacularJWTObtain, raw: ClientResponse)
+        case http401(value: ModelErrorResponse, raw: ClientResponse)
+        case http403(value: ModelErrorResponse, raw: ClientResponse)
+        case http429(value: ModelErrorResponse, raw: ClientResponse)
+        case http0(raw: ClientResponse)
+    }
 
-        let localVariableRequestBuilder: RequestBuilder<SpectacularJWTObtain>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
-
-        return localVariableRequestBuilder.init(method: "POST", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
+    /**
+     POST /api/v2/token/new/
+     Obtain JWT pair
+     - Bearer Token:
+       - type: http
+       - name: jwtAuth
+     - parameter jWTObtainPairRequest: (body)  
+     - returns: `EventLoopFuture` of `ObtainNewAccessRefreshTokenPair` 
+     */
+    open class func obtainNewAccessRefreshTokenPair(jWTObtainPairRequest: JWTObtainPairRequest, headers: HTTPHeaders? = nil, apiConfiguration: GoCardlessClientAPIConfiguration = GoCardlessClientAPIConfiguration.shared, beforeSend: @Sendable (inout ClientRequest) throws -> () = { _ in }) -> EventLoopFuture<ObtainNewAccessRefreshTokenPair> {
+        return obtainNewAccessRefreshTokenPairRaw(jWTObtainPairRequest: jWTObtainPairRequest, headers: headers, apiConfiguration: apiConfiguration, beforeSend: beforeSend).flatMapThrowing { response -> ObtainNewAccessRefreshTokenPair in
+            switch response.status.code {
+            case 200:
+                return .http200(value: try response.content.decode(SpectacularJWTObtain.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: SpectacularJWTObtain.defaultContentType)), raw: response)
+            case 401:
+                return .http401(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 403:
+                return .http403(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            case 429:
+                return .http429(value: try response.content.decode(ModelErrorResponse.self, using: apiConfiguration.contentConfiguration.requireDecoder(for: ModelErrorResponse.defaultContentType)), raw: response)
+            default:
+                return .http0(raw: response)
+            }
+        }
     }
 }

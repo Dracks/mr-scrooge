@@ -14,6 +14,6 @@ npx @openapitools/openapi-generator-cli generate \
     -i Resources/importer/gocardless.yaml \
     -g swift6 \
     -o "packages/gocardless-client" \
-    --additional-properties=responseAs=AsyncAwait,projectName=GoCardlessClient
+    --additional-properties=library=vapor,projectName=GoCardlessClient
 
 echo "GoCardless types generated successfully"

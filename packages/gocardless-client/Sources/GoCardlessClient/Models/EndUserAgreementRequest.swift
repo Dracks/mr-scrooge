@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import Vapor
 
 /** Represents an end-user agreement. */
-public struct EndUserAgreementRequest: Sendable, Codable, Hashable {
+public struct EndUserAgreementRequest: Sendable, Content, Hashable {
 
     public static let institutionIdRule = StringRule(minLength: 1, maxLength: nil, pattern: nil)
     public static let maxHistoricalDaysRule = NumericRule<Int>(minimum: 1, exclusiveMinimum: false, maximum: 730, exclusiveMaximum: false, multipleOf: nil)
