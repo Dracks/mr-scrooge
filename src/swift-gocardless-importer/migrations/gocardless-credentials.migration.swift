@@ -60,7 +60,7 @@ extension GocardlessInstitutionCredentials {
 
 	var isTokenExpired: Bool {
 		guard let expiresAt = accessTokenExpiresAt else { return true }
-		return expiresAt < Date()
+		return expiresAt < Date().addingTimeInterval(TimeInterval(-60))
 	}
 }
 

@@ -79,20 +79,22 @@ struct GocardlessAccountsController: RouteCollection {
 			secretId: credentials.secretId,
 			secretKey: credentials.secretKey
 		)
-
+		
 		try await gclService.obtainTokens()
-
+		
 		let institution = try await gclService.getInstitution(id: institutionId)
-
+		
 		let agreement = try await gclService.createEndUserAgreement(institutionId: institutionId) */
 
-		let apiConfig = credentials.apiConfig()
+		let apiConfig = try await credentials.apiConfig(client: req.client, on: req.db)
 		let institution = try await InstitutionsAPI.retrieveInstitution(
-			id: institutionId, apiConfiguration: apiConfig)
+			id: institutionId, apiConfiguration: apiConfig
+		).get().getOrThrow()
 
 		let agreement = try await AgreementsAPI.createEUA(
 			endUserAgreementRequest: .init(institutionId: institutionId),
-			apiConfiguration: apiConfig)
+			apiConfiguration: apiConfig
+		).get().getOrThrow()
 
 		guard let agreementId = agreement.id else {
 			throw Exception(ErrorCodes.E10008)
@@ -103,10 +105,8 @@ struct GocardlessAccountsController: RouteCollection {
 		let requisition = try await RequisitionsAPI.createRequisition(
 			requisitionRequest: .init(
 				redirect: redirectUrl, institutionId: institutionId),
-			apiConfiguration: apiConfig).get()
-        guard case .http201(let requisition, _) = requisition else {
-            throw Exception()
-        }
+			apiConfiguration: apiConfig
+		).get().getOrThrow()
 
 		guard let requisitionId = requisition.id else {
 			throw Exception(ErrorCodes.E10009)

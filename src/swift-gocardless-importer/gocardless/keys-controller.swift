@@ -41,7 +41,8 @@ struct GocardlessKeysController: RouteCollection {
 			secretId: credentials.secretId, secretKey: credentials.secretKey)  // JWTObtainPairRequest |
 
 		let tokenResponse = try await TokenAPI.obtainNewAccessRefreshTokenPair(
-			jWTObtainPairRequest: jWTObtainPairRequest)
+			jWTObtainPairRequest: jWTObtainPairRequest
+		).get().getOrThrow()
 
 		credentials.setTokens(
 			access: tokenResponse.access ?? "",

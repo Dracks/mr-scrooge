@@ -68,7 +68,10 @@ struct InstitutionsController: RouteCollection {
 
 		let institutions =
 			try await InstitutionsAPI.retrieveAllSupportedInstitutionsInAGivenCountry(
-				country: country, apiConfiguration: credentials.apiConfig())
+				country: country,
+				apiConfiguration: try await credentials.apiConfig(
+					client: req.client, on: req.db)
+			).get().getOrThrow()
 
 		let institutionViews = institutions.map { institution in
 			InstitutionView(
@@ -147,22 +150,22 @@ struct InstitutionsController: RouteCollection {
 				reason: "Agreement must be approved before adding accounts")
 		}
 
-
-		let apiConfig = credentials.apiConfig()
+		let apiConfig = try await credentials.apiConfig(client: req.client, on: req.db)
 
 		let requisition = try await RequisitionsAPI.requisitionById(
-			id: agreement.requisitionId, apiConfiguration: apiConfig)
+			id: agreement.requisitionId, apiConfiguration: apiConfig
+		).get().getOrThrow()
 
 		var accountViews: [AvailableAccountView] = []
 		for accountId in requisition.accounts ?? [] {
-			let accountResponse = try await AccountsAPI.retrieveAccountDetails(
-				id: accountId.uuidString, apiConfiguration: apiConfig)
-			let account = accountResponse.account
-			// if let account = try? await gclService.getAccountDetails(id: accountId) {
+			let accountDetail = try await AccountsAPI.retrieveAccountDetails(
+				id: accountId.uuidString, apiConfiguration: apiConfig
+			).get().getOrThrow()
+			let account = accountDetail.account
 			accountViews.append(
 				AvailableAccountView(
 					accountId: accountId.uuidString,
-					iban: account.iban ?? "no-ivan",
+					iban: account.iban ?? "no-iban",
 					ownerName: account.ownerName,
 					name: account.name,
 					status: account.status ?? "no-status"

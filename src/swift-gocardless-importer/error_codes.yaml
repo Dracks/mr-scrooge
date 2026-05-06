@@ -22,4 +22,22 @@ E10008:
   message: "Agreement didn't had an id"
 E10009:
   message: "Requisition didn't had an id"
-  
+
+E10010:
+  message: "Failed to obtain JWT token pair from GoCardless"
+E10011:
+  message: "Failed to refresh access token from GoCardless"
+E10012:
+  message: "Failed to retrieve supported institutions from GoCardless"
+E10013:
+  message: "Failed to retrieve institution details from GoCardless"
+E10014:
+  message: "Failed to create end user agreement with GoCardless"
+E10015:
+  message: "Failed to create requisition with GoCardless"
+E10016:
+  message: "Failed to retrieve requisition from GoCardless"
+E10017:
+  message: "Failed to retrieve account details from GoCardless"
+E10018:
+  message: "Gocardless refresh token response didn't contain the access token"

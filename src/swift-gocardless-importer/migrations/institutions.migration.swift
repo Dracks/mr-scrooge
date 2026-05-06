@@ -29,8 +29,8 @@ final class UserAgreement: Model, Content, @unchecked Sendable {
 	@Field(key: "requisition_id")
 	var requisitionId: UUID
 
-    @Children(for: \.$agreement)
-    var bankAccounts: [GocardlessBankAccount]
+	@Children(for: \.$agreement)
+	var bankAccounts: [GocardlessBankAccount]
 
 	@Timestamp(key: "created_at", on: .create)
 	var createdAt: Date?

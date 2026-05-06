@@ -1,3 +1,5 @@
+import Exceptions
+import Fluent
 import Foundation
 import GoCardlessClient
 import Vapor
@@ -7,12 +9,37 @@ import Vapor
 #endif
 
 extension GocardlessInstitutionCredentials {
-	func apiConfig() -> GoCardlessClientAPIConfiguration {
-		if let accessToken {
-			return GoCardlessClientAPIConfiguration(customHeaders: [
-				"Authorization": "Bearer \(accessToken)"
-			])
+	func apiConfig(client: any Vapor.Client, on db: any Database) async throws
+		-> GoCardlessClientAPIConfiguration
+	{
+		if isTokenExpired, let refreshToken {
+			print("TOKEN!!!!! expired!")
+			let request = JWTRefreshRequest(refresh: refreshToken)
+			let tokensResponse = try await TokenAPI.getANewAccessToken(
+				jWTRefreshRequest: request,
+				apiConfiguration: .init(apiClient: client)
+			).get().getOrThrow()
+			guard let access = tokensResponse.access,
+				let expires = tokensResponse.accessExpires
+			else {
+				throw Exception(ErrorCodes.E10018)
+			}
+			print("TOKEN!!!!! new token \(access)!")
+			setTokens(access: access, refresh: refreshToken, expiresIn: expires)
+			try await save(on: db)
+
+		} else if accessToken != nil {
+			accessToken = nil
+			try await save(on: db)
 		}
+		if let accessToken {
+			print("Config!!!!! here \(accessToken)!")
+			return GoCardlessClientAPIConfiguration(
+				customHeaders: [
+					"Authorization": "Bearer \(accessToken)"
+				], apiClient: client)
+		}
+		print("TOKEN!!!!! is not here!")
 		return GoCardlessClientAPIConfiguration()
 	}
 }
