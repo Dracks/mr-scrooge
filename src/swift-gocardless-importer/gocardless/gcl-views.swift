@@ -10,6 +10,7 @@ struct InstitutionView: Codable {
 
 struct AccountDetailView: Codable {
 	let agreementId: String
+	let accountId: String
 	let institutionName: String
 	let iban: String?
 	let ownerName: String?
@@ -109,16 +110,32 @@ struct GocardlessAccountsPage: HTMLDocument {
 								"Status: \(status)"
 							}
 						}
-						form(
-							.method(.post),
-							.action(
-								"/\(InstitutionsController.path)/\(account.agreementId)/delete"
-							)
+						div(
+							.style(
+								"display: flex; gap: 0.5rem; margin-top: 0.5rem; justify-content: flex-end;")
 						) {
-							button(
-								.type(.submit), .class("secondary"),
-								.style("float: right;")
-							) { "Delete" }
+							form(
+								.method(.post),
+								.action(
+									"/\(GocardlessAccountsController.path)/\(account.agreementId)/download-transactions"
+								)
+							) {
+								button(
+									.type(.submit), .class("outline"),
+									.style("font-size: 0.85rem;")
+								) { "Download Transactions" }
+							}
+							form(
+								.method(.post),
+								.action(
+									"/\(InstitutionsController.path)/\(account.agreementId)/delete"
+								)
+							) {
+								button(
+									.type(.submit), .class("secondary"),
+									.style("font-size: 0.85rem;")
+								) { "Delete" }
+							}
 						}
 					}
 				}

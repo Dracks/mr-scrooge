@@ -53,9 +53,6 @@ public func registerMigrations(_ app: Application) async throws {
 	app.migrations.add(CreateGocardlessBankAccounts())
 }
 
-public func configureImporter(_ app: Application) async throws {
-	try await configure(app)
-}
 
 // configures your application
 public func configure(_ app: Application) async throws {

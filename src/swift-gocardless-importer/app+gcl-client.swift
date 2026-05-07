@@ -1,6 +1,6 @@
 import Vapor
 
-extension Application {
+/* extension Application {
 	public struct GocardlessHTTPClientKey: StorageKey {
 		public typealias Value = HTTPClient
 	}
@@ -27,4 +27,4 @@ extension Application {
 		storage[GocardlessHTTPClientKey.self] = client
 		lifecycle.use(GocardlessHTTPClientShutdown(client: client))
 	}
-}
+} */

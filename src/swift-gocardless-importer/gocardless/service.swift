@@ -13,7 +13,6 @@ extension GocardlessInstitutionCredentials {
 		-> GoCardlessClientAPIConfiguration
 	{
 		if isTokenExpired, let refreshToken {
-			print("TOKEN!!!!! expired!")
 			let request = JWTRefreshRequest(refresh: refreshToken)
 			let tokensResponse = try await TokenAPI.getANewAccessToken(
 				jWTRefreshRequest: request,
@@ -24,7 +23,6 @@ extension GocardlessInstitutionCredentials {
 			else {
 				throw Exception(ErrorCodes.E10018)
 			}
-			print("TOKEN!!!!! new token \(access)!")
 			setTokens(access: access, refresh: refreshToken, expiresIn: expires)
 			try await save(on: db)
 
@@ -33,13 +31,11 @@ extension GocardlessInstitutionCredentials {
 			try await save(on: db)
 		}
 		if let accessToken {
-			print("Config!!!!! here \(accessToken)!")
 			return GoCardlessClientAPIConfiguration(
 				customHeaders: [
 					"Authorization": "Bearer \(accessToken)"
 				], apiClient: client)
 		}
-		print("TOKEN!!!!! is not here!")
 		return GoCardlessClientAPIConfiguration()
 	}
 }

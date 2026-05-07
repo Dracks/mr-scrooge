@@ -2,15 +2,14 @@ import Exceptions
 import GoCardlessClient
 import Vapor
 
-
-extension AccountsAPI.RetrieveAccountDetails {
-	func getOrThrow() throws -> AccountDetail {
+extension AccountsAPI.RetrieveAccountTransactions {
+	func getOrThrow() throws -> AccountTransactions {
 		switch self {
 		case .http200(let value, _):
 			return value
 		case .http400(let error, let raw):
 			throw Exception(
-				ErrorCodes.E10017,
+				ErrorCodes.E10019,
 				context: [
 					"status_code": raw.status.code,
 					"response_body": String(describing: error),
@@ -18,7 +17,7 @@ extension AccountsAPI.RetrieveAccountDetails {
 			)
 		case .http401(let error, let raw):
 			throw Exception(
-				ErrorCodes.E10017,
+				ErrorCodes.E10019,
 				context: [
 					"status_code": raw.status.code,
 					"response_body": String(describing: error),
@@ -26,7 +25,7 @@ extension AccountsAPI.RetrieveAccountDetails {
 			)
 		case .http403(let error, let raw):
 			throw Exception(
-				ErrorCodes.E10017,
+				ErrorCodes.E10019,
 				context: [
 					"status_code": raw.status.code,
 					"response_body": String(describing: error),
@@ -34,7 +33,7 @@ extension AccountsAPI.RetrieveAccountDetails {
 			)
 		case .http404(let error, let raw):
 			throw Exception(
-				ErrorCodes.E10017,
+				ErrorCodes.E10019,
 				context: [
 					"status_code": raw.status.code,
 					"response_body": String(describing: error),
@@ -42,7 +41,7 @@ extension AccountsAPI.RetrieveAccountDetails {
 			)
 		case .http409(let error, let raw):
 			throw Exception(
-				ErrorCodes.E10017,
+				ErrorCodes.E10019,
 				context: [
 					"status_code": raw.status.code,
 					"response_body": String(describing: error),
@@ -50,7 +49,7 @@ extension AccountsAPI.RetrieveAccountDetails {
 			)
 		case .http429(let error, let raw):
 			throw Exception(
-				ErrorCodes.E10017,
+				ErrorCodes.E10019,
 				context: [
 					"status_code": raw.status.code,
 					"response_body": String(describing: error),
@@ -58,7 +57,7 @@ extension AccountsAPI.RetrieveAccountDetails {
 			)
 		case .http500(let error, let raw):
 			throw Exception(
-				ErrorCodes.E10017,
+				ErrorCodes.E10019,
 				context: [
 					"status_code": raw.status.code,
 					"response_body": String(describing: error),
@@ -66,7 +65,7 @@ extension AccountsAPI.RetrieveAccountDetails {
 			)
 		case .http503(let error, let raw):
 			throw Exception(
-				ErrorCodes.E10017,
+				ErrorCodes.E10019,
 				context: [
 					"status_code": raw.status.code,
 					"response_body": String(describing: error),
@@ -74,7 +73,7 @@ extension AccountsAPI.RetrieveAccountDetails {
 			)
 		case .http0(let raw):
 			throw Exception(
-				ErrorCodes.E10017,
+				ErrorCodes.E10019,
 				context: [
 					"status_code": raw.status.code,
 					"response_body": String(describing: raw),

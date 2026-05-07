@@ -19,7 +19,7 @@ struct AccountsRootPageTests {
 		}
 	}
 
-	@Test("Root accounts page returns error when no credentials configured")
+	@Test("Root accounts page shows empty state when user has no credentials")
 	func testRootAccountsPageNoCredentials() async throws {
 		try await withImporterApp(useMockHTTPClient: true) { app in
 			let user = User(externalId: UUID(), username: "testuser")
@@ -36,7 +36,7 @@ struct AccountsRootPageTests {
 
 			#expect(response.status == .ok)
 			let body = String(buffer: response.body)
-			#expect(body.contains("Error 404"))
+			#expect(body.contains("No Bank Accounts Connected"))
 		}
 	}
 
@@ -65,7 +65,7 @@ struct AccountsRootPageTests {
 	func testCountrySelectionUnauthenticated() async throws {
 		try await withImporterApp { app in
 			let tester = try app.testing()
-			let response = try await tester.sendRequest(.GET, "/gcl-accounts/add")
+			let response = try await tester.sendRequest(.GET, "/institutions/add/new")
 
 			#expect(response.status == .ok)
 			let body = String(buffer: response.body)
@@ -83,7 +83,7 @@ struct AccountsRootPageTests {
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
 				.GET,
-				"/gcl-accounts/add",
+				"/institutions/add/new",
 				headers: headers
 			)
 
@@ -101,7 +101,7 @@ struct AccountsRootPageTests {
 		try await withImporterApp { app in
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
-				.GET, "/gcl-accounts/add/institutions?country=ES")
+				.GET, "/institutions/add/list?country=ES")
 
 			#expect(response.status == .ok)
 			let body = String(buffer: response.body)
@@ -119,7 +119,7 @@ struct AccountsRootPageTests {
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
 				.GET,
-				"/gcl-accounts/add/institutions",
+				"/institutions/add/list",
 				headers: headers
 			)
 
@@ -137,7 +137,7 @@ struct UserAgreementsControllerTests {
 		try await withImporterApp { app in
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
-				.GET, "/gcl-accounts/agreements")
+				.GET, "/institutions")
 
 			#expect(response.status == .ok)
 			let body = String(buffer: response.body)
@@ -155,7 +155,7 @@ struct UserAgreementsControllerTests {
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
 				.GET,
-				"/gcl-accounts/agreements",
+				"/institutions",
 				headers: headers
 			)
 
@@ -172,20 +172,21 @@ struct UserAgreementsControllerTests {
 				app: app)
 			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
 
+			let requisitionId = UUID()
 			let agreement = UserAgreement(
 				userId: try user.requireID(),
-				agreementId: "test-agreement-id",
+				agreementId: UUID(),
 				institutionId: "TEST_INSTITUTION",
 				institutionName: "Test Bank",
 				status: "approved",
-				requisitionId: "test-req-id"
+				requisitionId: requisitionId
 			)
 			try await agreement.save(on: app.db)
 
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
 				.GET,
-				"/gcl-accounts/agreements",
+				"/institutions",
 				headers: headers
 			)
 
@@ -193,7 +194,7 @@ struct UserAgreementsControllerTests {
 			let body = String(buffer: response.body)
 			#expect(body.contains("Test Bank"))
 			#expect(body.contains("approved"))
-			#expect(body.contains("test-req-id"))
+			#expect(body.contains(String(describing: requisitionId).prefix(8)))
 		}
 	}
 
@@ -207,7 +208,7 @@ struct UserAgreementsControllerTests {
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
 				.GET,
-				"/gcl-accounts/agreements/created",
+				"/institutions/created",
 				headers: headers
 			)
 
@@ -224,16 +225,17 @@ struct UserAgreementsControllerTests {
 			try await user.save(on: app.db)
 			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
 
+			let nonExistentRef = UUID()
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
 				.GET,
-				"/gcl-accounts/agreements/created?ref=non-existent-ref",
+				"/institutions/created?ref=\(nonExistentRef)",
 				headers: headers
 			)
 
 			#expect(response.status == .ok)
 			let body = String(buffer: response.body)
-			#expect(body.contains("non-existent-ref"))
+			#expect(body.contains(String(describing: nonExistentRef).prefix(8)))
 			#expect(body.contains("will be processed shortly"))
 		}
 	}
@@ -244,13 +246,14 @@ struct UserAgreementsControllerTests {
 			let user = User(externalId: UUID(), username: "testuser")
 			try await user.save(on: app.db)
 
+			let matchingRef = UUID()
 			let agreement = UserAgreement(
 				userId: try user.requireID(),
-				agreementId: "test-agreement-id",
+				agreementId: UUID(),
 				institutionId: "TEST_INSTITUTION",
 				institutionName: "Test Bank",
 				status: "pending",
-				requisitionId: "matching-ref"
+				requisitionId: matchingRef
 			)
 			try await agreement.save(on: app.db)
 
@@ -259,18 +262,18 @@ struct UserAgreementsControllerTests {
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
 				.GET,
-				"/gcl-accounts/agreements/created?ref=matching-ref",
+				"/institutions/created?ref=\(matchingRef)",
 				headers: headers
 			)
 
 			#expect(response.status == .ok)
 			let body = String(buffer: response.body)
-			#expect(body.contains("matching-ref"))
+			#expect(body.contains(String(describing: matchingRef).prefix(8)))
 			#expect(body.contains("Test Bank"))
 			#expect(body.contains("has been approved"))
 
 			let updatedAgreement = try await UserAgreement.query(on: app.db)
-				.filter(\.$requisitionId == "matching-ref")
+				.filter(\.$requisitionId == matchingRef)
 				.first()
 			#expect(updatedAgreement?.status == "approved")
 		}
@@ -282,7 +285,7 @@ struct UserAgreementsControllerTests {
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
 				.POST,
-				"/gcl-accounts/agreements/00000000-0000-0000-0000-000000000000/delete"
+				"/institutions/00000000-0000-0000-0000-000000000000/delete"
 			)
 
 			#expect(response.status == .ok)
@@ -301,7 +304,7 @@ struct UserAgreementsControllerTests {
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
 				.POST,
-				"/gcl-accounts/agreements/00000000-0000-0000-0000-000000000000/delete",
+				"/institutions/00000000-0000-0000-0000-000000000000/delete",
 				headers: headers
 			)
 
@@ -320,10 +323,11 @@ struct UserAgreementsControllerTests {
 
 			let agreement = UserAgreement(
 				userId: try user.requireID(),
-				agreementId: "test-agreement-id",
+				agreementId: UUID(),
 				institutionId: "TEST_INSTITUTION",
 				institutionName: "Test Bank",
-				status: "active"
+				status: "active",
+				requisitionId: UUID()
 			)
 			try await agreement.save(on: app.db)
 
@@ -332,12 +336,12 @@ struct UserAgreementsControllerTests {
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
 				.POST,
-				"/gcl-accounts/agreements/\(agreementId)/delete",
+				"/institutions/\(agreementId)/delete",
 				headers: headers
 			)
 
 			#expect(response.status == .seeOther)
-			#expect(response.headers["Location"].first == "/gcl-accounts/agreements")
+			#expect(response.headers["Location"].first == "/institutions")
 
 			let count = try await UserAgreement.query(on: app.db).count()
 			#expect(count == 0)
@@ -361,10 +365,11 @@ struct UserAgreementsControllerTests {
 
 			let agreement = UserAgreement(
 				userId: try user2.requireID(),
-				agreementId: "test-agreement-id",
+				agreementId: UUID(),
 				institutionId: "TEST_INSTITUTION",
 				institutionName: "Test Bank",
-				status: "active"
+				status: "active",
+				requisitionId: UUID()
 			)
 			try await agreement.save(on: app.db)
 
@@ -374,7 +379,7 @@ struct UserAgreementsControllerTests {
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
 				.POST,
-				"/gcl-accounts/agreements/\(agreementId)/delete",
+				"/institutions/\(agreementId)/delete",
 				headers: headers
 			)
 
@@ -404,7 +409,7 @@ private final class MockHTTPClientHolder {
 	}
 }
 
-private func withImporterApp(
+/* private func withImporterApp(
 	useMockHTTPClient: Bool = false,
 	_ extraConfigure: ((Application) async throws -> Void)? = nil,
 	_ test: @escaping (Application) async throws -> Void
@@ -415,7 +420,7 @@ private func withImporterApp(
 
 	var mockHolder: MockHTTPClientHolder?
 	if useMockHTTPClient {
-		let mockClient = HTTPClient(eventLoopGroupProvider: .createNew)
+		let mockClient = HTTPClient(eventLoopGroupProvider: .singleton)
 		app.injectMockHTTPClient(mockClient)
 		mockHolder = MockHTTPClientHolder(mockClient)
 	}
@@ -440,38 +445,5 @@ private func withImporterApp(
 	try await test(app)
 	try await app.asyncShutdown()
 	_ = mockHolder
-}
+} */
 
-private enum TestHelpers {
-	static func createAuthenticatedUserWithCredentials(app: Application) async throws -> User {
-		let user = User(externalId: UUID(), username: "testuser")
-		try await user.save(on: app.db)
-
-		let credentials = GocardlessInstitutionCredentials(
-			userId: try user.requireID(),
-			secretId: "test-secret-id",
-			secretKey: "test-secret-key"
-		)
-		try await credentials.save(on: app.db)
-
-		return user
-	}
-
-	static func loginHeaders(for user: User, on app: Application) async throws -> HTTPHeaders {
-		let userId = try user.requireID()
-		let tester = try app.testing()
-		let response = try await tester.sendRequest(.GET, "/test-login/\(userId)")
-
-		let cookies = response.headers["set-cookie"]
-		guard let cookie = cookies.first else {
-			throw TestError("No session cookie returned for user \(user.username)")
-		}
-		return ["cookie": cookie]
-	}
-}
-
-private struct TestError: LocalizedError {
-	let message: String
-	init(_ message: String) { self.message = message }
-	var errorDescription: String? { message }
-}

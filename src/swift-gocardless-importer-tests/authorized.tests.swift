@@ -33,18 +33,3 @@ struct AuthorizationTests {
 	}
 }
 
-private func withImporterApp(
-	_ test: @escaping (Application) async throws -> Void
-) async throws {
-	let app = try await Application.make(.testing)
-	defer {
-		Task {
-			try? await app.asyncShutdown()
-		}
-	}
-
-	try await configureImporter(app)
-	try await app.autoMigrate()
-
-	try await test(app)
-}

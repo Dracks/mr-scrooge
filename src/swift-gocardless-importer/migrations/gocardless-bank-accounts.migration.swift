@@ -50,9 +50,9 @@ final class GocardlessBankAccount: Model, Content, @unchecked Sendable {
 		accountId: String,
 		institutionId: String,
 		institutionName: String,
-		iban: String,
+		iban: String?,
 		ownerName: String? = nil,
-		status: String,
+		status: String?,
 		name: String? = nil
 	) {
 		self.id = id

@@ -192,10 +192,13 @@ struct InstitutionsController: RouteCollection {
 	}
 
 	func selectAccounts(req: Request) async throws -> Vapor.Response {
-		guard let user = req.auth.get(GoCardlessImporter.User.self) else {
+		guard let user = try await getUser(fromRequest: req) else {
 			throw Abort(.unauthorized)
 		}
 		let userId = try user.requireID()
+		guard let credentials = user.gclCredentials else {
+			throw Abort(.notFound, reason: "No credentials configured")
+		}
 
 		guard let agreementIdString = req.parameters.get("id"),
 			let agreementId = UUID(uuidString: agreementIdString)
@@ -222,24 +225,6 @@ struct InstitutionsController: RouteCollection {
 			throw Abort(.badRequest, reason: "No accounts selected")
 		}
 
-		guard
-			let credentials = try await GocardlessInstitutionCredentials.query(
-				on: req.db
-			)
-			.filter(\.$user.$id == userId)
-			.first()
-		else {
-			throw Abort(.notFound, reason: "No credentials configured")
-		}
-
-		let gclService = GoCardlessService(
-			client: req.application.gocardlessHTTPClient,
-			secretId: credentials.secretId,
-			secretKey: credentials.secretKey
-		)
-
-		try await gclService.obtainTokens()
-
 		let existingAccountIds = Set(
 			try await GocardlessBankAccount.query(on: req.db)
 				.filter(\.$user.$id == userId)
@@ -250,21 +235,25 @@ struct InstitutionsController: RouteCollection {
 
 		for accountId in body.accountIds {
 			guard !existingAccountIds.contains(accountId) else { continue }
+			let accountDetails = try await AccountsAPI.retrieveAccountDetails(
+				id: accountId,
+				apiConfiguration: try await credentials.apiConfig(
+					client: req.client, on: req.db)
+			).get().getOrThrow()
+            let account = accountDetails.account
 
-			if let account = try? await gclService.getAccountDetails(id: accountId) {
-				let bankAccount = GocardlessBankAccount(
-					userId: userId,
-					agreementId: try agreement.requireID(),
-					accountId: account.id,
-					institutionId: agreement.institutionId,
-					institutionName: agreement.institutionName,
-					iban: account.iban,
-					ownerName: account.ownerName,
-					status: account.status,
-					name: account.name
-				)
-				try await bankAccount.save(on: req.db)
-			}
+			let bankAccount = GocardlessBankAccount(
+				userId: userId,
+				agreementId: try agreement.requireID(),
+				accountId: accountId,
+				institutionId: agreement.institutionId,
+				institutionName: agreement.institutionName,
+				iban: account.iban,
+				ownerName: account.ownerName,
+				status: account.status,
+				name: account.name
+			)
+			try await bankAccount.save(on: req.db)
 		}
 
 		return Vapor.Response(
