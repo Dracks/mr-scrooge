@@ -1,9 +1,10 @@
 import AsyncHTTPClient
 import VaporTesting
+
 @testable import GoCardlessImporter
 
 func withImporterApp(
-    useMockHTTPClient: Bool = false, 
+	useMockHTTPClient: Bool = false,
 	_ test: (Application) async throws -> Void
 ) async throws {
 	let app = try await Application.make(.testing)
@@ -12,32 +13,33 @@ func withImporterApp(
 			try? await app.asyncShutdown()
 		}
 	}
-	// var mockHolder: MockHTTPClientHolder?
-	// if useMockHTTPClient {
-	// 	let mockClient = HTTPClient(eventLoopGroupProvider: .singleton)
-	// 	app.injectMockHTTPClient(mockClient)
-	// 	mockHolder = MockHTTPClientHolder(mockClient)
-	// }
+
+    app.clients.use{ HTTPClientMock(eventLoop: $0.eventLoopGroup.any()) }
+    TestHelpers.injectFakeLogin(app)
 
 	try await configure(app)
 	try await app.autoMigrate()
 
 	try await test(app)
-    // _ = mockHolder
+	// _ = mockHolder
 }
 
-private final class MockHTTPClientHolder {
-	var client: HTTPClient?
+final class HTTPClientMock: Vapor.Client {
+	let eventLoop: any EventLoop
 
-	init(_ client: HTTPClient) {
-		self.client = client
+    init(eventLoop: any EventLoop) {
+        self.eventLoop = eventLoop
+    }
+
+	func delegating(to eventLoop: any EventLoop) -> any Vapor.Client {
+		return HTTPClientMock(eventLoop: eventLoop)
 	}
 
-	deinit {
-		if let client = client {
-			try? client.syncShutdown()
-		}
-	}
+    func send(_ request: ClientRequest) -> EventLoopFuture<ClientResponse> {
+        print("Request: \(request)")
+        return eventLoop.makeFutureWithTask({ ClientResponse() })
+    }
+
 }
 
 enum TestHelpers {
@@ -66,6 +68,22 @@ enum TestHelpers {
 		}
 		return ["cookie": cookie]
 	}
+
+    static func injectFakeLogin(_ app: Application) {
+        app.routes.get("test-login", ":userId") { req -> Response in
+		guard let userIdString = req.parameters.get("userId"),
+			let userId = UUID(uuidString: userIdString)
+		else {
+			return Response(status: .badRequest)
+		}
+		let user = try await User.find(userId, on: req.db)
+		guard let user = user else {
+			return Response(status: .notFound)
+		}
+		req.auth.login(user)
+		return Response(status: .ok)
+	}
+    }
 }
 
 struct TestError: Error {
