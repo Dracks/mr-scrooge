@@ -65,7 +65,7 @@ struct AccountsRootPageTests {
 	func testCountrySelectionUnauthenticated() async throws {
 		try await withImporterApp { app in
 			let tester = try app.testing()
-			let response = try await tester.sendRequest(.GET, "/institutions/add/new")
+			let response = try await tester.sendRequest(.GET, "/institutions/add")
 
 			#expect(response.status == .ok)
 			let body = String(buffer: response.body)
@@ -83,7 +83,7 @@ struct AccountsRootPageTests {
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
 				.GET,
-				"/institutions/add/new",
+				"/institutions/add",
 				headers: headers
 			)
 
@@ -93,6 +93,25 @@ struct AccountsRootPageTests {
 			#expect(body.contains("Spain"))
 			#expect(body.contains("Germany"))
 			#expect(body.contains("France"))
+		}
+	}
+
+	@Test("Country selected show the institutions from gocardless")
+	func testCountrySelected() async throws {
+		try await withImporterApp { app in
+			let user = try await TestHelpers.createAuthenticatedUserWithCredentials(app: app)
+			try await user.save(on: app.db)
+			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
+			let tester = try app.testing()
+			let response = try await tester.sendRequest(
+				.GET,
+				"/institutions/add?country=SP",
+				headers: headers
+			)
+
+            #expect(response.status == .ok)
+            let body = String(buffer: response.body)
+            #expect(body.contains("N26 Spain"))
 		}
 	}
 
@@ -446,4 +465,3 @@ private final class MockHTTPClientHolder {
 	try await app.asyncShutdown()
 	_ = mockHolder
 } */
-

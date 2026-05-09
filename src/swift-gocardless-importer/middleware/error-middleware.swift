@@ -103,11 +103,13 @@ struct GocardlessErrorMiddleware: AsyncMiddleware {
 					debug
 					? abortError.reason
 					: "An error occurred processing your request"
-				return try await HTMLResponse {
+				let response = try await HTMLResponse {
 					ErrorPage(
 						message: message, statusCode: code, errorCode: nil,
 						context: nil, debug: debug)
 				}.encodeResponse(for: request)
+				response.status = abortError.status
+				return response
 			}
 
 			let errorString = "\(error)"
@@ -173,6 +175,7 @@ struct GocardlessErrorMiddleware: AsyncMiddleware {
 							as: .json
 						)
 					}
+					response.status = .internalServerError
 					return response
 				}
 

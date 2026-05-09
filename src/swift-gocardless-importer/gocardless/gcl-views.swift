@@ -149,73 +149,109 @@ struct GocardlessAccountsPage: HTMLDocument {
 	}
 }
 
-struct GocardlessCountrySelectionPage: HTMLDocument {
+struct GocardlessInstitutionsPage: HTMLDocument {
 	let username: String
+	let institutions: [InstitutionView]?
+	let country: String?
 
-	var title = "GoCardLess - Select Country"
+	var title = "GoCardLess - Select Institution"
 
 	var head: some HTML {
-		meta(.name(.description), .content("GoCardLess Select Country"))
+		meta(.name(.description), .content("GoCardLess Select Institution"))
 		link(.rel(.stylesheet), .href("/pico.css"))
 	}
 
 	var body: some HTML {
 		Layout.Authenticated.header(username: username)
 		main(.class("container")) {
-			h2 { "Select Country" }
+			h2 { country == nil ? "Select Country" : "Select Bank" }
 
-			article {
-				header { "Choose your bank's country" }
-				p { "Select the country where your bank is located." }
-			}
-
-			form(
-				.method(.get),
-				.action("/\(InstitutionsController.path)/add/list")
-			) {
-				label {
-					"Country"
-					select(.name("country"), .required) {
-						option(.value(""), .disabled, .selected) {
-							"-- Select a country --"
+			if let country, let institutions {
+				if institutions.isEmpty {
+					article {
+						header { "No Banks Available" }
+						p { "No banks are available for the selected country." }
+					}
+				} else {
+					form(
+						.method(.post),
+						.action("/\(GocardlessAccountsController.path)/create")
+					) {
+						label {
+							"Select your bank"
+							select(.name("institutionId"), .required) {
+								option(.value(""), .disabled, .selected) {
+									"-- Select a bank --"
+								}
+								for institution in institutions {
+									option(.value(institution.id)) {
+										"\(institution.name) (\(institution.bic))"
+									}
+								}
+							}
 						}
-						option(.value("AT")) { "Austria" }
-						option(.value("BE")) { "Belgium" }
-						option(.value("BG")) { "Bulgaria" }
-						option(.value("HR")) { "Croatia" }
-						option(.value("CY")) { "Cyprus" }
-						option(.value("CZ")) { "Czech Republic" }
-						option(.value("DK")) { "Denmark" }
-						option(.value("EE")) { "Estonia" }
-						option(.value("FI")) { "Finland" }
-						option(.value("FR")) { "France" }
-						option(.value("DE")) { "Germany" }
-						option(.value("GR")) { "Greece" }
-						option(.value("HU")) { "Hungary" }
-						option(.value("IS")) { "Iceland" }
-						option(.value("IE")) { "Ireland" }
-						option(.value("IT")) { "Italy" }
-						option(.value("LV")) { "Latvia" }
-						option(.value("LT")) { "Lithuania" }
-						option(.value("LU")) { "Luxembourg" }
-						option(.value("MT")) { "Malta" }
-						option(.value("NL")) { "Netherlands" }
-						option(.value("NO")) { "Norway" }
-						option(.value("PL")) { "Poland" }
-						option(.value("PT")) { "Portugal" }
-						option(.value("RO")) { "Romania" }
-						option(.value("SK")) { "Slovakia" }
-						option(.value("SI")) { "Slovenia" }
-						option(.value("ES")) { "Spain" }
-						option(.value("SE")) { "Sweden" }
-						option(.value("GB")) { "United Kingdom" }
+						button(.type(.submit)) { "Connect Bank" }
 					}
 				}
-				button(.type(.submit)) { "Continue" }
+
+				a(
+					.href("/\(InstitutionsController.path)/add"), .role("button"),
+					.class("secondary")
+				) { "Back to Country Selection" }
+			} else {
+				article {
+					header { "Choose your bank's country" }
+					p { "Select the country where your bank is located." }
+				}
+
+				form(
+					.method(.get),
+					.action("/\(InstitutionsController.path)/add")
+				) {
+					label {
+						"Country"
+						select(.name("country"), .required) {
+							option(.value(""), .disabled, .selected) {
+								"-- Select a country --"
+							}
+							option(.value("AT")) { "Austria" }
+							option(.value("BE")) { "Belgium" }
+							option(.value("BG")) { "Bulgaria" }
+							option(.value("HR")) { "Croatia" }
+							option(.value("CY")) { "Cyprus" }
+							option(.value("CZ")) { "Czech Republic" }
+							option(.value("DK")) { "Denmark" }
+							option(.value("EE")) { "Estonia" }
+							option(.value("FI")) { "Finland" }
+							option(.value("FR")) { "France" }
+							option(.value("DE")) { "Germany" }
+							option(.value("GR")) { "Greece" }
+							option(.value("HU")) { "Hungary" }
+							option(.value("IS")) { "Iceland" }
+							option(.value("IE")) { "Ireland" }
+							option(.value("IT")) { "Italy" }
+							option(.value("LV")) { "Latvia" }
+							option(.value("LT")) { "Lithuania" }
+							option(.value("LU")) { "Luxembourg" }
+							option(.value("MT")) { "Malta" }
+							option(.value("NL")) { "Netherlands" }
+							option(.value("NO")) { "Norway" }
+							option(.value("PL")) { "Poland" }
+							option(.value("PT")) { "Portugal" }
+							option(.value("RO")) { "Romania" }
+							option(.value("SK")) { "Slovakia" }
+							option(.value("SI")) { "Slovenia" }
+							option(.value("ES")) { "Spain" }
+							option(.value("SE")) { "Sweden" }
+							option(.value("GB")) { "United Kingdom" }
+						}
+					}
+					button(.type(.submit)) { "Continue" }
+				}
 			}
 
 			a(
-				.href("/\(InstitutionsController.path)"), .role("button"),
+				.href("/\(GocardlessAccountsController.path)"), .role("button"),
 				.class("secondary")
 			) { "Back to Accounts" }
 		}
@@ -353,64 +389,6 @@ struct UserAgreementsListPage: HTMLDocument {
 				.href("/\(InstitutionsController.path)"), .role("button"),
 				.class("secondary")
 			) { "Back to Accounts" }
-		}
-	}
-}
-
-struct GocardlessInstitutionsPage: HTMLDocument {
-	let username: String
-	let institutions: [InstitutionView]
-	let country: String
-
-	var title = "GoCardLess - Select Bank"
-
-	var head: some HTML {
-		meta(.name(.description), .content("GoCardLess Select Bank"))
-		link(.rel(.stylesheet), .href("/pico.css"))
-	}
-
-	var body: some HTML {
-		Layout.Authenticated.header(username: username)
-		main(.class("container")) {
-			h2 { "Select Bank" }
-
-			p { "Showing banks for country: \(country)" }
-
-			if institutions.isEmpty {
-				article {
-					header { "No Banks Available" }
-					p { "No banks are available for the selected country." }
-				}
-			} else {
-				form(
-					.method(.post),
-					.action("/\(GocardlessAccountsController.path)/create")
-				) {
-					label {
-						"Select your bank"
-						select(.name("institutionId"), .required) {
-							option(.value(""), .disabled, .selected) {
-								"-- Select a bank --"
-							}
-							for institution in institutions {
-								option(.value(institution.id)) {
-									"\(institution.name) (\(institution.bic))"
-								}
-							}
-						}
-					}
-					button(.type(.submit)) { "Connect Bank" }
-				}
-			}
-
-			a(
-				.href("/\(InstitutionsController.path)/add"), .role("button"),
-				.class("secondary")
-			) { "Back to Country Selection" }
-			a(
-				.href("/\(GocardlessAccountsController.path)"), .role("button"),
-				.class("secondary")
-			) { "Cancel" }
 		}
 	}
 }

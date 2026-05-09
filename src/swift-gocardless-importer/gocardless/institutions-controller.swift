@@ -10,9 +10,7 @@ struct InstitutionsController: RouteCollection {
 	func boot(routes: RoutesBuilder) throws {
 		let institutionsGroup = routes.grouped(InstitutionsController.path)
 		institutionsGroup.get(use: listAgreements)
-		institutionsGroup.get("add", use: showAddAccount)
-		institutionsGroup.get("add", "new", use: showCountrySelection)
-		institutionsGroup.get("add", "list", use: showInstitutionsForCountry)
+		institutionsGroup.get("add", use: showInstitutions)
 		institutionsGroup.get("created", use: handleCallback)
 		institutionsGroup.get(":id", "add-accounts", use: showAvailableAccounts)
 		institutionsGroup.post(":id", "add-accounts", use: selectAccounts)
@@ -21,65 +19,37 @@ struct InstitutionsController: RouteCollection {
 		}
 	}
 
-	func showAddAccount(req: Request) async throws -> HTMLResponse {
-		guard let user = try await getUser(fromRequest: req) else {
-			throw Abort(.unauthorized)
-		}
-		let userId = try user.requireID()
-
-		let approvedAgreements = try await UserAgreement.query(on: req.db)
-			.filter(\.$user.$id == userId)
-			.filter(\.$status == "approved")
-			.sort(\.$createdAt, .descending)
-			.all()
-
-		return HTMLResponse {
-			GocardlessAddAccountPage(
-				username: user.username,
-				approvedAgreements: approvedAgreements
-			)
-		}
-	}
-
-	func showCountrySelection(req: Request) async throws -> HTMLResponse {
+	func showInstitutions(req: Request) async throws -> HTMLResponse {
 		guard let user = req.auth.get(GoCardlessImporter.User.self) else {
 			throw Abort(.unauthorized)
 		}
 
-		return HTMLResponse {
-			GocardlessCountrySelectionPage(
-				username: user.username
-			)
-		}
-	}
+		let country = req.query[String.self, at: "country"]
 
-	func showInstitutionsForCountry(req: Request) async throws -> HTMLResponse {
-		guard let user = req.auth.get(GoCardlessImporter.User.self) else {
-			throw Abort(.unauthorized)
-		}
+		var institutionViews: [InstitutionView]? = nil
+		if let country {
 
-		guard let credentials = try await user.$gclCredentials.get(on: req.db) else {
-			throw Abort(.notFound, reason: "No credentials configured")
-		}
+			guard let credentials = try await user.$gclCredentials.get(on: req.db)
+			else {
+				throw Abort(.notFound, reason: "No credentials configured")
+			}
 
-		guard let country = req.query[String.self, at: "country"] else {
-			throw Abort(.badRequest, reason: "Country parameter required")
-		}
+			let institutions =
+				try await InstitutionsAPI
+				.retrieveAllSupportedInstitutionsInAGivenCountry(
+					country: country,
+					apiConfiguration: try await credentials.apiConfig(
+						client: req.client, on: req.db)
+				).get().getOrThrow()
 
-		let institutions =
-			try await InstitutionsAPI.retrieveAllSupportedInstitutionsInAGivenCountry(
-				country: country,
-				apiConfiguration: try await credentials.apiConfig(
-					client: req.client, on: req.db)
-			).get().getOrThrow()
-
-		let institutionViews = institutions.map { institution in
-			InstitutionView(
-				id: institution.id,
-				name: institution.name,
-				bic: institution.bic ?? "",
-				countries: institution.countries
-			)
+			institutionViews = institutions.map { institution in
+				InstitutionView(
+					id: institution.id,
+					name: institution.name,
+					bic: institution.bic ?? "",
+					countries: institution.countries
+				)
+			}
 		}
 
 		return HTMLResponse {
@@ -240,7 +210,7 @@ struct InstitutionsController: RouteCollection {
 				apiConfiguration: try await credentials.apiConfig(
 					client: req.client, on: req.db)
 			).get().getOrThrow()
-            let account = accountDetails.account
+			let account = accountDetails.account
 
 			let bankAccount = GocardlessBankAccount(
 				userId: userId,

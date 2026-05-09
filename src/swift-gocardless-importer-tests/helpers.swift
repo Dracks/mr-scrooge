@@ -14,8 +14,8 @@ func withImporterApp(
 		}
 	}
 
-    app.clients.use{ HTTPClientMock(eventLoop: $0.eventLoopGroup.any()) }
-    TestHelpers.injectFakeLogin(app)
+	app.clients.use { HTTPClientMock(eventLoop: $0.eventLoopGroup.any()) }
+	TestHelpers.injectFakeLogin(app)
 
 	try await configure(app)
 	try await app.autoMigrate()
@@ -27,18 +27,18 @@ func withImporterApp(
 final class HTTPClientMock: Vapor.Client {
 	let eventLoop: any EventLoop
 
-    init(eventLoop: any EventLoop) {
-        self.eventLoop = eventLoop
-    }
+	init(eventLoop: any EventLoop) {
+		self.eventLoop = eventLoop
+	}
 
 	func delegating(to eventLoop: any EventLoop) -> any Vapor.Client {
 		return HTTPClientMock(eventLoop: eventLoop)
 	}
 
-    func send(_ request: ClientRequest) -> EventLoopFuture<ClientResponse> {
-        print("Request: \(request)")
-        return eventLoop.makeFutureWithTask({ ClientResponse() })
-    }
+	func send(_ request: ClientRequest) -> EventLoopFuture<ClientResponse> {
+		print("Request: \(request)")
+		return eventLoop.makeFutureWithTask({ ClientResponse() })
+	}
 
 }
 
@@ -69,21 +69,21 @@ enum TestHelpers {
 		return ["cookie": cookie]
 	}
 
-    static func injectFakeLogin(_ app: Application) {
-        app.routes.get("test-login", ":userId") { req -> Response in
-		guard let userIdString = req.parameters.get("userId"),
-			let userId = UUID(uuidString: userIdString)
-		else {
-			return Response(status: .badRequest)
+	static func injectFakeLogin(_ app: Application) {
+		app.routes.get("test-login", ":userId") { req -> Response in
+			guard let userIdString = req.parameters.get("userId"),
+				let userId = UUID(uuidString: userIdString)
+			else {
+				return Response(status: .badRequest)
+			}
+			let user = try await User.find(userId, on: req.db)
+			guard let user = user else {
+				return Response(status: .notFound)
+			}
+			req.auth.login(user)
+			return Response(status: .ok)
 		}
-		let user = try await User.find(userId, on: req.db)
-		guard let user = user else {
-			return Response(status: .notFound)
-		}
-		req.auth.login(user)
-		return Response(status: .ok)
 	}
-    }
 }
 
 struct TestError: Error {

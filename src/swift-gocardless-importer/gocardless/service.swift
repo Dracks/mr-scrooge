@@ -12,6 +12,7 @@ extension GocardlessInstitutionCredentials {
 	func apiConfig(client: any Vapor.Client, on db: any Database) async throws
 		-> GoCardlessClientAPIConfiguration
 	{
+        print("Api Config \(client)");
 		if isTokenExpired, let refreshToken {
 			let request = JWTRefreshRequest(refresh: refreshToken)
 			let tokensResponse = try await TokenAPI.getANewAccessToken(

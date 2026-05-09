@@ -10,3 +10,4 @@
 * [ ] Handle modifications of list with htmx
 * [x] Change the country filter to be a query parameter
 * [ ] improve the Api config method
+* [ ] Join together the list insitutions and list countries
