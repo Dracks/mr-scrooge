@@ -2,6 +2,7 @@ import AsyncHTTPClient
 import Fluent
 import Testing
 import VaporTesting
+import GoCardlessClient
 
 @testable import GoCardlessImporter
 
@@ -21,11 +22,9 @@ struct AccountsRootPageTests {
 
 	@Test("Root accounts page shows empty state when user has no credentials")
 	func testRootAccountsPageNoCredentials() async throws {
-		try await withImporterApp(useMockHTTPClient: true) { app in
-			let user = User(externalId: UUID(), username: "testuser")
-			try await user.save(on: app.db)
-
-			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
+		try await withImporterApp { app in
+			let headers = try await CreateTestUser(username: "testuser", on: app)
+				.getCookie()
 
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
@@ -42,10 +41,9 @@ struct AccountsRootPageTests {
 
 	@Test("Root accounts page shows empty state when no agreements exist")
 	func testRootAccountsPageEmptyState() async throws {
-		try await withImporterApp(useMockHTTPClient: true) { app in
-			let user = try await TestHelpers.createAuthenticatedUserWithCredentials(
-				app: app)
-			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
+		try await withImporterApp { app in
+			let headers = try await CreateTestUser(username: "testuser", on: app)
+				.addCredentials().getCookie()
 
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
@@ -76,9 +74,8 @@ struct AccountsRootPageTests {
 	@Test("Country selection page shows country dropdown")
 	func testCountrySelectionShowsDropdown() async throws {
 		try await withImporterApp { app in
-			let user = User(externalId: UUID(), username: "testuser")
-			try await user.save(on: app.db)
-			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
+			let headers = try await CreateTestUser(username: "testuser", on: app)
+				.getCookie()
 
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
@@ -98,10 +95,13 @@ struct AccountsRootPageTests {
 
 	@Test("Country selected show the institutions from gocardless")
 	func testCountrySelected() async throws {
-		try await withImporterApp { app in
-			let user = try await TestHelpers.createAuthenticatedUserWithCredentials(app: app)
-			try await user.save(on: app.db)
-			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
+		try await withImporterApp(useMocks: [
+			.init(
+				method: .GET, endpoint: "/api/v2/institutions/",
+				response: .json(status: .ok, body: [Integration(id: "1", name: "N26 Spain", countries: ["Spain", "Germany"], logo: "http://n26/logo")]))
+		]) { app in
+			let headers = try await CreateTestUser(username: "testuser", on: app)
+				.addCredentials().getCookie()
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
 				.GET,
@@ -109,9 +109,9 @@ struct AccountsRootPageTests {
 				headers: headers
 			)
 
-            #expect(response.status == .ok)
-            let body = String(buffer: response.body)
-            #expect(body.contains("N26 Spain"))
+			#expect(response.status == .ok)
+			let body = String(buffer: response.body)
+			#expect(body.contains("N26 Spain"))
 		}
 	}
 
@@ -130,10 +130,9 @@ struct AccountsRootPageTests {
 
 	@Test("Institutions page returns error without country parameter")
 	func testInstitutionsPageMissingCountry() async throws {
-		try await withImporterApp(useMockHTTPClient: true) { app in
-			let user = try await TestHelpers.createAuthenticatedUserWithCredentials(
-				app: app)
-			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
+		try await withImporterApp { app in
+			let headers = try await CreateTestUser(username: "testuser", on: app)
+				.addCredentials().getCookie()
 
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
@@ -166,10 +165,9 @@ struct UserAgreementsControllerTests {
 
 	@Test("Agreements list shows empty state when no agreements exist")
 	func testAgreementsListEmptyState() async throws {
-		try await withImporterApp(useMockHTTPClient: true) { app in
-			let user = try await TestHelpers.createAuthenticatedUserWithCredentials(
-				app: app)
-			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
+		try await withImporterApp { app in
+			let headers = try await CreateTestUser(username: "testuser", on: app)
+				.addCredentials().getCookie()
 
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
@@ -186,10 +184,10 @@ struct UserAgreementsControllerTests {
 
 	@Test("Agreements list shows agreements")
 	func testAgreementsListShowsAgreements() async throws {
-		try await withImporterApp(useMockHTTPClient: true) { app in
-			let user = try await TestHelpers.createAuthenticatedUserWithCredentials(
-				app: app)
-			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
+		try await withImporterApp { app in
+			let builder = CreateTestUser(username: "testuser", on: app).addCredentials()
+			let user = try await builder.build()
+			let headers = try await builder.getCookie()
 
 			let requisitionId = UUID()
 			let agreement = UserAgreement(
@@ -220,9 +218,8 @@ struct UserAgreementsControllerTests {
 	@Test("Callback without ref parameter returns error")
 	func testCallbackMissingRef() async throws {
 		try await withImporterApp { app in
-			let user = User(externalId: UUID(), username: "testuser")
-			try await user.save(on: app.db)
-			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
+			let headers = try await CreateTestUser(username: "testuser", on: app)
+				.getCookie()
 
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
@@ -240,9 +237,8 @@ struct UserAgreementsControllerTests {
 	@Test("Callback with ref but no matching agreement shows pending message")
 	func testCallbackNoMatchingAgreement() async throws {
 		try await withImporterApp { app in
-			let user = User(externalId: UUID(), username: "testuser")
-			try await user.save(on: app.db)
-			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
+			let headers = try await CreateTestUser(username: "testuser", on: app)
+				.getCookie()
 
 			let nonExistentRef = UUID()
 			let tester = try app.testing()
@@ -262,8 +258,8 @@ struct UserAgreementsControllerTests {
 	@Test("Callback with matching ref updates agreement status")
 	func testCallbackUpdatesAgreementStatus() async throws {
 		try await withImporterApp { app in
-			let user = User(externalId: UUID(), username: "testuser")
-			try await user.save(on: app.db)
+			let builder = CreateTestUser(username: "testuser", on: app)
+			let user = try await builder.build()
 
 			let matchingRef = UUID()
 			let agreement = UserAgreement(
@@ -276,7 +272,7 @@ struct UserAgreementsControllerTests {
 			)
 			try await agreement.save(on: app.db)
 
-			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
+			let headers = try await builder.getCookie()
 
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
@@ -316,9 +312,8 @@ struct UserAgreementsControllerTests {
 	@Test("Delete agreement returns error for non-existent agreement")
 	func testDeleteAgreementNotFound() async throws {
 		try await withImporterApp { app in
-			let user = User(externalId: UUID(), username: "testuser")
-			try await user.save(on: app.db)
-			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
+			let headers = try await CreateTestUser(username: "testuser", on: app)
+				.getCookie()
 
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
@@ -335,10 +330,10 @@ struct UserAgreementsControllerTests {
 
 	@Test("Delete agreement removes agreement and redirects")
 	func testDeleteAgreementSuccess() async throws {
-		try await withImporterApp(useMockHTTPClient: true) { app in
-			let user = try await TestHelpers.createAuthenticatedUserWithCredentials(
-				app: app)
-			let headers = try await TestHelpers.loginHeaders(for: user, on: app)
+		try await withImporterApp { app in
+			let builder = CreateTestUser(username: "testuser", on: app).addCredentials()
+			let user = try await builder.build()
+			let headers = try await builder.getCookie()
 
 			let agreement = UserAgreement(
 				userId: try user.requireID(),
@@ -369,18 +364,11 @@ struct UserAgreementsControllerTests {
 
 	@Test("Delete agreement only removes own agreements")
 	func testDeleteAgreementCannotDeleteOthers() async throws {
-		try await withImporterApp(useMockHTTPClient: true) { app in
-			let user1 = try await TestHelpers.createAuthenticatedUserWithCredentials(
-				app: app)
-			let user2 = User(externalId: UUID(), username: "otheruser")
-			try await user2.save(on: app.db)
-
-			let credentials = GocardlessInstitutionCredentials(
-				userId: try user2.requireID(),
-				secretId: "test-secret-id",
-				secretKey: "test-secret-key"
-			)
-			try await credentials.save(on: app.db)
+		try await withImporterApp { app in
+			let headers = try await CreateTestUser(username: "testuser", on: app)
+				.addCredentials().getCookie()
+			let user2 = try await CreateTestUser(username: "otheruser", on: app)
+				.addCredentials().build()
 
 			let agreement = UserAgreement(
 				userId: try user2.requireID(),
@@ -393,7 +381,6 @@ struct UserAgreementsControllerTests {
 			try await agreement.save(on: app.db)
 
 			let agreementId = try agreement.requireID()
-			let headers = try await TestHelpers.loginHeaders(for: user1, on: app)
 
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(

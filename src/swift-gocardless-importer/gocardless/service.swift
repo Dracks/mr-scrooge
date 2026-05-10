@@ -37,7 +37,7 @@ extension GocardlessInstitutionCredentials {
 					"Authorization": "Bearer \(accessToken)"
 				], apiClient: client)
 		}
-		return GoCardlessClientAPIConfiguration()
+		return GoCardlessClientAPIConfiguration(apiClient: client)
 	}
 }
 
