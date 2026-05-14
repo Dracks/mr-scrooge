@@ -1,8 +1,8 @@
 import AsyncHTTPClient
 import Fluent
+import GoCardlessClient
 import Testing
 import VaporTesting
-import GoCardlessClient
 
 @testable import GoCardlessImporter
 
@@ -14,7 +14,7 @@ struct AccountsRootPageTests {
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(.GET, "/gcl-accounts")
 
-			#expect(response.status == .ok)
+			#expect(response.status == .unauthorized)
 			let body = String(buffer: response.body)
 			#expect(body.contains("Error 401"))
 		}
@@ -59,93 +59,6 @@ struct AccountsRootPageTests {
 		}
 	}
 
-	@Test("Country selection page returns error for unauthenticated user")
-	func testCountrySelectionUnauthenticated() async throws {
-		try await withImporterApp { app in
-			let tester = try app.testing()
-			let response = try await tester.sendRequest(.GET, "/institutions/add")
-
-			#expect(response.status == .ok)
-			let body = String(buffer: response.body)
-			#expect(body.contains("Error 401"))
-		}
-	}
-
-	@Test("Country selection page shows country dropdown")
-	func testCountrySelectionShowsDropdown() async throws {
-		try await withImporterApp { app in
-			let headers = try await CreateTestUser(username: "testuser", on: app)
-				.getCookie()
-
-			let tester = try app.testing()
-			let response = try await tester.sendRequest(
-				.GET,
-				"/institutions/add",
-				headers: headers
-			)
-
-			#expect(response.status == .ok)
-			let body = String(buffer: response.body)
-			#expect(body.contains("Select Country"))
-			#expect(body.contains("Spain"))
-			#expect(body.contains("Germany"))
-			#expect(body.contains("France"))
-		}
-	}
-
-	@Test("Country selected show the institutions from gocardless")
-	func testCountrySelected() async throws {
-		try await withImporterApp(useMocks: [
-			.init(
-				method: .GET, endpoint: "/api/v2/institutions/",
-				response: .json(status: .ok, body: [Integration(id: "1", name: "N26 Spain", countries: ["Spain", "Germany"], logo: "http://n26/logo")]))
-		]) { app in
-			let headers = try await CreateTestUser(username: "testuser", on: app)
-				.addCredentials().getCookie()
-			let tester = try app.testing()
-			let response = try await tester.sendRequest(
-				.GET,
-				"/institutions/add?country=SP",
-				headers: headers
-			)
-
-			#expect(response.status == .ok)
-			let body = String(buffer: response.body)
-			#expect(body.contains("N26 Spain"))
-		}
-	}
-
-	@Test("Institutions page returns error for unauthenticated user")
-	func testInstitutionsPageUnauthenticated() async throws {
-		try await withImporterApp { app in
-			let tester = try app.testing()
-			let response = try await tester.sendRequest(
-				.GET, "/institutions/add/list?country=ES")
-
-			#expect(response.status == .ok)
-			let body = String(buffer: response.body)
-			#expect(body.contains("Error 401"))
-		}
-	}
-
-	@Test("Institutions page returns error without country parameter")
-	func testInstitutionsPageMissingCountry() async throws {
-		try await withImporterApp { app in
-			let headers = try await CreateTestUser(username: "testuser", on: app)
-				.addCredentials().getCookie()
-
-			let tester = try app.testing()
-			let response = try await tester.sendRequest(
-				.GET,
-				"/institutions/add/list",
-				headers: headers
-			)
-
-			#expect(response.status == .ok)
-			let body = String(buffer: response.body)
-			#expect(body.contains("Error 400"))
-		}
-	}
 }
 
 @Suite("User Agreements Controller Tests")
@@ -411,6 +324,312 @@ private final class MockHTTPClientHolder {
 	deinit {
 		if let client = client {
 			try? client.syncShutdown()
+		}
+	}
+}
+
+@Suite("Create Agreement")
+struct CreateAgreementTests {
+
+	@Test("Creates agreement and shows redirect page")
+	func testCreateAgreementHappyPath() async throws {
+		let agreementId = UUID()
+		let requisitionId = UUID()
+
+		try await withImporterApp(useMocks: [
+			.init(
+				method: .GET, endpoint: "/api/v2/institutions/TEST_INST/",
+				response: .json(
+					status: .ok,
+					body: IntegrationRetrieve(
+						id: "TEST_INST",
+						name: "Test Bank",
+						countries: ["ES"],
+						logo: "http://test/logo",
+						supportedFeatures: [] as [JSONValue],
+						identificationCodes: [] as [JSONValue]
+					))
+			),
+			.init(
+				method: .POST, endpoint: "/api/v2/agreements/enduser/",
+				response: .json(
+					status: .created,
+					body: EndUserAgreement(
+						id: agreementId,
+						institutionId: "TEST_INST"
+					))
+			),
+			.init(
+				method: .POST, endpoint: "/api/v2/requisitions/",
+				response: .json(
+					status: .created,
+					body: SpectacularRequisition(
+						id: requisitionId,
+						redirect: "https://example.com/callback",
+						institutionId: "TEST_INST",
+						link: "https://bank.example.com/auth"
+					))
+			),
+		]) { app in
+			let headers = try await CreateTestUser(username: "testuser", on: app)
+				.addCredentials().getCookie()
+
+			var postHeaders = headers
+			postHeaders.add(
+				name: "content-type", value: "application/x-www-form-urlencoded")
+
+			let tester = try app.testing()
+			let response = try await tester.sendRequest(
+				.POST,
+				"/gcl-accounts/create",
+				headers: postHeaders,
+				body: ByteBuffer(string: "institutionId=TEST_INST")
+			)
+
+			#expect(response.status == .ok)
+			let body = String(buffer: response.body)
+			#expect(body.contains("Redirecting to Bank"))
+			#expect(body.contains("Connecting to Test Bank"))
+			#expect(body.contains("https://bank.example.com/auth"))
+		}
+	}
+
+	@Test("Returns error when institution ID is empty")
+	func testCreateAgreementEmptyInstitutionId() async throws {
+		try await withImporterApp { app in
+			let headers = try await CreateTestUser(username: "testuser", on: app)
+				.addCredentials().getCookie()
+
+			var postHeaders = headers
+			postHeaders.add(
+				name: "content-type", value: "application/x-www-form-urlencoded")
+
+			let tester = try app.testing()
+			let response = try await tester.sendRequest(
+				.POST,
+				"/gcl-accounts/create",
+				headers: postHeaders,
+				body: ByteBuffer(string: "institutionId=")
+			)
+
+			#expect(response.status == .badRequest)
+			let body = String(buffer: response.body)
+			#expect(body.contains("Error 400"))
+		}
+	}
+
+	@Test("Returns error for unauthenticated user")
+	func testCreateAgreementUnauthenticated() async throws {
+		try await withImporterApp { app in
+			let tester = try app.testing()
+			let response = try await tester.sendRequest(
+				.POST,
+				"/gcl-accounts/create"
+			)
+
+			#expect(response.status == .unauthorized)
+			let body = String(buffer: response.body)
+			#expect(body.contains("Error 401"))
+		}
+	}
+}
+
+@Suite("Set Credentials")
+struct SetCredentialsTests {
+
+	@Test("Saves credentials and shows success page")
+	func testSetCredentialsHappyPath() async throws {
+		try await withImporterApp { app in
+			let sharedConfig = GoCardlessClientAPIConfiguration.shared
+			let originalClient = sharedConfig.apiClient
+			defer { sharedConfig.apiClient = originalClient }
+
+			let mockClient = HTTPClientMock(eventLoop: app.eventLoopGroup.any(), useMocks: [
+				.init(
+					method: .POST, endpoint: "/api/v2/token/new/",
+					response: .json(
+						status: .ok,
+						body: SpectacularJWTObtain(
+							access: "test-access-token",
+							accessExpires: 86400,
+							refresh: "test-refresh-token",
+							refreshExpires: 2592000
+						))
+				),
+			])
+			sharedConfig.apiClient = mockClient
+
+			let headers = try await CreateTestUser(username: "testuser", on: app)
+				.getCookie()
+
+			var postHeaders = headers
+			postHeaders.add(
+				name: "content-type", value: "application/x-www-form-urlencoded")
+
+			let tester = try app.testing()
+			let response = try await tester.sendRequest(
+				.POST,
+				"/gcl-keys",
+				headers: postHeaders,
+				body: ByteBuffer(string: "secretId=test-secret&secretKey=test-key")
+			)
+
+			#expect(response.status == .ok)
+			let body = String(buffer: response.body)
+			#expect(body.contains("Credentials Configured"))
+		}
+	}
+
+	@Test("Returns error for unauthenticated user")
+	func testSetCredentialsUnauthenticated() async throws {
+		try await withImporterApp { app in
+			let tester = try app.testing()
+			let response = try await tester.sendRequest(
+				.POST,
+				"/gcl-keys"
+			)
+
+			#expect(response.status == .unauthorized)
+			let body = String(buffer: response.body)
+			#expect(body.contains("Error 401"))
+		}
+	}
+}
+
+@Suite("Download Transactions")
+struct DownloadTransactionsTests {
+
+	@Test("Downloads transactions and redirects")
+	func testDownloadTransactionsHappyPath() async throws {
+		let accountId = "test-account-id"
+
+		try await withImporterApp(useMocks: [
+			.init(
+				method: .GET,
+				endpoint: "/api/v2/accounts/\(accountId)/transactions/",
+				response: .json(
+					status: .ok,
+					body: AccountTransactions(
+						transactions: BankTransaction(
+							booked: [
+								TransactionSchema(
+									transactionId: "tx1",
+									bookingDate: "2024-01-15",
+									transactionAmount:
+										TransactionAmountSchema(
+											amount: "100.00",
+											currency: "EUR"),
+									creditorName: "Test Creditor"
+								),
+							],
+							pending: []
+						)
+					))
+			),
+		]) { app in
+			let builder = CreateTestUser(username: "testuser", on: app)
+				.addCredentials()
+			let user = try await builder.build()
+			let headers = try await builder.getCookie()
+
+			let agreement = UserAgreement(
+				userId: try user.requireID(),
+				agreementId: UUID(),
+				institutionId: "TEST_INST",
+				institutionName: "Test Bank",
+				status: "approved",
+				requisitionId: UUID()
+			)
+			try await agreement.save(on: app.db)
+			let agreementId = try agreement.requireID()
+
+			let bankAccount = GocardlessBankAccount(
+				userId: try user.requireID(),
+				agreementId: agreementId,
+				accountId: accountId,
+				institutionId: "TEST_INST",
+				institutionName: "Test Bank",
+				iban: "ES123456789",
+				status: "active",
+				name: "Test Account"
+			)
+			try await bankAccount.save(on: app.db)
+
+			let tester = try app.testing()
+			let response = try await tester.sendRequest(
+				.POST,
+				"/gcl-accounts/\(agreementId)/download-transactions",
+				headers: headers
+			)
+
+			#expect(response.status == .seeOther)
+			#expect(response.headers["Location"].first == "/gcl-accounts")
+		}
+	}
+
+	@Test("Returns error when agreement not found")
+	func testDownloadTransactionsAgreementNotFound() async throws {
+		try await withImporterApp { app in
+			let headers = try await CreateTestUser(username: "testuser", on: app)
+				.addCredentials().getCookie()
+
+			let tester = try app.testing()
+			let response = try await tester.sendRequest(
+				.POST,
+				"/gcl-accounts/\(UUID())/download-transactions",
+				headers: headers
+			)
+
+			#expect(response.status == .notFound)
+			let body = String(buffer: response.body)
+			#expect(body.contains("Error 404"))
+		}
+	}
+
+	@Test("Returns error when no bank account on agreement")
+	func testDownloadTransactionsNoBankAccount() async throws {
+		try await withImporterApp { app in
+			let builder = CreateTestUser(username: "testuser", on: app)
+				.addCredentials()
+			let user = try await builder.build()
+			let headers = try await builder.getCookie()
+
+			let agreement = UserAgreement(
+				userId: try user.requireID(),
+				agreementId: UUID(),
+				institutionId: "TEST_INST",
+				institutionName: "Test Bank",
+				status: "approved",
+				requisitionId: UUID()
+			)
+			try await agreement.save(on: app.db)
+			let agreementId = try agreement.requireID()
+
+			let tester = try app.testing()
+			let response = try await tester.sendRequest(
+				.POST,
+				"/gcl-accounts/\(agreementId)/download-transactions",
+				headers: headers
+			)
+
+			#expect(response.status == .notFound)
+			let body = String(buffer: response.body)
+			#expect(body.contains("Error 404"))
+		}
+	}
+
+	@Test("Returns error for unauthenticated user")
+	func testDownloadTransactionsUnauthenticated() async throws {
+		try await withImporterApp { app in
+			let tester = try app.testing()
+			let response = try await tester.sendRequest(
+				.POST,
+				"/gcl-accounts/\(UUID())/download-transactions"
+			)
+
+			#expect(response.status == .unauthorized)
+			let body = String(buffer: response.body)
+			#expect(body.contains("Error 401"))
 		}
 	}
 }

@@ -20,7 +20,7 @@ struct InstitutionsController: RouteCollection {
 	}
 
 	func showInstitutions(req: Request) async throws -> HTMLResponse {
-		guard let user = req.auth.get(GoCardlessImporter.User.self) else {
+		guard let user = try await getUser(fromRequest: req) else {
 			throw Abort(.unauthorized)
 		}
 
@@ -29,9 +29,10 @@ struct InstitutionsController: RouteCollection {
 		var institutionViews: [InstitutionView]? = nil
 		if let country {
 
-			guard let credentials = try await user.$gclCredentials.get(on: req.db)
-			else {
-				throw Abort(.notFound, reason: "No credentials configured")
+			guard let credentials = user.gclCredentials else {
+				return HTMLResponse {
+					GocardlessCredentialsRequiredPage(username: user.username)
+				}
 			}
 
 			let institutions =
@@ -95,8 +96,9 @@ struct InstitutionsController: RouteCollection {
 		let userId = try user.requireID()
 
 		guard let credentials = user.gclCredentials else {
-			throw Abort(.notFound, reason: "No credentials configured")
-
+			return HTMLResponse {
+				GocardlessCredentialsRequiredPage(username: user.username)
+			}
 		}
 
 		guard let agreementIdString = req.parameters.get("id"),
@@ -167,7 +169,9 @@ struct InstitutionsController: RouteCollection {
 		}
 		let userId = try user.requireID()
 		guard let credentials = user.gclCredentials else {
-			throw Abort(.notFound, reason: "No credentials configured")
+			return try await HTMLResponse {
+				GocardlessCredentialsRequiredPage(username: user.username)
+			}.encodeResponse(for: req)
 		}
 
 		guard let agreementIdString = req.parameters.get("id"),

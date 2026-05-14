@@ -59,7 +59,6 @@ struct HttpMock: Sendable {
 	}
 }
 
-extension HTTPMethod: Hashable {}
 
 extension HttpMock.Key: Hashable {
 
@@ -69,7 +68,7 @@ extension HttpMock.Key: Hashable {
 		}
 
 		func hash(into hasher: inout Hasher) {
-			hasher.combine(self.method)
+			hasher.combine(self.method.rawValue)
             hasher.combine(self.endpoint)
 		}
 
@@ -125,7 +124,7 @@ enum TestHelpers {
 		let user = User(externalId: UUID(), username: "testuser")
 		try await user.save(on: app.db)
 
-		let credentials = GocardlessInstitutionCredentials(
+			let credentials = GocardlessCredentials(
 			userId: try user.requireID(),
 			secretId: "test-secret-id",
 			secretKey: "test-secret-key"
@@ -190,7 +189,7 @@ final class CreateTestUser {
 		try await user.save(on: app.db)
 
 		if withCredentials {
-			let credentials = GocardlessInstitutionCredentials(
+		let credentials = GocardlessCredentials(
 				userId: try user.requireID(),
 				secretId: "test-secret-id",
 				secretKey: "test-secret-key"

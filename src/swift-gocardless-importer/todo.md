@@ -1,6 +1,6 @@
 # Todo Tasks
-* [ ] rename class GocardlessInstitutionCredentials to gocardless_credentials
-* [ ] handle correctly the credentials not found on all controllers that require credentials, with a view telling first are needed the credentials
+* [x] rename class GocardlessInstitutionCredentials to gocardless_credentials
+* [x] handle correctly the credentials not found on all controllers that require credentials, with a view telling first are needed the credentials
 * [ ] handle when the token cannot be refreshed anymore in GoCardLess, to show an error, showing the expiration info, and requesting a re-login
 * handle optionals correctly in:
   * AccountsAPI response
@@ -11,3 +11,4 @@
 * [x] Change the country filter to be a query parameter
 * [ ] improve the Api config method
 * [ ] Join together the list insitutions and list countries
+* [ ] Select accounts should be in the accounts controller, and don't return a redirect, but keep it there

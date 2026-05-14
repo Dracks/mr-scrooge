@@ -4,30 +4,23 @@ import Fluent
 import Vapor
 import VaporElementary
 
-struct ErrorPage: HTMLDocument {
+struct ErrorPage: HTML {
 	let message: String
 	let statusCode: Int
 	let errorCode: String?
 	let context: [String: String]?
 	let debug: Bool
 
-	var title = "Error"
-
-	var head: some HTML {
-		link(.rel(.stylesheet), .href("/pico.css"))
-	}
-
 	var body: some HTML {
-		header {
-			h1 { "GoCardLess Importer" }
-		}
-		main(.class("container")) {
+		StandardLayout(title: "Error") {
+			Header.Unauthenticated.header
+		} content: {
 			h1 { "Error \(statusCode)" }
 
 			if let errorCode = errorCode {
 				article {
 					header { "Error Code" }
-					Elementary.code { errorCode }
+					code { errorCode }
 				}
 			}
 

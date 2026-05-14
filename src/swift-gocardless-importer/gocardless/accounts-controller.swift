@@ -61,12 +61,14 @@ struct GocardlessAccountsController: RouteCollection {
 	}
 
 	func createAgreement(req: Request) async throws -> HTMLResponse {
-		guard let user = req.auth.get(GoCardlessImporter.User.self) else {
+		guard let user = try await getUser(fromRequest: req) else {
 			throw Abort(.unauthorized)
 		}
 
-		guard let credentials = try await user.$gclCredentials.get(on: req.db) else {
-			throw Abort(.notFound, reason: "No credentials configured")
+		guard let credentials = user.gclCredentials else {
+			return HTMLResponse {
+				GocardlessCredentialsRequiredPage(username: user.username)
+			}
 		}
 
 		let formData = try req.content.decode(CreateAgreementRequest.self)
@@ -159,8 +161,10 @@ struct GocardlessAccountsController: RouteCollection {
 			throw Abort(.notFound, reason: "Agreement not found")
 		}
 
-		guard let credentials = try await user.$gclCredentials.get(on: req.db) else {
-			throw Abort(.notFound, reason: "No credentials configured")
+		guard let credentials = user.gclCredentials else {
+			return try await HTMLResponse {
+				GocardlessCredentialsRequiredPage(username: user.username)
+			}.encodeResponse(for: req)
 		}
 
 		guard let bankAccount = agreement.bankAccounts.first else {

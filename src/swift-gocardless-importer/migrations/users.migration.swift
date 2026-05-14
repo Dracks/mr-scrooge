@@ -18,7 +18,7 @@ final class User: Model, Content, @unchecked Sendable {
 	var email: String?
 
 	@OptionalChild(for: \.$user)
-	var gclCredentials: GocardlessInstitutionCredentials?
+	var gclCredentials: GocardlessCredentials?
 
 	@Children(for: \.$user)
 	var agreements: [UserAgreement]

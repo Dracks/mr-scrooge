@@ -18,19 +18,13 @@ struct AccountDetailView: Codable {
 	let name: String?
 }
 
-struct GocardlessCredentialsPage: HTMLDocument {
+struct GocardlessCredentialsPage: HTML {
 	let hasCredentials: Bool
 
-	var title = "GoCardLess - Credentials"
-
-	var head: some HTML {
-		meta(.name(.description), .content("GoCardLess Credentials"))
-		link(.rel(.stylesheet), .href("/pico.css"))
-	}
-
 	var body: some HTML {
-		Layout.Unauthenticated.header
-		main(.class("container")) {
+		StandardLayout(title: "GoCardLess - Credentials") {
+			Header.Unauthenticated.header
+		} content: {
 			h2 { "GoCardless API Credentials" }
 
 			if hasCredentials {
@@ -65,21 +59,37 @@ struct GocardlessCredentialsPage: HTMLDocument {
 	}
 }
 
-struct GocardlessAccountsPage: HTMLDocument {
+struct GocardlessCredentialsRequiredPage: HTML {
+	let username: String
+
+	var body: some HTML {
+		StandardLayout(title: "GoCardLess - Credentials Required") {
+			Header.Authenticated.header(username: username)
+		} content: {
+			h2 { "GoCardless API Credentials Required" }
+			article {
+				header { "Credentials Not Configured" }
+				p {
+					"You need to configure your GoCardless API credentials before using this feature."
+				}
+				a(.href("/\(GocardlessKeysController.path)"), .role("button")) {
+					"Configure Credentials"
+				}
+			}
+			a(.href("/"), .role("button"), .class("secondary")) { "Back to Dashboard" }
+		}
+	}
+}
+
+struct GocardlessAccountsPage: HTML {
 	let username: String
 	let accounts: [AccountDetailView]
 	let agreements: [UserAgreement]
 
-	var title = "GoCardLess - Accounts"
-
-	var head: some HTML {
-		meta(.name(.description), .content("GoCardLess Accounts"))
-		link(.rel(.stylesheet), .href("/pico.css"))
-	}
-
 	var body: some HTML {
-		Layout.Authenticated.header(username: username)
-		main(.class("container")) {
+		StandardLayout(title: "GoCardLess - Accounts") {
+			Header.Authenticated.header(username: username)
+		} content: {
 			h2 { "Bank Accounts" }
 
 			if accounts.isEmpty {
@@ -149,21 +159,15 @@ struct GocardlessAccountsPage: HTMLDocument {
 	}
 }
 
-struct GocardlessInstitutionsPage: HTMLDocument {
+struct GocardlessInstitutionsPage: HTML {
 	let username: String
 	let institutions: [InstitutionView]?
 	let country: String?
 
-	var title = "GoCardLess - Select Institution"
-
-	var head: some HTML {
-		meta(.name(.description), .content("GoCardLess Select Institution"))
-		link(.rel(.stylesheet), .href("/pico.css"))
-	}
-
 	var body: some HTML {
-		Layout.Authenticated.header(username: username)
-		main(.class("container")) {
+		StandardLayout(title: "GoCardLess - Select Institution") {
+			Header.Authenticated.header(username: username)
+		} content: {
 			h2 { country == nil ? "Select Country" : "Select Bank" }
 
 			if let country, let institutions {
@@ -258,20 +262,14 @@ struct GocardlessInstitutionsPage: HTMLDocument {
 	}
 }
 
-struct GocardlessAddAccountPage: HTMLDocument {
+struct GocardlessAddAccountPage: HTML {
 	let username: String
 	let approvedAgreements: [UserAgreement]
 
-	var title = "GoCardLess - Add Account"
-
-	var head: some HTML {
-		meta(.name(.description), .content("GoCardLess Add Account"))
-		link(.rel(.stylesheet), .href("/pico.css"))
-	}
-
 	var body: some HTML {
-		Layout.Authenticated.header(username: username)
-		main(.class("container")) {
+		StandardLayout(title: "GoCardLess - Add Account") {
+			Header.Authenticated.header(username: username)
+		} content: {
 			h2 { "Add Account" }
 
 			if approvedAgreements.isEmpty {
@@ -324,21 +322,15 @@ struct AvailableAccountView: Codable {
 	let status: String
 }
 
-struct UserAgreementsListPage: HTMLDocument {
+struct UserAgreementsListPage: HTML {
 	let username: String
 	let agreements: [UserAgreement]
 	let existingAccountIds: Set<String>
 
-	var title = "GoCardLess - Agreements"
-
-	var head: some HTML {
-		meta(.name(.description), .content("GoCardLess Agreements"))
-		link(.rel(.stylesheet), .href("/pico.css"))
-	}
-
 	var body: some HTML {
-		Layout.Authenticated.header(username: username)
-		main(.class("container")) {
+		StandardLayout(title: "GoCardLess - Agreements") {
+			Header.Authenticated.header(username: username)
+		} content: {
 			h2 { "User Agreements" }
 
 			if agreements.isEmpty {
@@ -393,22 +385,16 @@ struct UserAgreementsListPage: HTMLDocument {
 	}
 }
 
-struct GocardlessCallbackPage: HTMLDocument {
+struct GocardlessCallbackPage: HTML {
 	let username: String
 	let ref: String
 	let agreementFound: Bool
 	let institutionName: String?
 
-	var title = "GoCardLess - Bank Connected"
-
-	var head: some HTML {
-		meta(.name(.description), .content("GoCardLess Bank Connected"))
-		link(.rel(.stylesheet), .href("/pico.css"))
-	}
-
 	var body: some HTML {
-		Layout.Authenticated.header(username: username)
-		main(.class("container")) {
+		StandardLayout(title: "GoCardLess - Bank Connected") {
+			Header.Authenticated.header(username: username)
+		} content: {
 			h2 { "Bank Connection Complete" }
 
 			article {
@@ -438,22 +424,16 @@ struct GocardlessCallbackPage: HTMLDocument {
 	}
 }
 
-struct SelectAccountsPage: HTMLDocument {
+struct SelectAccountsPage: HTML {
 	let username: String
 	let agreement: UserAgreement
 	let accounts: [AvailableAccountView]
 	let existingAccountIds: Set<String>
 
-	var title = "GoCardLess - Select Accounts"
-
-	var head: some HTML {
-		meta(.name(.description), .content("GoCardLess Select Accounts"))
-		link(.rel(.stylesheet), .href("/pico.css"))
-	}
-
 	var body: some HTML {
-		Layout.Authenticated.header(username: username)
-		main(.class("container")) {
+		StandardLayout(title: "GoCardLess - Select Accounts") {
+			Header.Authenticated.header(username: username)
+		} content: {
 			h2 { "Select Bank Accounts" }
 
 			article {
@@ -552,21 +532,15 @@ struct SelectAccountsPage: HTMLDocument {
 	}
 }
 
-struct GocardlessAccountsCreatedPage: HTMLDocument {
+struct GocardlessAccountsCreatedPage: HTML {
 	let username: String
 	let institutionName: String
 	let redirectUrl: String
 
-	var title = "GoCardLess - Redirect"
-
-	var head: some HTML {
-		meta(.name(.description), .content("GoCardLess Redirect"))
-		link(.rel(.stylesheet), .href("/pico.css"))
-	}
-
 	var body: some HTML {
-		Layout.Authenticated.header(username: username)
-		main(.class("container")) {
+		StandardLayout(title: "GoCardLess - Redirect") {
+			Header.Authenticated.header(username: username)
+		} content: {
 			h2 { "Redirecting to Bank" }
 
 			article {

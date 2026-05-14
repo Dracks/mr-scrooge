@@ -48,7 +48,7 @@ public func registerMigrations(_ app: Application) async throws {
 	app.migrations.add(SessionRecord.migration)
 	app.migrations.add(CreateOAuthTokens())
 	app.migrations.add(CreateGocardlessUsers())
-	app.migrations.add(CreateGocardlessInstitutionCredentials())
+	app.migrations.add(CreateGocardlessCredentials())
 	app.migrations.add(CreateUserAgreements())
 	app.migrations.add(CreateGocardlessBankAccounts())
 }

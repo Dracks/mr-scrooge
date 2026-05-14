@@ -2,8 +2,8 @@ import Fluent
 import Foundation
 import Vapor
 
-final class GocardlessInstitutionCredentials: Model, Content, @unchecked Sendable {
-	static let schema = "gocardless_institution_credentials"
+final class GocardlessCredentials: Model, Content, @unchecked Sendable {
+	static let schema = "gocardless_credentials"
 
 	@ID(key: .id)
 	var id: UUID?
@@ -51,7 +51,7 @@ final class GocardlessInstitutionCredentials: Model, Content, @unchecked Sendabl
 	}
 }
 
-extension GocardlessInstitutionCredentials {
+extension GocardlessCredentials {
 	func setTokens(access: String, refresh: String, expiresIn: Int) {
 		self.accessToken = access
 		self.refreshToken = refresh
@@ -64,9 +64,9 @@ extension GocardlessInstitutionCredentials {
 	}
 }
 
-struct CreateGocardlessInstitutionCredentials: AsyncMigration {
+struct CreateGocardlessCredentials: AsyncMigration {
 	func prepare(on database: Database) async throws {
-		try await database.schema("gocardless_institution_credentials")
+		try await database.schema("gocardless_credentials")
 			.id()
 			.field("user_id", .uuid, .required, .references("users", "id"))
 			.field("secret_id", .string, .required)
@@ -81,6 +81,6 @@ struct CreateGocardlessInstitutionCredentials: AsyncMigration {
 	}
 
 	func revert(on database: Database) async throws {
-		try await database.schema("gocardless_institution_credentials").delete()
+		try await database.schema("gocardless_credentials").delete()
 	}
 }

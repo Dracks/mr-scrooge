@@ -28,7 +28,7 @@ struct GocardlessKeysController: RouteCollection {
 
 		let credentials =
 			user.gclCredentials
-			?? GocardlessInstitutionCredentials(
+			?? GocardlessCredentials(
 				userId: userId,
 				secretId: formData.secretId,
 				secretKey: formData.secretKey

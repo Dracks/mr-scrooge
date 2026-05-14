@@ -8,7 +8,7 @@ import Vapor
 	import FoundationNetworking
 #endif
 
-extension GocardlessInstitutionCredentials {
+extension GocardlessCredentials {
 	func apiConfig(client: any Vapor.Client, on db: any Database) async throws
 		-> GoCardlessClientAPIConfiguration
 	{
