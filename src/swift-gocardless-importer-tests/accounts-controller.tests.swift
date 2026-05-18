@@ -43,7 +43,7 @@ struct AccountsRootPageTests {
 	func testRootAccountsPageEmptyState() async throws {
 		try await withImporterApp { app in
 			let headers = try await CreateTestUser(username: "testuser", on: app)
-				.addCredentials().getCookie()
+				.setCredentials().getCookie()
 
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
@@ -80,7 +80,7 @@ struct UserAgreementsControllerTests {
 	func testAgreementsListEmptyState() async throws {
 		try await withImporterApp { app in
 			let headers = try await CreateTestUser(username: "testuser", on: app)
-				.addCredentials().getCookie()
+				.setCredentials().getCookie()
 
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
@@ -98,8 +98,8 @@ struct UserAgreementsControllerTests {
 	@Test("Agreements list shows agreements")
 	func testAgreementsListShowsAgreements() async throws {
 		try await withImporterApp { app in
-			let builder = CreateTestUser(username: "testuser", on: app).addCredentials()
-			let user = try await builder.build()
+			let builder = try await CreateTestUser(username: "testuser", on: app).setCredentials()
+			let user = builder.user
 			let headers = try await builder.getCookie()
 
 			let requisitionId = UUID()
@@ -171,8 +171,8 @@ struct UserAgreementsControllerTests {
 	@Test("Callback with matching ref updates agreement status")
 	func testCallbackUpdatesAgreementStatus() async throws {
 		try await withImporterApp { app in
-			let builder = CreateTestUser(username: "testuser", on: app)
-			let user = try await builder.build()
+			let builder = try await CreateTestUser(username: "testuser", on: app)
+			let user = builder.user
 
 			let matchingRef = UUID()
 			let agreement = UserAgreement(
@@ -244,8 +244,8 @@ struct UserAgreementsControllerTests {
 	@Test("Delete agreement removes agreement and redirects")
 	func testDeleteAgreementSuccess() async throws {
 		try await withImporterApp { app in
-			let builder = CreateTestUser(username: "testuser", on: app).addCredentials()
-			let user = try await builder.build()
+			let builder = try await CreateTestUser(username: "testuser", on: app).setCredentials()
+			let user = builder.user
 			let headers = try await builder.getCookie()
 
 			let agreement = UserAgreement(
@@ -279,9 +279,9 @@ struct UserAgreementsControllerTests {
 	func testDeleteAgreementCannotDeleteOthers() async throws {
 		try await withImporterApp { app in
 			let headers = try await CreateTestUser(username: "testuser", on: app)
-				.addCredentials().getCookie()
+				.setCredentials().getCookie()
 			let user2 = try await CreateTestUser(username: "otheruser", on: app)
-				.addCredentials().build()
+				.setCredentials().user
 
 			let agreement = UserAgreement(
 				userId: try user2.requireID(),
@@ -372,7 +372,7 @@ struct CreateAgreementTests {
 			),
 		]) { app in
 			let headers = try await CreateTestUser(username: "testuser", on: app)
-				.addCredentials().getCookie()
+				.setCredentials().getCookie()
 
 			var postHeaders = headers
 			postHeaders.add(
@@ -398,7 +398,7 @@ struct CreateAgreementTests {
 	func testCreateAgreementEmptyInstitutionId() async throws {
 		try await withImporterApp { app in
 			let headers = try await CreateTestUser(username: "testuser", on: app)
-				.addCredentials().getCookie()
+				.setCredentials().getCookie()
 
 			var postHeaders = headers
 			postHeaders.add(
@@ -527,9 +527,9 @@ struct DownloadTransactionsTests {
 					))
 			),
 		]) { app in
-			let builder = CreateTestUser(username: "testuser", on: app)
-				.addCredentials()
-			let user = try await builder.build()
+			let builder = try await CreateTestUser(username: "testuser", on: app)
+				.setCredentials()
+			let user = builder.user
 			let headers = try await builder.getCookie()
 
 			let agreement = UserAgreement(
@@ -571,7 +571,7 @@ struct DownloadTransactionsTests {
 	func testDownloadTransactionsAgreementNotFound() async throws {
 		try await withImporterApp { app in
 			let headers = try await CreateTestUser(username: "testuser", on: app)
-				.addCredentials().getCookie()
+				.setCredentials().getCookie()
 
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
@@ -589,9 +589,9 @@ struct DownloadTransactionsTests {
 	@Test("Returns error when no bank account on agreement")
 	func testDownloadTransactionsNoBankAccount() async throws {
 		try await withImporterApp { app in
-			let builder = CreateTestUser(username: "testuser", on: app)
-				.addCredentials()
-			let user = try await builder.build()
+			let builder = try await CreateTestUser(username: "testuser", on: app)
+				.setCredentials()
+			let user = builder.user
 			let headers = try await builder.getCookie()
 
 			let agreement = UserAgreement(

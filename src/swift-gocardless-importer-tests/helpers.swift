@@ -1,10 +1,13 @@
 import AsyncHTTPClient
+import HTTPTypes
+import OpenAPIRuntime
 import VaporTesting
 
 @testable import GoCardlessImporter
 
 func withImporterApp(
 	useMocks httpMocks: [HttpMock]? = nil,
+	mrScroogeMocks: [MrScroogeMock]? = nil,
 	_ test: (Application) async throws -> Void
 ) async throws {
 	let app = try await Application.make(.testing)
@@ -18,6 +21,9 @@ func withImporterApp(
 		app.clients.use {
 			HTTPClientMock(eventLoop: $0.eventLoopGroup.any(), useMocks: httpMocks)
 		}
+	}
+	if let mrScroogeMocks {
+		app.mrScroogeTransport = MockClientTransport(mocks: mrScroogeMocks)
 	}
 	TestHelpers.injectFakeLogin(app)
 
@@ -119,32 +125,53 @@ final class HTTPClientMock: Vapor.Client {
 
 }
 
-enum TestHelpers {
-	static func createAuthenticatedUserWithCredentials(app: Application) async throws -> User {
-		let user = User(externalId: UUID(), username: "testuser")
-		try await user.save(on: app.db)
+// MARK: - MrScrooge OpenAPI Transport Mocks
 
-			let credentials = GocardlessCredentials(
-			userId: try user.requireID(),
-			secretId: "test-secret-id",
-			secretKey: "test-secret-key"
+enum MrScroogeMockResponse: Sendable {
+	case json(status: Int, body: any Codable & Sendable)
+	case callback(@Sendable (HTTPRequest) async throws -> (HTTPResponse, HTTPBody?))
+}
+
+struct MrScroogeMock: Sendable {
+	let operationID: String
+	let response: MrScroogeMockResponse
+
+	init(operationID: String, response: MrScroogeMockResponse) {
+		self.operationID = operationID
+		self.response = response
+	}
+}
+
+struct MockClientTransport: ClientTransport {
+	let mocks: [String: MrScroogeMockResponse]
+
+	init(mocks: [MrScroogeMock]) {
+		self.mocks = Dictionary(
+			uniqueKeysWithValues: mocks.map { ($0.operationID, $0.response) }
 		)
-		try await credentials.save(on: app.db)
-
-		return user
 	}
 
-	static func loginHeaders(for user: User, on app: Application) async throws -> HTTPHeaders {
-		let userId = try user.requireID()
-		let tester = try app.testing()
-		let response = try await tester.sendRequest(.GET, "/test-login/\(userId)")
-
-		let cookies = response.headers["set-cookie"]
-		guard let cookie = cookies.first else {
-			throw TestError("No session cookie returned for user \(user.username)")
+	func send(
+		_ request: HTTPRequest,
+		body: HTTPBody?,
+		baseURL: URL,
+		operationID: String
+	) async throws -> (HTTPResponse, HTTPBody?) {
+		guard let mock = mocks[operationID] else {
+			return (HTTPResponse(status: 404), nil)
 		}
-		return ["cookie": cookie]
+		switch mock {
+		case .json(let status, let content):
+			let data = try JSONEncoder().encode(content)
+			return (HTTPResponse(status: .init(integerLiteral: status)), HTTPBody(data))
+		case .callback(let callback):
+			return try await callback(request)
+		}
 	}
+}
+
+enum TestHelpers {
+
 
 	static func injectFakeLogin(_ app: Application) {
 		app.routes.get("test-login", ":userId") { req -> Response in
@@ -165,45 +192,35 @@ enum TestHelpers {
 
 final class CreateTestUser {
 	private let app: Application
-	private let username: String
-	private let externalId: UUID
-	private var withCredentials: Bool = false
-	private var savedUser: User?
+	let user: User
 
-	init(username: String, on app: Application) {
+	init(username: String, on app: Application) async throws {
 		self.app = app
-		self.username = username
-		self.externalId = UUID()
+		self.user = User(externalId: UUID(), username: username)
+		try await self.user.save(on: app.db)
 	}
 
-	func addCredentials() -> Self {
-		withCredentials = true
+	@discardableResult
+	func setCredentials(secretId: String = "test-secret-id", secretKey: String = "test-secret-key") async throws -> Self {
+		let credentials = GocardlessCredentials(
+			userId: try user.requireID(),
+			secretId: secretId,
+			secretKey: secretKey
+		)
+		try await credentials.save(on: app.db)
 		return self
 	}
 
-	func build() async throws -> User {
-		if let existing = savedUser {
-			return existing
-		}
-		let user = User(externalId: externalId, username: username)
-		try await user.save(on: app.db)
-
-		if withCredentials {
-		let credentials = GocardlessCredentials(
-				userId: try user.requireID(),
-				secretId: "test-secret-id",
-				secretKey: "test-secret-key"
-			)
-			try await credentials.save(on: app.db)
-		}
-
-		savedUser = user
-		return user
-	}
-
 	func getCookie() async throws -> HTTPHeaders {
-		let user = try await build()
-		return try await TestHelpers.loginHeaders(for: user, on: app)
+		let userId = try user.requireID()
+		let tester = try app.testing()
+		let response = try await tester.sendRequest(.GET, "/test-login/\(userId)")
+
+		let cookies = response.headers["set-cookie"]
+		guard let cookie = cookies.first else {
+			throw TestError("No session cookie returned for user \(user.username)")
+		}
+		return ["cookie": cookie]
 	}
 }
 

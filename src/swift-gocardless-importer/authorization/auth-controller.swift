@@ -42,7 +42,8 @@ struct GocardlessAuthController: RouteCollection {
 				reason: "Authorization code not found in query parameters")
 		}
 
-		let client = try MrScroogeClientService.createClient()
+		let transport = req.application.mrScroogeTransport
+		let client = try MrScroogeClientService.createClient(transport: transport)
 		let redirectUri = "\(EnvConfig.shared.baseHost)/authorized"
 
 		let authParams = Components.Schemas.AuthorizationCodeGrantParams(
@@ -72,7 +73,7 @@ struct GocardlessAuthController: RouteCollection {
 			}
 
 			let userClient = try MrScroogeClientService.createClientWithBearer(
-				accessToken: accessToken)
+				accessToken: accessToken, transport: transport)
 			let profileResponse = try await userClient.ApiSession_me()
 
 			switch profileResponse {

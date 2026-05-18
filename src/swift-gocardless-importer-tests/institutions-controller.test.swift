@@ -58,7 +58,7 @@ struct InstitutionsPageTests {
 					]))
 		]) { app in
 			let headers = try await CreateTestUser(username: "testuser", on: app)
-				.addCredentials().getCookie()
+				.setCredentials().getCookie()
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
 				.GET,
@@ -89,7 +89,7 @@ struct InstitutionsPageTests {
 	func testInstitutionsPageMissingCountry() async throws {
 		try await withImporterApp { app in
 			let headers = try await CreateTestUser(username: "testuser", on: app)
-				.addCredentials().getCookie()
+				.setCredentials().getCookie()
 
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
@@ -140,9 +140,9 @@ struct ShowAvailableAccountsTests {
 				)
 			),
 		]) { app in
-			let builder = CreateTestUser(username: "testuser", on: app)
-				.addCredentials()
-			let user = try await builder.build()
+			let builder = try await CreateTestUser(username: "testuser", on: app)
+				.setCredentials()
+			let user = builder.user
 			let headers = try await builder.getCookie()
 
 			let agreement = UserAgreement(
@@ -176,9 +176,9 @@ struct ShowAvailableAccountsTests {
 		let requisitionId = UUID()
 
 		try await withImporterApp { app in
-			let builder = CreateTestUser(username: "testuser", on: app)
-				.addCredentials()
-			let user = try await builder.build()
+			let builder = try await CreateTestUser(username: "testuser", on: app)
+				.setCredentials()
+			let user = builder.user
 			let headers = try await builder.getCookie()
 
 			let agreement = UserAgreement(
@@ -209,7 +209,7 @@ struct ShowAvailableAccountsTests {
 	func testShowAvailableAccountsNotFound() async throws {
 		try await withImporterApp { app in
 			let headers = try await CreateTestUser(username: "testuser", on: app)
-				.addCredentials().getCookie()
+				.setCredentials().getCookie()
 
 			let tester = try app.testing()
 			let response = try await tester.sendRequest(
@@ -249,9 +249,9 @@ struct SelectAccountsTests {
 				)
 			),
 		]) { app in
-			let builder = CreateTestUser(username: "testuser", on: app)
-				.addCredentials()
-			let user = try await builder.build()
+			let builder = try await CreateTestUser(username: "testuser", on: app)
+				.setCredentials()
+			let user = builder.user
 			let headers = try await builder.getCookie()
 
 			let agreement = UserAgreement(
@@ -294,9 +294,9 @@ struct SelectAccountsTests {
 		let requisitionId = UUID()
 
 		try await withImporterApp { app in
-			let builder = CreateTestUser(username: "testuser", on: app)
-				.addCredentials()
-			let user = try await builder.build()
+			let builder = try await CreateTestUser(username: "testuser", on: app)
+				.setCredentials()
+			let user = builder.user
 			let headers = try await builder.getCookie()
 
 			let agreement = UserAgreement(
@@ -350,9 +350,9 @@ struct SelectAccountsTests {
 				)
 			),
 		]) { app in
-			let builder = CreateTestUser(username: "testuser", on: app)
-				.addCredentials()
-			let user = try await builder.build()
+			let builder = try await CreateTestUser(username: "testuser", on: app)
+				.setCredentials()
+			let user = builder.user
 			let headers = try await builder.getCookie()
 
 			let agreement = UserAgreement(

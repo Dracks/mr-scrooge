@@ -5,6 +5,7 @@ import OpenAPIAsyncHTTPClient
 import OpenAPIRuntime
 import Vapor
 
+
 struct BasicClientAuthMiddleware: ClientMiddleware {
 	let basicAuth: String
 
@@ -53,12 +54,11 @@ struct BearerClientAuthMiddleware: ClientMiddleware {
 }
 
 enum MrScroogeClientService {
-	static func createClient() throws -> Client {
+	static func createClient(transport: (any ClientTransport)) throws -> Client {
 		let baseURL = EnvConfig.shared.mrScroogeHost
 		guard let serverURL = URL(string: baseURL)?.appendingPathComponent("api") else {
 			throw Abort(.badRequest, reason: "Invalid MR_SCROOGE_HOST URL")
 		}
-		let transport = AsyncHTTPClientTransport()
 
 		let credentials =
 			"\(EnvConfig.shared.mrScroogeClientId):\(EnvConfig.shared.mrScroogeClientSecret)"
@@ -77,12 +77,12 @@ enum MrScroogeClientService {
 		return client
 	}
 
-	static func createClientWithBearer(accessToken: String) throws -> Client {
+	static func createClientWithBearer(accessToken: String, transport customTransport: (any ClientTransport)? = nil) throws -> Client {
 		let baseURL = EnvConfig.shared.mrScroogeHost
 		guard let serverURL = URL(string: baseURL)?.appendingPathComponent("api") else {
 			throw Abort(.badRequest, reason: "Invalid MR_SCROOGE_HOST URL")
 		}
-		let transport = AsyncHTTPClientTransport()
+		let transport = customTransport ?? AsyncHTTPClientTransport()
 
 		let middleware = BearerClientAuthMiddleware(accessToken: accessToken)
 
