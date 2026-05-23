@@ -1,7 +1,12 @@
 import { Box, CheckBox, FormField, TextArea, TextInput } from 'grommet';
 import React from 'react';
 
-import { OAuthScope } from '../../../api/models';
+import { OAUTH_SCOPES, OAuthScope } from '../../../api/models';
+
+const SCOPE_LABELS: Record<OAuthScope, string> = {
+    userInfo: 'User Info',
+    uploadFile: 'Upload File',
+};
 
 export interface OAuthAppFormData {
     name: string;
@@ -13,10 +18,10 @@ export interface OAuthAppFormData {
 interface OAuthAppFormProps {
     value: OAuthAppFormData;
     onChange: (value: OAuthAppFormData) => void;
-    showScopes?: boolean;
+    errors?: Record<string, string>;
 }
 
-export const OAuthAppForm: React.FC<OAuthAppFormProps> = ({ value, onChange, showScopes = true }) => {
+export const OAuthAppForm: React.FC<OAuthAppFormProps> = ({ value, onChange, errors }) => {
     const [redirectUrisText, setRedirectUrisText] = React.useState(value.redirect_uris.join('\n'));
 
     React.useEffect(() => {
@@ -49,7 +54,7 @@ export const OAuthAppForm: React.FC<OAuthAppFormProps> = ({ value, onChange, sho
 
     return (
         <>
-            <FormField label="Name">
+            <FormField label="Name" error={errors?.name}>
                 <TextInput
                     value={value.name}
                     onChange={e => {
@@ -57,7 +62,7 @@ export const OAuthAppForm: React.FC<OAuthAppFormProps> = ({ value, onChange, sho
                     }}
                 />
             </FormField>
-            <FormField label="Description">
+            <FormField label="Description" error={errors?.description}>
                 <TextArea
                     value={value.description || ''}
                     onChange={e => {
@@ -73,26 +78,20 @@ export const OAuthAppForm: React.FC<OAuthAppFormProps> = ({ value, onChange, sho
                     }}
                 />
             </FormField>
-            {showScopes && (
-                <FormField label="Scopes">
-                    <Box>
+            <FormField label="Scopes">
+                <Box>
+                    {OAUTH_SCOPES.map(scope => (
                         <CheckBox
-                            label="User Info"
-                            checked={value.scopes.includes('userInfo')}
+                            key={scope}
+                            label={SCOPE_LABELS[scope]}
+                            checked={value.scopes.includes(scope)}
                             onChange={e => {
-                                handleScopeToggle('userInfo', e.target.checked);
+                                handleScopeToggle(scope, e.target.checked);
                             }}
                         />
-                        <CheckBox
-                            label="Upload File"
-                            checked={value.scopes.includes('uploadFile')}
-                            onChange={e => {
-                                handleScopeToggle('uploadFile', e.target.checked);
-                            }}
-                        />
-                    </Box>
-                </FormField>
-            )}
+                    ))}
+                </Box>
+            </FormField>
         </>
     );
 };

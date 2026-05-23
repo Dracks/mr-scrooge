@@ -21,7 +21,10 @@ export type MyProfile = components['schemas']['GetMyProfile'];
 export type UpdateMyProfile = components['schemas']['UpdateMyProfile'];
 export type OAuthAuthorizationRequest = components['schemas']['OAuthAuthorizeRequest'];
 export type OAuthClient = components['schemas']['OAuthClient'];
+export type OAuthClientWithSecret = components['schemas']['OAuthClientWithSecret'];
 export type OAuthScope = components['schemas']['OAuthScope'];
+
+export const OAUTH_SCOPES: readonly OAuthScope[] = ['userInfo', 'uploadFile'];
 export type OperationString = components['schemas']['OperationString'];
 export type OperationDouble = components['schemas']['OperationDouble'];
 export type Rule = components['schemas']['Rule'];

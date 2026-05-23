@@ -36,7 +36,7 @@ const validateRequest = (
         redirect_uri: z.enum(client.redirect_uris),
         response_type: z.literal('code'),
         scope: z.enum(client.scopes).optional(),
-        state: z.string().optional()
+        state: z.string().optional(),
     });
 
     try {

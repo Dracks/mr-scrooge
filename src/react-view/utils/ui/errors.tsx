@@ -10,13 +10,27 @@ export const ValidationErrorsBox: React.FC<{ title: string; errors: z.ZodError }
             </Heading>
             {errors.issues.map((error, index) => (
                 <Text key={index} color="white">
-                    {error.path.join('.')}:
-                    {error.message}
+                    {error.path.join('.')}:{error.message}
                 </Text>
             ))}
         </Box>
     );
 };
+
+export interface ApiErrorResponse {
+    code: string;
+    message: string;
+}
+
+export class WrapperApiError extends Error {
+    public readonly code: string;
+
+    constructor(error: ApiErrorResponse) {
+        super(error.message);
+        this.name = 'ApiError';
+        this.code = error.code;
+    }
+}
 
 const useErrorMsg = (error: unknown): string => {
     if (error === null || error === undefined) {
@@ -24,6 +38,9 @@ const useErrorMsg = (error: unknown): string => {
     }
     if (typeof error === 'string') {
         return error;
+    }
+    if (error instanceof WrapperApiError) {
+        return `${error.code}: ${error.message}`;
     }
     if (error instanceof Error) {
         return `${error.name}: ${error.message}`;

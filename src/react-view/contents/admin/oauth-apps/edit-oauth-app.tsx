@@ -1,4 +1,4 @@
-import { Box, Button, Form, Heading } from 'grommet';
+import { Box, Button, Form, Heading, Text } from 'grommet';
 import React from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 
@@ -49,6 +49,11 @@ export const EditOAuthApp: React.FC<{ app: OAuthClient; onDelete: () => void }> 
 
     return (
         <Box>
+            <Box pad={{ bottom: 'small' }}>
+                <Text size="small" color="text-weak">
+                    Client ID: {app.client_id}
+                </Text>
+            </Box>
             <Heading level={2}>Editing OAuth Application</Heading>
             <Form<OAuthAppFormData>
                 value={appData}
