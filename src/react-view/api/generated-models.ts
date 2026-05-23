@@ -792,6 +792,16 @@ export interface components {
              */
             updated_at: string;
         };
+        OAuthClientUpdate: {
+            /** @description Name of the OAuth client */
+            name?: string;
+            /** @description Some description used for the admin of the app */
+            description?: string;
+            /** @description Redirect URIs for the OAuth client */
+            redirect_uris?: string[];
+            /** @description Scopes allowed for the OAuth client */
+            scopes?: components['schemas']['OAuthScope'][];
+        };
         OAuthClientWithSecret: {
             client_id: components['schemas']['UUIDString'];
             /** @description Name of the OAuth client */
@@ -1899,16 +1909,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                'application/json': {
-                    /** @description Name of the OAuth client */
-                    name?: string;
-                    /** @description Some description used for the admin of the app */
-                    description?: string;
-                    /** @description Redirect URIs for the OAuth client */
-                    redirect_uris?: string[];
-                    /** @description Scopes allowed for the OAuth client */
-                    scopes?: components['schemas']['OAuthScope'][];
-                };
+                'application/json': components['schemas']['OAuthClientUpdate'];
             };
         };
         responses: {

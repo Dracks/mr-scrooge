@@ -1,23 +1,20 @@
 import { Box, Button, Heading, Text } from 'grommet';
 import React from 'react';
-import { useAsyncCallback } from 'react-async-hook';
+import { useAsync, useAsyncCallback } from 'react-async-hook';
 import { useSearchParams } from 'react-router';
+import { z } from 'zod';
 
 import { useApiClient } from '../../api/client';
 import { OAuthAuthorizationRequest, OAuthClient, OAuthScope } from '../../api/models';
 import { useLogger } from '../../utils/logger/logger.context';
 import { catchAndLog } from '../../utils/promises';
+import { ErrorBox, ValidationErrorsBox } from '../../utils/ui/errors';
 import { LoadingPage } from '../../utils/ui/loading';
 
 const SCOPE_INFO: Record<OAuthScope, string> = {
     uploadFile: 'Upload file into the importer',
     userInfo: 'Get information about the current user',
 };
-
-interface ValidationError {
-    message: string;
-    field?: string;
-}
 
 const useOAuthAuthorizationRequest = (): Record<keyof OAuthAuthorizationRequest, string | null | undefined> => {
     const [request] = useSearchParams();
@@ -33,58 +30,22 @@ const useOAuthAuthorizationRequest = (): Record<keyof OAuthAuthorizationRequest,
 const validateRequest = (
     request: Record<keyof OAuthAuthorizationRequest, string | null | undefined>,
     client: OAuthClient,
-): ValidationError[] => {
-    const errors: ValidationError[] = [];
+): [undefined, z.ZodError] | [OAuthAuthorizationRequest, undefined] => {
+    const schema = z.object({
+        client_id: z.string(),
+        redirect_uri: z.enum(client.redirect_uris),
+        response_type: z.literal('code'),
+        scopes: z.enum(client.scopes).optional(),
+    });
 
-    if (!request.client_id) {
-        errors.push({ message: 'Missing client_id parameter', field: 'client_id' });
-    }
-
-    if (!request.redirect_uri) {
-        errors.push({ message: 'Missing redirect_uri parameter', field: 'redirect_uri' });
-    } else if (!client.redirect_uris.includes(request.redirect_uri)) {
-        errors.push({
-            message: `Invalid redirect_uri. Must be one of: ${client.redirect_uris.join(', ')}`,
-            field: 'redirect_uri',
-        });
-    }
-
-    if (!request.response_type || request.response_type !== 'code') {
-        errors.push({ message: "Invalid response_type. Must be 'code'", field: 'response_type' });
-    }
-
-    if (request.scope) {
-        const requestedScopes = request.scope
-            .split(' ')
-            .map(s => s as OAuthScope)
-            .filter(Boolean);
-        const invalidScopes = requestedScopes.filter(s => !client.scopes.includes(s));
-        if (invalidScopes.length > 0) {
-            errors.push({
-                message: `Invalid scope(s): ${invalidScopes.join(', ')}. Allowed: ${client.scopes.join(', ')}`,
-                field: 'scope',
-            });
+    try {
+        return [schema.parse(request), undefined];
+    } catch (error) {
+        if (typeof error === 'object' && error instanceof z.ZodError) {
+            return [undefined, error];
         }
+        throw error;
     }
-
-    return errors;
-};
-
-const ErrorBox: React.FC<{ errors: ValidationError[] }> = ({ errors }) => {
-    if (errors.length === 0) return null;
-
-    return (
-        <Box pad="medium" background="status-critical" round>
-            <Heading level="4" color="white">
-                Authorization Error
-            </Heading>
-            {errors.map((error, index) => (
-                <Text key={index} color="white">
-                    {error.message}
-                </Text>
-            ))}
-        </Box>
-    );
 };
 
 const OAuthConfirmation: React.FC<{ appInfo: OAuthClient; scopes: OAuthScope[]; accept: () => void }> = ({
@@ -117,61 +78,25 @@ const OAuthConfirmation: React.FC<{ appInfo: OAuthClient; scopes: OAuthScope[]; 
     );
 };
 
-const ClientNotFoundError: React.FC<{ message: string }> = ({ message }) => {
-    return (
-        <Box fill align="center" justify="center" pad="large">
-            <Box pad="large" background="status-critical" round>
-                <Heading level="2" color="white">
-                    Error
-                </Heading>
-                <Text color="white">{message}</Text>
-            </Box>
-        </Box>
-    );
-};
-
 export const OAuthAuthorization: React.FC = () => {
     const logger = useLogger();
     const api = useApiClient();
     const request = useOAuthAuthorizationRequest();
-
-    const [client, setClient] = React.useState<OAuthClient | null>(null);
-    const [error, setError] = React.useState<string | null>(null);
-    const [loading, setLoading] = React.useState(true);
-
-    React.useEffect(() => {
-        const fetchClient = async () => {
-            if (!request.client_id) {
-                setError('Missing client_id parameter');
-                setLoading(false);
-                return;
-            }
-
-            try {
-                const response = await api.GET('/oauth/clients/{clientId}', {
-                    params: { path: { clientId: request.client_id } },
-                });
-
-                if (response.data) {
-                    setClient(response.data);
-                } else {
-                    setError('Client not found');
-                }
-            } catch {
-                setError('Client not found');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchClient();
+    const clientInfo = useAsync(async () => {
+        const { client_id: clientId } = request;
+        if (!clientId) {
+            throw new Error('Client Id is mandatory');
+        }
+        return await api.GET('/oauth/clients/{clientId}', {
+            params: { path: { clientId } },
+        });
     }, [request.client_id]);
 
-    const authorize = useAsyncCallback(async authRequest => {
+    const authorize = useAsyncCallback(async (authRequest: OAuthAuthorizationRequest) => {
         const response = await api.GET('/oauth/authorize', {
-            params: { query: authRequest },
+            params: { query: { request: authRequest } },
         });
-        logger.info(`Authorization response: ${response.response.status}`);
+        logger.info(`Authorization response: ${String(response.response.status)}`);
         if (response.data) {
             const { authorization_code, state } = response.data;
             window.location.replace(
@@ -180,31 +105,33 @@ export const OAuthAuthorization: React.FC = () => {
         }
     });
 
-    const handleAccept = () => {
-        catchAndLog(authorize.execute(request), 'Error during authorization', logger);
-    };
-
-    if (loading) {
+    if (clientInfo.loading) {
         return <LoadingPage />;
     }
 
-    if (error) {
-        return <ClientNotFoundError message={error} />;
+    if (clientInfo.error) {
+        return <ErrorBox title="Client info invalid" error={clientInfo.error} />;
     }
+
+    const client = clientInfo.result?.data;
 
     if (!client) {
-        return <ClientNotFoundError message="Client not found" />;
+        return <ErrorBox title="Client not ound" error="Client not found" />;
     }
 
-    const validationErrors = validateRequest(request, client);
+    const [oauthRequest, validationErrors] = validateRequest(request, client);
 
-    if (validationErrors.length > 0) {
+    if (validationErrors) {
         return (
             <Box fill align="center" justify="center" pad="large">
-                <ErrorBox errors={validationErrors} />
+                <ValidationErrorsBox title="Invalid client request" errors={validationErrors} />
             </Box>
         );
     }
+
+    const handleAccept = () => {
+        catchAndLog(authorize.execute(oauthRequest), 'Error during authorization', logger);
+    };
 
     const requestedScopes =
         request.scope
