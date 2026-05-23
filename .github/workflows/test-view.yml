@@ -37,10 +37,9 @@ jobs:
                   cmd: build:view
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         name: Install pnpm
         with:
-          run_install: false
           version: ${{ env.PNPM_VERSION }}
 
       - name: Install Node.js
