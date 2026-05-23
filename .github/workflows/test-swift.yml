@@ -34,22 +34,20 @@ jobs:
             find src -name "*.swift" -exec sha256sum {} \; 2>/dev/null || true
           } | sha256sum | cut -d' ' -f1 | tee /tmp/cache_key
           echo "value=$(cat /tmp/cache_key)" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v4
+      - uses: actions/cache/restore@v4
         with:
             path: .build
-            key: ${{ runner.os }}-spm-${{ steps.cache-key.outputs.value }}
+            key: ${{ runner.os }}-spm-${{ steps.cache-key.outputs.value }}-${{ github.run_id }}
             restore-keys: |
               ${{ runner.os }}-spm-
       - name: Resolve dependencies
         run: swift package resolve --force-resolved-versions
       - name: Build everything
         run: swift build --build-tests --enable-code-coverage
-      # Save the build cache with a unique key to prevent test job from updating it
       - uses: actions/cache/save@v4
-        if: always()
         with:
           path: .build
-          key: ${{ runner.os }}-spm-${{ steps.cache-key.outputs.value }}
+          key: ${{ runner.os }}-spm-${{ steps.cache-key.outputs.value }}-${{ github.run_id }}
 
   test:
     name: Test
@@ -63,11 +61,10 @@ jobs:
         run: |
             apt-get update -y
             apt-get install -y zstd curl
-      # Restore the build cache but use a different key to prevent updating the original cache
       - uses: actions/cache/restore@v4
         with:
             path: .build
-            key: ${{ runner.os }}-spm-${{ needs.build.outputs.cache_key }}
+            key: ${{ runner.os }}-spm-${{ needs.build.outputs.cache_key }}-${{ github.run_id }}
       - name: Run tests
         run: swift test --no-parallel --skip-build --enable-code-coverage
       - name: Prepare Coverage

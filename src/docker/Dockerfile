@@ -4,10 +4,8 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN npm install -g corepack@latest && corepack enable
 
 COPY src /home/app/src
-COPY package.yaml /home/app
+COPY package.yaml pnpm-lock.yaml pnpm-workspace.yaml tsconfig.json /home/app
 COPY config /home/app/config
-COPY pnpm-lock.yaml /home/app
-COPY tsconfig.json /home/app
 WORKDIR /home/app
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN npx pnpm run build:view
