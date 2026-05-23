@@ -1,5 +1,5 @@
 import { Box, Header, Menu, Nav } from 'grommet';
-import { Edit, Group, Home, Logout, User, UserAdmin } from 'grommet-icons';
+import { Edit, Group, Home, Logout, Rss, User, UserAdmin } from 'grommet-icons';
 import React from 'react';
 import { useNavigate } from 'react-router';
 
@@ -38,6 +38,17 @@ const Headers: React.FC = () => {
                         catchAndLog(Promise.resolve(navigate('/admin/groups')), 'Navigate to admin groups', logger);
                     },
                     icon: <Group />,
+                },
+                {
+                    label: <Box>OAuth Apps</Box>,
+                    onClick: () => {
+                        catchAndLog(
+                            Promise.resolve(navigate('/admin/oauth-apps')),
+                            'Navigate to admin oauth apps',
+                            logger,
+                        );
+                    },
+                    icon: <Rss />,
                 },
             ]}
         />

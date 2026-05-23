@@ -47,7 +47,7 @@ func getUser(fromRequest req: Request, authentication: AuthenticationType = .Onl
 		case .OnlyWeb:
 			return nil
 		case .WebAndOauth(let scope, let others):
-            let scopes = [scope] + others
+			let scopes = [scope] + others
 
 			guard let oauth = req.auth.get(OAuthAccessToken.self) else {
 				return nil

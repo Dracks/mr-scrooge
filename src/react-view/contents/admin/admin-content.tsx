@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router';
 
 import { useUserProfileOrThrows } from '../../utils/session/session-context';
 import NotFound from '../extra/not-found';
+import { AdminOAuthApps } from './oauth-apps/admin-oauth-apps';
 import { AdminUsers } from './users/admin-user';
 
 export const AdminContent: React.FC = () => {
@@ -10,6 +11,7 @@ export const AdminContent: React.FC = () => {
     if (user.isAdmin) {
         return (
             <Routes>
+                <Route path="oauth-apps/*" element={<AdminOAuthApps />} />
                 <Route path="users/*" element={<AdminUsers />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
