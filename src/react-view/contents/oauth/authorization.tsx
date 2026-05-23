@@ -35,7 +35,8 @@ const validateRequest = (
         client_id: z.string(),
         redirect_uri: z.enum(client.redirect_uris),
         response_type: z.literal('code'),
-        scopes: z.enum(client.scopes).optional(),
+        scope: z.enum(client.scopes).optional(),
+        state: z.string().optional()
     });
 
     try {
@@ -116,7 +117,7 @@ export const OAuthAuthorization: React.FC = () => {
     const client = clientInfo.result?.data;
 
     if (!client) {
-        return <ErrorBox title="Client not ound" error="Client not found" />;
+        return <ErrorBox title="Client not found" error="Client not found" />;
     }
 
     const [oauthRequest, validationErrors] = validateRequest(request, client);

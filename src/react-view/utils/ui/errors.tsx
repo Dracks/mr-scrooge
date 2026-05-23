@@ -10,7 +10,7 @@ export const ValidationErrorsBox: React.FC<{ title: string; errors: z.ZodError }
             </Heading>
             {errors.issues.map((error, index) => (
                 <Text key={index} color="white">
-                    {error.path.join('.')}
+                    {error.path.join('.')}:
                     {error.message}
                 </Text>
             ))}
@@ -20,7 +20,7 @@ export const ValidationErrorsBox: React.FC<{ title: string; errors: z.ZodError }
 
 const useErrorMsg = (error: unknown): string => {
     if (error === null || error === undefined) {
-        throw Error('Error null or undefined to useError');
+        return 'Unknown error';
     }
     if (typeof error === 'string') {
         return error;
