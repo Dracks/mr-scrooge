@@ -1,8 +1,8 @@
 allowBuilds:
-  '@parcel/watcher': set this to true or false
-  msw: set this to true or false
-  node-sass: set this to true or false
-  unrs-resolver: set this to true or false
+  '@parcel/watcher': true
+  msw: true
+  node-sass: true
+  unrs-resolver: true
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - msw
