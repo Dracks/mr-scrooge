@@ -2,9 +2,11 @@ import { Box, Heading, Notification, Table, TableBody, TableCell, TableHeader, T
 import React from 'react';
 
 import { FileImport } from '../../api/models';
+import { ConfirmationButton } from '../../utils/ui/confirmation-button';
 
 interface ImportDetailsArgs {
     status: FileImport;
+    onDelete: (id: string) => void;
 }
 
 const DetailsMessage: React.FC<{ description: string; status: FileImport['status'] }> = ({ description, status }) => {
@@ -18,11 +20,21 @@ const DetailsMessage: React.FC<{ description: string; status: FileImport['status
     }
 };
 
-export const ImportDetails: React.FC<ImportDetailsArgs> = ({ status }) => {
+export const ImportDetails: React.FC<ImportDetailsArgs> = ({ status, onDelete }) => {
     const { rows } = status;
     return (
         <Box fill pad="small">
-            <Heading level="2">{status.fileName}</Heading>
+            <Box direction="row" align="center" gap="small">
+                <Heading level="2">{status.fileName}</Heading>
+                <ConfirmationButton
+                    color="accent-4"
+                    label="Drop"
+                    confirmationText="Are you sure you want to delete this import?"
+                    onConfirm={() => {
+                        onDelete(status.id);
+                    }}
+                />
+            </Box>
             <Text>{status.createdAt}</Text>
             {status.description && <DetailsMessage description={status.description} status={status.status} />}
             <Table>
