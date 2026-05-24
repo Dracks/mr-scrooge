@@ -1,7 +1,6 @@
-FROM --platform=$BUILDPLATFORM node:24-slim AS client-build
+FROM --platform=$BUILDPLATFORM ghcr.io/pnpm/pnpm:11.2.2 AS client-build
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN npm install -g corepack@latest && corepack enable
 
 COPY src /home/app/src
 COPY package.yaml pnpm-lock.yaml pnpm-workspace.yaml tsconfig.json /home/app/

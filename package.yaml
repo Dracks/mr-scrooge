@@ -74,3 +74,8 @@ dependencies:
   recharts: 3.5.1
   zod: 4.1.13
 packageManager: pnpm@11.2.2
+devEngines:
+  runtime:
+    name: node
+    version: 24.x
+    onFail: download

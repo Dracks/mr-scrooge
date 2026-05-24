@@ -61,6 +61,15 @@ export function useClipboardCopy() {
         }, 5000);
     }, []);
 
+    React.useEffect(() => {
+        return () => {
+            if (timeoutRef.current !== undefined) {
+                clearTimeout(timeoutRef.current);
+                timeoutRef.current = undefined;
+            }
+        };
+    }, []);
+
     const handleCopy = React.useCallback(
         (value: string) => {
             try {
