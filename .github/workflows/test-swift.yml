@@ -68,8 +68,13 @@ jobs:
       - name: Run tests
         run: swift test --no-parallel --skip-build --enable-code-coverage
       - name: Prepare Coverage
-        run:
-            llvm-cov export -format="lcov" .build/debug/mr-scroogePackageTests.xctest -instr-profile .build/debug/codecov/default.profdata > info.lcov
+        run: |
+            XCTEST=$(find .build/debug -name "*.xctest" -type f 2>/dev/null | head -1)
+            if [ -z "$XCTEST" ]; then
+              XCTEST=$(find .build/debug -name "*PackageTests*" -type f 2>/dev/null | head -1)
+            fi
+            echo "Using test binary: $XCTEST"
+            llvm-cov export -format="lcov" "$XCTEST" -instr-profile .build/debug/codecov/default.profdata > info.lcov
       - uses: codecov/codecov-action@v5
         with:
             token: ${{ secrets.CODECOV_TOKEN }}
