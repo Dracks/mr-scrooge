@@ -49,12 +49,11 @@ export const EditOAuthApp: React.FC<{ app: OAuthClient; onDelete: () => void }> 
 
     return (
         <Box>
-            <Box pad={{ bottom: 'small' }}>
-                <Text size="small" color="text-weak">
-                    Client ID: {app.client_id}
-                </Text>
-            </Box>
             <Heading level={2}>Editing OAuth Application</Heading>
+            <Box pad={{ bottom: 'small', left: 'small' }}>
+                <Text>Client ID</Text>
+                <Text weight="bold"> {app.client_id}</Text>
+            </Box>
             <Form<OAuthAppFormData>
                 value={appData}
                 onChange={setAppData}

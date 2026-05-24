@@ -48,7 +48,14 @@ export const useErrorMsg = (error: unknown): string => {
     if (typeof error === 'object' && 'code' in error && 'message' in error) {
         return `${String(error.code)}: ${String(error.message)}`;
     }
-    return `Type error invalid for ${JSON.stringify(error)}`;
+    let safe: string;
+    try {
+        safe = JSON.stringify(error);
+    } catch {
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string
+        safe = String(error);
+    }
+    return `Type error invalid for ${safe}`;
 };
 export const ErrorBox: React.FC<{ title: string; error: unknown }> = ({ title, error }) => {
     const message = useErrorMsg(error);

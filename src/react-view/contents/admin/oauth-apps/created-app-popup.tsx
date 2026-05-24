@@ -11,7 +11,7 @@ interface CreatedAppPopupProps {
 }
 
 export const CreatedAppPopup: React.FC<CreatedAppPopupProps> = ({ app, onContinue }) => {
-    const { handleCopy: copyClientId, status: clientIdStatus, supported } = useClipboardCopy();
+    const { handleCopy: copyClientId, status: clientIdStatus } = useClipboardCopy();
     const { handleCopy: copySecret, status: secretStatus } = useClipboardCopy();
 
     return (
@@ -24,15 +24,13 @@ export const CreatedAppPopup: React.FC<CreatedAppPopupProps> = ({ app, onContinu
                         <TextInput readOnly value={app.client_id} />
                         <Button
                             label="Copy"
-                            disabled={!supported}
+                            disabled={clientIdStatus.state === 'disabled'}
                             onClick={() => {
                                 copyClientId(app.client_id);
                             }}
                         />
                     </Box>
-                    {supported
-                        ? <CopyStatusLine status={clientIdStatus} />
-                        : <Text size="small" color="status-warning">Copy disabled — insecure connection</Text>}
+                    <CopyStatusLine status={clientIdStatus} />
                 </Box>
                 <Text weight="bold">Client Secret</Text>
                 <Box gap="xsmall">
@@ -40,15 +38,13 @@ export const CreatedAppPopup: React.FC<CreatedAppPopupProps> = ({ app, onContinu
                         <TextInput readOnly value={app.secret} />
                         <Button
                             label="Copy"
-                            disabled={!supported}
+                            disabled={secretStatus.state === 'disabled'}
                             onClick={() => {
                                 copySecret(app.secret);
                             }}
                         />
                     </Box>
-                    {supported
-                        ? <CopyStatusLine status={secretStatus} />
-                        : <Text size="small" color="status-warning">Copy disabled — insecure connection</Text>}
+                    <CopyStatusLine status={secretStatus} />
                 </Box>
                 <WarningNotice>Save this secret — you won't be able to see it again</WarningNotice>
                 <Button primary label="Continue" onClick={onContinue} />
