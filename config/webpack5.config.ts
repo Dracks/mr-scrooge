@@ -1,8 +1,8 @@
 import { Configuration } from "webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import NodePolyfillPlugin from 'node-polyfill-webpack-plugin'
-import * as path from "path";
-// const path = require("path");
+//import * as path from "path";
+const path = require("path");
 
 const rootDir = __dirname + "/../src";
 const viewDir = path.resolve(rootDir, "react-view");

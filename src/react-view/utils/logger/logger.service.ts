@@ -1,3 +1,3 @@
-import { EventEmitter } from 'events';
+import { EventEmitterClass } from '../events.browser';
 
-export class LoggerService extends EventEmitter {}
+export class LoggerService extends EventEmitterClass {}

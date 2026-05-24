@@ -1,5 +1,4 @@
-import { EventEmitter } from 'events';
-
+import { EventEmitterClass } from '../events.browser';
 import { ILogger, LogEvent, LogFn, LogLevel } from './logger.types';
 
 export const getLogEvent = (level: LogLevel) => `log-${level}`;
@@ -11,7 +10,7 @@ export class Logger implements ILogger {
 
     error: LogFn;
 
-    constructor(emitter: EventEmitter, ctx?: string) {
+    constructor(emitter: EventEmitterClass, ctx?: string) {
         const buildLog: (level: LogLevel) => LogFn = level => {
             const eventName = getLogEvent(level);
             return (msg, data) => {
