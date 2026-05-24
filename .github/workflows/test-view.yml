@@ -12,8 +12,8 @@ on:
         - main
 
 env:
-  NODE_VERSION: 20
-  PNPM_VERSION: 10.7.1
+  NODE_VERSION: 24
+  PNPM_VERSION: 11.2.2
 
 jobs:
   checks:
@@ -37,10 +37,9 @@ jobs:
                   cmd: build:view
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         name: Install pnpm
         with:
-          run_install: false
           version: ${{ env.PNPM_VERSION }}
 
       - name: Install Node.js

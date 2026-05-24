@@ -11,6 +11,7 @@ import { Graphs } from './graphs/graphs';
 import Headers from './headers';
 import { Imports } from './imports/imports';
 import { LabelsList } from './labels/labels-list';
+import { OAuthAuthorization } from './oauth/authorization';
 import { EditProfile } from './profile/edit-profile';
 import { RulesLoaded } from './rules/rule-loaded';
 import { TransactionList } from './transaction-list/transaction-list';
@@ -28,6 +29,7 @@ const RestrictedContent: React.FC = () => (
                 <Route path="/profile" element={<EditProfile />} />
                 <Route path="/admin/*" element={<AdminContent />} />
                 <Route path="/rule/*" element={<RulesLoaded />} />
+                <Route path="/auth" element={<OAuthAuthorization />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </Main>

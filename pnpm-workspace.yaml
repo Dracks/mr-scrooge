@@ -1,3 +1,8 @@
+allowBuilds:
+  '@parcel/watcher': true
+  msw: true
+  node-sass: true
+  unrs-resolver: true
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - msw

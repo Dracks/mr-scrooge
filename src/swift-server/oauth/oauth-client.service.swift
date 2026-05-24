@@ -67,6 +67,43 @@ final class OAuthClientService: ServiceWithDb, @unchecked Sendable {
 		return .success
 	}
 
+	// MARK: - Client Update
+
+	enum UpdateClientResult {
+		case success(Components.Schemas.OAuthClient)
+		case notFound
+	}
+
+	// Update an OAuth client
+	func updateClient(
+		clientId: UUID,
+		name: String?,
+		description: String?,
+		redirectUris: [String]?,
+		scopes: [Scope]?
+	) async throws -> UpdateClientResult {
+		guard let oauthApp = try await OAuthApp.find(clientId, on: db) else {
+			return .notFound
+		}
+
+		if let name = name {
+			oauthApp.name = name
+		}
+		if let description = description {
+			oauthApp.description = description
+		}
+		if let redirectUris = redirectUris {
+			oauthApp.redirectUris = redirectUris
+		}
+		if let scopes = scopes {
+			oauthApp._scopes = scopes.map { $0.rawValue }
+		}
+
+		try await oauthApp.update(on: db)
+
+		return .success(try .init(oauthApp))
+	}
+
 	// MARK: - Client Listing
 
 	// List OAuth clients with pagination
