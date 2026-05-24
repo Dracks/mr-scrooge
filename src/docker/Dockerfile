@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM ghcr.io/pnpm/pnpm:11.2.2 AS client-build
+FROM --platform=$BUILDPLATFORM node:24-slim AS client-build
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
@@ -6,6 +6,8 @@ COPY src /home/app/src
 COPY package.yaml pnpm-lock.yaml pnpm-workspace.yaml tsconfig.json /home/app/
 COPY config /home/app/config
 WORKDIR /home/app
+RUN pnpm runtime set node 24 -g
+ENV PATH="$PNPM_HOME/nodejs/24/bin:$PATH"
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN npx pnpm run build:view
 
