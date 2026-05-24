@@ -79,3 +79,6 @@ devEngines:
     name: node
     version: 24.x
     onFail: download
+  packageManager:
+    name: pnpm
+    version: 11.2.2
