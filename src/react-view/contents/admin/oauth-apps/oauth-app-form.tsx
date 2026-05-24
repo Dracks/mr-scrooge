@@ -70,7 +70,7 @@ export const OAuthAppForm: React.FC<OAuthAppFormProps> = ({ value, onChange, err
                     }}
                 />
             </FormField>
-            <FormField label="Redirect URIs (one per line)">
+            <FormField label="Redirect URIs (one per line)" error={errors?.redirect_uris}>
                 <TextArea
                     value={redirectUrisText}
                     onChange={e => {

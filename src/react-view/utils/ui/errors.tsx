@@ -32,7 +32,7 @@ export class WrapperApiError extends Error {
     }
 }
 
-const useErrorMsg = (error: unknown): string => {
+export const useErrorMsg = (error: unknown): string => {
     if (error === null || error === undefined) {
         return 'Unknown error';
     }

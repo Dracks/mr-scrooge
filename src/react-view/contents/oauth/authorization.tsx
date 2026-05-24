@@ -35,7 +35,18 @@ const validateRequest = (
         client_id: z.string(),
         redirect_uri: z.enum(client.redirect_uris),
         response_type: z.literal('code'),
-        scope: z.enum(client.scopes).optional(),
+        scope: z
+        .string()
+        .optional()
+        .refine(
+            value =>
+                value === undefined ||
+                value
+                    .split(' ')
+                    .filter(Boolean)
+                    .every(scope => client.scopes.includes(scope as OAuthScope)),
+            { message: 'Invalid scope requested' },
+        ),
         state: z.string().optional(),
     });
 

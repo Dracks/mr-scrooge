@@ -22,7 +22,7 @@ interface RegisterClientBody {
 const appFormSchema = z.object({
     name: z.string().min(1, { message: 'Name is required' }),
     description: z.string().optional(),
-    redirect_uris: z.array(z.string()),
+    redirect_uris: z.array(z.url()),
     scopes: z.array(z.enum(OAUTH_SCOPES)),
 });
 
@@ -62,8 +62,12 @@ export const NewOAuthApp: React.FC<{ reload: () => void }> = ({ reload }) => {
             const errors: Record<string, string> = {};
             for (const issue of result.error.issues) {
                 const path = issue.path.join('.');
+                const topKey = String(issue.path[0]);
                 if (!errors[path]) {
                     errors[path] = issue.message;
+                }
+                if (topKey !== path && !errors[topKey]) {
+                    errors[topKey] = issue.message;
                 }
             }
             setFieldErrors(errors);
