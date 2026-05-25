@@ -1,20 +1,17 @@
 import { Anchor, Box, Layer, Nav, Sidebar } from 'grommet';
 import { DocumentUpload, Icon, StatusCritical, StatusGood, StatusWarning, Trash } from 'grommet-icons';
 import React from 'react';
-import { useAsyncCallback } from 'react-async-hook';
 import { Route, Routes, useNavigate, useParams } from 'react-router';
 
 import { useApiClient } from '../../api/client';
 import { FileImport } from '../../api/models';
 import { usePagination } from '../../api/pagination';
-import { useLogger } from '../../utils/logger/logger.context';
-import { catchAndLog } from '../../utils/promises';
 import { EventTypes, useEventEmitter } from '../../utils/providers/event-emitter.provider';
 import { AnchorLink } from '../../utils/ui/anchor-link';
 import Loading from '../../utils/ui/loading';
 import NotFound from '../extra/not-found';
 import { ImportDetails } from './details';
-import { ImportBulkDropPopup } from './imports-drop-popup';
+import { ImportBulkDropPopup } from './imports-bulk-drop-popup/imports-bulk-drop-popup';
 import { ImportWizard } from './wizard/import-wizard';
 
 const STATUS_MAP_ICON: Record<FileImport['status'], { color: string; icon: Icon }> = {
@@ -23,14 +20,14 @@ const STATUS_MAP_ICON: Record<FileImport['status'], { color: string; icon: Icon 
     warning: { icon: StatusWarning, color: 'status-warning' },
 };
 
-const ImportDetailsSwitcher: React.FC<{ importsList: FileImport[]; onDelete: (id: string) => void }> = ({
-    importsList,
-    onDelete,
-}) => {
+const ImportDetailsSwitcher: React.FC<{
+    importsList: FileImport[];
+    onDeleted: (id: string) => void;
+}> = ({ importsList, onDeleted }) => {
     const { id } = useParams();
     const statusList = importsList.find(status => status.id === id);
 
-    return statusList ? <ImportDetails status={statusList} onDelete={onDelete} /> : <NotFound />;
+    return statusList ? <ImportDetails status={statusList} onDeleted={onDeleted} /> : <NotFound />;
 };
 
 const ImportsList: React.FC<{ importsList: FileImport[] }> = ({ importsList }) => {
@@ -58,7 +55,6 @@ const ImportsList: React.FC<{ importsList: FileImport[] }> = ({ importsList }) =
 };
 
 export const Imports: React.FC = () => {
-    const logger = useLogger('Imports');
     const navigate = useNavigate();
     const client = useApiClient();
     const paginator = usePagination(
@@ -76,14 +72,6 @@ export const Imports: React.FC = () => {
 
     const [showBulkPopup, setShowBulkPopup] = React.useState(false);
 
-    const deleteImport = useAsyncCallback(async (id: string) => {
-        const response = await client.DELETE('/imports/{id}', { params: { path: { id } } });
-        if (response.response.status === 200) {
-            paginator.deleteElement({ id } as FileImport);
-            catchAndLog(Promise.resolve(navigate('/import')), 'Navigating after import delete', logger);
-        }
-    });
-
     React.useEffect(() => {
         const unsubscribe = eventEmitter.subscribe(EventTypes.OnFileUploaded, () => {
             paginator.reset(true);
@@ -97,20 +85,17 @@ export const Imports: React.FC = () => {
             <Sidebar background="neutral-2">
                 <Nav>
                     <Box pad="small">
-                        <AnchorLink icon={<DocumentUpload />} to="">
-                            Wizard
-                        </AnchorLink>
+                        <AnchorLink icon={<DocumentUpload />} to="" label="Wizard" />
                     </Box>
                     <Box pad="small">
                         <Anchor
                             icon={<Trash />}
+                            label="Drop old imports"
                             onClick={() => {
                                 setShowBulkPopup(true);
                             }}
                             data-testid="drop-old-imports-button"
-                        >
-                            Drop old imports
-                        </Anchor>
+                        />
                     </Box>
                     <ImportsList importsList={importsList} />
                 </Nav>
@@ -123,8 +108,9 @@ export const Imports: React.FC = () => {
                         element={
                             <ImportDetailsSwitcher
                                 importsList={importsList}
-                                onDelete={id => {
-                                    catchAndLog(deleteImport.execute(id), 'Deleting import', logger);
+                                onDeleted={id => {
+                                    paginator.deleteElement({ id } as FileImport);
+                                    void navigate('/import');
                                 }}
                             />
                         }

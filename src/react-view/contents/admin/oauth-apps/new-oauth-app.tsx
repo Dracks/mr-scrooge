@@ -2,15 +2,15 @@ import { Box, Button, Form, Heading } from 'grommet';
 import React from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 import { useNavigate } from 'react-router';
-import { z } from 'zod';
 
 import { useApiClient } from '../../../api/client';
-import { OAUTH_SCOPES, OAuthClientWithSecret, OAuthScope } from '../../../api/models';
+import { OAuthClientWithSecret, OAuthScope } from '../../../api/models';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { catchAndLog } from '../../../utils/promises';
-import { ErrorBox, WrapperApiError } from '../../../utils/ui/errors';
+import { WrapperApiError } from '../../../utils/ui/errors/api-error-response';
+import { SmallErrorBox } from '../../../utils/ui/errors/small-error-box';
 import { CreatedAppPopup } from './created-app-popup';
-import { getOAuthAppFormData, OAuthAppForm, OAuthAppFormData } from './oauth-app-form';
+import { getOAuthAppFormData, OAuthAppForm, OAuthAppFormData, validateAppForm } from './oauth-app-form';
 
 interface RegisterClientBody {
     name: string;
@@ -18,13 +18,6 @@ interface RegisterClientBody {
     redirect_uris: string[];
     scopes: OAuthScope[];
 }
-
-const appFormSchema = z.object({
-    name: z.string().min(1, { message: 'Name is required' }),
-    description: z.string().optional(),
-    redirect_uris: z.array(z.url()),
-    scopes: z.array(z.enum(OAUTH_SCOPES)),
-});
 
 export const NewOAuthApp: React.FC<{ reload: () => void }> = ({ reload }) => {
     const logger = useLogger('NewOAuthApp');
@@ -57,19 +50,8 @@ export const NewOAuthApp: React.FC<{ reload: () => void }> = ({ reload }) => {
 
     const handleSubmit = async () => {
         setFieldErrors({});
-        const result = appFormSchema.safeParse(appData);
-        if (!result.success) {
-            const errors: Record<string, string> = {};
-            for (const issue of result.error.issues) {
-                const path = issue.path.join('.');
-                const topKey = String(issue.path[0]);
-                if (!errors[path]) {
-                    errors[path] = issue.message;
-                }
-                if (topKey !== path && !errors[topKey]) {
-                    errors[topKey] = issue.message;
-                }
-            }
+        const errors = validateAppForm(appData);
+        if (Object.keys(errors).length > 0) {
             setFieldErrors(errors);
             return;
         }
@@ -91,7 +73,7 @@ export const NewOAuthApp: React.FC<{ reload: () => void }> = ({ reload }) => {
                 }}
             >
                 <OAuthAppForm value={appData} onChange={setAppData} errors={fieldErrors} />
-                {createApp.error && <ErrorBox title="Server error" error={createApp.error} />}
+                {createApp.error && <SmallErrorBox error={createApp.error} />}
                 <Button primary label="Create" type="submit" disabled={createApp.loading} />
             </Form>
             {createdApp && <CreatedAppPopup app={createdApp} onContinue={handleContinue} />}

@@ -7,7 +7,9 @@ import { ApiUUID, OAuthClient, OAuthScope } from '../../../api/models';
 import { useLogger } from '../../../utils/logger/logger.context';
 import { catchAndLog } from '../../../utils/promises';
 import { ConfirmationButton } from '../../../utils/ui/confirmation-button';
-import { OAuthAppForm, OAuthAppFormData } from './oauth-app-form';
+import { WrapperApiError } from '../../../utils/ui/errors/api-error-response';
+import { SmallErrorBox } from '../../../utils/ui/errors/small-error-box';
+import { OAuthAppForm, OAuthAppFormData, validateAppForm } from './oauth-app-form';
 
 interface UpdateClientBody {
     name?: string;
@@ -27,17 +29,21 @@ export const EditOAuthApp: React.FC<{ app: OAuthClient; onDelete: () => void }> 
     const logger = useLogger('EditOAuthApp');
     const client = useApiClient();
     const [appData, setAppData] = React.useState<OAuthAppFormData>(getFormDataFromApp(app));
+    const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({});
 
     React.useEffect(() => {
         setAppData(getFormDataFromApp(app));
     }, [app.client_id]);
 
     const updateApp = useAsyncCallback(async (clientId: ApiUUID, body: UpdateClientBody) => {
-        const { data } = await client.PATCH('/oauth/clients/{clientId}', {
+        const result = await client.PATCH('/oauth/clients/{clientId}', {
             body,
             params: { path: { clientId } },
         });
-        return data;
+        if (result.error) {
+            throw new WrapperApiError(result.error);
+        }
+        return result.data;
     });
 
     const deleteApp = useAsyncCallback(async (clientId: ApiUUID) => {
@@ -46,6 +52,21 @@ export const EditOAuthApp: React.FC<{ app: OAuthClient; onDelete: () => void }> 
         });
         onDelete();
     });
+
+    const handleSubmit = async () => {
+        setFieldErrors({});
+        const errors = validateAppForm(appData);
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(errors);
+            return;
+        }
+        await updateApp.execute(app.client_id, {
+            name: appData.name,
+            description: appData.description,
+            redirect_uris: appData.redirect_uris,
+            scopes: appData.scopes,
+        });
+    };
 
     return (
         <Box>
@@ -56,21 +77,16 @@ export const EditOAuthApp: React.FC<{ app: OAuthClient; onDelete: () => void }> 
             </Box>
             <Form<OAuthAppFormData>
                 value={appData}
-                onChange={setAppData}
+                onChange={newValue => {
+                    setFieldErrors({});
+                    setAppData(newValue);
+                }}
                 onSubmit={() => {
-                    catchAndLog(
-                        updateApp.execute(app.client_id, {
-                            name: appData.name,
-                            description: appData.description,
-                            redirect_uris: appData.redirect_uris,
-                            scopes: appData.scopes,
-                        }),
-                        'Error updating OAuth app',
-                        logger,
-                    );
+                    catchAndLog(handleSubmit(), 'Error updating OAuth app', logger);
                 }}
             >
-                <OAuthAppForm value={appData} onChange={setAppData} />
+                <OAuthAppForm value={appData} onChange={setAppData} errors={fieldErrors} />
+                {updateApp.error && <SmallErrorBox error={updateApp.error} />}
                 <Box direction="row" gap="small">
                     <Button primary label="Save" type="submit" disabled={updateApp.loading} />
                     <ConfirmationButton

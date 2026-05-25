@@ -1,7 +1,10 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { setupServer, SetupServerApi } from 'msw/node';
 import React from 'react';
 
+import { ProvideApi } from '../../api/client';
 import { FileImport } from '../../api/models';
+import { http } from '../../utils/test/set-up-server';
 import { ImportDetails } from './details';
 
 const baseImport: FileImport = {
@@ -23,20 +26,43 @@ const baseImport: FileImport = {
 };
 
 describe('ImportDetails', () => {
+    let server: SetupServerApi;
+
+    beforeEach(() => {
+        server = setupServer();
+        server.listen();
+        window.scrollTo = jest.fn();
+    });
+
+    afterEach(() => {
+        server.close();
+    });
+
     it('renders file name and creation date', () => {
-        render(<ImportDetails status={baseImport} onDelete={jest.fn()} />);
+        render(<ImportDetails status={baseImport} onDeleted={jest.fn()} />);
         expect(screen.getByText('test.csv')).toBeTruthy();
+        expect(screen.getByText(baseImport.createdAt)).toBeTruthy();
     });
 
     it('renders table with import rows', () => {
-        render(<ImportDetails status={baseImport} onDelete={jest.fn()} />);
+        render(<ImportDetails status={baseImport} onDeleted={jest.fn()} />);
         expect(screen.getByText('Payment')).toBeTruthy();
         expect(screen.getByText('OK')).toBeTruthy();
     });
 
-    it('calls onDelete with the import id on confirmation', async () => {
-        const onDelete = jest.fn();
-        render(<ImportDetails status={baseImport} onDelete={onDelete} />);
+    it('calls onDeleted with the import id on successful deletion', async () => {
+        server.use(
+            http.delete('/imports/{id}', ({ response }) => {
+                return response.untyped(new Response('true'));
+            }),
+        );
+
+        const onDeleted = jest.fn();
+        render(
+            <ProvideApi server="http://localhost">
+                <ImportDetails status={baseImport} onDeleted={onDeleted} />
+            </ProvideApi>,
+        );
 
         fireEvent.click(screen.getByTestId('confirmation-button'));
         await Promise.resolve();
@@ -46,7 +72,9 @@ describe('ImportDetails', () => {
             await Promise.resolve();
         });
 
-        expect(onDelete).toHaveBeenCalledWith('import-1');
+        await waitFor(() => {
+            expect(onDeleted).toHaveBeenCalledWith('import-1');
+        });
     });
 
     it('shows error notification for error status', () => {
@@ -55,7 +83,7 @@ describe('ImportDetails', () => {
             status: 'error',
             description: 'Something went wrong',
         };
-        render(<ImportDetails status={errorImport} onDelete={jest.fn()} />);
+        render(<ImportDetails status={errorImport} onDeleted={jest.fn()} />);
         expect(screen.getByText('Error')).toBeTruthy();
         expect(screen.getByText('Something went wrong')).toBeTruthy();
     });
@@ -66,7 +94,7 @@ describe('ImportDetails', () => {
             status: 'warning',
             description: 'Warning message',
         };
-        render(<ImportDetails status={warningImport} onDelete={jest.fn()} />);
+        render(<ImportDetails status={warningImport} onDeleted={jest.fn()} />);
         expect(screen.getByText('Warning')).toBeTruthy();
         expect(screen.getByText('Warning message')).toBeTruthy();
     });

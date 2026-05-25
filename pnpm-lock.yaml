@@ -237,6 +237,9 @@ importers:
       openapi-typescript-fetch:
         specifier: 2.2.1
         version: 2.2.1
+      openapi-typescript-helpers:
+        specifier: 0.0.15
+        version: 0.0.15
       react:
         specifier: 19.2.0
         version: 19.2.0

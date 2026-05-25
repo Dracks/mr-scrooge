@@ -2,7 +2,7 @@ import { Text } from 'grommet';
 import React from 'react';
 
 import { useLogger } from '../logger/logger.context';
-import { useErrorMsg } from './errors';
+import { useErrorMsg } from './errors/use-error-msg';
 
 export type CopyState =
     | { state: 'idle' }

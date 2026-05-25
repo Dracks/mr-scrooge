@@ -4,10 +4,10 @@ import { subDays, subMonths } from 'date-fns';
 import { setupServer, SetupServerApi } from 'msw/node';
 import React from 'react';
 
-import { ProvideApi } from '../../api/client';
-import { FileImport } from '../../api/models';
-import { http } from '../../utils/test/set-up-server';
-import { ImportBulkDropPopup } from './imports-drop-popup';
+import { ProvideApi } from '../../../api/client';
+import { FileImport } from '../../../api/models';
+import { http } from '../../../utils/test/set-up-server';
+import { ImportBulkDropPopup } from './imports-bulk-drop-popup';
 
 const createImport = (overrides: Partial<FileImport> = {}): FileImport => ({
     id: `import-${String(Math.random()).slice(2)}`,
@@ -188,5 +188,41 @@ describe('ImportBulkDropPopup', () => {
         await waitFor(() => {
             expect(screen.getByText(/2 of 2 deleted/)).toBeTruthy();
         });
+    });
+
+    it('shows errors when DELETE fails and does not call onDone', async () => {
+        server.use(
+            http.delete('/imports/{id}', ({ response }) => {
+                return response.untyped(
+                    new Response(JSON.stringify({ code: 'SERVER_ERR', message: 'Server error' }), { status: 500 }),
+                );
+            }),
+        );
+
+        const onDone = jest.fn();
+        const onClose = jest.fn();
+
+        const oldImport = createImport({
+            id: 'imp-1',
+            createdAt: subMonths(new Date(), 2).toISOString(),
+        });
+
+        renderPopup([oldImport], onClose, onDone);
+
+        fireEvent.click(screen.getByRole('checkbox', { name: /Select All/ }));
+
+        await act(async () => {
+            fireEvent.click(screen.getByRole('button', { name: /Delete Selected/ }));
+        });
+
+        await waitFor(() => {
+            expect(screen.getByText(/SERVER_ERR/)).toBeTruthy();
+            expect(screen.getByText(/Server error/)).toBeTruthy();
+        });
+
+        expect(onDone).not.toHaveBeenCalled();
+
+        fireEvent.click(screen.getByRole('button', { name: /Close/ }));
+        expect(onClose).toHaveBeenCalled();
     });
 });

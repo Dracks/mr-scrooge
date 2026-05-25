@@ -1,12 +1,19 @@
 import { Box, Heading, Notification, Table, TableBody, TableCell, TableHeader, TableRow, Text } from 'grommet';
+import { ErrorResponse, ResponseObjectMap } from 'openapi-typescript-helpers';
 import React from 'react';
+import { useAsyncCallback } from 'react-async-hook';
 
+import { useApiClient } from '../../api/client';
+import { paths } from '../../api/generated-models';
 import { FileImport } from '../../api/models';
 import { ConfirmationButton } from '../../utils/ui/confirmation-button';
+import { WrapperApiError } from '../../utils/ui/errors/api-error-response';
+import { isType } from '../../utils/ui/errors/is-type';
+import { SmallErrorBox } from '../../utils/ui/errors/small-error-box';
 
 interface ImportDetailsArgs {
     status: FileImport;
-    onDelete: (id: string) => void;
+    onDeleted: (id: string) => void;
 }
 
 const DetailsMessage: React.FC<{ description: string; status: FileImport['status'] }> = ({ description, status }) => {
@@ -20,7 +27,20 @@ const DetailsMessage: React.FC<{ description: string; status: FileImport['status
     }
 };
 
-export const ImportDetails: React.FC<ImportDetailsArgs> = ({ status, onDelete }) => {
+export const ImportDetails: React.FC<ImportDetailsArgs> = ({ status, onDeleted }) => {
+    const client = useApiClient();
+    const deleteImport = useAsyncCallback(async (id: string) => {
+        const result = await client.DELETE('/imports/{id}', { params: { path: { id } } });
+        if (result.response.ok) {
+            onDeleted(id);
+            return;
+        }
+        if (isType<ErrorResponse<ResponseObjectMap<paths['/imports/{id}']['delete']>>>(result.error)) {
+            throw new WrapperApiError(result.error);
+        }
+        throw new Error(`HTTP ${String(result.response.status)}: ${result.response.statusText}`);
+    });
+
     const { rows } = status;
     return (
         <Box fill pad="small">
@@ -31,12 +51,13 @@ export const ImportDetails: React.FC<ImportDetailsArgs> = ({ status, onDelete })
                     label="Drop"
                     confirmationText="Are you sure you want to delete this import?"
                     onConfirm={() => {
-                        onDelete(status.id);
+                        void deleteImport.execute(status.id);
                     }}
                 />
             </Box>
+            {deleteImport.error ? <SmallErrorBox error={deleteImport.error} /> : null}
             <Text>{status.createdAt}</Text>
-            {status.description && <DetailsMessage description={status.description} status={status.status} />}
+            {status.description ? <DetailsMessage description={status.description} status={status.status} /> : null}
             <Table>
                 <TableHeader>
                     <TableRow>

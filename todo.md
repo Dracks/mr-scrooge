@@ -70,3 +70,4 @@
   * [x] Command to change the password
   * [ ] Reset my password
 * [x] Move services to dependency injection (in the app or in the context)
+* [ ] api errors in oauth-app-api-impl are reused, and they should be one use only
