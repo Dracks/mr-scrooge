@@ -6,7 +6,7 @@ struct OAuthAppsMigration: AsyncMigration {
 	func prepare(on database: Database) async throws {
 		// Create oauth_apps table
 		try await database.schema("oauth_apps")
-			.field("client_id", .uuid, .required, .identifier(auto: true))
+			.field("client_id", .uuid, .required, .identifier(auto: false))
 			.field("name", .string, .required)
 			.field("description", .string)
 			.field("client_secret_hash", .string, .required)
