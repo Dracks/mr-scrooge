@@ -53,6 +53,11 @@ export const EditOAuthApp: React.FC<{ app: OAuthClient; onDelete: () => void }> 
         onDelete();
     });
 
+    const handleChange = React.useCallback((newValue: OAuthAppFormData) => {
+        setFieldErrors({});
+        setAppData(newValue);
+    }, []);
+
     const handleSubmit = async () => {
         setFieldErrors({});
         const errors = validateAppForm(appData);
@@ -77,15 +82,12 @@ export const EditOAuthApp: React.FC<{ app: OAuthClient; onDelete: () => void }> 
             </Box>
             <Form<OAuthAppFormData>
                 value={appData}
-                onChange={newValue => {
-                    setFieldErrors({});
-                    setAppData(newValue);
-                }}
+                onChange={handleChange}
                 onSubmit={() => {
                     catchAndLog(handleSubmit(), 'Error updating OAuth app', logger);
                 }}
             >
-                <OAuthAppForm value={appData} onChange={setAppData} errors={fieldErrors} />
+                <OAuthAppForm value={appData} onChange={handleChange} errors={fieldErrors} />
                 {updateApp.error && <SmallErrorBox error={updateApp.error} />}
                 <Box direction="row" gap="small">
                     <Button primary label="Save" type="submit" disabled={updateApp.loading} />

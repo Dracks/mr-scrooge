@@ -17,10 +17,12 @@ export const ImportBulkDropProgress: React.FC<ImportBulkDropProgressProps> = ({ 
     const [current, setCurrent] = useState(0);
     const [errors, setErrors] = useState<string[]>([]);
     const total = ids.size;
+    const onDoneRef = useRef(onDone);
+    onDoneRef.current = onDone;
 
     useEffect(() => {
         if (total === 0) {
-            onDone();
+            onDoneRef.current();
             return;
         }
 
@@ -52,7 +54,7 @@ export const ImportBulkDropProgress: React.FC<ImportBulkDropProgressProps> = ({ 
             if (mountedRef.current) {
                 setErrors(newErrors);
                 if (newErrors.length === 0) {
-                    onDone();
+                    onDoneRef.current();
                 }
             }
         };
@@ -62,7 +64,7 @@ export const ImportBulkDropProgress: React.FC<ImportBulkDropProgressProps> = ({ 
         return () => {
             mountedRef.current = false;
         };
-    }, []);
+    }, [client, ids, total]);
 
     return (
         <>

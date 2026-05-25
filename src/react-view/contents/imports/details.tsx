@@ -51,6 +51,7 @@ export const ImportDetails: React.FC<ImportDetailsArgs> = ({ status, onDeleted }
                     label="Drop"
                     confirmationText="Are you sure you want to delete this import?"
                     onConfirm={() => {
+                        if (deleteImport.loading) return;
                         void deleteImport.execute(status.id);
                     }}
                 />

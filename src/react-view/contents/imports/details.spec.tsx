@@ -77,6 +77,38 @@ describe('ImportDetails', () => {
         });
     });
 
+    it('shows error message and does not call onDeleted when DELETE fails', async () => {
+        server.use(
+            http.delete('/imports/{id}', ({ response }) => {
+                return response.untyped(
+                    new Response(JSON.stringify({ code: 'SERVER_ERR', message: 'Server error' }), { status: 500 }),
+                );
+            }),
+        );
+
+        const onDeleted = jest.fn();
+        render(
+            <ProvideApi server="http://localhost">
+                <ImportDetails status={baseImport} onDeleted={onDeleted} />
+            </ProvideApi>,
+        );
+
+        fireEvent.click(screen.getByTestId('confirmation-button'));
+        await Promise.resolve();
+
+        await act(async () => {
+            fireEvent.click(screen.getByTestId('confirmation-button-yes'));
+            await Promise.resolve();
+        });
+
+        await waitFor(() => {
+            expect(screen.getByText(/SERVER_ERR/)).toBeTruthy();
+            expect(screen.getByText(/Server error/)).toBeTruthy();
+        });
+
+        expect(onDeleted).not.toHaveBeenCalled();
+    });
+
     it('shows error notification for error status', () => {
         const errorImport: FileImport = {
             ...baseImport,
