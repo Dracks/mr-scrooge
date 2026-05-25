@@ -64,6 +64,7 @@ dependencies:
   grommet-icons: 4.14.0
   openapi-fetch: 0.15.0
   openapi-typescript-fetch: 2.2.1
+  openapi-typescript-helpers: 0.0.15
   react: 19.2.0
   react-async-hook: 4.0.0
   react-dom: 19.2.0

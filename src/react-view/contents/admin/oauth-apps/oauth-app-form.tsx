@@ -1,5 +1,6 @@
 import { Box, CheckBox, FormField, TextArea, TextInput } from 'grommet';
 import React from 'react';
+import { z } from 'zod';
 
 import { OAUTH_SCOPES, OAuthScope } from '../../../api/models';
 
@@ -102,3 +103,28 @@ export const getOAuthAppFormData = (): OAuthAppFormData => ({
     redirect_uris: [],
     scopes: [],
 });
+
+export const appFormSchema = z.object({
+    name: z.string().min(1, { message: 'Name is required' }),
+    description: z.string().optional(),
+    redirect_uris: z.array(z.url()),
+    scopes: z.array(z.enum(OAUTH_SCOPES)),
+});
+
+export const validateAppForm = (data: OAuthAppFormData): Record<string, string> => {
+    const result = appFormSchema.safeParse(data);
+    if (result.success) return {};
+
+    const errors: Record<string, string> = {};
+    for (const issue of result.error.issues) {
+        const path = issue.path.join('.');
+        const topKey = String(issue.path[0]);
+        if (!errors[path]) {
+            errors[path] = issue.message;
+        }
+        if (topKey !== path && !errors[topKey]) {
+            errors[topKey] = issue.message;
+        }
+    }
+    return errors;
+};

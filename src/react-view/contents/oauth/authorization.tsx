@@ -8,7 +8,8 @@ import { useApiClient } from '../../api/client';
 import { OAuthAuthorizationRequest, OAuthClient, OAuthScope } from '../../api/models';
 import { useLogger } from '../../utils/logger/logger.context';
 import { catchAndLog } from '../../utils/promises';
-import { ErrorBox, ValidationErrorsBox } from '../../utils/ui/errors';
+import { ErrorBox } from '../../utils/ui/errors/error-box';
+import { ValidationErrorsBox } from '../../utils/ui/errors/validation-errors-box';
 import { LoadingPage } from '../../utils/ui/loading';
 
 const SCOPE_INFO: Record<OAuthScope, string> = {

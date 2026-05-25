@@ -8,4 +8,5 @@ Enzyme.configure({ adapter: new EnzymeAdapter() })
 jest.mock("../src/react-view/constants", () => ({
     LOGOUT_URL: "/logout",
     STATIC_URL: "",
+    DEBUG: false,
 }))
