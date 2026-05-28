@@ -54,7 +54,7 @@ interface ApiBankTransactions {
   ): BankTransaction | NotFound | NotFoundBankTransaction;
   @doc("Set a comment into the transaction")
   @route("{transactionId}")
-  @patch(#{implicitOptionality: true})
+  @patch(#{ implicitOptionality: true })
   comment(
     @path transactionId: UUIDString,
     comment?: string,

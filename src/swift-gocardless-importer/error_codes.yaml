@@ -1,0 +1,45 @@
+E10000:
+  message: "invalid database schema"
+  additional_info: "Check your database connection and schema"
+E10001:
+  message: "Session endpoint after authorization returned with anonymous user"
+E10002:
+  message: "Session endpoint after authorization returned an error"
+E10003:
+  message: "Invalid format converting data"
+  additional_info: "Data format does not match expected structure"
+E10004:
+  message: "MrScrooge User Id is not an UUID"
+E10005:
+  message: "Response from authorization invalid"
+E10006:
+  message: "OAuth token request failed"
+  additional_info: "The authorization code was invalid or expired"
+E10007:
+  message: "Some required configurations were not provided"
+
+E10008:
+  message: "Agreement didn't had an id"
+E10009:
+  message: "Requisition didn't had an id"
+
+E10010:
+  message: "Failed to obtain JWT token pair from GoCardless"
+E10011:
+  message: "Failed to refresh access token from GoCardless"
+E10012:
+  message: "Failed to retrieve supported institutions from GoCardless"
+E10013:
+  message: "Failed to retrieve institution details from GoCardless"
+E10014:
+  message: "Failed to create end user agreement with GoCardless"
+E10015:
+  message: "Failed to create requisition with GoCardless"
+E10016:
+  message: "Failed to retrieve requisition from GoCardless"
+E10017:
+  message: "Failed to retrieve account details from GoCardless"
+E10019:
+  message: "Failed to retrieve account transactions from GoCardless"
+E10018:
+  message: "Gocardless refresh token response didn't contain the access token"

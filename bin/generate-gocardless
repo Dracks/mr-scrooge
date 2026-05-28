@@ -1,0 +1,19 @@
+#!/bin/bash
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+cd "$PROJECT_ROOT"
+
+if [ -d packages/gocardless-client/Sources ]; then
+    rm -rf packages/gocardless-client/Sources
+fi
+
+npx @openapitools/openapi-generator-cli generate \
+    -i Resources/importer/gocardless.yaml \
+    -g swift6 \
+    -o "packages/gocardless-client" \
+    --additional-properties=library=vapor,projectName=GoCardlessClient
+
+echo "GoCardless types generated successfully"

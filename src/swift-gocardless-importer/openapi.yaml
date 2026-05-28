@@ -1,0 +1,2570 @@
+openapi: 3.0.0
+info:
+  title: Mr Scrooge API
+  version: 0.0.0
+tags:
+  - name: session
+  - name: user
+  - name: bank-transactions
+  - name: labels
+  - name: graphs
+  - name: imports
+  - name: rule
+  - name: oauth
+paths:
+  /bank-transactions:
+    get:
+      operationId: ApiBankTransactions_list
+      parameters:
+        - name: groupIds
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/UUIDString'
+          explode: false
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint16
+            default: 100
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BankTransaction'
+                  next:
+                    type: string
+      tags:
+        - bank-transactions
+  /bank-transactions/{transactionId}:
+    patch:
+      operationId: ApiBankTransactions_comment
+      description: Set a comment into the transaction
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankTransaction'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundBankTransaction'
+      tags:
+        - bank-transactions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+  /bank-transactions/{transactionId}/label/{labelId}:
+    post:
+      operationId: ApiBankTransactions_linkLabel
+      description: Link a label to a transaction
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+        - name: labelId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankTransaction'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/NotFoundLabel'
+                  - $ref: '#/components/schemas/NotFoundBankTransaction'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - bank-transactions
+    delete:
+      operationId: ApiBankTransactions_unlinkLabel
+      description: Remove a label from a transaction
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+        - name: labelId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankTransaction'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/Error'
+                  - $ref: '#/components/schemas/NotFoundBankTransaction'
+      tags:
+        - bank-transactions
+  /graphs:
+    post:
+      operationId: ApiGraphs_create
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Graph'
+        '403':
+          description: Forbidden, usually when using a group that the user doesn't have access to
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidGroupOwnerId'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundLabels'
+      tags:
+        - graphs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GraphInput'
+    get:
+      operationId: ApiGraphs_list
+      parameters:
+        - name: graphIds
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/UUIDString'
+          explode: false
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint16
+            default: 100
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Graph'
+                  next:
+                    type: string
+      tags:
+        - graphs
+  /graphs/{id}:
+    put:
+      operationId: ApiGraphs_update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Graph'
+        '403':
+          description: Forbidden, usually when using a group that the user doesn't have access to
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidGroupOwnerId'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/NotFoundLabels'
+                  - $ref: '#/components/schemas/Error'
+      tags:
+        - graphs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GraphInput'
+    delete:
+      operationId: ApiGraphs_delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            text/plain:
+              schema:
+                type: boolean
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - graphs
+  /graphs/{id}/move:
+    put:
+      operationId: ApiGraphs_move
+      description: Move up or down a graph inside the list of graphs for the same user group
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Graph'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - graphs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                direction:
+                  $ref: '#/components/schemas/MoveDirection'
+              required:
+                - direction
+  /groups:
+    post:
+      operationId: ApiGroup_create
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroup'
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserGroupInput'
+    get:
+      operationId: ApiGroup_list
+      parameters:
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int16
+          explode: false
+        - name: orphaned
+          in: query
+          required: false
+          schema:
+            type: boolean
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserGroup'
+                  next:
+                    type: string
+      tags:
+        - user
+  /groups/{id}:
+    put:
+      operationId: ApiGroup_updateGroup
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroup'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserGroupInput'
+    delete:
+      operationId: ApiGroup_delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - user
+  /imports:
+    get:
+      operationId: ApiImports_list
+      parameters:
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int16
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FileImport'
+                  next:
+                    type: string
+      tags:
+        - imports
+  /imports/parsers:
+    get:
+      operationId: ApiImports_parserTypes
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListFileParsers'
+      tags:
+        - imports
+  /imports/{id}:
+    delete:
+      operationId: ApiImports_delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            text/plain:
+              schema:
+                type: boolean
+      tags:
+        - imports
+  /imports/{id}/apply/{rowId}:
+    post:
+      operationId: ApiImports_applyRow
+      description: This will allow to create a transaction from the file-import rowId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+        - name: rowId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            text/plain:
+              schema:
+                type: boolean
+      tags:
+        - imports
+  /imports/{id}/rollback/{rowId}:
+    delete:
+      operationId: ApiImports_rollbackImport
+      description: This will allow to delete a transaction using the file-import rowId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+        - name: rowId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            text/plain:
+              schema:
+                type: boolean
+      tags:
+        - imports
+  /labels:
+    get:
+      operationId: ApiLabels_list
+      parameters:
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint16
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Label'
+                  next:
+                    type: string
+      tags:
+        - labels
+    post:
+      operationId: ApiLabels_create
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Label'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden, usually when using a group that the user doesn't have access to
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidGroupOwnerId'
+      tags:
+        - labels
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLabel'
+  /labels/{labelId}:
+    put:
+      operationId: ApiLabels_update
+      parameters:
+        - name: labelId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Label'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - labels
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateLabel'
+    delete:
+      operationId: ApiLabels_delete
+      parameters:
+        - name: labelId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+        - name: force
+          in: query
+          required: false
+          description: When true, forcefully deletes the label and removes it from all relations. Use with caution as this will modify dependent entities.
+          schema:
+            type: boolean
+            default: false
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            text/plain:
+              schema:
+                type: boolean
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabelInUse'
+      tags:
+        - labels
+  /oauth/authorize:
+    get:
+      operationId: ApiOAuth_authorize
+      description: Initiate OAuth authorization flow
+      parameters:
+        - name: request
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/OAuthAuthorizeRequest'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authorization_code:
+                    type: string
+                  state:
+                    type: string
+                required:
+                  - authorization_code
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - oauth
+  /oauth/clients:
+    post:
+      operationId: ApiOAuth_registerClient
+      description: Register a new OAuth client
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthClientWithSecret'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - oauth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                redirect_uris:
+                  type: array
+                  items:
+                    type: string
+                scopes:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/OAuthScope'
+              required:
+                - name
+                - redirect_uris
+                - scopes
+    get:
+      operationId: ApiOAuth_listClients
+      description: List OAuth clients
+      parameters:
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint16
+            default: 100
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OAuthClient'
+                  next:
+                    type: string
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - oauth
+  /oauth/clients/{clientId}:
+    get:
+      operationId: ApiOAuth_getClient
+      description: Get OAuth client details
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthClient'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - oauth
+    delete:
+      operationId: ApiOAuth_deleteClient
+      description: Delete an OAuth client
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - oauth
+  /oauth/token:
+    post:
+      operationId: ApiOAuth_token
+      description: Exchange authorization code for access token or refresh access token
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthTokenResponse'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - oauth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuthTokenRequest'
+      security:
+        - BasicAuth: []
+  /rules:
+    get:
+      operationId: ApiRule_list
+      parameters:
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int16
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Rule'
+                  next:
+                    type: string
+      tags:
+        - rule
+    post:
+      operationId: ApiRule_create
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden, usually when using a group that the user doesn't have access to
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidGroupOwnerId'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - rule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleInput'
+  /rules/{ruleId}:
+    put:
+      operationId: ApiRule_update
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden, usually when using a group that the user doesn't have access to
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidGroupOwnerId'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Unprocessable entity, assigning as parent a direct or indirect child
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - rule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleInput'
+    delete:
+      operationId: ApiRule_delete
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            text/plain:
+              schema:
+                type: boolean
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HasChildren'
+      tags:
+        - rule
+  /rules/{ruleId}/apply:
+    post:
+      operationId: ApiRule_apply
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Date'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden, usually when using a group that the user doesn't have access to
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidGroupOwnerId'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/Error'
+                  - $ref: '#/components/schemas/Error'
+      tags:
+        - rule
+  /rules/{ruleId}/condition:
+    post:
+      operationId: ApiRule_addCondition
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - rule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                condition:
+                  $ref: '#/components/schemas/ConditionInput'
+              required:
+                - condition
+  /rules/{ruleId}/condition/{condId}:
+    put:
+      operationId: ApiRule_updateCondition
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+        - name: condId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - rule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                condition:
+                  $ref: '#/components/schemas/ConditionInput'
+              required:
+                - condition
+    delete:
+      operationId: ApiRule_removeCondition
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+        - name: condId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - rule
+  /rules/{ruleId}/label/{labelId}:
+    put:
+      operationId: ApiRule_addLabel
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+        - name: labelId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - rule
+    delete:
+      operationId: ApiRule_removeLabel
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+        - name: labelId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - rule
+  /session:
+    post:
+      operationId: ApiSession_login
+      description: Login
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidCredentials'
+      tags:
+        - session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCredentials'
+    get:
+      operationId: ApiSession_me
+      description: Check if the user is logged in
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckMyProfile'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - session
+    delete:
+      operationId: ApiSession_logout
+      description: Logout
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            text/plain:
+              schema:
+                type: boolean
+      tags:
+        - session
+  /session/me:
+    put:
+      operationId: ApiSession_updateMe
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMyProfile'
+  /users:
+    post:
+      operationId: ApiUser_create
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserInput'
+    get:
+      operationId: ApiUser_list
+      parameters:
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int16
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserProfile'
+                  next:
+                    type: string
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - user
+  /users/{id}:
+    put:
+      operationId: ApiUser_update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Bad request, usually when providing an invalid string as UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserData'
+    delete:
+      operationId: ApiUser_delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            text/plain:
+              schema:
+                type: boolean
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - user
+  /users/{id}/group/{groupId}:
+    delete:
+      operationId: ApiUser_deleteGroup
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - user
+    post:
+      operationId: ApiUser_addGroup
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUIDString'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - user
+components:
+  schemas:
+    AuthorizationCodeGrantParams:
+      type: object
+      required:
+        - grant_type
+        - code
+        - redirect_uri
+      properties:
+        grant_type:
+          type: string
+          enum:
+            - authorization_code
+          description: OAuth grant type
+        code:
+          type: string
+          description: Authorization code received from authorization server
+        redirect_uri:
+          type: string
+          description: Redirect URI used in the authorization request
+      description: Parameters for authorization code grant
+    BankTransaction:
+      type: object
+      required:
+        - id
+        - groupOwnerId
+        - movementName
+        - date
+        - value
+        - kind
+        - labelIds
+      properties:
+        id:
+          $ref: '#/components/schemas/UUIDString'
+        groupOwnerId:
+          $ref: '#/components/schemas/UUIDString'
+        movementName:
+          type: string
+        date:
+          $ref: '#/components/schemas/DateOnly'
+        dateValue:
+          $ref: '#/components/schemas/DateOnly'
+        details:
+          type: string
+        value:
+          type: number
+          format: decimal
+        kind:
+          type: string
+        comment:
+          type: string
+        labelIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUIDString'
+    BaseModifyUserData:
+      type: object
+      required:
+        - username
+        - email
+        - isActive
+        - isAdmin
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        isActive:
+          type: boolean
+        isAdmin:
+          type: boolean
+    BaseUserData:
+      type: object
+      required:
+        - username
+        - email
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+    CheckMyProfile:
+      type: object
+      oneOf:
+        - $ref: '#/components/schemas/GetMyProfile'
+        - $ref: '#/components/schemas/NotIdentified'
+      discriminator:
+        propertyName: user
+        mapping:
+          identified: '#/components/schemas/GetMyProfile'
+          anonymous: '#/components/schemas/NotIdentified'
+    ClientCredentialsGrantParams:
+      type: object
+      required:
+        - grant_type
+      properties:
+        grant_type:
+          type: string
+          enum:
+            - client_credentials
+          description: OAuth grant type
+      description: Parameters for client credentials grant
+    Condition:
+      oneOf:
+        - $ref: '#/components/schemas/ConditionDouble'
+        - $ref: '#/components/schemas/ConditionString'
+    ConditionDouble:
+      type: object
+      required:
+        - id
+        - operation
+        - value
+      properties:
+        id:
+          $ref: '#/components/schemas/UUIDString'
+        operation:
+          $ref: '#/components/schemas/OperationDouble'
+        value:
+          type: number
+          format: double
+    ConditionDoubleInput:
+      type: object
+      required:
+        - operation
+        - value
+      properties:
+        operation:
+          $ref: '#/components/schemas/OperationDouble'
+        value:
+          type: number
+          format: double
+    ConditionInput:
+      oneOf:
+        - $ref: '#/components/schemas/ConditionDoubleInput'
+        - $ref: '#/components/schemas/ConditionStringInput'
+    ConditionString:
+      type: object
+      required:
+        - id
+        - operation
+        - value
+      properties:
+        id:
+          $ref: '#/components/schemas/UUIDString'
+        operation:
+          $ref: '#/components/schemas/OperationString'
+        value:
+          type: string
+    ConditionStringInput:
+      type: object
+      required:
+        - operation
+        - value
+      properties:
+        operation:
+          $ref: '#/components/schemas/OperationString'
+        value:
+          type: string
+    ConditionalRelation:
+      type: string
+      enum:
+        - or
+        - notAnd
+    CreateLabel:
+      type: object
+      required:
+        - name
+        - groupOwnerId
+      properties:
+        name:
+          type: string
+        groupOwnerId:
+          $ref: '#/components/schemas/UUIDString'
+    CreateUserInput:
+      type: object
+      required:
+        - username
+        - email
+        - isActive
+        - isAdmin
+        - password
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        isActive:
+          type: boolean
+        isAdmin:
+          type: boolean
+        password:
+          type: string
+    Date:
+      type: string
+      format: date-time
+    DateOnly:
+      type: string
+      format: date
+    Error:
+      type: object
+      required:
+        - message
+        - code
+      properties:
+        message:
+          type: string
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+    ErrorCode:
+      type: string
+      description: Base error code
+    FileImport:
+      type: object
+      required:
+        - id
+        - createdAt
+        - description
+        - fileName
+        - groupOwnerId
+        - kind
+        - status
+        - rows
+      properties:
+        id:
+          $ref: '#/components/schemas/UUIDString'
+        createdAt:
+          $ref: '#/components/schemas/Date'
+        description:
+          type: string
+        fileName:
+          type: string
+        groupOwnerId:
+          $ref: '#/components/schemas/UUIDString'
+        kind:
+          type: string
+        status:
+          $ref: '#/components/schemas/ImportStatus'
+        context:
+          type: string
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileImportTransaction'
+    FileImportTransaction:
+      type: object
+      required:
+        - movementName
+        - date
+        - value
+      properties:
+        movementName:
+          type: string
+        date:
+          type: string
+        dateValue:
+          type: string
+        details:
+          type: string
+        value:
+          type: number
+          format: decimal
+        description:
+          type: string
+        message:
+          type: string
+        transactionId:
+          $ref: '#/components/schemas/UUIDString'
+    FileParserType:
+      type: object
+      required:
+        - name
+        - fileNameRegex
+      properties:
+        name:
+          type: string
+        fileNameRegex:
+          type: string
+    GetMyProfile:
+      type: object
+      required:
+        - user
+        - profile
+      properties:
+        user:
+          type: string
+          enum:
+            - identified
+        profile:
+          $ref: '#/components/schemas/UserProfile'
+    Graph:
+      type: object
+      required:
+        - id
+        - groupOwnerId
+        - name
+        - kind
+        - dateRange
+        - group
+        - order
+      properties:
+        id:
+          $ref: '#/components/schemas/UUIDString'
+        groupOwnerId:
+          $ref: '#/components/schemas/UUIDString'
+        name:
+          type: string
+        kind:
+          $ref: '#/components/schemas/GraphKind'
+        labelFilterId:
+          $ref: '#/components/schemas/UUIDString'
+        dateRange:
+          $ref: '#/components/schemas/GraphDateRange'
+        group:
+          $ref: '#/components/schemas/Group'
+        horizontalGroup:
+          $ref: '#/components/schemas/HorizontalGroup'
+        order:
+          type: integer
+          format: uint64
+    GraphDateRange:
+      type: string
+      enum:
+        - all
+        - halfYear
+        - oneMonth
+        - oneYear
+        - sixYears
+        - twoYears
+    GraphGroupType:
+      type: string
+      enum:
+        - day
+        - labels
+        - month
+        - sign
+        - year
+    GraphInput:
+      type: object
+      required:
+        - groupOwnerId
+        - name
+        - kind
+        - dateRange
+        - group
+      properties:
+        groupOwnerId:
+          $ref: '#/components/schemas/UUIDString'
+        name:
+          type: string
+        kind:
+          $ref: '#/components/schemas/GraphKind'
+        labelFilterId:
+          $ref: '#/components/schemas/UUIDString'
+        dateRange:
+          $ref: '#/components/schemas/GraphDateRange'
+        group:
+          $ref: '#/components/schemas/Group'
+        horizontalGroup:
+          $ref: '#/components/schemas/HorizontalGroup'
+    GraphKind:
+      type: string
+      enum:
+        - bar
+        - line
+        - pie
+    Group:
+      type: object
+      required:
+        - group
+      properties:
+        group:
+          $ref: '#/components/schemas/GraphGroupType'
+        hideOthers:
+          type: boolean
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUIDString'
+    HasChildren:
+      type: object
+      required:
+        - message
+        - code
+        - childrenIds
+      properties:
+        message:
+          type: string
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        childrenIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUIDString'
+    HorizontalGroup:
+      type: object
+      required:
+        - group
+      properties:
+        group:
+          $ref: '#/components/schemas/GraphGroupType'
+        hideOthers:
+          type: boolean
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUIDString'
+        accumulate:
+          type: boolean
+    ImportStatus:
+      type: string
+      enum:
+        - ok
+        - warning
+        - error
+    InvalidCredentials:
+      type: object
+      required:
+        - details
+      properties:
+        details:
+          type: string
+    InvalidGroupOwnerId:
+      type: object
+      required:
+        - message
+        - code
+        - validGroupOwners
+      properties:
+        message:
+          type: string
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        validGroupOwners:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUIDString'
+      description: Forbidden, usually when using a group that the user doesn't have access to
+    Label:
+      type: object
+      required:
+        - id
+        - name
+        - groupOwnerId
+      properties:
+        id:
+          $ref: '#/components/schemas/UUIDString'
+        name:
+          type: string
+        groupOwnerId:
+          $ref: '#/components/schemas/UUIDString'
+    LabelInUse:
+      type: object
+      required:
+        - graphs
+        - graphsGroup
+        - graphHorizontalGroup
+        - rules
+        - transactions
+      properties:
+        graphs:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUIDString'
+        graphsGroup:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUIDString'
+        graphHorizontalGroup:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUIDString'
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUIDString'
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUIDString'
+    ListFileParsers:
+      type: object
+      required:
+        - parsers
+      properties:
+        parsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileParserType'
+    MoveDirection:
+      type: string
+      enum:
+        - up
+        - down
+    NotFoundBankTransaction:
+      type: object
+      required:
+        - message
+        - code
+        - bankTransactionSuplied
+      properties:
+        message:
+          type: string
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        bankTransactionSuplied:
+          $ref: '#/components/schemas/UUIDString'
+    NotFoundLabel:
+      type: object
+      required:
+        - message
+        - code
+        - labelSuplied
+      properties:
+        message:
+          type: string
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        labelSuplied:
+          $ref: '#/components/schemas/UUIDString'
+    NotFoundLabels:
+      type: object
+      required:
+        - message
+        - code
+        - validLabels
+        - invalidLabels
+      properties:
+        message:
+          type: string
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        validLabels:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUIDString'
+        invalidLabels:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUIDString'
+    NotIdentified:
+      type: object
+      required:
+        - user
+      properties:
+        user:
+          type: string
+          enum:
+            - anonymous
+    OAuthAccessToken:
+      type: object
+      required:
+        - access_token
+        - client_id
+        - scopes
+        - expires_at
+      properties:
+        access_token:
+          type: string
+          description: Access token
+        refresh_token:
+          type: string
+          description: Refresh token
+        client_id:
+          $ref: '#/components/schemas/UUIDString'
+        user_id:
+          $ref: '#/components/schemas/UUIDString'
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuthScope'
+          description: Scopes granted
+        expires_at:
+          type: string
+          format: date-time
+          description: Expiration time
+    OAuthAuthorizationCode:
+      type: object
+      required:
+        - code
+        - client_id
+        - user_id
+        - scopes
+        - redirect_uri
+        - expires_at
+      properties:
+        code:
+          type: string
+          description: Authorization code
+        client_id:
+          $ref: '#/components/schemas/UUIDString'
+        user_id:
+          $ref: '#/components/schemas/UUIDString'
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuthScope'
+          description: Scopes granted
+        redirect_uri:
+          type: string
+          description: Redirection URI
+        expires_at:
+          type: string
+          format: date-time
+          description: Expiration time
+    OAuthAuthorizeRequest:
+      type: object
+      required:
+        - client_id
+        - response_type
+        - redirect_uri
+      properties:
+        client_id:
+          $ref: '#/components/schemas/UUIDString'
+        response_type:
+          type: string
+          enum:
+            - code
+          description: OAuth response type, must be 'code' for authorization code flow
+        redirect_uri:
+          type: string
+          description: Redirection URI to which the response will be sent
+        scope:
+          type: string
+          description: Space-delimited scopes requested by the client
+        state:
+          type: string
+          description: Value used to associate a client session with an ID token
+    OAuthClient:
+      type: object
+      required:
+        - client_id
+        - name
+        - redirect_uris
+        - scopes
+        - created_at
+        - updated_at
+      properties:
+        client_id:
+          $ref: '#/components/schemas/UUIDString'
+        name:
+          type: string
+          description: Name of the OAuth client
+        description:
+          type: string
+          description: Some description used for the admin of the app
+        redirect_uris:
+          type: array
+          items:
+            type: string
+          description: Redirect URIs for the OAuth client
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuthScope'
+          description: Scopes allowed for the OAuth client
+        created_at:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Last updated timestamp
+    OAuthClientWithSecret:
+      type: object
+      required:
+        - client_id
+        - name
+        - redirect_uris
+        - scopes
+        - created_at
+        - updated_at
+        - secret
+      properties:
+        client_id:
+          $ref: '#/components/schemas/UUIDString'
+        name:
+          type: string
+          description: Name of the OAuth client
+        description:
+          type: string
+          description: Some description used for the admin of the app
+        redirect_uris:
+          type: array
+          items:
+            type: string
+          description: Redirect URIs for the OAuth client
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuthScope'
+          description: Scopes allowed for the OAuth client
+        created_at:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Last updated timestamp
+        secret:
+          type: string
+          format: password
+          description: Secret for the OAuth client
+    OAuthScope:
+      type: string
+      enum:
+        - userInfo
+        - uploadFile
+    OAuthTokenRequest:
+      oneOf:
+        - $ref: '#/components/schemas/AuthorizationCodeGrantParams'
+        - $ref: '#/components/schemas/RefreshTokenGrantParams'
+        - $ref: '#/components/schemas/ClientCredentialsGrantParams'
+      description: OAuth token request with grant-type-specific parameters
+    OAuthTokenResponse:
+      type: object
+      required:
+        - access_token
+        - token_type
+      properties:
+        access_token:
+          type: string
+          description: Access token to access protected resources
+        token_type:
+          type: string
+          enum:
+            - Bearer
+          description: Type of the access token
+        expires_in:
+          type: integer
+          format: int32
+          description: Lifetime of the access token in seconds
+        refresh_token:
+          type: string
+          description: Refresh token to obtain new access tokens
+        scope:
+          type: string
+          description: Space-delimited scopes requested by the client
+    OperationDouble:
+      type: string
+      enum:
+        - greater
+        - greaterEqual
+        - less
+        - lessEqual
+    OperationString:
+      type: string
+      enum:
+        - suffix
+        - contains
+        - prefix
+        - regularExpression
+    RefreshTokenGrantParams:
+      type: object
+      required:
+        - grant_type
+        - refresh_token
+      properties:
+        grant_type:
+          type: string
+          enum:
+            - refresh_token
+          description: OAuth grant type
+        refresh_token:
+          type: string
+          description: Refresh token for refreshing access tokens
+      description: Parameters for refresh token grant
+    Rule:
+      type: object
+      required:
+        - id
+        - groupOwnerId
+        - name
+        - relations
+        - conditions
+        - labelIds
+      properties:
+        id:
+          $ref: '#/components/schemas/UUIDString'
+        parentRuleId:
+          $ref: '#/components/schemas/UUIDString'
+        groupOwnerId:
+          $ref: '#/components/schemas/UUIDString'
+        name:
+          type: string
+        relations:
+          $ref: '#/components/schemas/ConditionalRelation'
+        conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Condition'
+        labelIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/UUIDString'
+    RuleInput:
+      type: object
+      required:
+        - groupOwnerId
+        - name
+        - relations
+      properties:
+        parentRuleId:
+          $ref: '#/components/schemas/UUIDString'
+        groupOwnerId:
+          $ref: '#/components/schemas/UUIDString'
+        name:
+          type: string
+        relations:
+          $ref: '#/components/schemas/ConditionalRelation'
+    SessionType:
+      type: string
+      enum:
+        - identified
+        - anonymous
+    SetLabelAction:
+      type: object
+      required:
+        - label
+      properties:
+        label:
+          $ref: '#/components/schemas/UUIDString'
+    UUIDString:
+      type: string
+      format: uuid
+    UpdateLabel:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+    UpdateMyProfile:
+      type: object
+      required:
+        - username
+        - email
+        - defaultGroupId
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        defaultGroupId:
+          $ref: '#/components/schemas/UUIDString'
+        newPassword:
+          type: string
+        password:
+          type: string
+    UpdateUserData:
+      type: object
+      required:
+        - username
+        - email
+        - isActive
+        - isAdmin
+        - defaultGroupId
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        isActive:
+          type: boolean
+        isAdmin:
+          type: boolean
+        password:
+          type: string
+        defaultGroupId:
+          $ref: '#/components/schemas/UUIDString'
+    UserCredentials:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    UserGroup:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          $ref: '#/components/schemas/UUIDString'
+        name:
+          type: string
+    UserGroupInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+    UserProfile:
+      type: object
+      required:
+        - id
+        - username
+        - email
+        - isAdmin
+        - isActive
+        - groups
+        - defaultGroupId
+      properties:
+        id:
+          $ref: '#/components/schemas/UUIDString'
+        username:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        isAdmin:
+          type: boolean
+        isActive:
+          type: boolean
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserGroup'
+        defaultGroupId:
+          $ref: '#/components/schemas/UUIDString'
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: Basic
+servers:
+  - url: /api
+    description: Development
+    variables: {}
