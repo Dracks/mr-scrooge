@@ -85,7 +85,7 @@ export const Imports: React.FC = () => {
             <Sidebar background="neutral-2">
                 <Nav>
                     <Box pad="small">
-                        <AnchorLink icon={<DocumentUpload />} to="" label="Wizard" />
+                        <AnchorLink icon={<DocumentUpload />} to="/import" label="Wizard" />
                     </Box>
                     <Box pad="small">
                         <Anchor

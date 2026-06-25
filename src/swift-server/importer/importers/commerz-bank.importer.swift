@@ -13,10 +13,10 @@ final class CommerzBankEnImporter: ParserFactory, Sendable {
 
 	init() {
 		let fieldsMap = FieldsMap<Int>(
-			movementName: 8,
-			date: 10,
+			movementName: 11,
+			date: 13,
 			dateValue: 1,
-			details: 9, value: 4
+			details: 12, value: 4
 		)
 		self.transformHelper = TransformHelper(fieldsMap, dateFormat: "dd.MM.yyyy")
 	}
