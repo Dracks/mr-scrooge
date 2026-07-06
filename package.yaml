@@ -74,7 +74,7 @@ dependencies:
   react-router-dom: 7.12.0
   recharts: 3.5.1
   zod: 4.1.13
-packageManager: pnpm@11.2.2
+packageManager: pnpm@11.8.0
 devEngines:
   runtime:
     name: node
