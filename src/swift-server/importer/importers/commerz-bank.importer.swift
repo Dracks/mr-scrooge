@@ -81,6 +81,9 @@ final class CommerzBankEnImporter: ParserFactory, Sendable {
 					while let row = csv.next() {
 						lineCounter += 1
 						do {
+							if row[0].isEmpty || row[1].isEmpty {
+								continue
+							}
 							var mappedData: [String?] = row
 							guard let originalMovement = row.get(3)
 							else {
